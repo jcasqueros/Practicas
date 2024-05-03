@@ -1,0 +1,177 @@
+{
+	"id": "64eb485f-bc4c-4719-9ba4-2bc2a70440a0",
+	"name": "REST API basics: CRUD, test & variable",
+	"timestamp": "2024-05-03T10:31:25.034Z",
+	"collection_id": "32686838-dfa07c6c-3168-4b4a-909c-3de2a3994927",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 5,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2024-05-03T10:31:21.000Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "013d1c0b-a24d-4992-98dd-8416510c0910",
+			"name": "Create User",
+			"url": "http://localhost:8080/users/save",
+			"time": 2244,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Successful POST request": true
+			},
+			"testPassFailCounts": {
+				"Successful POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				2244
+			],
+			"allTests": [
+				{
+					"Successful POST request": true
+				}
+			]
+		},
+		{
+			"id": "0e53761c-10e1-4fdd-ba3a-6b1ffaeef52b",
+			"name": "Get All Users",
+			"url": "http://localhost:8080/users/getById/12345678A",
+			"time": 104,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				104
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "fa479dcd-6d54-4c0c-8a7c-e786868e4f25",
+			"name": "Get User By Id",
+			"url": "https://postman-rest-api-learner.glitch.me//info?id=1",
+			"time": 618,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				618
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "5fbfe343-8b29-442f-9f2a-d4f80eb72e88",
+			"name": "Update User",
+			"url": "http://localhost:8080/users/update",
+			"time": 42,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Successful PUT request": true
+			},
+			"testPassFailCounts": {
+				"Successful PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				42
+			],
+			"allTests": [
+				{
+					"Successful PUT request": true
+				}
+			]
+		},
+		{
+			"id": "3169e614-f1d2-4df5-bc83-75d3c801094c",
+			"name": "Delete data",
+			"url": "http://localhost:8080/users/deleteById?dni=12345678A",
+			"time": 19,
+			"responseCode": {
+				"code": 204,
+				"name": "No Content"
+			},
+			"tests": {
+				"Successful DELETE request": true
+			},
+			"testPassFailCounts": {
+				"Successful DELETE request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"Successful DELETE request": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 3027,
+	"collection": {
+		"requests": [
+			{
+				"id": "013d1c0b-a24d-4992-98dd-8416510c0910",
+				"method": "POST"
+			},
+			{
+				"id": "0e53761c-10e1-4fdd-ba3a-6b1ffaeef52b",
+				"method": "GET"
+			},
+			{
+				"id": "fa479dcd-6d54-4c0c-8a7c-e786868e4f25",
+				"method": "GET"
+			},
+			{
+				"id": "5fbfe343-8b29-442f-9f2a-d4f80eb72e88",
+				"method": "PUT"
+			},
+			{
+				"id": "3169e614-f1d2-4df5-bc83-75d3c801094c",
+				"method": "DELETE"
+			}
+		]
+	}
+}
