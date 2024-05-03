@@ -1,0 +1,177 @@
+{
+	"id": "9e87f68f-192c-4667-b640-ab045cd93047",
+	"name": "Test Practice 1",
+	"timestamp": "2024-05-03T11:00:22.416Z",
+	"collection_id": "34684802-b8ed4fe8-02e6-479f-b416-69d97ef16398",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 5,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2024-05-03T11:00:20.228Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "16eec7d6-6f63-4a4b-8f56-076588e6936c",
+			"name": "Save user",
+			"url": "http://localhost:8080/api/v1/user/save",
+			"time": 1227,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Successful POST request": true
+			},
+			"testPassFailCounts": {
+				"Successful POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				1227
+			],
+			"allTests": [
+				{
+					"Successful POST request": true
+				}
+			]
+		},
+		{
+			"id": "c38f82bd-3a3f-4e01-bf3b-4424b1f7f1fd",
+			"name": "Get user by DNI",
+			"url": "http://localhost:8080/api/v1/user/getUser?dni=07256630S",
+			"time": 23,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				23
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "76b8e1c2-2718-4482-b4ee-96e760cf6d5d",
+			"name": "Get all users",
+			"url": "http://localhost:8080/api/v1/user/getAllUsers",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "a4695808-d66c-4a52-a4cf-bb8c3a90bf8c",
+			"name": "Update user",
+			"url": "http://localhost:8080/api/v1/user/update",
+			"time": 34,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Successful PUT request": true
+			},
+			"testPassFailCounts": {
+				"Successful PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				34
+			],
+			"allTests": [
+				{
+					"Successful PUT request": true
+				}
+			]
+		},
+		{
+			"id": "08458c74-77de-46d5-a25d-b147be6a5652",
+			"name": "Delete user",
+			"url": "http://localhost:8080/api/v1/user/delete?dni=07256630S",
+			"time": 15,
+			"responseCode": {
+				"code": 204,
+				"name": "No Content"
+			},
+			"tests": {
+				"Successful DELETE request": true
+			},
+			"testPassFailCounts": {
+				"Successful DELETE request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"Successful DELETE request": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 1317,
+	"collection": {
+		"requests": [
+			{
+				"id": "16eec7d6-6f63-4a4b-8f56-076588e6936c",
+				"method": "POST"
+			},
+			{
+				"id": "c38f82bd-3a3f-4e01-bf3b-4424b1f7f1fd",
+				"method": "GET"
+			},
+			{
+				"id": "76b8e1c2-2718-4482-b4ee-96e760cf6d5d",
+				"method": "GET"
+			},
+			{
+				"id": "a4695808-d66c-4a52-a4cf-bb8c3a90bf8c",
+				"method": "PUT"
+			},
+			{
+				"id": "08458c74-77de-46d5-a25d-b147be6a5652",
+				"method": "DELETE"
+			}
+		]
+	}
+}
