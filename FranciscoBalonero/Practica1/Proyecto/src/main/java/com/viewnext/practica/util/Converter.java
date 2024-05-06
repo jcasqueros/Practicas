@@ -3,8 +3,8 @@ package com.viewnext.practica.util;
 import com.viewnext.practica.businesslayer.bo.UserBO;
 import com.viewnext.practica.persistencelayer.entity.User;
 import com.viewnext.practica.presentationlayer.dto.UserDTO;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,9 +24,10 @@ import org.springframework.stereotype.Component;
  * @see ModelMapper
  */
 @Component
+@RequiredArgsConstructor
 public class Converter {
-    @Autowired
-    private ModelMapper modelMapper;
+
+    private final ModelMapper modelMapper;
 
     /**
      * Converts a UserBO to a User entity.

@@ -16,11 +16,13 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserBO {
+
     private String dni;
 
     private String name;
 
     private String surname;
+    
     private int age;
 
     /**

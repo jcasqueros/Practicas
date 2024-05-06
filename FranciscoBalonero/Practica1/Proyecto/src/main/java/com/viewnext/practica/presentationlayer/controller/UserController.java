@@ -1,6 +1,6 @@
 package com.viewnext.practica.presentationlayer.controller;
 
-import com.viewnext.practica.businesslayer.exception.BusinessException;
+import com.viewnext.practica.businesslayer.exception.BusinessLayerException;
 import com.viewnext.practica.businesslayer.exception.UserNotFoundException;
 import com.viewnext.practica.businesslayer.service.UserService;
 import com.viewnext.practica.presentationlayer.dto.UserDTO;
@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/user")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -45,7 +47,7 @@ public class UserController {
                     HttpStatus.OK);
         } catch (UserNotFoundException e) {
             throw new UserDTONotFoundException("Users not found", e);
-        } catch (BusinessException be) {
+        } catch (BusinessLayerException be) {
             throw new PresentationLayerException(be);
         }
     }
@@ -58,7 +60,7 @@ public class UserController {
             return new ResponseEntity<>(converter.userBoToDTO(userService.getUserByDni(dni)), HttpStatus.OK);
         } catch (UserNotFoundException e) {
             throw new UserDTONotFoundException(e);
-        } catch (BusinessException be) {
+        } catch (BusinessLayerException be) {
             throw new PresentationLayerException(be);
         }
     }
@@ -69,7 +71,7 @@ public class UserController {
         try {
             return new ResponseEntity<>(converter.userBoToDTO(userService.save(converter.userDTOToBO(userDTO))),
                     HttpStatus.CREATED);
-        } catch (BusinessException be) {
+        } catch (BusinessLayerException be) {
             throw new PresentationLayerException("User not created", be);
         }
     }
@@ -83,7 +85,7 @@ public class UserController {
             return new ResponseEntity<>("The user has been successfully deleted ", HttpStatus.NO_CONTENT);
         } catch (UserNotFoundException e) {
             throw new UserDTONotFoundException(e);
-        } catch (BusinessException e) {
+        } catch (BusinessLayerException e) {
             throw new PresentationLayerException("User not deleted", e);
         }
     }
@@ -96,7 +98,7 @@ public class UserController {
                     HttpStatus.CREATED);
         } catch (UserNotFoundException e) {
             throw new UserDTONotFoundException(e);
-        } catch (BusinessException e) {
+        } catch (BusinessLayerException e) {
             throw new PresentationLayerException("User not updated", e);
         }
     }

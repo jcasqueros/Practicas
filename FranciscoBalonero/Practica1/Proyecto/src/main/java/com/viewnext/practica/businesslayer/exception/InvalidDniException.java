@@ -24,9 +24,9 @@ import java.io.Serial;
  * <p>The exception includes a serial version UID for serialization purposes.</p>
  *
  * @author Franciso Balonero Olivera
- * @see BusinessException
+ * @see BusinessLayerException
  */
-public class InvalidDniException extends BusinessException {
+public class InvalidDniException extends BusinessLayerException {
     @Serial
     private static final long serialVersionUID = -719881222322351L;
 
