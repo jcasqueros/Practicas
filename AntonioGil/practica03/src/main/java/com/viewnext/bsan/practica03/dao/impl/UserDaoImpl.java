@@ -75,7 +75,9 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void deleteByDni(String dni) throws DaoLevelException {
         try {
-            repository.deleteById(dni);
+            if (dni != null) {
+                repository.deleteById(dni);
+            }
         } catch (NestedRuntimeException ex) {
             throw new DaoLevelException("UserDao#deleteByDni failed", ex);
         }
