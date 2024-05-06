@@ -23,6 +23,15 @@ public interface UserDao {
     List<User> getAll() throws DaoLevelException;
 
     /**
+     * Checks whether a user with the given DNI exists.
+     *
+     * @param dni The DNI for the user
+     * @return True if a user with the given DNI exists, false otherwise
+     * @throws DaoLevelException if the operation somehow fails
+     */
+    boolean existsByDni(String dni) throws DaoLevelException;
+
+    /**
      * Retrieves a user by its DNI, if it exists.
      *
      * @param dni The DNI for the user

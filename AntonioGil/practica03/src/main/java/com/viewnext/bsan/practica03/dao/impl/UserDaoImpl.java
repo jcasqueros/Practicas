@@ -36,11 +36,23 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> getByDni(String dni) throws DaoLevelException {
+    public boolean existsByDni(String dni) throws DaoLevelException {
+        if (dni == null) {
+            return false;
+        }
         try {
-            if (dni == null) {
-                return Optional.empty();
-            }
+            return repository.existsById(dni);
+        } catch (NestedRuntimeException ex) {
+            throw new DaoLevelException("UserDao#existsByDni failed", ex);
+        }
+    }
+
+    @Override
+    public Optional<User> getByDni(String dni) throws DaoLevelException {
+        if (dni == null) {
+            return Optional.empty();
+        }
+        try {
             return repository.findById(dni);
         } catch (NestedRuntimeException ex) {
             throw new DaoLevelException("UserDao#getByDni failed", ex);

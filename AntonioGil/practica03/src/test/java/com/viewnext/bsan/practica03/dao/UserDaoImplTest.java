@@ -50,6 +50,30 @@ class UserDaoImplTest {
         assertTrue(foundUsers.containsAll(UserSampleData.SAMPLE_USER_LIST));
     }
 
+    @DisplayName("[UserDaoImplTest] [UNIT] existsByDni (null DNI)")
+    @Test
+    void givenNullDni_whenExistsByDni_thenReturnFalse() throws DaoLevelException {
+        assertFalse(dao.existsByDni(null));
+    }
+
+    @DisplayName("[UserDaoImplTest] [UNIT] existsByDni (nonexistent DNI)")
+    @Test
+    void givenNonExistentDni_whenExistsByDni_thenReturnFalse() throws DaoLevelException {
+        final String dni = "XXXXXX";
+        Mockito.when(repository.existsById(dni)).thenReturn(false);
+
+        assertFalse(dao.existsByDni(dni));
+    }
+
+    @DisplayName("[UserDaoImplTest] [UNIT] existsByDni (existing DNI)")
+    @Test
+    void givenExistingDni_whenExistsByDni_thenReturnTrue() throws DaoLevelException {
+        final String dni = UserSampleData.ANOTHER_SAMPLE_USER.getDni();
+        Mockito.when(repository.existsById(dni)).thenReturn(true);
+
+        assertTrue(dao.existsByDni(dni));
+    }
+
     @DisplayName("[UserDaoImplTest] [UNIT] getByDni (null DNI)")
     @Test
     void givenNullDni_whenGetByDni_thenReturnEmpty() throws DaoLevelException {
