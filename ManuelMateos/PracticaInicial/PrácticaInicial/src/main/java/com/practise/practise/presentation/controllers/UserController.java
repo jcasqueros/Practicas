@@ -90,12 +90,18 @@ public class UserController {
         try {
             return new ResponseEntity<>(
                     boToDtoConverter.userBoToUserDto(userService.update(dtoToBoConverter.userDtoToUserBo(userDTO))),
-                    HttpStatus.CREATED);
+                    HttpStatus.OK);
         } catch (ServiceException | UpsertException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }
     }
 
+    /**
+     * Method for delete a user by his id
+     *
+     * @param dni
+     * @return ResponseEntity<Boolean>
+     */
     @DeleteMapping("/deleteById")
     public ResponseEntity<Boolean> deleteById(@RequestParam("dni") String dni) {
         try {

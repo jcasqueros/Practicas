@@ -1,29 +1,36 @@
 package com.practise.practise.persistence.dao;
 
-import com.practise.practise.exceptions.DataAccessException;
-import com.practise.practise.exceptions.DuplicatedIdException;
-import com.practise.practise.exceptions.EmptyException;
-import com.practise.practise.exceptions.EntityNotFoundException;
+import com.practise.practise.exceptions.*;
+import com.practise.practise.persistence.dao.impl.UserDAOImpl;
 import com.practise.practise.persistence.models.User;
+import com.practise.practise.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
-@DataJpaTest
-@ComponentScan(basePackages = "com.practise.practise.persistence.dao")
+@ExtendWith(MockitoExtension.class)
 class UserDAOTest {
 
-    @Autowired
-    private UserDAO userDAO;
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserDAOImpl userDAO;
 
     private User user;
 
@@ -44,37 +51,50 @@ class UserDAOTest {
 
     @DisplayName("JUnit test for save user operation - negative")
     @Test
-    void givenUserObject_whenSave_thenThrowException() throws DataAccessException {
+    void givenUserObject_whenSave_thenThrowDuplicatedException() throws DataAccessException {
 
-        User savedUser = userDAO.save(user);
+        userDAO.save(user);
+
+        given(userRepository.existsById(user.getDni())).willReturn(true);
 
         assertThrows(DuplicatedIdException.class, () -> userDAO.save(user));
     }
 
+    @DisplayName("JUnit test for save user operation - negative")
+    @Test
+    void givenUserObject_whenSave_thenThrowUpsertException() throws DataAccessException {
+
+        doThrow(new DataIntegrityViolationException("")).when(userRepository).saveUser("dni", "name", "surname", 25);
+
+        UpsertException exception = assertThrows(UpsertException.class,
+                () -> userDAO.save(new User("dni", "name", "surname", 25)));
+        assertEquals("Insert error", exception.getMessage());
+    }
+
     @DisplayName("JUnit test for delete user by his id - positive")
     @Test
-    void givenIdUser_whenDelete_thenRemoveUser() throws DataAccessException {
-        userDAO.save(user);
+    void givenIdUser_whenDelete_thenThrowEmptyException() throws DataAccessException {
+        when(userRepository.existsById("dni")).thenReturn(true);
+        doNothing().when(userRepository).deleteUserById("dni");
 
-        userDAO.deleteById(user.getDni());
+        userDAO.deleteById("dni");
 
-        assertThrows(EmptyException.class, () -> {
-            userDAO.findById(user.getDni());
-        });
+        verify(userRepository, times(1)).deleteUserById("dni");
+
     }
 
     @DisplayName("JUnit test for delete user by his id - negative")
     @Test
-    void givenIdUser_whenDelete_thenThrowException() throws DataAccessException {
+    void givenIdUser_whenDelete_thenThrowEntityNotFoundException() throws DataAccessException {
 
         assertThrows(EntityNotFoundException.class, () -> userDAO.deleteById("124A"));
     }
 
-    @DisplayName("JUnit test for update user operation")
+    @DisplayName("JUnit test for update user operation - positive")
     @Test
     void givenUserObject_whenUpdate_thenReturnUpdateUserObject() throws DataAccessException {
-
-        userDAO.save(user);
+        User user = new User("dni", "name", "surname", 25);
+        when(userRepository.findUserById("dni")).thenReturn(Optional.of(user));
 
         User savedUser = userDAO.findById(user.getDni());
         savedUser.setName("update");
@@ -86,16 +106,29 @@ class UserDAOTest {
         assertEquals(savedUser, updatedUser);
     }
 
+    @DisplayName("JUnit test for update user operation - negative")
+    @Test
+    void givenUserObject_whenUpdate_thenThrowException() throws DataAccessException {
+        User user = new User("dni", "name", "surname", 25);
+
+        doThrow(new DataIntegrityViolationException("")).when(userRepository).updateUser("dni", "name", "surname", 25);
+
+        UpsertException exception = assertThrows(UpsertException.class,
+                () -> userDAO.update(new User("dni", "name", "surname", 25)));
+        assertEquals("Update error", exception.getMessage());
+    }
+
     @DisplayName("JUnit test for get all users operation - positive")
     @Test
     void givenNothing_whenFindAll_thenReturnUserList() throws DataAccessException {
 
-        userDAO.save(user);
+        List<User> users = Arrays.asList(new User("dni1", "name1", "surname1", 25),
+                new User("dni2", "name2", "surname2", 30));
+        when(userRepository.findAllUsers()).thenReturn(users);
 
-        List<User> usersDB = userDAO.findAll();
+        List<User> savedUsers = userDAO.findAll();
 
-        assertThat(usersDB).isNotNull();
-        assertEquals(1, usersDB.size());
+        assertEquals(users, savedUsers);
     }
 
     @DisplayName("JUnit test for get all users operation - negative")
@@ -105,14 +138,23 @@ class UserDAOTest {
         assertThrows(EmptyException.class, () -> userDAO.findAll());
     }
 
-    @DisplayName("JUnit test for get user by id operation")
+    @DisplayName("JUnit test for get user by id operation - positive")
     @Test
     void givenUserObject_whenFindById_thenReturnUserObject() throws DataAccessException {
+        User user = new User("dni", "name", "surname", 25);
+        when(userRepository.findUserById("dni")).thenReturn(Optional.of(user));
 
-        userDAO.save(user);
-        User userDB = userDAO.findById(user.getDni());
+        User savedUser = userDAO.findById("dni");
 
-        assertThat(userDB).isNotNull();
-        assertEquals(userDB, user);
+        assertEquals(user, savedUser);
+    }
+
+    @DisplayName("JUnit test for get user by id operation - negative")
+    @Test
+    void givenUserObject_whenFindById_thenThrowException() throws DataAccessException {
+        when(userRepository.findUserById("dni")).thenReturn(Optional.empty());
+
+        EmptyException exception = assertThrows(EmptyException.class, () -> userDAO.findById("dni"));
+        assertEquals("User not found", exception.getMessage());
     }
 }
