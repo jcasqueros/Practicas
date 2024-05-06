@@ -1,8 +1,8 @@
 package com.pracs.films.persistence.models;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,12 +18,10 @@ import lombok.NoArgsConstructor;
 public class Producer {
 
     @Id
-    @Column(name = "producer_id")
+    @SequenceGenerator(name = "producer_seq")
     private long id;
 
-    @Column(name = "producer_name")
     private String name;
 
-    @Column(name = "producer_year")
-    private int year;
+    private int debut;
 }
