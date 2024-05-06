@@ -43,7 +43,7 @@ public class UserDAOImpl implements UserDAO {
         try {
             List<User> users = userRepository.findAllUsers();
             if (users.isEmpty()) {
-                throw new EntityNotFoundException("That user does not exist");
+                throw new EntityNotFoundException();
             } else {
                 return users;
             }
@@ -70,7 +70,7 @@ public class UserDAOImpl implements UserDAO {
                     throw new PersistenceLayerException("User not deleted");
                 }
             } else {
-                throw new EntityNotFoundException("That user does not exist");
+                throw new EntityNotFoundException();
             }
         } catch (NestedRuntimeException e) {
             throw new PersistenceLayerException(e);
@@ -88,7 +88,7 @@ public class UserDAOImpl implements UserDAO {
                     throw new PersistenceLayerException("User not updated");
                 }
             } else {
-                throw new EntityNotFoundException("That user does not exist");
+                throw new EntityNotFoundException();
             }
         } catch (NestedRuntimeException e) {
             throw new PersistenceLayerException(e);

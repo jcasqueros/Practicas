@@ -1,7 +1,7 @@
 package com.viewnext.practica.businesslayer.service;
 
 import com.viewnext.practica.businesslayer.bo.UserBO;
-import com.viewnext.practica.businesslayer.exception.BusinessException;
+import com.viewnext.practica.businesslayer.exception.BusinessLayerException;
 import com.viewnext.practica.persistencelayer.entity.User;
 
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.List;
  * }
  * </pre>
  *
- * <p>Implementing classes should handle {@link BusinessException} to appropriately manage exceptions
+ * <p>Implementing classes should handle {@link BusinessLayerException} to appropriately manage exceptions
  * related to business operations on users.</p>
  *
  * <p>Instances of this interface are typically used in the business layer of the application to provide
@@ -51,19 +51,19 @@ public interface UserService {
      * @param userBO
      *         {@link UserBO} The user BO to save
      * @return {@link UserBO} The registered user BO
-     * @throws BusinessException
+     * @throws BusinessLayerException
      *         If an error occurs during the operation
      */
-    UserBO save(UserBO userBO) throws BusinessException;
+    UserBO save(UserBO userBO) throws BusinessLayerException;
 
     /**
      * Retrieves all users.
      *
      * @return {@link List} A list of all users
-     * @throws BusinessException
+     * @throws BusinessLayerException
      *         If an error occurs during the operation
      */
-    List<UserBO> getAll() throws BusinessException;
+    List<UserBO> getAll() throws BusinessLayerException;
 
     /**
      * Finds a user by its ID.
@@ -71,20 +71,20 @@ public interface UserService {
      * @param dni
      *         {@link String} The DNI of the user to find.
      * @return {@link User} The user found.
-     * @throws BusinessException
+     * @throws BusinessLayerException
      *         If there is an issue retrieving the user.
      */
-    UserBO getUserByDni(String dni) throws BusinessException;
+    UserBO getUserByDni(String dni) throws BusinessLayerException;
 
     /**
      * Deletes a user by its DNI.
      *
      * @param dni
      *         {@link String} The DNI of the user to be deleted.
-     * @throws BusinessException
+     * @throws BusinessLayerException
      *         If there is an issue deleting the user.
      */
-    void deleteUser(String dni) throws BusinessException;
+    void deleteUser(String dni) throws BusinessLayerException;
 
     /**
      * Update a User
@@ -92,9 +92,9 @@ public interface UserService {
      * @param userBO
      *         {@link UserBO} user to update
      * @return Updated {@link User}
-     * @throws BusinessException
+     * @throws BusinessLayerException
      *         If there is an issue updating the user.
      */
-    UserBO updateUser(UserBO userBO) throws BusinessException;
+    UserBO updateUser(UserBO userBO) throws BusinessLayerException;
 
 }

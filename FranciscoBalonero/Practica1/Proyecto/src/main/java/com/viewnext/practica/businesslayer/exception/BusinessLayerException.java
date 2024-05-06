@@ -25,7 +25,7 @@ import java.io.Serial;
  *
  * @author Franciso Balonero Olivera
  */
-public class BusinessException extends Exception {
+public class BusinessLayerException extends Exception {
     @Serial
     private static final long serialVersionUID = -7198817472286130251L;
 
@@ -35,7 +35,7 @@ public class BusinessException extends Exception {
      * @param cause
      *         The cause (which is saved for later retrieval by the getCause() method)
      */
-    public BusinessException(Throwable cause) {
+    public BusinessLayerException(Throwable cause) {
         super("Error with business layer", cause);
     }
 
@@ -45,7 +45,7 @@ public class BusinessException extends Exception {
      * @param message
      *         {@link String} The detail message (which is saved for later retrieval by the getMessage() method)
      */
-    public BusinessException(String message) {
+    public BusinessLayerException(String message) {
         super(message);
     }
 
@@ -57,7 +57,7 @@ public class BusinessException extends Exception {
      * @param cause
      *         {@link Exception}    The cause (which is saved for later retrieval by the getCause() method)
      */
-    public BusinessException(String message, Throwable cause) {
+    public BusinessLayerException(String message, Throwable cause) {
         super(message, cause);
     }
 }

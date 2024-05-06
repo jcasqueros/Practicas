@@ -1,7 +1,9 @@
 package com.viewnext.practica.util;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -24,10 +26,9 @@ import java.time.LocalDateTime;
  *
  * @author Franciosco Balonero Olivera
  */
-@Setter
+
 @Getter
 @RequiredArgsConstructor
-@NoArgsConstructor
 public class Body {
 
     /**

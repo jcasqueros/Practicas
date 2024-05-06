@@ -24,21 +24,11 @@ import java.io.Serial;
  * <p>The exception includes a serial version UID for serialization purposes.</p>
  *
  * @author Franciso Balonero Olivera
- * @see BusinessException
+ * @see BusinessLayerException
  */
-public class UserNotFoundException extends BusinessException {
+public class UserNotFoundException extends BusinessLayerException {
     @Serial
     private static final long serialVersionUID = -7198817423453666251L;
-
-    /**
-     * Constructs a new UserNotFoundException with the specified detail message.
-     *
-     * @param message
-     *         {@link String} The detail message (which is saved for later retrieval by the getMessage() method)
-     */
-    public UserNotFoundException(String message) {
-        super(message);
-    }
 
     /**
      * Constructs a new UserNotFoundException with default message and the specified detail message.

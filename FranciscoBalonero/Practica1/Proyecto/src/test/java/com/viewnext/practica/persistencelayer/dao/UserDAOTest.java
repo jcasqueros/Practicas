@@ -1,6 +1,7 @@
 package com.viewnext.practica.persistencelayer.dao;
 
 import com.viewnext.practica.persistencelayer.entity.User;
+import com.viewnext.practica.persistencelayer.exception.EntityNotFoundException;
 import com.viewnext.practica.persistencelayer.exception.PersistenceLayerException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +22,11 @@ class UserDAOTest {
     @Autowired
     private UserDAO userDao;
 
-    private User user, user2, duplicatedDniUser;
+    private User user, user2, duplicatedDniUser, nullUser;
 
     @BeforeEach
     public void setup() {
+        nullUser = new User();
         user = new User();
         user2 = new User();
         duplicatedDniUser = new User();
@@ -44,7 +46,7 @@ class UserDAOTest {
 
     @Test
     @DisplayName("findUserByDNI operation")
-    void givenDni_whenFindUserByDni_theReturnUser() throws PersistenceLayerException {
+    void givenDni_whenFindUserByDni_thenReturnUser() throws PersistenceLayerException {
 
         User savedUser = userDao.save(user);
 
@@ -56,18 +58,19 @@ class UserDAOTest {
 
     @Test
     @DisplayName("save operation")
-    void givenUserObject_whenSave_theReturnSavedUser() throws PersistenceLayerException {
+    void givenUserObject_whenSave_thenReturnSavedUser() throws PersistenceLayerException {
 
         User savedUser = userDao.save(user);
 
         assertThrows(PersistenceLayerException.class, () -> userDao.save(duplicatedDniUser));
+        assertThrows(PersistenceLayerException.class, () -> userDao.save(nullUser));
         assertThat(savedUser).isNotNull();
         assertEquals(savedUser, user);
     }
 
     @Test
     @DisplayName("findAllUsers operation")
-    void givenUsersList_whenFindAllUsers_theReturnUsersList() throws PersistenceLayerException {
+    void givenUsersList_whenFindAllUsers_thenReturnUsersList() throws PersistenceLayerException {
 
         userDao.save(user);
         userDao.save(user2);
@@ -79,8 +82,15 @@ class UserDAOTest {
     }
 
     @Test
+    @DisplayName("findAllUsers operation : incorrect case")
+    void givenUsersList_whenFindAllUsers_thenThrowsEntityNotFoundException() {
+
+        assertThrows(EntityNotFoundException.class, () -> userDao.findAllUsers());
+    }
+
+    @Test
     @DisplayName("updateUser operation")
-    void givenUser_whenUpdateUser_theReturnUpdatedUser() throws PersistenceLayerException {
+    void givenUser_whenUpdateUser_thenReturnUpdatedUser() throws PersistenceLayerException {
 
         userDao.save(user);
         User updatedUser = new User();
@@ -104,6 +114,20 @@ class UserDAOTest {
         userDao.deleteUserByDni(user.getDni());
 
         assertThrows(PersistenceLayerException.class, () -> userDao.findUserByDni(user.getDni()));
+    }
+
+    @Test
+    @DisplayName("deleteUserByDni operation :incorrect case")
+    void givenUser_whenDeleteUserByDni_thenThrowsEntityNotFoundException() {
+
+        assertThrows(EntityNotFoundException.class, () -> userDao.deleteUserByDni("123A"));
+    }
+
+    @Test
+    @DisplayName("updateUser operation : incorrect case")
+    void givenUser_whenUpdateUser_thenThrowsEntityNotFoundException() {
+        assertThrows(EntityNotFoundException.class, () -> userDao.updateUser(user));
+
     }
 
 }

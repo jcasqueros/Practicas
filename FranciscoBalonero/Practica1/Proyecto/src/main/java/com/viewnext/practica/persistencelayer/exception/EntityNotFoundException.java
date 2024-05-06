@@ -43,14 +43,9 @@ public class EntityNotFoundException extends PersistenceLayerException {
     }
 
     /**
-     * Constructs a new EntityNotFoundException with the specified detail message and cause.
-     *
-     * @param message
-     *         {@link String} The detail message (which is saved for later retrieval by the getMessage() method)
-     * @param cause
-     *         {@link Exception}   The cause (which is saved for later retrieval by the getCause() method)
+     * Constructs a new EntityNotFoundException with default message.
      */
-    public EntityNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public EntityNotFoundException() {
+        super("That user does not exist");
     }
 }

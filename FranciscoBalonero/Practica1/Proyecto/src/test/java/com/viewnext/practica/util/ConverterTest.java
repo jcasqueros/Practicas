@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ComponentScan(basePackages = "com.viewnext.practica.util")
-public class ConverterTest {
+class ConverterTest {
     private User user;
 
     private UserBO userBO;
