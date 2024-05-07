@@ -1,9 +1,6 @@
 package com.pracs.films.presentation.dto;
 
-import com.pracs.films.persistence.models.Actor;
-import com.pracs.films.persistence.models.Director;
 import com.pracs.films.persistence.models.Film;
-import com.pracs.films.persistence.models.Producer;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -37,11 +34,11 @@ public class FilmDtoIn {
     private int debut;
 
     @NotNull
-    private Director director;
+    private DirectorDtoIn director;
 
     @NotNull
-    private Producer producer;
+    private ProducerDtoIn producer;
 
     @NotNull
-    private List<Actor> actors;
+    private List<ActorDtoIn> actors;
 }

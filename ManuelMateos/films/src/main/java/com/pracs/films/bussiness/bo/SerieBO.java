@@ -1,8 +1,5 @@
 package com.pracs.films.bussiness.bo;
 
-import com.pracs.films.persistence.models.Actor;
-import com.pracs.films.persistence.models.Director;
-import com.pracs.films.persistence.models.Producer;
 import com.pracs.films.persistence.models.Serie;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +25,9 @@ public class SerieBO {
 
     private int debut;
 
-    private Director director;
+    private DirectorBO director;
 
-    private Producer producer;
+    private ProducerBO producer;
 
-    private List<Actor> actors;
+    private List<ActorBO> actors;
 }

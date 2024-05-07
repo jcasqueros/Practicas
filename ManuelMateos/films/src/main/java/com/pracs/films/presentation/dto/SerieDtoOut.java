@@ -1,8 +1,5 @@
 package com.pracs.films.presentation.dto;
 
-import com.pracs.films.persistence.models.Actor;
-import com.pracs.films.persistence.models.Director;
-import com.pracs.films.persistence.models.Producer;
 import com.pracs.films.persistence.models.Serie;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +25,9 @@ public class SerieDtoOut {
 
     private int debut;
 
-    private Director director;
+    private DirectorDtoOut director;
 
-    private Producer producer;
+    private ProducerDtoOut producer;
 
-    private List<Actor> actors;
+    private List<ActorDtoOut> actors;
 }
