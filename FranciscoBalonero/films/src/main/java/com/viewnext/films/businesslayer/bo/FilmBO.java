@@ -1,21 +1,29 @@
 package com.viewnext.films.businesslayer.bo;
 
-import com.viewnext.films.persistencelayer.entity.Actor;
-import com.viewnext.films.persistencelayer.entity.Director;
-import com.viewnext.films.persistencelayer.entity.Producer;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * The Film business object.
+ *
+ * @author Francisco Balonero Olivera
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FilmBO {
     private long id;
 
     private String title;
 
-    private int year;
+    private int releaseYear;
 
-    private Director director;
+    private DirectorBO director;
 
-    private Producer producer;
+    private ProducerBO producer;
 
-    private List<Actor> actors;
+    private List<ActorBO> actors;
 }
