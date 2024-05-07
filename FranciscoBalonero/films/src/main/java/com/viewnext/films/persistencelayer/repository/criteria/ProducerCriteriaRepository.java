@@ -14,19 +14,19 @@ import java.util.Optional;
  * <p>Example usage:</p>
  * <pre>
  * {@code
- * // Create an producer
+ * // Create a producer
  * Producer createdProducer = producerCriteriaRepository.createProducer(new Producer("John Doe", 30));
  *
  * // Get all producers
  * List<Producer> allProducers = producerCriteriaRepository.getAllProducers();
  *
- * // Get an producer by ID
+ * // Get a producer by ID
  * Optional<Producer> producerById = producerCriteriaRepository.getProducerById(1L);
  *
- * // Update an producer
+ * // Update a producer
  * Producer updatedProducer = producerCriteriaRepository.updateProducer(new Producer("Jane Doe", 31));
  *
- * // Delete an producer
+ * // Delete a producer
  * producerCriteriaRepository.deleteProducer(1L);
  * }
  * </pre>
@@ -52,7 +52,7 @@ public interface ProducerCriteriaRepository {
     List<Producer> getAllProducers();
 
     /**
-     * Retrieves an {@link Producer} by ID.
+     * Retrieves a {@link Producer} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Producer} to be retrieved
@@ -70,7 +70,7 @@ public interface ProducerCriteriaRepository {
     Producer updateProducer(Producer producer);
 
     /**
-     * Deletes an {@link Producer} by ID.
+     * Deletes a {@link Producer} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Producer} to be deleted

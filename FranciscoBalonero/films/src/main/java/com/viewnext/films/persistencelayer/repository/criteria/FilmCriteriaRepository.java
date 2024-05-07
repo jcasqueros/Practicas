@@ -13,19 +13,19 @@ import java.util.Optional;
  * <p>Example usage:</p>
  * <pre>
  * {@code
- * // Create an film
+ * // Create a film
  * Film createdFilm = filmCriteriaRepository.createFilm(new Film("John Doe", 30));
  *
  * // Get all films
  * List<Film> allFilms = filmCriteriaRepository.getAllFilms();
  *
- * // Get an film by ID
+ * // Get a film by ID
  * Optional<Film> filmById = filmCriteriaRepository.getFilmById(1L);
  *
- * // Update an film
+ * // Update a film
  * Film updatedFilm = filmCriteriaRepository.updateFilm(new Film("Jane Doe", 31));
  *
- * // Delete an film
+ * // Delete a film
  * filmCriteriaRepository.deleteFilm(1L);
  * }
  * </pre>
@@ -51,7 +51,7 @@ public interface FilmCriteriaRepository {
     List<Film> getAllFilms();
 
     /**
-     * Retrieves an {@link Film} by ID.
+     * Retrieves a {@link Film} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Film} to be retrieved
@@ -69,7 +69,7 @@ public interface FilmCriteriaRepository {
     Film updateFilm(Film film);
 
     /**
-     * Deletes an {@link Film} by ID.
+     * Deletes a {@link Film} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Film} to be deleted

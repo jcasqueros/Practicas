@@ -14,19 +14,19 @@ import java.util.Optional;
  * <p>Example usage:</p>
  * <pre>
  * {@code
- * // Create an director
+ * // Create a director
  * Director createdDirector = directorCriteriaRepository.createDirector(new Director("John Doe", 30));
  *
  * // Get all directors
  * List<Director> allDirectors = directorCriteriaRepository.getAllDirectors();
  *
- * // Get an director by ID
+ * // Get a director by ID
  * Optional<Director> directorById = directorCriteriaRepository.getDirectorById(1L);
  *
- * // Update an director
+ * // Update a director
  * Director updatedDirector = directorCriteriaRepository.updateDirector(new Director("Jane Doe", 31));
  *
- * // Delete an director
+ * // Delete a director
  * directorCriteriaRepository.deleteDirector(1L);
  * }
  * </pre>
@@ -52,7 +52,7 @@ public interface DirectorCriteriaRepository {
     List<Director> getAllDirectors();
 
     /**
-     * Retrieves an {@link Director} by ID.
+     * Retrieves a {@link Director} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Director} to be retrieved
@@ -70,7 +70,7 @@ public interface DirectorCriteriaRepository {
     Director updateDirector(Director director);
 
     /**
-     * Deletes an {@link Director} by ID.
+     * Deletes a {@link Director} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Director} to be deleted

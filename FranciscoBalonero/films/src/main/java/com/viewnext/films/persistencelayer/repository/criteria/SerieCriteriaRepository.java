@@ -14,19 +14,19 @@ import java.util.Optional;
  * <p>Example usage:</p>
  * <pre>
  * {@code
- * // Create an serie
+ * // Create a serie
  * Serie createdSerie = serieCriteriaRepository.createSerie(new Serie("John Doe", 30));
  *
  * // Get all series
  * List<Serie> allSeries = serieCriteriaRepository.getAllSeries();
  *
- * // Get an serie by ID
+ * // Get a serie by ID
  * Optional<Serie> serieById = serieCriteriaRepository.getSerieById(1L);
  *
- * // Update an serie
+ * // Update a serie
  * Serie updatedSerie = serieCriteriaRepository.updateSerie(new Serie("Jane Doe", 31));
  *
- * // Delete an serie
+ * // Delete a serie
  * serieCriteriaRepository.deleteSerie(1L);
  * }
  * </pre>
@@ -52,7 +52,7 @@ public interface SerieCriteriaRepository {
     List<Serie> getAllSeries();
 
     /**
-     * Retrieves an {@link Serie} by ID.
+     * Retrieves a {@link Serie} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Serie} to be retrieved
@@ -70,7 +70,7 @@ public interface SerieCriteriaRepository {
     Serie updateSerie(Serie serie);
 
     /**
-     * Deletes an {@link Serie} by ID.
+     * Deletes a {@link Serie} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Serie} to be deleted
