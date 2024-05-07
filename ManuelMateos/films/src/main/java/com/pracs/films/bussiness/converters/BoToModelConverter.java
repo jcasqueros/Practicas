@@ -3,6 +3,7 @@ package com.pracs.films.bussiness.converters;
 import com.pracs.films.bussiness.bo.*;
 import com.pracs.films.persistence.models.*;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  * @author Manuel Mateos de Torres
  */
 @Data
+@RequiredArgsConstructor
 @Component
 public class BoToModelConverter {
 
