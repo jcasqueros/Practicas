@@ -5,6 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity Person
+ *
+ * @author Manuel Mateos de Torres
+ */
 @Entity
 @Data
 @NoArgsConstructor

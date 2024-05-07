@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Entity Production
+ *
+ * @author Manuel Mateos de Torres
+ */
 @Entity
 @Data
 @NoArgsConstructor

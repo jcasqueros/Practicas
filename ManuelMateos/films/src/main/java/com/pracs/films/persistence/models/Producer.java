@@ -9,6 +9,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity Producer
+ *
+ * @author Manuel Mateos de Torres
+ */
 @Data
 @Builder
 @NoArgsConstructor
