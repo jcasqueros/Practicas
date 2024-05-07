@@ -23,7 +23,7 @@ public class Show {
     String title;
 
     @Column(name = "SHOW_YEAR")
-    short year;
+    int year;
 
     @ManyToOne
     @JoinColumn(name = "SHOW_DIRECTOR_ID")
@@ -34,7 +34,7 @@ public class Show {
     ProductionCompany productionCompany;
 
     @ManyToMany
-    @JoinTable(name = "SHOW_FILM_PARTICIPATION", joinColumns = @JoinColumn(name = "SHOW_ID"),
+    @JoinTable(name = "ACTOR_SHOW_PARTICIPATIONS", joinColumns = @JoinColumn(name = "SHOW_ID"),
             inverseJoinColumns = @JoinColumn(name = "ACTOR_ID"))
     Set<Actor> actors;
 

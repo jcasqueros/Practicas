@@ -25,9 +25,9 @@ public class Director {
     String name;
 
     @Column(name = "DIRECTOR_AGE")
-    short age;
+    int age;
 
-    @Column(name = "DIRECCTOR_NATIONALITY")
+    @Column(name = "DIRECTOR_NATIONALITY")
     String nationality;
 
     @Override

@@ -25,7 +25,7 @@ public class ProductionCompany {
     String name;
 
     @Column(name = "PRODUCTION_COMPANY_YEAR_FOUNDED")
-    short yearFounded;
+    int yearFounded;
 
     @Override
     public boolean equals(Object o) {

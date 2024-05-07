@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class CrudPeliculasApp {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CrudPeliculasApp.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CrudPeliculasApp.class, args);
+    }
 
 }

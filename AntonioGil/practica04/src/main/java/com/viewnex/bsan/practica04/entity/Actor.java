@@ -25,7 +25,7 @@ public class Actor {
     String name;
 
     @Column(name = "ACTOR_AGE")
-    short age;
+    int age;
 
     @Column(name = "ACTOR_NATIONALITY")
     String nationality;
