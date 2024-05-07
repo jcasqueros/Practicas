@@ -8,6 +8,7 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.repositories.criteria.impl.ProducerRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ public class ProducerServiceImpl implements ProducerService {
     private final BoToModelConverter boToModelConverter;
 
     private final ProducerRepository producerRepository;
+
+    private final ProducerRepositoryImpl producerRepositoryCriteria;
 
     private static final String errorProducer = "Producer not found";
 
@@ -106,6 +109,85 @@ public class ProducerServiceImpl implements ProducerService {
             }
 
             producerRepository.deleteById(id);
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public ProducerBO saveCriteria(ProducerBO producerBO) throws ServiceException {
+        try {
+
+            if (!producerRepositoryCriteria.findProducerById(producerBO.getId()).isEmpty()) {
+                throw new DuplicatedIdException("Existing production");
+            }
+
+            return modelToBoConverter.producerModelToBo(
+                    producerRepositoryCriteria.saveProducer(boToModelConverter.producerBoToModel(producerBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public ProducerBO updateCriteria(ProducerBO producerBO) throws ServiceException {
+        try {
+            ProducerBO savedproducerBO = modelToBoConverter.producerModelToBo(
+                    producerRepositoryCriteria.findProducerById(producerBO.getId())
+                            .orElseThrow(() -> new EntityNotFoundException(errorProducer)));
+
+            savedproducerBO.setName(producerBO.getName());
+            savedproducerBO.setDebut(producerBO.getDebut());
+            return modelToBoConverter.producerModelToBo(
+                    producerRepositoryCriteria.saveProducer(boToModelConverter.producerBoToModel(savedproducerBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public ProducerBO findByIdCriteria(long id) throws ServiceException {
+        try {
+            return modelToBoConverter.producerModelToBo(producerRepositoryCriteria.findProducerById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(errorProducer)));
+        } catch (NestedRuntimeException e) {
+            log.error("Error en la capa de servicio");
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<ProducerBO> findAllCriteria() throws ServiceException {
+        List<ProducerBO> producersBO = new ArrayList<>();
+
+        try {
+            producersBO = producerRepositoryCriteria.findAllProducer().stream()
+                    .map(modelToBoConverter::producerModelToBo).toList();
+
+            if (producersBO.isEmpty()) {
+                throw new EmptyException("No films");
+            }
+
+            return producersBO;
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void deleteByIdCriteria(long id) throws ServiceException {
+        try {
+
+            if (producerRepositoryCriteria.findProducerById(id).isEmpty()) {
+                log.error("EntityNotFoundException");
+                throw new EntityNotFoundException(errorProducer);
+            }
+
+            producerRepositoryCriteria.deleteProducerById(id);
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

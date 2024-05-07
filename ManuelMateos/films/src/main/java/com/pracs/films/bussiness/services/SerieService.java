@@ -50,4 +50,42 @@ public interface SerieService {
      * @param id
      */
     void deleteById(long id) throws ServiceException;
+
+    /**
+     * Method for create a serie
+     *
+     * @param serieBO
+     * @return SerieBO
+     */
+    SerieBO saveCriteria(SerieBO serieBO) throws ServiceException;
+
+    /**
+     * Method for update a serie
+     *
+     * @param serieBO
+     * @return SerieBO
+     */
+    SerieBO updateCriteria(SerieBO serieBO) throws ServiceException;
+
+    /**
+     * Method for find a serie by his id
+     *
+     * @param id
+     * @return SerieBO
+     */
+    SerieBO findByIdCriteria(long id) throws ServiceException;
+
+    /**
+     * Method for get all series
+     *
+     * @return List of SerieBO
+     */
+    List<SerieBO> findAllCriteria() throws ServiceException;
+
+    /**
+     * Method for delete a serie by his id
+     *
+     * @param id
+     */
+    void deleteByIdCriteria(long id) throws ServiceException;
 }

@@ -51,4 +51,42 @@ public interface DirectorService {
      * @param id
      */
     void deleteById(long id) throws ServiceException;
+
+    /**
+     * Method for create a director
+     *
+     * @param directorBO
+     * @return DirectorBO
+     */
+    DirectorBO saveCriteria(DirectorBO directorBO) throws ServiceException;
+
+    /**
+     * Method for update a director
+     *
+     * @param directorBO
+     * @return DirectorBO
+     */
+    DirectorBO updateCriteria(DirectorBO directorBO) throws ServiceException;
+
+    /**
+     * Method for find a director by his id
+     *
+     * @param id
+     * @return DirectorBO
+     */
+    DirectorBO findByIdCriteria(long id) throws ServiceException;
+
+    /**
+     * Method for get all directors
+     *
+     * @return List of DirectorBO
+     */
+    List<DirectorBO> findAllCriteria() throws EmptyException, ServiceException;
+
+    /**
+     * Method for delete a director by his id
+     *
+     * @param id
+     */
+    void deleteByIdCriteria(long id) throws ServiceException;
 }

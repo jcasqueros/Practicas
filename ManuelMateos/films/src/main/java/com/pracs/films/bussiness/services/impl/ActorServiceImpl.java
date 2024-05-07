@@ -8,6 +8,7 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.repositories.criteria.impl.ActorRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.ActorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ public class ActorServiceImpl implements ActorService {
     private final BoToModelConverter boToModelConverter;
 
     private final ActorRepository actorRepository;
+
+    private final ActorRepositoryImpl actorRepositoryCriteria;
 
     private static final String errorPerson = "Person not found";
 
@@ -104,6 +107,83 @@ public class ActorServiceImpl implements ActorService {
             }
 
             actorRepository.deleteById(id);
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public ActorBO saveCriteria(ActorBO actorBO) throws ServiceException {
+        try {
+            if (actorRepositoryCriteria.findActorById(actorBO.getId()).isEmpty()) {
+                throw new DuplicatedIdException("Existing person");
+            }
+
+            return modelToBoConverter.actorModelToBo(
+                    actorRepositoryCriteria.saveActor(boToModelConverter.actorBoToModel(actorBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public ActorBO updateCriteria(ActorBO actorBO) throws ServiceException {
+        try {
+            ActorBO savedActorBO = modelToBoConverter.actorModelToBo(
+                    actorRepositoryCriteria.findActorById(actorBO.getId())
+                            .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+            
+            savedActorBO.setName(actorBO.getName());
+            savedActorBO.setAge(actorBO.getAge());
+            savedActorBO.setNationality(actorBO.getNationality());
+            return modelToBoConverter.actorModelToBo(
+                    actorRepositoryCriteria.saveActor(boToModelConverter.actorBoToModel(savedActorBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public ActorBO findByIdCriteria(long id) throws ServiceException {
+        try {
+            return modelToBoConverter.actorModelToBo(actorRepositoryCriteria.findActorById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<ActorBO> findAllCriteria() throws ServiceException {
+        List<ActorBO> actorsBO = new ArrayList<>();
+
+        try {
+            actorsBO = actorRepositoryCriteria.findAllActor().stream().map(modelToBoConverter::actorModelToBo).toList();
+
+            if (actorsBO.isEmpty()) {
+                throw new EmptyException("No actors");
+            }
+
+            return actorsBO;
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void deleteByIdCriteria(long id) throws ServiceException {
+        try {
+
+            if (actorRepositoryCriteria.findActorById(id).isEmpty()) {
+                throw new EntityNotFoundException(errorPerson);
+            }
+
+            actorRepositoryCriteria.deleteActorById(id);
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

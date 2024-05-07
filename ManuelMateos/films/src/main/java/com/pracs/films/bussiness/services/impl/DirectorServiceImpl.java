@@ -8,6 +8,7 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.repositories.criteria.impl.DirectorRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ public class DirectorServiceImpl implements DirectorService {
     private final BoToModelConverter boToModelConverter;
 
     private final DirectorRepository directorRepository;
+
+    private final DirectorRepositoryImpl directorRepositoryCriteria;
 
     private static final String errorPerson = "Person not found";
 
@@ -102,6 +105,86 @@ public class DirectorServiceImpl implements DirectorService {
         try {
 
             if (!directorRepository.existsById(id)) {
+                log.error("EntityNotFoundException");
+                throw new EntityNotFoundException(errorPerson);
+            }
+
+            directorRepository.deleteById(id);
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public DirectorBO saveCriteria(DirectorBO directorBO) throws ServiceException {
+        try {
+
+            if (!directorRepositoryCriteria.findDirectorById(directorBO.getId()).isEmpty()) {
+                throw new DuplicatedIdException("Existing person");
+            }
+
+            return modelToBoConverter.directorModelToBo(
+                    directorRepositoryCriteria.saveDirector(boToModelConverter.directorBoToModel(directorBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public DirectorBO updateCriteria(DirectorBO directorBO) throws ServiceException {
+        try {
+            DirectorBO savedDirectorBO = modelToBoConverter.directorModelToBo(
+                    directorRepositoryCriteria.findDirectorById(directorBO.getId())
+                            .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+
+            savedDirectorBO.setName(directorBO.getName());
+            savedDirectorBO.setAge(directorBO.getAge());
+            savedDirectorBO.setNationality(directorBO.getNationality());
+            return modelToBoConverter.directorModelToBo(
+                    directorRepositoryCriteria.saveDirector(boToModelConverter.directorBoToModel(savedDirectorBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public DirectorBO findByIdCriteria(long id) throws ServiceException {
+        try {
+            return modelToBoConverter.directorModelToBo(directorRepositoryCriteria.findDirectorById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<DirectorBO> findAllCriteria() throws ServiceException {
+        List<DirectorBO> directorsBO = new ArrayList<>();
+
+        try {
+            directorsBO = directorRepositoryCriteria.findAllDirector().stream()
+                    .map(modelToBoConverter::directorModelToBo).toList();
+
+            if (directorsBO.isEmpty()) {
+                throw new EmptyException("No directors");
+            }
+
+            return directorsBO;
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void deleteByIdCriteria(long id) throws ServiceException {
+        try {
+
+            if (directorRepositoryCriteria.findDirectorById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorPerson);
             }

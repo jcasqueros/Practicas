@@ -8,6 +8,7 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.repositories.criteria.impl.SerieRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.SerieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ public class SerieServiceImpl implements SerieService {
     private final BoToModelConverter boToModelConverter;
 
     private final SerieRepository serieRepository;
+
+    private final SerieRepositoryImpl serieRepositoryCriteria;
 
     private static final String errorProduction = "Production not found";
 
@@ -107,6 +110,87 @@ public class SerieServiceImpl implements SerieService {
             }
 
             serieRepository.deleteById(id);
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public SerieBO saveCriteria(SerieBO serieBO) throws ServiceException {
+        try {
+
+            if (!serieRepositoryCriteria.findSerieById(serieBO.getId()).isEmpty()) {
+                throw new DuplicatedIdException("Existing production");
+            }
+
+            return modelToBoConverter.serieModelToBo(
+                    serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public SerieBO updateCriteria(SerieBO serieBO) throws ServiceException {
+        try {
+            SerieBO savedSerieBO = modelToBoConverter.serieModelToBo(
+                    serieRepositoryCriteria.findSerieById(serieBO.getId())
+                            .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+
+            savedSerieBO.setTitle(serieBO.getTitle());
+            savedSerieBO.setDebut(serieBO.getDebut());
+            savedSerieBO.setDirector(serieBO.getDirector());
+            savedSerieBO.setProducer(serieBO.getProducer());
+            savedSerieBO.setActors(serieBO.getActors());
+            return modelToBoConverter.serieModelToBo(
+                    serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(savedSerieBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public SerieBO findByIdCriteria(long id) throws ServiceException {
+        try {
+            return modelToBoConverter.serieModelToBo(serieRepositoryCriteria.findSerieById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+        } catch (NestedRuntimeException e) {
+            log.error("Error en la capa de servicio");
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<SerieBO> findAllCriteria() throws ServiceException {
+        List<SerieBO> seriesBO = new ArrayList<>();
+
+        try {
+            seriesBO = serieRepositoryCriteria.findAllSerie().stream().map(modelToBoConverter::serieModelToBo).toList();
+
+            if (seriesBO.isEmpty()) {
+                throw new EmptyException("No films");
+            }
+
+            return seriesBO;
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void deleteByIdCriteria(long id) throws ServiceException {
+        try {
+
+            if (serieRepositoryCriteria.findSerieById(id).isEmpty()) {
+                log.error("EntityNotFoundException");
+                throw new EntityNotFoundException(errorProduction);
+            }
+
+            serieRepositoryCriteria.deleteSerieById(id);
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

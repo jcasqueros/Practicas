@@ -50,4 +50,42 @@ public interface FilmService {
      * @param id
      */
     void deleteById(long id) throws ServiceException;
+
+    /**
+     * Method for create a film
+     *
+     * @param filmBO
+     * @return FilmBO
+     */
+    FilmBO saveCriteria(FilmBO filmBO) throws ServiceException;
+
+    /**
+     * Method for update a film
+     *
+     * @param filmBO
+     * @return FilmBO
+     */
+    FilmBO updateCriteria(FilmBO filmBO) throws ServiceException;
+
+    /**
+     * Method for find a film by his id
+     *
+     * @param id
+     * @return FilmBO
+     */
+    FilmBO findByIdCriteria(long id) throws ServiceException;
+
+    /**
+     * Method for get all films
+     *
+     * @return List of FilmBO
+     */
+    List<FilmBO> findAllCriteria() throws ServiceException;
+
+    /**
+     * Method for delete a film by his id
+     *
+     * @param id
+     */
+    void deleteByIdCriteria(long id) throws ServiceException;
 }

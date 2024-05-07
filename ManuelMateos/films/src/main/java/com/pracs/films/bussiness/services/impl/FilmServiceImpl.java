@@ -8,6 +8,7 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.repositories.criteria.impl.FilmRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.FilmRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ public class FilmServiceImpl implements FilmService {
     private final BoToModelConverter boToModelConverter;
 
     private final FilmRepository filmRepository;
+
+    private final FilmRepositoryImpl filmRepositoryCriteria;
 
     private static final String errorProduction = "Production not found";
 
@@ -106,6 +109,86 @@ public class FilmServiceImpl implements FilmService {
             }
 
             filmRepository.deleteById(id);
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public FilmBO saveCriteria(FilmBO filmBO) throws ServiceException {
+        try {
+
+            if (!filmRepositoryCriteria.findFilmById(filmBO.getId()).isEmpty()) {
+                throw new DuplicatedIdException("Existing production");
+            }
+
+            return modelToBoConverter.filmModelToBo(
+                    filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public FilmBO updateCriteria(FilmBO filmBO) throws ServiceException {
+        try {
+            FilmBO savedfilmBO = modelToBoConverter.filmModelToBo(filmRepositoryCriteria.findFilmById(filmBO.getId())
+                    .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+
+            savedfilmBO.setTitle(filmBO.getTitle());
+            savedfilmBO.setDebut(filmBO.getDebut());
+            savedfilmBO.setDirector(filmBO.getDirector());
+            savedfilmBO.setProducer(filmBO.getProducer());
+            savedfilmBO.setActors(filmBO.getActors());
+            return modelToBoConverter.filmModelToBo(
+                    filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(savedfilmBO)));
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public FilmBO findByIdCriteria(long id) throws ServiceException {
+        try {
+            return modelToBoConverter.filmModelToBo(filmRepositoryCriteria.findFilmById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+        } catch (NestedRuntimeException e) {
+            log.error("Error en la capa de servicio");
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<FilmBO> findAllCriteria() throws ServiceException {
+        List<FilmBO> filmsBO = new ArrayList<>();
+
+        try {
+            filmsBO = filmRepositoryCriteria.findAllFilm().stream().map(modelToBoConverter::filmModelToBo).toList();
+
+            if (filmsBO.isEmpty()) {
+                throw new EmptyException("No films");
+            }
+
+            return filmsBO;
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void deleteByIdCriteria(long id) throws ServiceException {
+        try {
+
+            if (filmRepositoryCriteria.findFilmById(id).isEmpty()) {
+                log.error("EntityNotFoundException");
+                throw new EntityNotFoundException(errorProduction);
+            }
+
+            filmRepositoryCriteria.deleteFilmById(id);
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
