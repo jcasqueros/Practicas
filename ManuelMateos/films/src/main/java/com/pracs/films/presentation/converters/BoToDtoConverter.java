@@ -2,7 +2,6 @@ package com.pracs.films.presentation.converters;
 
 import com.pracs.films.bussiness.bo.*;
 import com.pracs.films.presentation.dto.*;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -12,12 +11,11 @@ import org.springframework.stereotype.Component;
  *
  * @author Manuel Mateos de Torres
  */
-@Data
 @RequiredArgsConstructor
 @Component
 public class BoToDtoConverter {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public ActorDtoOut actorBoToDtoOut(ActorBO actorBO) {
         return modelMapper.map(actorBO, ActorDtoOut.class);
