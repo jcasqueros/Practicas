@@ -1,9 +1,9 @@
-package com.example.demo.controller.repository;
+package com.example.demo.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.model.Actor;
+import com.example.demo.model.Pelicula;
 
-public interface PeliculaRepository extends JpaRepository<Actor, Long>{
+public interface PeliculaRepository extends JpaRepository<Pelicula, Long>{
 
 }

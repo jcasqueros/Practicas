@@ -1,9 +1,9 @@
-package com.example.demo.controller.repository;
+package com.example.demo.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.model.Actor;
+import com.example.demo.model.Productora;
 
-public interface ProductoraRepository extends JpaRepository<Actor, Long>{
+public interface ProductoraRepository extends JpaRepository<Productora, Long>{
 
 }

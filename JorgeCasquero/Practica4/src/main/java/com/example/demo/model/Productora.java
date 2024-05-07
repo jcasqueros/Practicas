@@ -14,9 +14,11 @@ import lombok.RequiredArgsConstructor;
 public class Productora {
 
 	@Id
+	@Column(name = "id_productora")
 	private long idProductora;
 	private String nombre;
 
 	@Column(name = "anio_fundacion")
 	private int anioFundacion;
+
 }
