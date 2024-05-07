@@ -111,4 +111,86 @@ public class FilmController {
             throw new PresentationException(e.getLocalizedMessage());
         }
     }
+
+    /**
+     * Method for get all films
+     *
+     * @return ResponseEntity<FilmDtoOut List>
+     * @throws ServiceException
+     */
+    @GetMapping("/findAllCriteria")
+    public ResponseEntity<List<FilmDtoOut>> findAllCriteria() throws ServiceException {
+        try {
+            return new ResponseEntity<>(
+                    filmService.findAllCriteria().stream().map(boToDtoConverter::filmBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for get a film by his id.
+     *
+     * @param id
+     * @return ResponseEntity<FilmDtoOut>
+     */
+    @GetMapping("/getByIdCriteria/{id}")
+    public ResponseEntity<FilmDtoOut> getByIdCriteria(@PathVariable("id") Long id) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.filmBoToDtoOut(filmService.findByIdCriteria(id)),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for create a film
+     *
+     * @param filmDtoIn
+     * @return ResponseEntity<FilmDtoOut>
+     */
+    @PostMapping("/saveCriteria")
+    public ResponseEntity<FilmDtoOut> saveCriteria(@RequestBody FilmDtoIn filmDtoIn) {
+        try {
+            return new ResponseEntity<>(
+                    boToDtoConverter.filmBoToDtoOut(filmService.saveCriteria(dtoToBoConverter.filmDtoToBo(filmDtoIn))),
+                    HttpStatus.CREATED);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for update a film
+     *
+     * @param filmDtoIn
+     * @return ResponseEntity<FilmDtoOut>
+     */
+    @PutMapping("/updateCriteria")
+    public ResponseEntity<FilmDtoOut> updateCriteria(@RequestBody FilmDtoIn filmDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.filmBoToDtoOut(
+                    filmService.updateCriteria(dtoToBoConverter.filmDtoToBo(filmDtoIn))), HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for delete a film by his id
+     *
+     * @param id
+     * @return ResponseEntity<Boolean>
+     */
+    @DeleteMapping("/deleteByIdCriteria")
+    public ResponseEntity<Boolean> deleteByIdCriteria(@RequestParam("id") Long id) {
+        try {
+            filmService.deleteByIdCriteria(id);
+            return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
 }

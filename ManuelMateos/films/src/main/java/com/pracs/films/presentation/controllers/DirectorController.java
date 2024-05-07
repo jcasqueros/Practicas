@@ -111,4 +111,85 @@ public class DirectorController {
             throw new PresentationException(e.getLocalizedMessage());
         }
     }
+
+    /**
+     * Method for get all directors
+     *
+     * @return ResponseEntity<DirectorDtoOut List>
+     * @throws ServiceException
+     */
+    @GetMapping("/findAllCriteria")
+    public ResponseEntity<List<DirectorDtoOut>> findAllCriteria() throws ServiceException {
+        try {
+            return new ResponseEntity<>(
+                    directorService.findAllCriteria().stream().map(boToDtoConverter::directorBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for get a director by his id.
+     *
+     * @param id
+     * @return ResponseEntity<DirectorDtoOut>
+     */
+    @GetMapping("/getByIdCriteria/{id}")
+    public ResponseEntity<DirectorDtoOut> getByIdCriteria(@PathVariable("id") Long id) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.directorBoToDtoOut(directorService.findByIdCriteria(id)),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for create a director
+     *
+     * @param directorDtoIn
+     * @return ResponseEntity<DirectorDtoOut>
+     */
+    @PostMapping("/saveCriteria")
+    public ResponseEntity<DirectorDtoOut> saveCriteria(@RequestBody DirectorDtoIn directorDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.directorBoToDtoOut(
+                    directorService.saveCriteria(dtoToBoConverter.directorDtoToBo(directorDtoIn))), HttpStatus.CREATED);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for update a director
+     *
+     * @param directorDtoIn
+     * @return ResponseEntity<DirectorDtoOut>
+     */
+    @PutMapping("/updateCriteria")
+    public ResponseEntity<DirectorDtoOut> updateCriteria(@RequestBody DirectorDtoIn directorDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.directorBoToDtoOut(
+                    directorService.updateCriteria(dtoToBoConverter.directorDtoToBo(directorDtoIn))), HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for delete a director by his id
+     *
+     * @param id
+     * @return ResponseEntity<Boolean>
+     */
+    @DeleteMapping("/deleteByIdCriteria")
+    public ResponseEntity<Boolean> deleteByIdCriteria(@RequestParam("id") Long id) {
+        try {
+            directorService.deleteByIdCriteria(id);
+            return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
 }

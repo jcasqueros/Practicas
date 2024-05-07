@@ -111,4 +111,85 @@ public class ActorController {
             throw new PresentationException(e.getLocalizedMessage());
         }
     }
+
+    /**
+     * Method for get all actors
+     *
+     * @return ResponseEntity<ActorDtoOut List>
+     * @throws ServiceException
+     */
+    @GetMapping("/findAllCriteria")
+    public ResponseEntity<List<ActorDtoOut>> findAllCriteria() throws ServiceException {
+        try {
+            return new ResponseEntity<>(
+                    actorService.findAllCriteria().stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for get an actor by his id.
+     *
+     * @param id
+     * @return ResponseEntity<ActorDtoOut>
+     */
+    @GetMapping("/getByIdCriteria/{id}")
+    public ResponseEntity<ActorDtoOut> getByIdCriteria(@PathVariable("id") Long id) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(actorService.findByIdCriteria(id)),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for create an actor
+     *
+     * @param actorDtoIn
+     * @return ResponseEntity<ActorDtoOut>
+     */
+    @PostMapping("/saveCriteria")
+    public ResponseEntity<ActorDtoOut> saveCriteria(@RequestBody ActorDtoIn actorDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
+                    actorService.saveCriteria(dtoToBoConverter.actorDtoToBo(actorDtoIn))), HttpStatus.CREATED);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for update an actor
+     *
+     * @param actorDtoIn
+     * @return ResponseEntity<ActorDtoOut>
+     */
+    @PutMapping("/updateCriteria")
+    public ResponseEntity<ActorDtoOut> updateCriteria(@RequestBody ActorDtoIn actorDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
+                    actorService.updateCriteria(dtoToBoConverter.actorDtoToBo(actorDtoIn))), HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for delete an actor by his id
+     *
+     * @param id
+     * @return ResponseEntity<Boolean>
+     */
+    @DeleteMapping("/deleteByIdCriteria")
+    public ResponseEntity<Boolean> deleteByIdCriteria(@RequestParam("id") Long id) {
+        try {
+            actorService.deleteByIdCriteria(id);
+            return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
 }

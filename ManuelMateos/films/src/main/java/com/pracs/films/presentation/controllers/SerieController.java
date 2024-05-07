@@ -111,4 +111,85 @@ public class SerieController {
             throw new PresentationException(e.getLocalizedMessage());
         }
     }
+
+    /**
+     * Method for get all series
+     *
+     * @return ResponseEntity<SerieDtoOut List>
+     * @throws ServiceException
+     */
+    @GetMapping("/findAllCriteria")
+    public ResponseEntity<List<SerieDtoOut>> findAllCriteria() throws ServiceException {
+        try {
+            return new ResponseEntity<>(
+                    serieService.findAllCriteria().stream().map(boToDtoConverter::serieBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for get a serie by his id.
+     *
+     * @param id
+     * @return ResponseEntity<SerieDtoOut>
+     */
+    @GetMapping("/getByIdCriteria/{id}")
+    public ResponseEntity<SerieDtoOut> getByIdCriteria(@PathVariable("id") Long id) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(serieService.findByIdCriteria(id)),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for create a serie
+     *
+     * @param serieDtoIn
+     * @return ResponseEntity<SerieDtoOut>
+     */
+    @PostMapping("/saveCriteria")
+    public ResponseEntity<SerieDtoOut> saveCriteria(@RequestBody SerieDtoIn serieDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
+                    serieService.saveCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.CREATED);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for update a serie
+     *
+     * @param serieDtoIn
+     * @return ResponseEntity<SerieDtoOut>
+     */
+    @PutMapping("/updateCriteria")
+    public ResponseEntity<SerieDtoOut> updateCriteria(@RequestBody SerieDtoIn serieDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
+                    serieService.updateCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for delete a serie by his id
+     *
+     * @param id
+     * @return ResponseEntity<Boolean>
+     */
+    @DeleteMapping("/deleteByIdCriteria")
+    public ResponseEntity<Boolean> deleteByIdCriteria(@RequestParam("id") Long id) {
+        try {
+            serieService.deleteByIdCriteria(id);
+            return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
 }

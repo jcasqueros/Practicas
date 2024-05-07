@@ -111,4 +111,85 @@ public class ProducerController {
             throw new PresentationException(e.getLocalizedMessage());
         }
     }
+
+    /**
+     * Method for get all producers
+     *
+     * @return ResponseEntity<ProducerDtoOut List>
+     * @throws ServiceException
+     */
+    @GetMapping("/findAllCriteria")
+    public ResponseEntity<List<ProducerDtoOut>> findAllCriteria() throws ServiceException {
+        try {
+            return new ResponseEntity<>(
+                    producerService.findAllCriteria().stream().map(boToDtoConverter::producerBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for get a producer by his id.
+     *
+     * @param id
+     * @return ResponseEntity<ProducerDtoOut>
+     */
+    @GetMapping("/getByIdCriteria/{id}")
+    public ResponseEntity<ProducerDtoOut> getByIdCriteria(@PathVariable("id") Long id) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.producerBoToDtoOut(producerService.findByIdCriteria(id)),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for create a producer
+     *
+     * @param producerDtoIn
+     * @return ResponseEntity<ProducerDtoOut>
+     */
+    @PostMapping("/saveCriteria")
+    public ResponseEntity<ProducerDtoOut> saveCriteria(@RequestBody ProducerDtoIn producerDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.producerBoToDtoOut(
+                    producerService.saveCriteria(dtoToBoConverter.producerDtoToBo(producerDtoIn))), HttpStatus.CREATED);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for update a producer
+     *
+     * @param producerDtoIn
+     * @return ResponseEntity<ProducerDtoOut>
+     */
+    @PutMapping("/updateCriteria")
+    public ResponseEntity<ProducerDtoOut> updateCriteria(@RequestBody ProducerDtoIn producerDtoIn) {
+        try {
+            return new ResponseEntity<>(boToDtoConverter.producerBoToDtoOut(
+                    producerService.updateCriteria(dtoToBoConverter.producerDtoToBo(producerDtoIn))), HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Method for delete a producer by his id
+     *
+     * @param id
+     * @return ResponseEntity<Boolean>
+     */
+    @DeleteMapping("/deleteByIdCriteria")
+    public ResponseEntity<Boolean> deleteByIdCriteria(@RequestParam("id") Long id) {
+        try {
+            producerService.deleteByIdCriteria(id);
+            return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
 }
