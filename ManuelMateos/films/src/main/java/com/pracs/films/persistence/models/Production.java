@@ -36,7 +36,7 @@ public abstract class Production {
     @JoinColumn(name = "producer_id", nullable = false)
     private Producer producer;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "production_actors", joinColumns = { @JoinColumn(name = "production_id") }, inverseJoinColumns = {
             @JoinColumn(name = "actor_id") })
     private List<Actor> actors;
