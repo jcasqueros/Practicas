@@ -2,6 +2,7 @@ package com.pracs.films.persistence.repositories.criteria.impl;
 
 import com.pracs.films.persistence.models.Actor;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -9,22 +10,25 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class ActorRepositoryImpl {
 
-    EntityManager em;
+    @PersistenceContext
+    EntityManager entityManager;
 
-    Actor findById(long id) {
+    Optional<Actor> findById(long id) {
 
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Actor> cq = cb.createQuery(Actor.class);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
 
-        Root<Actor> actor = cq.from(Actor.class);
-        Predicate actorIdPredicate = cb.equal(actor.get("id"), id);
-        cq.where(actorIdPredicate);
+        Root<Actor> actor = criteriaQuery.from(Actor.class);
+        Predicate actorIdPredicate = criteriaBuilder.equal(actor.get("id"), id);
+        criteriaQuery.where(actorIdPredicate);
 
-        TypedQuery<Actor> query = em.createQuery(cq);
+        TypedQuery<Actor> query = entityManager.createQuery(criteriaQuery);
 
-        return query.getSingleResult();
+        return query.getResultStream().findFirst();
     }
 }
