@@ -7,6 +7,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Entity class that represents the "PRODUCTION" table. It is an abstract class that is used for classes to inherit
+ * {@link Serie} and {@link Film}.
+ *
+ * @author Franciosco Balonero Olivera
+ * @see Serie
+ * @see Film
+ */
 @Entity
 @Data
 @AllArgsConstructor
@@ -20,7 +28,7 @@ public abstract class Production {
 
     private String title;
 
-    private int year;
+    private int releaseYear;
 
     @ManyToOne
     private Director director;

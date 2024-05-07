@@ -8,6 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing the "PRODUCER" table in the database. This class defines the structure and properties of
+ * Producer entities.
+ *
+ * @author Franciosco Balonero Olivera
+ */
 @Entity
 @Data
 @AllArgsConstructor

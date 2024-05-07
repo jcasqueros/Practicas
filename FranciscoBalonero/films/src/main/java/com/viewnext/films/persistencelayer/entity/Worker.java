@@ -5,6 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class that represents the "WORKER" table. It is an abstract class that is used for classes to inherit
+ * {@link Actor} and {@link Director}.
+ *
+ * @author Franciosco Balonero Olivera
+ * @see Actor
+ * @see Director
+ */
 @Entity
 @Data
 @AllArgsConstructor
