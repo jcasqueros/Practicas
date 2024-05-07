@@ -1,9 +1,9 @@
-package com.pracs.films.bussiness.service.impl;
+package com.pracs.films.bussiness.services.impl;
 
 import com.pracs.films.bussiness.bo.FilmBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
-import com.pracs.films.bussiness.service.FilmService;
+import com.pracs.films.bussiness.services.FilmService;
 import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;

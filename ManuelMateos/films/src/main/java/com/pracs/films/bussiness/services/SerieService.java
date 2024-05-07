@@ -1,4 +1,4 @@
-package com.pracs.films.bussiness.service;
+package com.pracs.films.bussiness.services;
 
 import com.pracs.films.bussiness.bo.SerieBO;
 import com.pracs.films.exceptions.ServiceException;
