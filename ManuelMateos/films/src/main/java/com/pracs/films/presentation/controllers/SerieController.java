@@ -8,9 +8,12 @@ import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.SerieDtoIn;
 import com.pracs.films.presentation.dto.SerieDtoOut;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.List;
  * @author Manuel Mateos de Torres
  */
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/series")
 public class SerieController {
@@ -38,7 +42,16 @@ public class SerieController {
      * @throws ServiceException
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<SerieDtoOut>> findAll() throws ServiceException {
+    public ResponseEntity<List<SerieDtoOut>> findAll(@RequestParam boolean method) throws ServiceException {
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        serieService.findAllCriteria().stream().map(boToDtoConverter::serieBoToDtoOut).toList(),
+                        HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(serieService.findAll().stream().map(boToDtoConverter::serieBoToDtoOut).toList(),
                     HttpStatus.OK);
@@ -53,8 +66,16 @@ public class SerieController {
      * @param id
      * @return ResponseEntity<SerieDtoOut>
      */
-    @GetMapping("/getById/{id}")
-    public ResponseEntity<SerieDtoOut> getById(@PathVariable("id") Long id) {
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<SerieDtoOut> getById(@RequestParam boolean method, @PathVariable("id") Long id) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(serieService.findByIdCriteria(id)),
+                        HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(serieService.findById(id)), HttpStatus.OK);
         } catch (ServiceException e) {
@@ -68,8 +89,17 @@ public class SerieController {
      * @param serieDtoIn
      * @return ResponseEntity<SerieDtoOut>
      */
+    @Transactional
     @PostMapping("/save")
-    public ResponseEntity<SerieDtoOut> save(@RequestBody SerieDtoIn serieDtoIn) {
+    public ResponseEntity<SerieDtoOut> save(@RequestParam boolean method, @Valid @RequestBody SerieDtoIn serieDtoIn) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
+                        serieService.saveCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.CREATED);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(
                     boToDtoConverter.serieBoToDtoOut(serieService.save(dtoToBoConverter.serieDtoToBo(serieDtoIn))),
@@ -85,8 +115,17 @@ public class SerieController {
      * @param serieDtoIn
      * @return ResponseEntity<SerieDtoOut>
      */
+    @Transactional
     @PutMapping("/update")
-    public ResponseEntity<SerieDtoOut> update(@RequestBody SerieDtoIn serieDtoIn) {
+    public ResponseEntity<SerieDtoOut> update(@RequestParam boolean method, @Valid @RequestBody SerieDtoIn serieDtoIn) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
+                        serieService.updateCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(
                     boToDtoConverter.serieBoToDtoOut(serieService.update(dtoToBoConverter.serieDtoToBo(serieDtoIn))),
@@ -102,91 +141,19 @@ public class SerieController {
      * @param id
      * @return ResponseEntity<Boolean>
      */
+    @Transactional
     @DeleteMapping("/deleteById")
-    public ResponseEntity<Boolean> deleteById(@RequestParam("id") Long id) {
+    public ResponseEntity<Boolean> deleteById(@RequestParam boolean method, @RequestParam("id") Long id) {
+        if (method) {
+            try {
+                serieService.deleteByIdCriteria(id);
+                return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             serieService.deleteById(id);
-            return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for get all series
-     *
-     * @return ResponseEntity<SerieDtoOut List>
-     * @throws ServiceException
-     */
-    @GetMapping("/findAllCriteria")
-    public ResponseEntity<List<SerieDtoOut>> findAllCriteria() throws ServiceException {
-        try {
-            return new ResponseEntity<>(
-                    serieService.findAllCriteria().stream().map(boToDtoConverter::serieBoToDtoOut).toList(),
-                    HttpStatus.OK);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for get a serie by his id.
-     *
-     * @param id
-     * @return ResponseEntity<SerieDtoOut>
-     */
-    @GetMapping("/getByIdCriteria/{id}")
-    public ResponseEntity<SerieDtoOut> getByIdCriteria(@PathVariable("id") Long id) {
-        try {
-            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(serieService.findByIdCriteria(id)),
-                    HttpStatus.OK);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for create a serie
-     *
-     * @param serieDtoIn
-     * @return ResponseEntity<SerieDtoOut>
-     */
-    @PostMapping("/saveCriteria")
-    public ResponseEntity<SerieDtoOut> saveCriteria(@RequestBody SerieDtoIn serieDtoIn) {
-        try {
-            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
-                    serieService.saveCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.CREATED);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for update a serie
-     *
-     * @param serieDtoIn
-     * @return ResponseEntity<SerieDtoOut>
-     */
-    @PutMapping("/updateCriteria")
-    public ResponseEntity<SerieDtoOut> updateCriteria(@RequestBody SerieDtoIn serieDtoIn) {
-        try {
-            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
-                    serieService.updateCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.OK);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for delete a serie by his id
-     *
-     * @param id
-     * @return ResponseEntity<Boolean>
-     */
-    @DeleteMapping("/deleteByIdCriteria")
-    public ResponseEntity<Boolean> deleteByIdCriteria(@RequestParam("id") Long id) {
-        try {
-            serieService.deleteByIdCriteria(id);
             return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());

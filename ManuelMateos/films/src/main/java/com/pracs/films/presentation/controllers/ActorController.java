@@ -9,9 +9,11 @@ import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ActorDtoIn;
 import com.pracs.films.presentation.dto.ActorDtoOut;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
  * @author Manuel Mateos de Torres
  */
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/actors")
 public class ActorController {
@@ -39,7 +42,16 @@ public class ActorController {
      * @throws ServiceException
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<ActorDtoOut>> findAll() throws ServiceException {
+    public ResponseEntity<List<ActorDtoOut>> findAll(@RequestParam boolean method) throws ServiceException {
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        actorService.findAllCriteria().stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                        HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(actorService.findAll().stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
                     HttpStatus.OK);
@@ -54,8 +66,16 @@ public class ActorController {
      * @param id
      * @return ResponseEntity<ActorDtoOut>
      */
-    @GetMapping("/getById/{id}")
-    public ResponseEntity<ActorDtoOut> getById(@PathVariable("id") Long id) {
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<ActorDtoOut> getById(@RequestParam boolean method, @PathVariable("id") Long id) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(actorService.findByIdCriteria(id)),
+                        HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(actorService.findById(id)), HttpStatus.OK);
         } catch (ServiceException e) {
@@ -69,8 +89,17 @@ public class ActorController {
      * @param actorDtoIn
      * @return ResponseEntity<ActorDtoOut>
      */
+    @Transactional
     @PostMapping("/save")
-    public ResponseEntity<ActorDtoOut> save(@RequestBody ActorDtoIn actorDtoIn) {
+    public ResponseEntity<ActorDtoOut> save(@RequestParam boolean method, @Valid @RequestBody ActorDtoIn actorDtoIn) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
+                        actorService.saveCriteria(dtoToBoConverter.actorDtoToBo(actorDtoIn))), HttpStatus.CREATED);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(
                     boToDtoConverter.actorBoToDtoOut(actorService.save(dtoToBoConverter.actorDtoToBo(actorDtoIn))),
@@ -86,8 +115,17 @@ public class ActorController {
      * @param actorDtoIn
      * @return ResponseEntity<ActorDtoOut>
      */
+    @Transactional
     @PutMapping("/update")
-    public ResponseEntity<ActorDtoOut> update(@RequestBody ActorDtoIn actorDtoIn) {
+    public ResponseEntity<ActorDtoOut> update(@RequestParam boolean method, @Valid @RequestBody ActorDtoIn actorDtoIn) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
+                        actorService.updateCriteria(dtoToBoConverter.actorDtoToBo(actorDtoIn))), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(
                     boToDtoConverter.actorBoToDtoOut(actorService.update(dtoToBoConverter.actorDtoToBo(actorDtoIn))),
@@ -103,94 +141,19 @@ public class ActorController {
      * @param id
      * @return ResponseEntity<Boolean>
      */
+    @Transactional
     @DeleteMapping("/deleteById")
-    public ResponseEntity<Boolean> deleteById(@RequestParam("id") Long id) {
+    public ResponseEntity<Boolean> deleteById(@RequestParam boolean method, @RequestParam("id") long id) {
+        if (method) {
+            try {
+                actorService.deleteByIdCriteria(id);
+                return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
         try {
             actorService.deleteById(id);
-            return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for get all actors
-     *
-     * @return ResponseEntity<ActorDtoOut List>
-     * @throws ServiceException
-     */
-    @GetMapping("/findAllCriteria")
-    public ResponseEntity<List<ActorDtoOut>> findAllCriteria() throws ServiceException {
-        try {
-            return new ResponseEntity<>(
-                    actorService.findAllCriteria().stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
-                    HttpStatus.OK);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for get an actor by his id.
-     *
-     * @param id
-     * @return ResponseEntity<ActorDtoOut>
-     */
-    @GetMapping("/getByIdCriteria/{id}")
-    public ResponseEntity<ActorDtoOut> getByIdCriteria(@PathVariable("id") Long id) {
-        try {
-            return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(actorService.findByIdCriteria(id)),
-                    HttpStatus.OK);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for create an actor
-     *
-     * @param actorDtoIn
-     * @return ResponseEntity<ActorDtoOut>
-     */
-    @Transactional
-    @PostMapping("/saveCriteria")
-    public ResponseEntity<ActorDtoOut> saveCriteria(@RequestBody ActorDtoIn actorDtoIn) {
-        try {
-            return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
-                    actorService.saveCriteria(dtoToBoConverter.actorDtoToBo(actorDtoIn))), HttpStatus.CREATED);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for update an actor
-     *
-     * @param actorDtoIn
-     * @return ResponseEntity<ActorDtoOut>
-     */
-    @Transactional
-    @PutMapping("/updateCriteria")
-    public ResponseEntity<ActorDtoOut> updateCriteria(@RequestBody ActorDtoIn actorDtoIn) {
-        try {
-            return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
-                    actorService.updateCriteria(dtoToBoConverter.actorDtoToBo(actorDtoIn))), HttpStatus.OK);
-        } catch (ServiceException e) {
-            throw new PresentationException(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Method for delete an actor by his id
-     *
-     * @param id
-     * @return ResponseEntity<Boolean>
-     */
-    @Transactional
-    @DeleteMapping("/deleteByIdCriteria")
-    public ResponseEntity<Boolean> deleteByIdCriteria(@RequestParam("id") Long id) {
-        try {
-            actorService.deleteByIdCriteria(id);
             return new ResponseEntity<>(true, HttpStatus.NO_CONTENT);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
