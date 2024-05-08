@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,9 @@ public class Producer {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUCER_SEQ")
     private long id;
 
+    @NotBlank
     private String name;
 
+    @NotNull
     private int foundationYear;
 }

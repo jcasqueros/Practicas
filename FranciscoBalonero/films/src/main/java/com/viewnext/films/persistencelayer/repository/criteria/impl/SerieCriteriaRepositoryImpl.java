@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class SerieCriteriaRepositoryImpl implements SerieCriteriaRepository {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public Serie createSerie(Serie serie) {
         entityManager.persist(serie);
         return serie;
@@ -59,11 +61,13 @@ public class SerieCriteriaRepositoryImpl implements SerieCriteriaRepository {
     }
 
     @Override
+    @Transactional
     public Serie updateSerie(Serie serie) {
         return entityManager.merge(serie);
     }
 
     @Override
+    @Transactional
     public void deleteSerie(Long id) {
         Serie serie = entityManager.find(Serie.class, id);
         if (serie != null) {

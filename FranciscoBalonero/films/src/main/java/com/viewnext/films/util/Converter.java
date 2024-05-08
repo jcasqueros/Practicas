@@ -2,6 +2,7 @@ package com.viewnext.films.util;
 
 import com.viewnext.films.businesslayer.bo.*;
 import com.viewnext.films.persistencelayer.entity.*;
+import com.viewnext.films.presentationlayer.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -128,5 +129,65 @@ public class Converter {
      */
     public SerieBO serieEntityToBO(Serie serie) {
         return modelMapper.map(serie, SerieBO.class);
+    }
+
+    public ActorOutDTO actorBOToOutDTO(ActorBO actorBO) {
+        return modelMapper.map(actorBO, ActorOutDTO.class);
+    }
+
+    public ActorBO actorInDTOToBO(ActorInDTO actorInDTO) {
+        return modelMapper.map(actorInDTO, ActorBO.class);
+    }
+
+    public ActorBO actorUpdateDTOToBO(ActorUpdateDTO actorUpdateDTO) {
+        return modelMapper.map(actorUpdateDTO, ActorBO.class);
+    }
+
+    public DirectorOutDTO directorBOToOutDTO(DirectorBO directorBO) {
+        return modelMapper.map(directorBO, DirectorOutDTO.class);
+    }
+
+    public DirectorBO directorInDTOToBO(DirectorInDTO directorInDTO) {
+        return modelMapper.map(directorInDTO, DirectorBO.class);
+    }
+
+    public DirectorBO directorUpdateDTOToBO(DirectorUpdateDTO directorUpdateDTO) {
+        return modelMapper.map(directorUpdateDTO, DirectorBO.class);
+    }
+
+    public FilmOutDTO filmBOToOutDTO(FilmBO filmBO) {
+        return modelMapper.map(filmBO, FilmOutDTO.class);
+    }
+
+    public FilmBO filmInDTOToBO(FilmInDTO filmInDTO) {
+        return modelMapper.map(filmInDTO, FilmBO.class);
+    }
+
+    public FilmBO filmUpdateDTOToBO(FilmUpdateDTO filmUpdateDTO) {
+        return modelMapper.map(filmUpdateDTO, FilmBO.class);
+    }
+
+    public SerieOutDTO serieBOToOutDTO(SerieBO serieBO) {
+        return modelMapper.map(serieBO, SerieOutDTO.class);
+    }
+
+    public SerieBO serieInDTOToBO(SerieInDTO serieInDTO) {
+        return modelMapper.map(serieInDTO, SerieBO.class);
+    }
+
+    public SerieBO serieUpdateDTOToBO(SerieUpdateDTO serieUpdateDTO) {
+        return modelMapper.map(serieUpdateDTO, SerieBO.class);
+    }
+
+    public ProducerOutDTO producerBOToOutDTO(ProducerBO producerBO) {
+        return modelMapper.map(producerBO, ProducerOutDTO.class);
+    }
+
+    public ProducerBO producerUpdateDTOToBO(ProducerUpdateDTO producerUpdateDTO) {
+        return modelMapper.map(producerUpdateDTO, ProducerBO.class);
+    }
+
+    public ProducerBO producerInDTOToBO(ProducerInDTO producerInDTO) {
+        return modelMapper.map(producerInDTO, ProducerBO.class);
     }
 }

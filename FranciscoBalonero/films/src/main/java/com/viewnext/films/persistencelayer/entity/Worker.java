@@ -1,6 +1,8 @@
 package com.viewnext.films.persistencelayer.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +26,12 @@ public abstract class Worker {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "WORKER_SEQ")
     private Long id;
 
+    @NotBlank
     private String name;
 
+    @NotNull
     private int age;
 
+    @NotBlank
     private String nationality;
 }
