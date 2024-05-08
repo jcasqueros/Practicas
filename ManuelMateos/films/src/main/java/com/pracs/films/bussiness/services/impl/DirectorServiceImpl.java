@@ -143,7 +143,7 @@ public class DirectorServiceImpl implements DirectorService {
             savedDirectorBO.setAge(directorBO.getAge());
             savedDirectorBO.setNationality(directorBO.getNationality());
             return modelToBoConverter.directorModelToBo(
-                    directorRepositoryCriteria.saveDirector(boToModelConverter.directorBoToModel(savedDirectorBO)));
+                    directorRepositoryCriteria.updateDirector(boToModelConverter.directorBoToModel(savedDirectorBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

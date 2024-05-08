@@ -255,7 +255,7 @@ class ProducerServicesImplTest {
         given(modelToBoConverter.producerModelToBo(producer)).willReturn(producerBO);
         given(boToModelConverter.producerBoToModel(producerBO)).willReturn(producer);
         given(producerRepositoryCriteria.findProducerById(1L)).willReturn(Optional.of(producer));
-        given(producerRepositoryCriteria.saveProducer(boToModelConverter.producerBoToModel(producerBO))).willReturn(
+        given(producerRepositoryCriteria.updateProducer(boToModelConverter.producerBoToModel(producerBO))).willReturn(
                 producer);
 
         ProducerBO savedproducerBO = producerBO;
@@ -280,7 +280,7 @@ class ProducerServicesImplTest {
         given(modelToBoConverter.producerModelToBo(producer)).willReturn(producerBO);
         given(boToModelConverter.producerBoToModel(producerBO)).willReturn(producer);
         given(producerRepositoryCriteria.findProducerById(1L)).willReturn(Optional.of(producer));
-        when(producerRepositoryCriteria.saveProducer(boToModelConverter.producerBoToModel(producerBO))).thenThrow(
+        when(producerRepositoryCriteria.updateProducer(boToModelConverter.producerBoToModel(producerBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> producerService.updateCriteria(producerBO));

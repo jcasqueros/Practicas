@@ -141,7 +141,7 @@ public class ProducerServiceImpl implements ProducerService {
             savedproducerBO.setName(producerBO.getName());
             savedproducerBO.setDebut(producerBO.getDebut());
             return modelToBoConverter.producerModelToBo(
-                    producerRepositoryCriteria.saveProducer(boToModelConverter.producerBoToModel(savedproducerBO)));
+                    producerRepositoryCriteria.updateProducer(boToModelConverter.producerBoToModel(savedproducerBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

@@ -257,7 +257,7 @@ class ActorServicesImplTest {
         given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
         given(boToModelConverter.actorBoToModel(actorBO)).willReturn(actor);
         given(actorRepositoryCriteria.findActorById(1L)).willReturn(Optional.of(actor));
-        given(actorRepositoryCriteria.saveActor(boToModelConverter.actorBoToModel(actorBO))).willReturn(actor);
+        given(actorRepositoryCriteria.updateActor(boToModelConverter.actorBoToModel(actorBO))).willReturn(actor);
 
         ActorBO savedActorBO = actorBO;
         savedActorBO.setName("update");
@@ -282,7 +282,7 @@ class ActorServicesImplTest {
         given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
         given(boToModelConverter.actorBoToModel(actorBO)).willReturn(actor);
         given(actorRepositoryCriteria.findActorById(1L)).willReturn(Optional.of(actor));
-        when(actorRepositoryCriteria.saveActor(boToModelConverter.actorBoToModel(actorBO))).thenThrow(
+        when(actorRepositoryCriteria.updateActor(boToModelConverter.actorBoToModel(actorBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> actorService.updateCriteria(actorBO));

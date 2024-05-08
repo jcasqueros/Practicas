@@ -143,7 +143,7 @@ public class FilmServiceImpl implements FilmService {
             savedfilmBO.setProducer(filmBO.getProducer());
             savedfilmBO.setActors(filmBO.getActors());
             return modelToBoConverter.filmModelToBo(
-                    filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(savedfilmBO)));
+                    filmRepositoryCriteria.updateFilm(boToModelConverter.filmBoToModel(savedfilmBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

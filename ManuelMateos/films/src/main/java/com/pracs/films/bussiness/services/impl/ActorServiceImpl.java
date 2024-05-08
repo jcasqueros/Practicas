@@ -137,8 +137,10 @@ public class ActorServiceImpl implements ActorService {
             savedActorBO.setName(actorBO.getName());
             savedActorBO.setAge(actorBO.getAge());
             savedActorBO.setNationality(actorBO.getNationality());
+
+            System.out.println(savedActorBO);
             return modelToBoConverter.actorModelToBo(
-                    actorRepositoryCriteria.saveActor(boToModelConverter.actorBoToModel(savedActorBO)));
+                    actorRepositoryCriteria.updateActor(boToModelConverter.actorBoToModel(savedActorBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
