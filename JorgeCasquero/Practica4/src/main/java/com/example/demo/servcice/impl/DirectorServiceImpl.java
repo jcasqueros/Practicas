@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.repository.cb.DirectorRepositoryCriteria;
 import com.example.demo.repository.jpa.DirectorRepository;
 import com.example.demo.servcice.DirectorService;
 import com.example.demo.servcice.bo.DirectorBo;
@@ -18,6 +19,8 @@ public class DirectorServiceImpl implements DirectorService {
 
 	@Autowired
 	DirectorRepository directorRepository;
+	@Autowired
+	DirectorRepositoryCriteria directorRepositoryCriteria;
 
 	@Autowired
 	BoToModel boToModel;
@@ -58,4 +61,33 @@ public class DirectorServiceImpl implements DirectorService {
 
 	}
 
+	@Override
+	public List<DirectorBo> getAllCriteria() {
+		return directorRepositoryCriteria.getAll().stream().map(director -> modelToBo.directorToDirectorBo(director))
+				.toList();
+	}
+
+	@Override
+	public DirectorBo getByIdCriteria(long id) throws NotFoundException {
+		return modelToBo.directorToDirectorBo(directorRepositoryCriteria.getById(id));
+	}
+
+	@Override
+	public DirectorBo createCriteria(DirectorBo directorBo) throws AlreadyExistsExeption, NotFoundException {
+		if (directorRepositoryCriteria.getById(directorBo.getIdDirector()) != null) {
+
+			throw new AlreadyExistsExeption("El director con el id:" + directorBo.getIdDirector() + " ya existe");
+		}
+		return modelToBo.directorToDirectorBo(directorRepositoryCriteria.create(boToModel.boToDirector(directorBo)));
+	}
+
+	@Override
+	public void deleteByIdCriteria(long id) throws NotFoundException {
+		if (directorRepositoryCriteria.getById(id) != null) {
+			directorRepositoryCriteria.deleteById(id);
+
+		} else {
+			throw new NotFoundException("No se ha encontrado el director que quiere borrar con el id: " + id);
+		}
+	}
 }

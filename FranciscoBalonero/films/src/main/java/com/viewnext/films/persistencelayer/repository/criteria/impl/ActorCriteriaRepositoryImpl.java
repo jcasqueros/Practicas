@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import java.util.Optional;
  */
 @Repository
 public class ActorCriteriaRepositoryImpl implements ActorCriteriaRepository {
-    
+
     /**
      * The entity manager for performing database operations.
      */
@@ -31,6 +32,7 @@ public class ActorCriteriaRepositoryImpl implements ActorCriteriaRepository {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public Actor createActor(Actor actor) {
         entityManager.persist(actor);
         return actor;
@@ -59,11 +61,13 @@ public class ActorCriteriaRepositoryImpl implements ActorCriteriaRepository {
     }
 
     @Override
+    @Transactional
     public Actor updateActor(Actor actor) {
         return entityManager.merge(actor);
     }
 
     @Override
+    @Transactional
     public void deleteActor(Long id) {
         Actor actor = entityManager.find(Actor.class, id);
         if (actor != null) {

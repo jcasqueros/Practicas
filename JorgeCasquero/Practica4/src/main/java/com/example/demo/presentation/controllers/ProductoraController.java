@@ -1,15 +1,16 @@
 package com.example.demo.presentation.controllers;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.converters.BoToDTo;
@@ -35,25 +36,58 @@ public class ProductoraController {
 	DtoToBo dtoToBo;
 
 	@GetMapping("/getAll")
-	public List<ProductoraDto> getAll() {
-		return productoraService.getAll().stream().map(productora-> boToDto.boToProductoraDto(productora)).toList();
+	public ResponseEntity<List<ProductoraDto>> getAll(@RequestParam boolean metodo) {
+		List<ProductoraDto> productoras;
+
+		if (metodo) {
+			productoras = productoraService.getAll().stream().map(productora -> boToDto.boToProductoraDto(productora))
+					.toList();
+		} else {
+			productoras = productoraService.getAllCriteria().stream()
+					.map(productora -> boToDto.boToProductoraDto(productora)).toList();
+		}
+		return ResponseEntity.ok(productoras);
+
 	}
 
 	@GetMapping("getById/{id}")
-	public ProductoraDto getById(@PathVariable long id) throws NotFoundException {
+	public ResponseEntity<ProductoraDto> getById(@PathVariable long id, @RequestParam boolean metodo)
+			throws NotFoundException {
 		log.debug("Solicitud de la consulta a la productora con id: " + id + ".");
-		return boToDto.boToProductoraDto(productoraService.getById(id));
+		ProductoraDto productoraDto;
+		if (metodo) {
+			productoraDto = boToDto.boToProductoraDto(productoraService.getById(id));
+		} else {
+			productoraDto = boToDto.boToProductoraDto(productoraService.getByIdCriteria(id));
+		}
+		return ResponseEntity.ok(productoraDto);
 	}
 
 	@PostMapping("/save")
-	public ProductoraDto save(@RequestBody ProductoraDto productora) throws AlreadyExistsExeption {
-		return boToDto.boToProductoraDto(productoraService.create(dtoToBo.dtoToProductoraBo(productora)));
+	public ResponseEntity<ProductoraDto> save(@RequestBody ProductoraDto productora, @RequestParam boolean metodo)
+			throws AlreadyExistsExeption, NotFoundException {
+		ProductoraDto savedProductora;
+		if (metodo) {
+			savedProductora = boToDto
+					.boToProductoraDto(productoraService.create(dtoToBo.dtoToProductoraBo(productora)));
+		} else {
+			savedProductora = boToDto
+					.boToProductoraDto(productoraService.createCriteria(dtoToBo.dtoToProductoraBo(productora)));
+		}
+		return ResponseEntity.ok(savedProductora);
 	}
 
-	
 	@DeleteMapping("delete/{id}")
-	public void deleteByid(@PathVariable long id) throws NotFoundException {
-		productoraService.deleteById(id);
+	public ResponseEntity<Object> deleteByid(@PathVariable long id, @RequestParam boolean metodo)
+			throws NotFoundException {
+		if (metodo) {
+			productoraService.deleteById(id);
+
+		} else {
+			productoraService.deleteByIdCriteria(id);
+		}
+
+		return ResponseEntity.noContent().build();
 
 	}
 

@@ -9,10 +9,18 @@ import com.example.demo.servcice.exception.NotFoundException;
 public interface ProductoraService {
 	List<ProductoraBo> getAll();
 
+	List<ProductoraBo> getAllCriteria();
+
 	ProductoraBo getById(long id) throws NotFoundException;
 
-	ProductoraBo create(ProductoraBo productoraBoBo) throws AlreadyExistsExeption;
+	ProductoraBo getByIdCriteria(long id) throws NotFoundException;
+
+	ProductoraBo create(ProductoraBo productoraBo) throws AlreadyExistsExeption;
+
+	ProductoraBo createCriteria(ProductoraBo productoraBo) throws AlreadyExistsExeption, NotFoundException;
 
 	void deleteById(long id) throws NotFoundException;
+
+	void deleteByIdCriteria(long id) throws NotFoundException;
 
 }

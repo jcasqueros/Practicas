@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import java.util.Optional;
  */
 @Repository
 public class DirectorCriteriaRepositoryImpl implements DirectorCriteriaRepository {
-    
+
     /**
      * The entity manager for performing database operations.
      */
@@ -31,6 +32,7 @@ public class DirectorCriteriaRepositoryImpl implements DirectorCriteriaRepositor
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public Director createDirector(Director director) {
         entityManager.persist(director);
         return director;
@@ -59,11 +61,13 @@ public class DirectorCriteriaRepositoryImpl implements DirectorCriteriaRepositor
     }
 
     @Override
+    @Transactional
     public Director updateDirector(Director director) {
         return entityManager.merge(director);
     }
 
     @Override
+    @Transactional
     public void deleteDirector(Long id) {
         Director director = entityManager.find(Director.class, id);
         if (director != null) {
