@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public abstract class Person {
 
     @Id
-    @SequenceGenerator(name = "person_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PERSON_SEQ")
     private long id;
 
     private String name;

@@ -1,9 +1,6 @@
 package com.pracs.films.persistence.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class Producer {
 
     @Id
-    @SequenceGenerator(name = "producer_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUCER_SEQ")
     private long id;
 
     private String name;

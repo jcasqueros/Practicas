@@ -21,22 +21,22 @@ import java.util.List;
 public abstract class Production {
 
     @Id
-    @SequenceGenerator(name = "production_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUCTION_SEQ")
     private long id;
 
     private String title;
 
     private int debut;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "director_id", nullable = false)
     private Director director;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "producer_id", nullable = false)
     private Producer producer;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "production_actors", joinColumns = { @JoinColumn(name = "production_id") }, inverseJoinColumns = {
             @JoinColumn(name = "actor_id") })
     private List<Actor> actors;
