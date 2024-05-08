@@ -188,7 +188,7 @@ public class FilmServiceImpl implements FilmService {
                 throw new EntityNotFoundException(errorProduction);
             }
 
-            filmRepositoryCriteria.deleteFilmById(id);
+            filmRepositoryCriteria.deleteFilmById(filmRepositoryCriteria.findFilmById(id).get());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

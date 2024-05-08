@@ -116,10 +116,9 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO saveCriteria(ActorBO actorBO) throws ServiceException {
         try {
-            if (actorRepositoryCriteria.findActorById(actorBO.getId()).isEmpty()) {
+            if (!actorRepositoryCriteria.findActorById(actorBO.getId()).isEmpty()) {
                 throw new DuplicatedIdException("Existing person");
             }
-
             return modelToBoConverter.actorModelToBo(
                     actorRepositoryCriteria.saveActor(boToModelConverter.actorBoToModel(actorBO)));
         } catch (NestedRuntimeException e) {
@@ -134,7 +133,7 @@ public class ActorServiceImpl implements ActorService {
             ActorBO savedActorBO = modelToBoConverter.actorModelToBo(
                     actorRepositoryCriteria.findActorById(actorBO.getId())
                             .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
-            
+
             savedActorBO.setName(actorBO.getName());
             savedActorBO.setAge(actorBO.getAge());
             savedActorBO.setNationality(actorBO.getNationality());
@@ -178,12 +177,11 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public void deleteByIdCriteria(long id) throws ServiceException {
         try {
-
             if (actorRepositoryCriteria.findActorById(id).isEmpty()) {
+                log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorPerson);
             }
-
-            actorRepositoryCriteria.deleteActorById(id);
+            actorRepositoryCriteria.deleteActorById(actorRepositoryCriteria.findActorById(id).get());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

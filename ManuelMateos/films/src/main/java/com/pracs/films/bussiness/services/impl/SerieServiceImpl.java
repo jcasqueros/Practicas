@@ -184,13 +184,12 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public void deleteByIdCriteria(long id) throws ServiceException {
         try {
-
             if (serieRepositoryCriteria.findSerieById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorProduction);
             }
 
-            serieRepositoryCriteria.deleteSerieById(id);
+            serieRepositoryCriteria.deleteSerieById((serieRepositoryCriteria.findSerieById(id)).get());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
