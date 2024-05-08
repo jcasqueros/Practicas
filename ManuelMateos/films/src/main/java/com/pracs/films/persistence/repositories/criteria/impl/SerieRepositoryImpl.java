@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,16 +27,16 @@ public class SerieRepositoryImpl implements SerieCustomRepository {
     EntityManager entityManager;
 
     @Override
+    @Transactional
     public Serie saveSerie(Serie serie) {
         entityManager.persist(serie);
-        entityManager.flush();
         return serie;
     }
 
     @Override
+    @Transactional
     public Serie updateSerie(Serie serie) {
         entityManager.merge(serie);
-        entityManager.flush();
         return serie;
     }
 
@@ -65,7 +66,9 @@ public class SerieRepositoryImpl implements SerieCustomRepository {
     }
 
     @Override
-    public void deleteSerieById(long id) {
-        entityManager.remove(findSerieById(id));
+    @Transactional
+    public void deleteSerieById(Serie serie) {
+        entityManager.remove(serie);
+        entityManager.flush();
     }
 }

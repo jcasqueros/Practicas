@@ -46,7 +46,7 @@ public interface DirectorCustomRepository {
     /**
      * Method for delete a director by his id
      *
-     * @param id
+     * @param director
      */
-    void deleteDirectorById(long id);
+    void deleteDirectorById(Director director);
 }

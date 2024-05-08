@@ -46,7 +46,7 @@ public interface SerieCustomRepository {
     /**
      * Method for delete a serie by his id
      *
-     * @param id
+     * @param serie
      */
-    void deleteSerieById(long id);
+    void deleteSerieById(Serie serie);
 }

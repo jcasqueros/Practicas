@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,16 +27,16 @@ public class DirectorRepositoryImpl implements DirectorCustomRepository {
     EntityManager entityManager;
 
     @Override
+    @Transactional
     public Director saveDirector(Director director) {
         entityManager.persist(director);
-        entityManager.flush();
         return director;
     }
 
     @Override
+    @Transactional
     public Director updateDirector(Director director) {
         entityManager.merge(director);
-        entityManager.flush();
         return director;
     }
 
@@ -65,7 +66,9 @@ public class DirectorRepositoryImpl implements DirectorCustomRepository {
     }
 
     @Override
-    public void deleteDirectorById(long id) {
-        entityManager.remove(findDirectorById(id));
+    @Transactional
+    public void deleteDirectorById(Director director) {
+        entityManager.remove(director);
+        entityManager.flush();
     }
 }
