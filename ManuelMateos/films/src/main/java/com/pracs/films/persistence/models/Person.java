@@ -1,7 +1,6 @@
 package com.pracs.films.persistence.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "persons")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Person {

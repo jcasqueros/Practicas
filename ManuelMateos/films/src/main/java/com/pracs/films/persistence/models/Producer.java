@@ -1,8 +1,6 @@
 package com.pracs.films.persistence.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +10,7 @@ import lombok.NoArgsConstructor;
  * @author Manuel Mateos de Torres
  */
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "producers")
 @Entity
 public class Producer {
