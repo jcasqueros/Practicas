@@ -24,6 +24,6 @@ public class FilmBo {
 
     ProductionCompanyBo productionCompany;
 
-    Set<Actor> actors;
+    Set<ActorBo> actors;
 
 }

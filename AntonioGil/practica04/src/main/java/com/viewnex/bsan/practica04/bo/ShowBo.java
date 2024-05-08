@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Show {
+public class ShowBo {
 
     @EqualsAndHashCode.Include
     long id;
@@ -24,6 +24,6 @@ public class Show {
 
     ProductionCompanyBo productionCompany;
 
-    Set<Actor> actors;
+    Set<ActorBo> actors;
 
 }
