@@ -1,10 +1,14 @@
 package com.viewnex.bsan.practica04.bo;
 
-import com.viewnex.bsan.practica04.entity.Actor;
 import lombok.*;
 
 import java.util.Set;
 
+/**
+ * The {@code FilmBo} business object class represents the films registered in the system at the service layer level.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @Setter
 @Builder
@@ -24,6 +28,6 @@ public class FilmBo {
 
     ProductionCompanyBo productionCompany;
 
-    Set<Actor> actors;
+    Set<ActorBo> actors;
 
 }

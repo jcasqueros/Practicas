@@ -189,7 +189,7 @@ public class DirectorServiceImpl implements DirectorService {
                 throw new EntityNotFoundException(errorPerson);
             }
 
-            directorRepository.deleteById(id);
+            directorRepositoryCriteria.deleteDirectorById(directorRepositoryCriteria.findDirectorById(id).get());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

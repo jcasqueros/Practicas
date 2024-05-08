@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class ActorRepositoryImpl implements ActorCustomRepository {
     EntityManager entityManager;
 
     @Override
+    @Transactional
     public Actor saveActor(Actor actor) {
         entityManager.persist(actor);
         entityManager.flush();
@@ -33,10 +35,12 @@ public class ActorRepositoryImpl implements ActorCustomRepository {
     }
 
     @Override
+    @Transactional
     public Actor updateActor(Actor actor) {
         entityManager.merge(actor);
         entityManager.flush();
         return actor;
+
     }
 
     @Override
@@ -65,7 +69,9 @@ public class ActorRepositoryImpl implements ActorCustomRepository {
     }
 
     @Override
-    public void deleteActorById(long id) {
-        entityManager.remove(findActorById(id));
+    @Transactional
+    public void deleteActorById(Actor actor) {
+        entityManager.remove(actor);
+        entityManager.flush();
     }
 }

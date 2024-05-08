@@ -46,7 +46,7 @@ public interface ActorCustomRepository {
     /**
      * Method for delete an actor by his id
      *
-     * @param id
+     * @param actor
      */
-    void deleteActorById(long id);
+    void deleteActorById(Actor actor);
 }

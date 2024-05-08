@@ -6,6 +6,11 @@ import lombok.*;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * The {@code Film} entity class represents the films registered in the system at the persistence layer level.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @Setter
 @Builder

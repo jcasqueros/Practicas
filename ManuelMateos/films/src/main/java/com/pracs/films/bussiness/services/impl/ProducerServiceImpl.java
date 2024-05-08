@@ -187,7 +187,7 @@ public class ProducerServiceImpl implements ProducerService {
                 throw new EntityNotFoundException(errorProducer);
             }
 
-            producerRepositoryCriteria.deleteProducerById(id);
+            producerRepositoryCriteria.deleteProducerById(producerRepositoryCriteria.findProducerById(id).get());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

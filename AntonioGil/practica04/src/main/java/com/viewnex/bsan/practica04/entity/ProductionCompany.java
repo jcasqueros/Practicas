@@ -8,6 +8,12 @@ import lombok.*;
 
 import java.util.Objects;
 
+/**
+ * The {@code ProductionCompany} entity class represents the production companies registered in the system at the
+ * persistence layer level.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @Setter
 @Builder

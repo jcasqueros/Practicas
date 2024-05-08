@@ -46,7 +46,7 @@ public interface FilmCustomRepository {
     /**
      * Method for delete a film by his id
      *
-     * @param id
+     * @param film
      */
-    void deleteFilmById(long id);
+    void deleteFilmById(Film film);
 }

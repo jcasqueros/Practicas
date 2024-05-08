@@ -46,7 +46,7 @@ public interface ProducerCustomRepository {
     /**
      * Method for delete a producer by his id
      *
-     * @param id
+     * @param producer
      */
-    void deleteProducerById(long id);
+    void deleteProducerById(Producer producer);
 }

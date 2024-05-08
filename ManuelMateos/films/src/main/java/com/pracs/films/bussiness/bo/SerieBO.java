@@ -2,7 +2,6 @@ package com.pracs.films.bussiness.bo;
 
 import com.pracs.films.persistence.models.Serie;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +13,6 @@ import java.util.List;
  * @author Manuel Mateos de Torres
  */
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SerieBO {

@@ -2,6 +2,11 @@ package com.viewnex.bsan.practica04.bo;
 
 import lombok.*;
 
+/**
+ * The {@code ActorBo} business object class represents the actors registered in the system at the service layer level.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @Setter
 @Builder
