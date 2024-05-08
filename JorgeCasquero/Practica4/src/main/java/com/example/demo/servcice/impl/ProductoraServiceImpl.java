@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.repository.cb.ProductoraRepositoryCriteria;
 import com.example.demo.repository.jpa.ProductoraRepository;
 import com.example.demo.servcice.ProductoraService;
 import com.example.demo.servcice.bo.ProductoraBo;
@@ -18,6 +19,9 @@ public class ProductoraServiceImpl implements ProductoraService {
 
 	@Autowired
 	ProductoraRepository productoraRepository;
+
+	@Autowired
+	ProductoraRepositoryCriteria productoraRepositoryCriteria;
 
 	@Autowired
 	ModelToBo modelToBo;
@@ -57,4 +61,32 @@ public class ProductoraServiceImpl implements ProductoraService {
 
 	}
 
+	@Override
+	public List<ProductoraBo> getAllCriteria() {
+		return productoraRepository.findAll().stream().map(productora -> modelToBo.productoraToProductoraBo(productora))
+				.toList();
+	}
+
+	@Override
+	public ProductoraBo getByIdCriteria(long id) throws NotFoundException {
+		return modelToBo.productoraToProductoraBo(productoraRepositoryCriteria.getById(id));
+	}
+
+	@Override
+	public ProductoraBo createCriteria(ProductoraBo productoraBo) throws AlreadyExistsExeption, NotFoundException {
+		if (productoraRepositoryCriteria.getById(productoraBo.getIdProductora()) != null) {
+			throw new AlreadyExistsExeption("la productora con el id:" + productoraBo.getIdProductora() + " ya existe");
+		}
+
+		return modelToBo.productoraToProductoraBo(productoraRepository.save(boToModel.boToProductora(productoraBo)));
+	}
+
+	@Override
+	public void deleteByIdCriteria(long id) throws NotFoundException {
+		if (productoraRepositoryCriteria.getById(id) != null) {
+			productoraRepository.deleteById(id);
+		} else {
+			throw new NotFoundException("no se ha encontrado la productora que quiere borrar con el id: " + id);
+		}
+	}
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.repository.cb.ActorRepositoryCriteria;
 import com.example.demo.repository.jpa.ActorRepository;
 import com.example.demo.servcice.ActorService;
 import com.example.demo.servcice.bo.ActorBo;
@@ -18,6 +19,9 @@ public class ActorServiceImpl implements ActorService {
 
 	@Autowired
 	ActorRepository actorRepository;
+
+	@Autowired
+	ActorRepositoryCriteria actorRepositoryCriteria;
 
 	@Autowired
 	BoToModel boToModel;
@@ -40,9 +44,9 @@ public class ActorServiceImpl implements ActorService {
 
 	@Override
 	public ActorBo create(ActorBo actorBo) throws AlreadyExistsExeption {
-		if(actorRepository.existsById(actorBo.getIdActor())) {
-			
-			throw new AlreadyExistsExeption("El actor con el id:"+actorBo.getIdActor()+" ya existe");
+		if (actorRepository.existsById(actorBo.getIdActor())) {
+
+			throw new AlreadyExistsExeption("El actor con el id:" + actorBo.getIdActor() + " ya existe");
 		}
 		return modelToBo.actorToActorBo(actorRepository.save(boToModel.boToActor(actorBo)));
 	}
@@ -51,9 +55,39 @@ public class ActorServiceImpl implements ActorService {
 	public void deleteById(long id) throws NotFoundException {
 		if (actorRepository.existsById(id)) {
 			actorRepository.deleteById(id);
-			
-		}else {
-			throw new NotFoundException("no se ha encontrado el actor que quiere borrar con el id: "+id);
+
+		} else {
+			throw new NotFoundException("no se ha encontrado el actor que quiere borrar con el id: " + id);
+		}
+
+	}
+
+	@Override
+	public List<ActorBo> getAllCriteria() {
+		return actorRepositoryCriteria.getAll().stream().map(actor -> modelToBo.actorToActorBo(actor)).toList();
+	}
+
+	@Override
+	public ActorBo getByIdCriteria(long id) throws NotFoundException {
+		return modelToBo.actorToActorBo(actorRepositoryCriteria.getById(id));
+	}
+
+	@Override
+	public ActorBo createCriteria(ActorBo actorBo) throws AlreadyExistsExeption, NotFoundException {
+		if (actorRepositoryCriteria.getById(actorBo.getIdActor()) != null) {
+
+			throw new AlreadyExistsExeption("El actor con el id:" + actorBo.getIdActor() + " ya existe");
+		}
+		return modelToBo.actorToActorBo(actorRepository.save(boToModel.boToActor(actorBo)));
+	}
+
+	@Override
+	public void deleteByIdCriteria(long id) throws NotFoundException {
+		if (actorRepositoryCriteria.getById(id) != null) {
+			actorRepository.deleteById(id);
+
+		} else {
+			throw new NotFoundException("No se ha encontrado el actor que quiere borrar con el id: " + id);
 		}
 
 	}

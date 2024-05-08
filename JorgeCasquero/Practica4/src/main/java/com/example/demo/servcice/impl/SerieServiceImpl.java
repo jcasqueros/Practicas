@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.repository.cb.SerieRepositoryCriteria;
 import com.example.demo.repository.jpa.SerieRepository;
 import com.example.demo.servcice.SerieService;
 import com.example.demo.servcice.bo.SerieBo;
@@ -18,6 +19,9 @@ public class SerieServiceImpl implements SerieService {
 
 	@Autowired
 	SerieRepository serieRepository;
+
+	@Autowired
+	SerieRepositoryCriteria serieRepositoryCriteria;
 
 	@Autowired
 	ModelToBo modelToBo;
@@ -54,5 +58,33 @@ public class SerieServiceImpl implements SerieService {
 			throw new NotFoundException("no se ha encontrado la serie que quiere borrar con el id: " + id);
 		}
 
+	}
+
+	@Override
+	public List<SerieBo> getAllCriteria() {
+		return serieRepositoryCriteria.getAll().stream().map(serie -> modelToBo.serieToSerieBo(serie)).toList();
+	}
+
+	@Override
+	public SerieBo getByIdCriteria(long id) throws NotFoundException {
+		return modelToBo.serieToSerieBo(serieRepositoryCriteria.getById(id));
+	}
+
+	@Override
+	public SerieBo createCriteria(SerieBo serieBo) throws AlreadyExistsExeption, NotFoundException {
+		if (serieRepositoryCriteria.getById(serieBo.getIdSerie()) != null) {
+			throw new AlreadyExistsExeption("la serie con el id:" + serieBo.getIdSerie() + " ya existe");
+		}
+		return modelToBo.serieToSerieBo(serieRepository.save(boToModel.boToSerie(serieBo)));
+	}
+
+	@Override
+	public void deleteByIdCriteria(long id) throws NotFoundException {
+		if (serieRepositoryCriteria.getById(id) != null) {
+			serieRepositoryCriteria.deleteById(id);
+
+		} else {
+			throw new NotFoundException("no se ha encontrado la serie que quiere borrar con el id: " + id);
+		}
 	}
 }
