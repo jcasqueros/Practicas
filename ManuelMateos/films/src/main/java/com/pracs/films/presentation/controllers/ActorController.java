@@ -8,6 +8,7 @@ import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ActorDtoIn;
 import com.pracs.films.presentation.dto.ActorDtoOut;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -151,6 +152,7 @@ public class ActorController {
      * @param actorDtoIn
      * @return ResponseEntity<ActorDtoOut>
      */
+    @Transactional
     @PostMapping("/saveCriteria")
     public ResponseEntity<ActorDtoOut> saveCriteria(@RequestBody ActorDtoIn actorDtoIn) {
         try {
@@ -167,6 +169,7 @@ public class ActorController {
      * @param actorDtoIn
      * @return ResponseEntity<ActorDtoOut>
      */
+    @Transactional
     @PutMapping("/updateCriteria")
     public ResponseEntity<ActorDtoOut> updateCriteria(@RequestBody ActorDtoIn actorDtoIn) {
         try {
@@ -183,6 +186,7 @@ public class ActorController {
      * @param id
      * @return ResponseEntity<Boolean>
      */
+    @Transactional
     @DeleteMapping("/deleteByIdCriteria")
     public ResponseEntity<Boolean> deleteByIdCriteria(@RequestParam("id") Long id) {
         try {
