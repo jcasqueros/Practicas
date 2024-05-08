@@ -8,6 +8,11 @@ import lombok.*;
 
 import java.util.Objects;
 
+/**
+ * The {@code Director} entity class represents the directors registered in the system at the persistence layer level.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @Setter
 @Builder

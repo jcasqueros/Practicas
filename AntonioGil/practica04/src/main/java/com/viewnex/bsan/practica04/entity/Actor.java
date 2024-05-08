@@ -8,6 +8,11 @@ import lombok.*;
 
 import java.util.Objects;
 
+/**
+ * The {@code Actor} entity class represents the actors registered in the system at the persistence layer level.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @Setter
 @Builder

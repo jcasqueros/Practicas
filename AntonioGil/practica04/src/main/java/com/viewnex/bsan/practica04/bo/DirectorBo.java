@@ -2,6 +2,12 @@ package com.viewnex.bsan.practica04.bo;
 
 import lombok.*;
 
+/**
+ * The {@code DirectorBo} business object class represents the directors registered in the system at the service layer
+ * level.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @Setter
 @Builder

@@ -6,6 +6,11 @@ import lombok.*;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * The {@code Show} entity class represents the shows registered in the system at the persistence layer level.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @Setter
 @Builder
