@@ -27,6 +27,6 @@ public class ProducerUpdateDTO {
     private String name;
 
     @Schema(description = "Foundation year of the producer", example = "1998")
-    @NotBlank
+    @NotNull
     private int foundationYear;
 }
