@@ -17,6 +17,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing actors.
+ *
+ * <p>This class defines RESTful endpoints for performing CRUD operations on actors. It handles
+ * requests related to retrieving all actors, retrieving a actor by id, updating actor, deleting actors by id, and save
+ * a actor.</p>
+ *
+ * @author Franciosco Balonero Olivera
+ * @see ActorService
+ * @see Converter
+ */
 @RestController
 @RequestMapping("api/v1/Actor")
 @RequiredArgsConstructor
@@ -34,10 +45,10 @@ public class ActorController {
             throws ServiceException {
 
         if (select) {
-            return new ResponseEntity<>(actorService.jpaGetAll().stream().map(converter::actorBOToOutDTO).toList(),
+            return new ResponseEntity<>(actorService.criteriaGetAll().stream().map(converter::actorBOToOutDTO).toList(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(actorService.criteriaGetAll().stream().map(converter::actorBOToOutDTO).toList(),
+            return new ResponseEntity<>(actorService.jpaGetAll().stream().map(converter::actorBOToOutDTO).toList(),
                     HttpStatus.OK);
         }
 

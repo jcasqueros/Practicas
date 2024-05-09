@@ -17,6 +17,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing directors.
+ *
+ * <p>This class defines RESTful endpoints for performing CRUD operations on directors. It handles
+ * requests related to retrieving all directors, retrieving a director by id, updating director, deleting directors by
+ * id, and save a director.</p>
+ *
+ * @author Franciosco Balonero Olivera
+ * @see DirectorService
+ * @see Converter
+ */
 @RestController
 @RequestMapping("api/v1/Director")
 @RequiredArgsConstructor
@@ -34,11 +45,11 @@ public class DirectorController {
             throws ServiceException {
         if (select) {
             return new ResponseEntity<>(
-                    directorService.jpaGetAll().stream().map(converter::directorBOToOutDTO).toList(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(
                     directorService.criteriaGetAll().stream().map(converter::directorBOToOutDTO).toList(),
                     HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(
+                    directorService.jpaGetAll().stream().map(converter::directorBOToOutDTO).toList(), HttpStatus.OK);
         }
     }
 

@@ -17,6 +17,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing producers.
+ *
+ * <p>This class defines RESTful endpoints for performing CRUD operations on producers. It handles
+ * requests related to retrieving all producers, retrieving a producer by id, updating producer, deleting producers by
+ * id, and save a producer.</p>
+ *
+ * @author Franciosco Balonero Olivera
+ * @see ProducerService
+ * @see Converter
+ */
 @RestController
 @RequestMapping("api/v1/Producer")
 @RequiredArgsConstructor
@@ -34,11 +45,11 @@ public class ProducerController {
             throws ServiceException {
         if (select) {
             return new ResponseEntity<>(
-                    producerService.jpaGetAll().stream().map(converter::producerBOToOutDTO).toList(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(
                     producerService.criteriaGetAll().stream().map(converter::producerBOToOutDTO).toList(),
                     HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(
+                    producerService.jpaGetAll().stream().map(converter::producerBOToOutDTO).toList(), HttpStatus.OK);
         }
     }
 

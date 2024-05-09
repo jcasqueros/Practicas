@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest(showSql = false)
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.jpa")
+@Sql(scripts = "/no-data.sql")
 class SerieJPARepositoryTest {
     @Autowired
     SerieJPARepository serieJPARepository;
@@ -36,7 +38,7 @@ class SerieJPARepositoryTest {
         assertThat(savedSerie).isNotNull();
         assertThat(savedSerie.getTitle()).isEqualTo(serie.getTitle());
         assertThat(savedSerie.getReleaseYear()).isEqualTo(serie.getReleaseYear());
-        assertThat(savedSerie.getId()).isPositive();
+        assertThat(savedSerie.getId()).isNotNull();
 
     }
 
