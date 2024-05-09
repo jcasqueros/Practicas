@@ -63,7 +63,7 @@ public class ProductoraServiceImpl implements ProductoraService {
 
 	@Override
 	public List<ProductoraBo> getAllCriteria() {
-		return productoraRepository.findAll().stream().map(productora -> modelToBo.productoraToProductoraBo(productora))
+		return productoraRepositoryCriteria.getAll().stream().map(productora -> modelToBo.productoraToProductoraBo(productora))
 				.toList();
 	}
 
@@ -78,13 +78,13 @@ public class ProductoraServiceImpl implements ProductoraService {
 			throw new AlreadyExistsExeption("la productora con el id:" + productoraBo.getIdProductora() + " ya existe");
 		}
 
-		return modelToBo.productoraToProductoraBo(productoraRepository.save(boToModel.boToProductora(productoraBo)));
+		return modelToBo.productoraToProductoraBo(productoraRepositoryCriteria.create(boToModel.boToProductora(productoraBo)));
 	}
 
 	@Override
 	public void deleteByIdCriteria(long id) throws NotFoundException {
 		if (productoraRepositoryCriteria.getById(id) != null) {
-			productoraRepository.deleteById(id);
+			productoraRepositoryCriteria.deleteById(id);
 		} else {
 			throw new NotFoundException("no se ha encontrado la productora que quiere borrar con el id: " + id);
 		}

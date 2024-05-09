@@ -86,7 +86,5 @@ public class PeliculaServiceImpl implements PeliculaService {
 		} else {
 			throw new NotFoundException("no se ha encontrado la película que quiere borrar con el id: " + id);
 		}
-
 	}
-
 }

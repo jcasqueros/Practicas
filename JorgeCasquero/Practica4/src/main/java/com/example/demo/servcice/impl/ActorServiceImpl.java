@@ -49,9 +49,7 @@ public class ActorServiceImpl implements ActorService {
 		}
 		Actor actor = boToModel.boToActor(actorBo);
 		actor = actorRepository.save(actor);
-		if (actor == null) {
-			throw new RuntimeException("Error al crear el actor");
-		}
+
 		return modelToBo.actorToActorBo(actor);
 	}
 
@@ -82,7 +80,7 @@ public class ActorServiceImpl implements ActorService {
 
 			throw new AlreadyExistsExeption("El actor con el id:" + actorBo.getIdActor() + " ya existe");
 		}
-		return modelToBo.actorToActorBo(actorRepository.save(boToModel.boToActor(actorBo)));
+		return modelToBo.actorToActorBo(actorRepositoryCriteria.create(boToModel.boToActor(actorBo)));
 	}
 
 	@Override

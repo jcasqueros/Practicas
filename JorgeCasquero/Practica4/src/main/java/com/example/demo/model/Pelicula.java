@@ -38,5 +38,5 @@ public class Pelicula {
 
 	@ManyToMany
 	@JoinTable(name = "actor_pelicula", joinColumns = @JoinColumn(name = "id_pelicula"), inverseJoinColumns = @JoinColumn(name = "id_actor"))
-	private List<Actor> actor;
+	private List<Actor> actores;
 }
