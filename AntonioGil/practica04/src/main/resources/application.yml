@@ -1,21 +1,22 @@
+server:
+  port: 9000
+
 spring:
   application:
-    name: vn-practica04
-  datasource:
-    url: jdbc:h2:file:./data/h2/db/practica04-db
-    username: practica04
-    password: 123
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
-    hibernate:
-      ddl-auto: create
+    name: bsan-practica04
+  profiles:
+    active:
+      - dev
 logging:
   level:
-    root: ERROR
-    org.hibernate.SQL: TRACE
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    root: INFO
+
+practica04:
+  rest-api:
+    paths:
+      base: /api/v1
+      actors: ${practica04.rest-api.paths.base}/actor
+      directors: ${practica04.rest-api.paths.base}/director
+      films: ${practica04.rest-api.paths.base}/film
+      production-companies: ${practica04.rest-api.paths.base}/production_company
+      shows: ${practica04.rest-api.paths.base}/show
