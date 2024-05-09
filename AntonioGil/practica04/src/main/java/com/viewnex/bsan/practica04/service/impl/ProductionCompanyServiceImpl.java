@@ -7,6 +7,7 @@ import com.viewnex.bsan.practica04.exception.service.DuplicateUniqueFieldExcepti
 import com.viewnex.bsan.practica04.exception.service.MissingRequiredFieldException;
 import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.ProductionCompanyRepository;
+import com.viewnex.bsan.practica04.repository.custom.CustomProductionCompanyRepository;
 import com.viewnex.bsan.practica04.service.ProductionCompanyService;
 import com.viewnex.bsan.practica04.util.constants.LogMessages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelProductionCompanyMapper;
@@ -24,11 +25,14 @@ import java.util.Optional;
 public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
     private final ProductionCompanyRepository repository;
+    private final CustomProductionCompanyRepository customRepository;
     private final ServiceLevelProductionCompanyMapper mapper;
 
     public ProductionCompanyServiceImpl(ProductionCompanyRepository repository,
+                                        CustomProductionCompanyRepository customRepository,
                                         ServiceLevelProductionCompanyMapper mapper) {
         this.repository = repository;
+        this.customRepository = customRepository;
         this.mapper = mapper;
     }
 
@@ -39,8 +43,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
     @Override
     public List<ProductionCompanyBo> customGetAll() {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -58,8 +61,15 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
     @Override
     public ProductionCompanyBo customGetById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        Optional<ProductionCompany> foundEntity = customRepository.getById(id);
+
+        if (foundEntity.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+            );
+        }
+
+        return mapper.entityToBo(foundEntity.orElseThrow());
     }
 
     @Override
@@ -110,8 +120,20 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
     @Override
     public ProductionCompanyBo customCreate(ProductionCompanyBo company) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        validateCompany(company);
+
+        if (customRepository.existsById(company.getId())) {
+            throw new DuplicateUniqueFieldException(
+                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME,
+                            company.getId()),
+                    "id"
+            );
+        }
+
+        ProductionCompany entityToSave = mapper.boToEntity(company);
+        ProductionCompany savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
@@ -133,8 +155,19 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
     @Override
     public ProductionCompanyBo customUpdate(long id, ProductionCompanyBo newCompany) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        validateCompany(newCompany);
+        newCompany.setId(id);
+
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+            );
+        }
+
+        ProductionCompany entityToSave = mapper.boToEntity(newCompany);
+        ProductionCompany savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
@@ -150,7 +183,12 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
     @Override
     public void customDeleteById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+            );
+        }
+
+        customRepository.deleteById(id);
     }
 }

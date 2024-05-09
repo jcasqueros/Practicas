@@ -7,9 +7,11 @@ import com.viewnex.bsan.practica04.exception.service.DuplicateUniqueFieldExcepti
 import com.viewnex.bsan.practica04.exception.service.MissingRequiredFieldException;
 import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.ActorRepository;
+import com.viewnex.bsan.practica04.repository.custom.CustomActorRepository;
 import com.viewnex.bsan.practica04.service.ActorService;
 import com.viewnex.bsan.practica04.util.constants.LogMessages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelActorMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,10 +26,13 @@ import java.util.Optional;
 public class ActorServiceImpl implements ActorService {
 
     private final ActorRepository repository;
+    private final CustomActorRepository customRepository;
     private final ServiceLevelActorMapper mapper;
 
-    public ActorServiceImpl(ActorRepository repository, ServiceLevelActorMapper mapper) {
+    public ActorServiceImpl(ActorRepository repository, CustomActorRepository customRepository,
+                            ServiceLevelActorMapper mapper) {
         this.repository = repository;
+        this.customRepository = customRepository;
         this.mapper = mapper;
     }
 
@@ -38,8 +43,7 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public List<ActorBo> customGetAll() {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -57,8 +61,15 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public ActorBo customGetById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        Optional<Actor> foundEntity = customRepository.getById(id);
+
+        if (foundEntity.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
+            );
+        }
+
+        return mapper.entityToBo(foundEntity.orElseThrow());
     }
 
     @Override
@@ -103,6 +114,7 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
+    @Transactional
     public ActorBo create(ActorBo actor) {
         validateActor(actor);
 
@@ -120,12 +132,25 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
+    @Transactional
     public ActorBo customCreate(ActorBo actor) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        validateActor(actor);
+
+        if (customRepository.existsById(actor.getId())) {
+            throw new DuplicateUniqueFieldException(
+                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.ACTOR_ENTITY_NAME, actor.getId()),
+                    "id"
+            );
+        }
+
+        Actor entityToSave = mapper.boToEntity(actor);
+        Actor savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
+    @Transactional
     public ActorBo update(long id, ActorBo newActor) {
         validateActor(newActor);
         newActor.setId(id);
@@ -143,12 +168,25 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
+    @Transactional
     public ActorBo customUpdate(long id, ActorBo newActor) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        validateActor(newActor);
+        newActor.setId(id);
+
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
+            );
+        }
+
+        Actor entityToSave = mapper.boToEntity(newActor);
+        Actor savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException(
@@ -160,9 +198,15 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
+    @Transactional
     public void customDeleteById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
+            );
+        }
+
+        customRepository.deleteById(id);
     }
 
 }

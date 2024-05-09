@@ -7,6 +7,7 @@ import com.viewnex.bsan.practica04.exception.service.DuplicateUniqueFieldExcepti
 import com.viewnex.bsan.practica04.exception.service.MissingRequiredFieldException;
 import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.DirectorRepository;
+import com.viewnex.bsan.practica04.repository.custom.CustomDirectorRepository;
 import com.viewnex.bsan.practica04.service.DirectorService;
 import com.viewnex.bsan.practica04.util.constants.LogMessages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelDirectorMapper;
@@ -24,10 +25,13 @@ import java.util.Optional;
 public class DirectorServiceImpl implements DirectorService {
 
     private final DirectorRepository repository;
+    private final CustomDirectorRepository customRepository;
     private final ServiceLevelDirectorMapper mapper;
 
-    public DirectorServiceImpl(DirectorRepository repository, ServiceLevelDirectorMapper mapper) {
+    public DirectorServiceImpl(DirectorRepository repository, CustomDirectorRepository customRepository,
+                               ServiceLevelDirectorMapper mapper) {
         this.repository = repository;
+        this.customRepository = customRepository;
         this.mapper = mapper;
     }
 
@@ -38,8 +42,7 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public List<DirectorBo> customGetAll() {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -57,8 +60,15 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public DirectorBo customGetById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        Optional<Director> foundEntity = customRepository.getById(id);
+
+        if (foundEntity.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+            );
+        }
+
+        return mapper.entityToBo(foundEntity.orElseThrow());
     }
 
     @Override
@@ -122,8 +132,20 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public DirectorBo customCreate(DirectorBo director) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        validateDirector(director);
+
+        if (customRepository.existsById(director.getId())) {
+            throw new DuplicateUniqueFieldException(
+                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.DIRECTOR_ENTITY_NAME,
+                            director.getId()),
+                    "id"
+            );
+        }
+
+        Director entityToSave = mapper.boToEntity(director);
+        Director savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
@@ -145,8 +167,19 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public DirectorBo customUpdate(long id, DirectorBo newDirector) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        validateDirector(newDirector);
+        newDirector.setId(id);
+
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+            );
+        }
+
+        Director entityToSave = mapper.boToEntity(newDirector);
+        Director savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
@@ -162,8 +195,13 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public void customDeleteById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+            );
+        }
+
+        customRepository.deleteById(id);
     }
 
 }

@@ -7,6 +7,7 @@ import com.viewnex.bsan.practica04.exception.service.DuplicateUniqueFieldExcepti
 import com.viewnex.bsan.practica04.exception.service.MissingRequiredFieldException;
 import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.FilmRepository;
+import com.viewnex.bsan.practica04.repository.custom.CustomFilmRepository;
 import com.viewnex.bsan.practica04.service.FilmService;
 import com.viewnex.bsan.practica04.util.constants.LogMessages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelFilmMapper;
@@ -24,10 +25,13 @@ import java.util.Optional;
 public class FilmServiceImpl implements FilmService {
 
     private final FilmRepository repository;
+    private final CustomFilmRepository customRepository;
     private final ServiceLevelFilmMapper mapper;
 
-    public FilmServiceImpl(FilmRepository repository, ServiceLevelFilmMapper mapper) {
+    public FilmServiceImpl(FilmRepository repository, CustomFilmRepository customRepository,
+                           ServiceLevelFilmMapper mapper) {
         this.repository = repository;
+        this.customRepository = customRepository;
         this.mapper = mapper;
     }
 
@@ -38,8 +42,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<FilmBo> customGetAll() {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -56,9 +59,16 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Optional<FilmBo> customGetById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+    public FilmBo customGetById(long id) {
+        Optional<Film> foundEntity = customRepository.getById(id);
+
+        if (foundEntity.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.FILM_ENTITY_NAME, id)
+            );
+        }
+
+        return mapper.entityToBo(foundEntity.orElseThrow());
     }
 
     @Override
@@ -111,8 +121,19 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public FilmBo customCreate(FilmBo film) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        if (customRepository.existsById(film.getId())) {
+            throw new DuplicateUniqueFieldException(
+                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.FILM_ENTITY_NAME, film.getId()),
+                    "id"
+            );
+        }
+
+        validateFilm(film);
+
+        Film entityToSave = mapper.boToEntity(film);
+        Film savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
@@ -135,8 +156,20 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public FilmBo customUpdate(long id, FilmBo newFilm) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        newFilm.setId(id);
+
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.FILM_ENTITY_NAME, id)
+            );
+        }
+
+        validateFilm(newFilm);
+
+        Film entityToSave = mapper.boToEntity(newFilm);
+        Film savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
@@ -152,7 +185,12 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void customDeleteById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.FILM_ENTITY_NAME, id)
+            );
+        }
+
+        customRepository.deleteById(id);
     }
 }
