@@ -14,5 +14,6 @@ public class LogMessages {
     public static final String REQUIRED_FIELD = "%s is a required field";
     public static final String NULL_NOT_ALLOWED = "%s cannot be null";
     public static final String NEGATIVE_NUMBER_NOT_ALLOWED = "%s must not be a negative number";
+    public static final String PARAMETER_TYPE_MISMATCH = "Incorrect value type for parameter '%s' (expected type: %s)";
 
 }

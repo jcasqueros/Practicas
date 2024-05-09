@@ -1,4 +1,4 @@
-package com.viewnex.bsan.practica04.util.errorhandling;
+package com.viewnex.bsan.practica04.util.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

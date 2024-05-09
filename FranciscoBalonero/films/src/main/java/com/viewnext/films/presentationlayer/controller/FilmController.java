@@ -17,6 +17,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing films.
+ *
+ * <p>This class defines RESTful endpoints for performing CRUD operations on films. It handles
+ * requests related to retrieving all films, retrieving a film by id, updating film, deleting films by id, and save a
+ * film.</p>
+ *
+ * @author Franciosco Balonero Olivera
+ * @see FilmService
+ * @see Converter
+ */
 @RestController
 @RequestMapping("api/v1/Film")
 @RequiredArgsConstructor
@@ -33,11 +44,12 @@ public class FilmController {
             @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select)
             throws ServiceException {
         if (select) {
-            return new ResponseEntity<>(filmService.jpaGetAll().stream().map(converter::filmBOToOutDTO).toList(),
-                    HttpStatus.OK);
-        } else {
             return new ResponseEntity<>(filmService.criteriaGetAll().stream().map(converter::filmBOToOutDTO).toList(),
                     HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(filmService.jpaGetAll().stream().map(converter::filmBOToOutDTO).toList(),
+                    HttpStatus.OK);
+
         }
     }
 

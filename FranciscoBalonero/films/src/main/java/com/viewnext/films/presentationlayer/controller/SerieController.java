@@ -17,6 +17,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing series.
+ *
+ * <p>This class defines RESTful endpoints for performing CRUD operations on series. It handles
+ * requests related to retrieving all series, retrieving a serie by id, updating serie, deleting series by id, and save
+ * a serie.</p>
+ *
+ * @author Franciosco Balonero Olivera
+ * @see SerieService
+ * @see Converter
+ */
 @RestController
 @RequestMapping("api/v1/Serie")
 @RequiredArgsConstructor
@@ -33,10 +44,10 @@ public class SerieController {
             @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select)
             throws ServiceException {
         if (select) {
-            return new ResponseEntity<>(serieService.jpaGetAll().stream().map(converter::serieBOToOutDTO).toList(),
+            return new ResponseEntity<>(serieService.criteriaGetAll().stream().map(converter::serieBOToOutDTO).toList(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(serieService.criteriaGetAll().stream().map(converter::serieBOToOutDTO).toList(),
+            return new ResponseEntity<>(serieService.jpaGetAll().stream().map(converter::serieBOToOutDTO).toList(),
                     HttpStatus.OK);
         }
     }

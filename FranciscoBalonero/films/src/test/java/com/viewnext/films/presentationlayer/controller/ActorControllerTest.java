@@ -146,7 +146,7 @@ class ActorControllerTest {
     @DisplayName("Criteria Get all actors : incorrect case -> ServiceException")
     void givenSelectTrue_whenCriteriaGetAllActors_thenThrowServiceException() throws Exception {
         given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
-        given(actorService.criteriaGetAll()).willThrow(NotFoundException.class);
+        given(actorService.criteriaGetAll()).willThrow(new NotFoundException());
 
         ResultActions response = mockMvc.perform(get("/api/v1/Actor/getAllActors?select=true"));
 
@@ -156,7 +156,7 @@ class ActorControllerTest {
     @Test
     @DisplayName("Criteria Get actor by id : incorrect case -> ServiceException")
     void givenSelectTrue_whenCriteriaGetActorById_thenThrowServiceException() throws Exception {
-        given(actorService.criteriaGetById(1L)).willThrow(NotFoundException.class);
+        given(actorService.criteriaGetById(1L)).willThrow(new NotFoundException());
 
         ResultActions response = mockMvc.perform(get("/api/v1/Actor/getActor?select=true&id=1"));
 
@@ -168,7 +168,7 @@ class ActorControllerTest {
     void givenSelectTrue_whenCriteriaSaveActor_thenThrowServiceException() throws Exception {
         given(converter.actorInDTOToBO(actorInDTO)).willReturn(actorBO);
 
-        given(actorService.criteriaCreate(any(ActorBO.class))).willThrow(ServiceException.class);
+        given(actorService.criteriaCreate(any(ActorBO.class))).willThrow(new ServiceException());
 
         ResultActions response = mockMvc.perform(
                 post("/api/v1/Actor/save?select=true").contentType(MediaType.APPLICATION_JSON)
@@ -180,7 +180,7 @@ class ActorControllerTest {
     @Test
     @DisplayName("Criteria Delete actor : incorrect case -> ServiceException")
     void givenSelectTrue_whenCriteriaDeleteActor_thenThrowServiceException() throws Exception {
-        willThrow(ServiceException.class).given(actorService).criteriaDeleteById(1L);
+        willThrow(new ServiceException()).given(actorService).criteriaDeleteById(1L);
 
         ResultActions response = mockMvc.perform(delete("/api/v1/Actor/delete?select=true&id=1"));
 
@@ -192,7 +192,7 @@ class ActorControllerTest {
     void givenSelectTrue_whenCriteriaUpdateActor_thenThrowServiceException() throws Exception {
         given(actorService.criteriaCreate(any(ActorBO.class))).willReturn(actorBO);
         given(converter.actorUpdateDTOToBO(actorUpdateDTO)).willReturn(actorBO);
-        given(actorService.criteriaUpdate(any(ActorBO.class))).willThrow(NotFoundException.class);
+        given(actorService.criteriaUpdate(any(ActorBO.class))).willThrow(new NotFoundException());
 
         ResultActions response = mockMvc.perform(
                 put("/api/v1/Actor/update?select=true").contentType(MediaType.APPLICATION_JSON)
@@ -274,7 +274,7 @@ class ActorControllerTest {
     @DisplayName("JPA Get all actors : incorrect case -> ServiceException")
     void givenSelectTrue_whenJPAGetAllActors_thenThrowServiceException() throws Exception {
         given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
-        given(actorService.jpaGetAll()).willThrow(NotFoundException.class);
+        given(actorService.jpaGetAll()).willThrow(new NotFoundException());
 
         ResultActions response = mockMvc.perform(get("/api/v1/Actor/getAllActors?select=false"));
 
@@ -284,7 +284,7 @@ class ActorControllerTest {
     @Test
     @DisplayName("JPA Get actor by id : incorrect case -> ServiceException")
     void givenSelectTrue_whenJPAGetActorById_thenThrowServiceException() throws Exception {
-        given(actorService.jpaGetById(1L)).willThrow(NotFoundException.class);
+        given(actorService.jpaGetById(1L)).willThrow(new NotFoundException());
 
         ResultActions response = mockMvc.perform(get("/api/v1/Actor/getActor?select=false&id=1"));
 
@@ -296,7 +296,7 @@ class ActorControllerTest {
     void givenSelectTrue_whenJPASaveActor_thenThrowServiceException() throws Exception {
         given(converter.actorInDTOToBO(actorInDTO)).willReturn(actorBO);
 
-        given(actorService.jpaCreate(any(ActorBO.class))).willThrow(ServiceException.class);
+        given(actorService.jpaCreate(any(ActorBO.class))).willThrow(new ServiceException());
 
         ResultActions response = mockMvc.perform(
                 post("/api/v1/Actor/save?select=false").contentType(MediaType.APPLICATION_JSON)
@@ -308,7 +308,7 @@ class ActorControllerTest {
     @Test
     @DisplayName("JPA Delete actor : incorrect case -> ServiceException")
     void givenSelectTrue_whenJPADeleteActor_thenThrowServiceException() throws Exception {
-        willThrow(ServiceException.class).given(actorService).jpaDeleteById(1L);
+        willThrow(new ServiceException()).given(actorService).jpaDeleteById(1L);
 
         ResultActions response = mockMvc.perform(delete("/api/v1/Actor/delete?select=false&id=1"));
 
@@ -320,7 +320,7 @@ class ActorControllerTest {
     void givenSelectTrue_whenJPAUpdateActor_thenThrowServiceException() throws Exception {
         given(actorService.criteriaCreate(any(ActorBO.class))).willReturn(actorBO);
         given(converter.actorUpdateDTOToBO(actorUpdateDTO)).willReturn(actorBO);
-        given(actorService.jpaUpdate(any(ActorBO.class))).willThrow(NotFoundException.class);
+        given(actorService.jpaUpdate(any(ActorBO.class))).willThrow(new NotFoundException());
 
         ResultActions response = mockMvc.perform(
                 put("/api/v1/Actor/update?select=false").contentType(MediaType.APPLICATION_JSON)

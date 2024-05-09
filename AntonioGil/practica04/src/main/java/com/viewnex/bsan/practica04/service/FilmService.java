@@ -48,7 +48,7 @@ public interface FilmService {
      * @return The film with the given ID
      * @throws ResourceNotFoundException if no film with the given ID is found
      */
-    Optional<FilmBo> customGetById(long id);
+    FilmBo customGetById(long id);
 
     /**
      * Performs a validation check on the given film title. If any of the constraints are not met, an exception is

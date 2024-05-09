@@ -7,6 +7,7 @@ import com.viewnex.bsan.practica04.exception.service.DuplicateUniqueFieldExcepti
 import com.viewnex.bsan.practica04.exception.service.MissingRequiredFieldException;
 import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.ShowRepository;
+import com.viewnex.bsan.practica04.repository.custom.CustomShowRepository;
 import com.viewnex.bsan.practica04.service.ShowService;
 import com.viewnex.bsan.practica04.util.constants.LogMessages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelShowMapper;
@@ -24,10 +25,13 @@ import java.util.Optional;
 public class ShowServiceImpl implements ShowService {
 
     private final ShowRepository repository;
+    private final CustomShowRepository customRepository;
     private final ServiceLevelShowMapper mapper;
 
-    public ShowServiceImpl(ShowRepository repository, ServiceLevelShowMapper mapper) {
+    public ShowServiceImpl(ShowRepository repository, CustomShowRepository customRepository,
+                           ServiceLevelShowMapper mapper) {
         this.repository = repository;
+        this.customRepository = customRepository;
         this.mapper = mapper;
     }
 
@@ -38,8 +42,7 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public List<ShowBo> customGetAll() {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -57,8 +60,15 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public ShowBo customGetById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        Optional<Show> foundEntity = customRepository.getById(id);
+
+        if (foundEntity.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.SHOW_ENTITY_NAME, id)
+            );
+        }
+
+        return mapper.entityToBo(foundEntity.orElseThrow());
     }
 
 
@@ -112,8 +122,19 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public ShowBo customCreate(ShowBo show) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        validateShow(show);
+
+        if (customRepository.existsById(show.getId())) {
+            throw new DuplicateUniqueFieldException(
+                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.SHOW_ENTITY_NAME, show.getId()),
+                    "id"
+            );
+        }
+
+        Show entityToSave = mapper.boToEntity(show);
+        Show savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
@@ -135,8 +156,19 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public ShowBo customUpdate(long id, ShowBo newShow) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        validateShow(newShow);
+        newShow.setId(id);
+
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
+            );
+        }
+
+        Show entityToSave = mapper.boToEntity(newShow);
+        Show savedEntity = customRepository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
     }
 
     @Override
@@ -152,7 +184,12 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public void customDeleteById(long id) {
-        // TODO Implement custom repositories and the corresponding service operations
-        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+        if (!customRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.SHOW_ENTITY_NAME, id)
+            );
+        }
+
+        customRepository.deleteById(id);
     }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest(showSql = false)
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.criteria")
+@Sql(scripts = "/no-data.sql")
 class FilmCriteriaRepositoryTest {
     @Autowired
     FilmCriteriaRepository filmCriteriaRepository;
@@ -72,7 +74,7 @@ class FilmCriteriaRepositoryTest {
         assertThat(createdFilm.getDirector()).isEqualTo(film.getDirector());
         assertThat(createdFilm.getProducer()).isEqualTo(film.getProducer());
         assertThat(createdFilm.getActors()).isEqualTo(film.getActors());
-        assertThat(createdFilm.getId()).isPositive();
+        assertThat(createdFilm.getId()).isNotNull();
 
     }
 

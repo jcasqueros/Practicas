@@ -1,11 +1,13 @@
-package com.viewnex.bsan.practica04.util.errorhandling;
+package com.viewnex.bsan.practica04.util.controller;
 
 import com.viewnex.bsan.practica04.exception.service.*;
+import com.viewnex.bsan.practica04.util.constants.LogMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -37,6 +39,19 @@ public class GlobalRestControllerAdvice {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public RestApiErrorMessage badInputDataException(BadInputDataException ex, WebRequest request) {
         return new RestApiErrorMessage(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), ex.getMessage(),
+                request.getDescription(false));
+    }
+
+    @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public RestApiErrorMessage methodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
+                                                                   WebRequest request) {
+        return new RestApiErrorMessage(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(),
+                String.format(
+                        LogMessages.PARAMETER_TYPE_MISMATCH,
+                        ex.getParameter().getParameterName(),
+                        ex.getParameter().getParameterType()
+                ),
                 request.getDescription(false));
     }
 
