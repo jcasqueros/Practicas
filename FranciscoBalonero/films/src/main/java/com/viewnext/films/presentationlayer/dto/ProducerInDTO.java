@@ -2,6 +2,7 @@ package com.viewnext.films.presentationlayer.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,6 @@ public class ProducerInDTO {
     private String name;
 
     @Schema(description = "Foundation year of the producer", example = "1998")
-    @NotBlank
+    @NotNull
     private int foundationYear;
 }

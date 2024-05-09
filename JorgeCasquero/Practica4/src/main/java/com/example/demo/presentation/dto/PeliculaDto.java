@@ -25,6 +25,6 @@ public class PeliculaDto {
 
 	private Productora productora;
 
-	private List<Actor> actor;
+	private List<Actor> actores;
 
 }

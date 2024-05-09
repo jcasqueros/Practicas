@@ -5,7 +5,6 @@ import com.viewnext.films.businesslayer.exception.ServiceException;
 import com.viewnext.films.util.Body;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -37,11 +36,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Body> handleValidationErrors(MethodArgumentNotValidException ex) {
-        StringBuilder message = new StringBuilder();
-        for (FieldError field : ex.getBindingResult().getFieldErrors()) {
-            message.append(" ").append(field.getDefaultMessage());
-        }
-        Body error = new Body(message.toString());
+        Body error = new Body("Invalid fields");
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
     }
 

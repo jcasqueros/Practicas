@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
@@ -29,6 +30,7 @@ import com.example.demo.servcice.exception.NotFoundException;
 import com.example.demo.servcice.impl.ActorServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class ActorServicesImplTest {
 
 	@InjectMocks
@@ -137,7 +139,8 @@ class ActorServicesImplTest {
 
 	@Test
 	void testCreateThrowAlreadyExists() throws AlreadyExistsExeption {
-		when(actorRepository.save(actor1)).thenReturn(actorRepository.existsById(actor1.getIdActor()));
+
+		when(actorRepository.existsById(actor1.getIdActor())).thenReturn(true);
 		assertThrows(AlreadyExistsExeption.class, () -> actorServiceImpl.create(actorBo1));
 
 	}
@@ -152,6 +155,15 @@ class ActorServicesImplTest {
 
 		// Assert
 		verify(actorRepository, times(1)).deleteById(id);
+	}
+
+	@Test
+	void testDeleteByIdnotFound() throws NotFoundException {
+		Long id = 1L;
+		when(actorRepository.existsById(id)).thenReturn(false);
+
+		// assert
+		assertThrows(NotFoundException.class, () -> actorServiceImpl.deleteById(id));
 	}
 
 	@Test
@@ -185,7 +197,7 @@ class ActorServicesImplTest {
 	@Test
 	void testCreateCriteria() throws AlreadyExistsExeption, NotFoundException {
 		when(boToModel.boToActor(actorBo1)).thenReturn(actor1);
-		when(actorRepository.save(actor1)).thenReturn(actor1);
+		when(actorRepositoryCriteria.create(actor1)).thenReturn(actor1);
 		when(modelToBo.actorToActorBo(actor1)).thenReturn(actorBo1);
 
 		// Act
@@ -193,6 +205,17 @@ class ActorServicesImplTest {
 
 		// Assert
 		assertEquals(actorBo1, result);
+		verify(boToModel).boToActor(actorBo1);
+		verify(actorRepositoryCriteria).create(actor1);
+		verify(modelToBo).actorToActorBo(actor1);
+
+	}
+
+	@Test
+	void testCreateCriteriaAlreadyExistsExeption() throws AlreadyExistsExeption, NotFoundException {
+
+		when(actorRepositoryCriteria.getById(actor1.getIdActor())).thenReturn(actor1);
+		assertThrows(AlreadyExistsExeption.class, () -> actorServiceImpl.createCriteria(actorBo1));
 
 	}
 
@@ -206,5 +229,14 @@ class ActorServicesImplTest {
 
 		// Assert
 		verify(actorRepositoryCriteria, times(1)).deleteById(id);
+	}
+
+	@Test
+	void testDeleteByIdCriteriaThrowNotFoundException() throws NotFoundException {
+		Long id = 1l;
+		when(actorRepositoryCriteria.getById(id)).thenReturn(null);
+
+		// assert
+		assertThrows(NotFoundException.class, () -> actorServiceImpl.deleteByIdCriteria(id));
 	}
 }

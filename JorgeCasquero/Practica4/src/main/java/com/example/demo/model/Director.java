@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,10 +18,6 @@ public class Director {
 	private long idDirector;
 	private String nombre;
 	private int edad;
-	
-//	@OneToMany(mappedBy = "director")
-//    private List<Serie> series;
-//    
-//    @OneToMany(mappedBy = "director")
-//    private List<Pelicula> peliculas;
+	private String nacionalidad;
+
 }

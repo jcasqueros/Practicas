@@ -9,7 +9,6 @@ import com.example.demo.servcice.exception.AlreadyExistsExeption;
 import com.example.demo.servcice.exception.NotFoundException;
 
 
-@Repository
 public interface ActorRepositoryCriteria {
 
 	List<Actor> getAll();

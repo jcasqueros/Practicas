@@ -75,7 +75,7 @@ public class SerieServiceImpl implements SerieService {
 		if (serieRepositoryCriteria.getById(serieBo.getIdSerie()) != null) {
 			throw new AlreadyExistsExeption("la serie con el id:" + serieBo.getIdSerie() + " ya existe");
 		}
-		return modelToBo.serieToSerieBo(serieRepository.save(boToModel.boToSerie(serieBo)));
+		return modelToBo.serieToSerieBo(serieRepositoryCriteria.create(boToModel.boToSerie(serieBo)));
 	}
 
 	@Override
