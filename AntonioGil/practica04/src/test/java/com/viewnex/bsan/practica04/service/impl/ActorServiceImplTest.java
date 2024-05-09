@@ -21,12 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static com.viewnex.bsan.practica04.sampledata.ActorSampleData.SAMPLE_ACTORS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ActorServiceImplTest {
-
-    private static final List<Actor> SAMPLE_ACTORS = ActorSampleData.SAMPLE_ACTORS;
 
     @Mock
     ActorRepository repository;
@@ -44,7 +43,7 @@ class ActorServiceImplTest {
     @Test
     void givenActors_whenGetAll_thenReturnActorList() {
         Mockito.when(repository.findAll()).thenReturn(SAMPLE_ACTORS);
-        Mockito.when(mapper.entityToBo(ActorSampleData.SAMPLE_ACTORS.get(0))).thenReturn(
+        Mockito.when(mapper.entityToBo(SAMPLE_ACTORS.get(0))).thenReturn(
                 ActorBo.builder().id(1L).name("ACTOR1").age(30).nationality("USA").build()
         );
         Mockito.when(mapper.entityToBo(SAMPLE_ACTORS.get(1))).thenReturn(
@@ -78,7 +77,7 @@ class ActorServiceImplTest {
     @Test
     void givenActors_whenCustomGetAll_thenReturnActorList() {
         Mockito.when(customRepository.getAll()).thenReturn(SAMPLE_ACTORS);
-        Mockito.when(mapper.entityToBo(ActorSampleData.SAMPLE_ACTORS.get(0))).thenReturn(
+        Mockito.when(mapper.entityToBo(SAMPLE_ACTORS.get(0))).thenReturn(
                 ActorBo.builder().id(1L).name("ACTOR1").age(30).nationality("USA").build()
         );
         Mockito.when(mapper.entityToBo(SAMPLE_ACTORS.get(1))).thenReturn(

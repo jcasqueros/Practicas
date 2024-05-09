@@ -9,9 +9,12 @@ import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.ActorRepository;
 import com.viewnex.bsan.practica04.repository.custom.CustomActorRepository;
 import com.viewnex.bsan.practica04.service.ActorService;
-import com.viewnex.bsan.practica04.util.constants.LogMessages;
+import com.viewnex.bsan.practica04.util.MessageBuilder;
+import com.viewnex.bsan.practica04.util.constants.Messages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelActorMapper;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,8 @@ import java.util.Optional;
  */
 @Service
 public class ActorServiceImpl implements ActorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActorServiceImpl.class.getCanonicalName());
 
     private final ActorRepository repository;
     private final CustomActorRepository customRepository;
@@ -51,9 +56,9 @@ public class ActorServiceImpl implements ActorService {
         Optional<Actor> foundEntity = repository.findById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.ACTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -64,9 +69,9 @@ public class ActorServiceImpl implements ActorService {
         Optional<Actor> foundEntity = customRepository.getById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.ACTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -75,37 +80,37 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new MissingRequiredFieldException(
-                    String.format(LogMessages.REQUIRED_FIELD, "name"), "name"
-            );
+            String message = MessageBuilder.buildMissingRequiredFieldMessage("name");
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, "name");
         }
     }
 
     @Override
     public void validateAge(int age) {
         if (age < 0) {
-            throw new BadInputDataException(
-                    String.format(LogMessages.NEGATIVE_NUMBER_NOT_ALLOWED, "age")
-            );
+            String message = MessageBuilder.negativeNumberNotAllowedMessage("age");
+            LOGGER.warn(message);
+
+            throw new BadInputDataException(message);
         }
     }
 
     @Override
     public void validateNationality(String nationality) {
         if (nationality == null || nationality.isBlank()) {
-            throw new MissingRequiredFieldException(
-                    String.format(LogMessages.REQUIRED_FIELD, "nationality"), "nationality"
-            );
+            String message = MessageBuilder.buildMissingRequiredFieldMessage("nationality");
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message);
         }
     }
 
     @Override
     public void validateActor(ActorBo actor) {
         if (actor == null) {
-            throw new MissingRequiredFieldException(
-                    String.format(LogMessages.NULL_NOT_ALLOWED, LogMessages.ACTOR_ENTITY_NAME),
-                    LogMessages.ACTOR_ENTITY_NAME
-            );
+            String message = MessageBuilder.buildNullNotAllowedMessage(Messages.ACTOR_ENTITY_NAME);
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, Messages.ACTOR_ENTITY_NAME);
         }
 
         validateName(actor.getName());
@@ -119,10 +124,10 @@ public class ActorServiceImpl implements ActorService {
         validateActor(actor);
 
         if (repository.existsById(actor.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.ACTOR_ENTITY_NAME, actor.getId()),
-                    "id"
-            );
+            String message =
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.ACTOR_ENTITY_NAME, actor.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         Actor entityToSave = mapper.boToEntity(actor);
@@ -137,10 +142,10 @@ public class ActorServiceImpl implements ActorService {
         validateActor(actor);
 
         if (customRepository.existsById(actor.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.ACTOR_ENTITY_NAME, actor.getId()),
-                    "id"
-            );
+            String message =
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.ACTOR_ENTITY_NAME, actor.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         Actor entityToSave = mapper.boToEntity(actor);
@@ -156,9 +161,9 @@ public class ActorServiceImpl implements ActorService {
         newActor.setId(id);
 
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.ACTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         Actor entityToSave = mapper.boToEntity(newActor);
@@ -174,9 +179,9 @@ public class ActorServiceImpl implements ActorService {
         newActor.setId(id);
 
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.ACTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         Actor entityToSave = mapper.boToEntity(newActor);
@@ -189,9 +194,9 @@ public class ActorServiceImpl implements ActorService {
     @Transactional
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.ACTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         repository.deleteById(id);
@@ -201,9 +206,9 @@ public class ActorServiceImpl implements ActorService {
     @Transactional
     public void customDeleteById(long id) {
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.ACTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         customRepository.deleteById(id);

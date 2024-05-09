@@ -9,8 +9,11 @@ import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.ShowRepository;
 import com.viewnex.bsan.practica04.repository.custom.CustomShowRepository;
 import com.viewnex.bsan.practica04.service.ShowService;
-import com.viewnex.bsan.practica04.util.constants.LogMessages;
+import com.viewnex.bsan.practica04.util.MessageBuilder;
+import com.viewnex.bsan.practica04.util.constants.Messages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelShowMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +26,8 @@ import java.util.Optional;
  */
 @Service
 public class ShowServiceImpl implements ShowService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("ShowService");
 
     private final ShowRepository repository;
     private final CustomShowRepository customRepository;
@@ -51,7 +56,8 @@ public class ShowServiceImpl implements ShowService {
 
         if (foundEntity.isEmpty()) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.SHOW_ENTITY_NAME, id)
+
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
             );
         }
 
@@ -64,7 +70,8 @@ public class ShowServiceImpl implements ShowService {
 
         if (foundEntity.isEmpty()) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.SHOW_ENTITY_NAME, id)
+
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
             );
         }
 
@@ -76,7 +83,7 @@ public class ShowServiceImpl implements ShowService {
     public void validateTitle(String title) {
         if (title == null || title.isBlank()) {
             throw new MissingRequiredFieldException(
-                    String.format(LogMessages.REQUIRED_FIELD, "title"), "title"
+                    MessageBuilder.buildMissingRequiredFieldMessage("title"), "title"
             );
         }
     }
@@ -85,7 +92,7 @@ public class ShowServiceImpl implements ShowService {
     public void validateYear(int year) {
         if (year < 0) {
             throw new BadInputDataException(
-                    String.format(LogMessages.NEGATIVE_NUMBER_NOT_ALLOWED, "year")
+                    MessageBuilder.negativeNumberNotAllowedMessage("year")
             );
         }
     }
@@ -94,8 +101,7 @@ public class ShowServiceImpl implements ShowService {
     public void validateShow(ShowBo show) {
         if (show == null) {
             throw new MissingRequiredFieldException(
-                    String.format(LogMessages.NULL_NOT_ALLOWED, LogMessages.SHOW_ENTITY_NAME),
-                    LogMessages.SHOW_ENTITY_NAME
+                    MessageBuilder.buildNullNotAllowedMessage(Messages.SHOW_ENTITY_NAME), Messages.SHOW_ENTITY_NAME
             );
         }
 
@@ -109,8 +115,7 @@ public class ShowServiceImpl implements ShowService {
 
         if (repository.existsById(show.getId())) {
             throw new DuplicateUniqueFieldException(
-                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.SHOW_ENTITY_NAME, show.getId()),
-                    "id"
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.SHOW_ENTITY_NAME, show.getId()), "id"
             );
         }
 
@@ -126,8 +131,7 @@ public class ShowServiceImpl implements ShowService {
 
         if (customRepository.existsById(show.getId())) {
             throw new DuplicateUniqueFieldException(
-                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.SHOW_ENTITY_NAME, show.getId()),
-                    "id"
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.SHOW_ENTITY_NAME, show.getId()), "id"
             );
         }
 
@@ -144,7 +148,8 @@ public class ShowServiceImpl implements ShowService {
 
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
+
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
             );
         }
 
@@ -161,7 +166,8 @@ public class ShowServiceImpl implements ShowService {
 
         if (!customRepository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.ACTOR_ENTITY_NAME, id)
+
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
             );
         }
 
@@ -175,7 +181,8 @@ public class ShowServiceImpl implements ShowService {
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.SHOW_ENTITY_NAME, id)
+
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
             );
         }
 
@@ -186,7 +193,7 @@ public class ShowServiceImpl implements ShowService {
     public void customDeleteById(long id) {
         if (!customRepository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.SHOW_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
             );
         }
 

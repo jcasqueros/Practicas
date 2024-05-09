@@ -1,7 +1,7 @@
 package com.viewnex.bsan.practica04.util.controller;
 
 import com.viewnex.bsan.practica04.exception.service.*;
-import com.viewnex.bsan.practica04.util.constants.LogMessages;
+import com.viewnex.bsan.practica04.util.MessageBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,11 +47,8 @@ public class GlobalRestControllerAdvice {
     public RestApiErrorMessage methodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
                                                                    WebRequest request) {
         return new RestApiErrorMessage(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(),
-                String.format(
-                        LogMessages.PARAMETER_TYPE_MISMATCH,
-                        ex.getParameter().getParameterName(),
-                        ex.getParameter().getParameterType()
-                ),
+                MessageBuilder.parameterTypeMismatchMessage(ex.getParameter().getParameterName(),
+                        ex.getParameter().getParameterType().getSimpleName()),
                 request.getDescription(false));
     }
 

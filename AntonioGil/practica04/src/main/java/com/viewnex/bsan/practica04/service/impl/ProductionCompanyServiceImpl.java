@@ -9,8 +9,11 @@ import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.ProductionCompanyRepository;
 import com.viewnex.bsan.practica04.repository.custom.CustomProductionCompanyRepository;
 import com.viewnex.bsan.practica04.service.ProductionCompanyService;
-import com.viewnex.bsan.practica04.util.constants.LogMessages;
+import com.viewnex.bsan.practica04.util.MessageBuilder;
+import com.viewnex.bsan.practica04.util.constants.Messages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelProductionCompanyMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +26,8 @@ import java.util.Optional;
  */
 @Service
 public class ProductionCompanyServiceImpl implements ProductionCompanyService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("ProductionCompanyService");
 
     private final ProductionCompanyRepository repository;
     private final CustomProductionCompanyRepository customRepository;
@@ -52,7 +57,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
         if (foundEntity.isEmpty()) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
             );
         }
 
@@ -65,7 +70,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
         if (foundEntity.isEmpty()) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
             );
         }
 
@@ -76,7 +81,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     public void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new MissingRequiredFieldException(
-                    String.format(LogMessages.REQUIRED_FIELD, "name"), "name"
+                    MessageBuilder.buildMissingRequiredFieldMessage("name"), "name"
             );
         }
     }
@@ -85,7 +90,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     public void validateYear(int year) {
         if (year < 0) {
             throw new BadInputDataException(
-                    String.format(LogMessages.NEGATIVE_NUMBER_NOT_ALLOWED, "age")
+                    MessageBuilder.negativeNumberNotAllowedMessage("year")
             );
         }
     }
@@ -94,8 +99,8 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     public void validateCompany(ProductionCompanyBo company) {
         if (company == null) {
             throw new MissingRequiredFieldException(
-                    String.format(LogMessages.NULL_NOT_ALLOWED, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME),
-                    LogMessages.PRODUCTION_COMPANY_ENTITY_NAME
+                    MessageBuilder.buildNullNotAllowedMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME),
+                    Messages.PRODUCTION_COMPANY_ENTITY_NAME
             );
         }
     }
@@ -106,7 +111,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
         if (repository.existsById(company.getId())) {
             throw new DuplicateUniqueFieldException(
-                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME,
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME,
                             company.getId()),
                     "id"
             );
@@ -124,7 +129,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
         if (customRepository.existsById(company.getId())) {
             throw new DuplicateUniqueFieldException(
-                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME,
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME,
                             company.getId()),
                     "id"
             );
@@ -143,7 +148,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
             );
         }
 
@@ -160,7 +165,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
         if (!customRepository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
             );
         }
 
@@ -174,7 +179,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
             );
         }
 
@@ -185,7 +190,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     public void customDeleteById(long id) {
         if (!customRepository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.PRODUCTION_COMPANY_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
             );
         }
 

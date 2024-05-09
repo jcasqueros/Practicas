@@ -9,8 +9,11 @@ import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.DirectorRepository;
 import com.viewnex.bsan.practica04.repository.custom.CustomDirectorRepository;
 import com.viewnex.bsan.practica04.service.DirectorService;
-import com.viewnex.bsan.practica04.util.constants.LogMessages;
+import com.viewnex.bsan.practica04.util.MessageBuilder;
+import com.viewnex.bsan.practica04.util.constants.Messages;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelDirectorMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +26,8 @@ import java.util.Optional;
  */
 @Service
 public class DirectorServiceImpl implements DirectorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("DirectorService");
 
     private final DirectorRepository repository;
     private final CustomDirectorRepository customRepository;
@@ -51,7 +56,7 @@ public class DirectorServiceImpl implements DirectorService {
 
         if (foundEntity.isEmpty()) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
             );
         }
 
@@ -64,7 +69,7 @@ public class DirectorServiceImpl implements DirectorService {
 
         if (foundEntity.isEmpty()) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
             );
         }
 
@@ -75,7 +80,7 @@ public class DirectorServiceImpl implements DirectorService {
     public void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new MissingRequiredFieldException(
-                    String.format(LogMessages.REQUIRED_FIELD, "name"), "name"
+                    MessageBuilder.buildMissingRequiredFieldMessage("name")
             );
         }
     }
@@ -84,7 +89,7 @@ public class DirectorServiceImpl implements DirectorService {
     public void validateAge(int age) {
         if (age < 0) {
             throw new BadInputDataException(
-                    String.format(LogMessages.NEGATIVE_NUMBER_NOT_ALLOWED, "age")
+                    MessageBuilder.negativeNumberNotAllowedMessage("age")
             );
         }
     }
@@ -93,7 +98,7 @@ public class DirectorServiceImpl implements DirectorService {
     public void validateNationality(String nationality) {
         if (nationality == null || nationality.isBlank()) {
             throw new MissingRequiredFieldException(
-                    String.format(LogMessages.REQUIRED_FIELD, "nationality"), "nationality"
+                    MessageBuilder.buildMissingRequiredFieldMessage("nationality")
             );
         }
     }
@@ -102,8 +107,7 @@ public class DirectorServiceImpl implements DirectorService {
     public void validateDirector(DirectorBo director) {
         if (director == null) {
             throw new MissingRequiredFieldException(
-                    String.format(LogMessages.NULL_NOT_ALLOWED, LogMessages.DIRECTOR_ENTITY_NAME),
-                    LogMessages.DIRECTOR_ENTITY_NAME
+                    MessageBuilder.buildNullNotAllowedMessage(Messages.DIRECTOR_ENTITY_NAME), Messages.DIRECTOR_ENTITY_NAME
             );
         }
 
@@ -118,8 +122,7 @@ public class DirectorServiceImpl implements DirectorService {
 
         if (repository.existsById(director.getId())) {
             throw new DuplicateUniqueFieldException(
-                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.DIRECTOR_ENTITY_NAME,
-                            director.getId()),
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.DIRECTOR_ENTITY_NAME, director.getId()),
                     "id"
             );
         }
@@ -136,8 +139,7 @@ public class DirectorServiceImpl implements DirectorService {
 
         if (customRepository.existsById(director.getId())) {
             throw new DuplicateUniqueFieldException(
-                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.DIRECTOR_ENTITY_NAME,
-                            director.getId()),
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.DIRECTOR_ENTITY_NAME, director.getId()),
                     "id"
             );
         }
@@ -155,7 +157,7 @@ public class DirectorServiceImpl implements DirectorService {
 
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
             );
         }
 
@@ -172,7 +174,7 @@ public class DirectorServiceImpl implements DirectorService {
 
         if (!customRepository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
             );
         }
 
@@ -186,7 +188,7 @@ public class DirectorServiceImpl implements DirectorService {
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
             );
         }
 
@@ -197,7 +199,7 @@ public class DirectorServiceImpl implements DirectorService {
     public void customDeleteById(long id) {
         if (!customRepository.existsById(id)) {
             throw new ResourceNotFoundException(
-                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
             );
         }
 
