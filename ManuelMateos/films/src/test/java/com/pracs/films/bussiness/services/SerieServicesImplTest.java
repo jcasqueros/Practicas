@@ -317,7 +317,7 @@ class SerieServicesImplTest {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
         given(boToModelConverter.serieBoToModel(serieBO)).willReturn(serie);
         given(serieRepositoryCriteria.findSerieById(serie.getId())).willReturn(Optional.of(serie));
-        given(serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO))).willReturn(serie);
+        given(serieRepositoryCriteria.updateSerie(boToModelConverter.serieBoToModel(serieBO))).willReturn(serie);
 
         SerieBO savedserieBO = serieBO;
         savedserieBO.setTitle("update");
@@ -341,7 +341,7 @@ class SerieServicesImplTest {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
         given(boToModelConverter.serieBoToModel(serieBO)).willReturn(serie);
         given(serieRepositoryCriteria.findSerieById(1L)).willReturn(Optional.of(serie));
-        when(serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO))).thenThrow(
+        when(serieRepositoryCriteria.updateSerie(boToModelConverter.serieBoToModel(serieBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> serieService.updateCriteria(serieBO));

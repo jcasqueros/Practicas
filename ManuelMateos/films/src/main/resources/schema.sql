@@ -31,8 +31,8 @@ CREATE TABLE productions(
     id BIGINT,
     title VARCHAR(255) NOT NULL,
     debut INTEGER NOT NULL,
-    director_id BIGINT REFERENCES directors(id),
-    producer_id BIGINT REFERENCES producers(id),
+    director_id BIGINT REFERENCES directors(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    producer_id BIGINT REFERENCES producers(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY(id)
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE series(
 );
 
 CREATE TABLE production_actors(
-    actor_id BIGINT REFERENCES actors(id),
-    production_id BIGINT REFERENCES productions(id),
+    actor_id BIGINT REFERENCES actors(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    production_id BIGINT REFERENCES productions(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY(actor_id, production_id)
 );

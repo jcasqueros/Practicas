@@ -258,7 +258,7 @@ class DirectorServicesImplTest {
         given(modelToBoConverter.directorModelToBo(director)).willReturn(directorBO);
         given(boToModelConverter.directorBoToModel(directorBO)).willReturn(director);
         given(directorRepositoryCriteria.findDirectorById(1L)).willReturn(Optional.of(director));
-        given(directorRepositoryCriteria.saveDirector(boToModelConverter.directorBoToModel(directorBO))).willReturn(
+        given(directorRepositoryCriteria.updateDirector(boToModelConverter.directorBoToModel(directorBO))).willReturn(
                 director);
 
         DirectorBO savedDirectorBO = directorBO;
@@ -284,7 +284,7 @@ class DirectorServicesImplTest {
         given(modelToBoConverter.directorModelToBo(director)).willReturn(directorBO);
         given(boToModelConverter.directorBoToModel(directorBO)).willReturn(director);
         given(directorRepositoryCriteria.findDirectorById(1L)).willReturn(Optional.of(director));
-        when(directorRepositoryCriteria.saveDirector(boToModelConverter.directorBoToModel(directorBO))).thenThrow(
+        when(directorRepositoryCriteria.updateDirector(boToModelConverter.directorBoToModel(directorBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> directorService.updateCriteria(directorBO));

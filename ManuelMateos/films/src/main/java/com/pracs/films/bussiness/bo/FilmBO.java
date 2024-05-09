@@ -1,7 +1,6 @@
 package com.pracs.films.bussiness.bo;
 
 import com.pracs.films.persistence.models.Film;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +13,6 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class FilmBO {
 
     private long id;

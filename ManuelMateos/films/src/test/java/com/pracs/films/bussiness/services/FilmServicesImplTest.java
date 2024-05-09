@@ -317,7 +317,7 @@ class FilmServicesImplTest {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
         given(boToModelConverter.filmBoToModel(filmBO)).willReturn(film);
         given(filmRepositoryCriteria.findFilmById(film.getId())).willReturn(Optional.of(film));
-        given(filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO))).willReturn(film);
+        given(filmRepositoryCriteria.updateFilm(boToModelConverter.filmBoToModel(filmBO))).willReturn(film);
 
         FilmBO savedfilmBO = filmBO;
         savedfilmBO.setTitle("update");
@@ -341,7 +341,7 @@ class FilmServicesImplTest {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
         given(boToModelConverter.filmBoToModel(filmBO)).willReturn(film);
         given(filmRepositoryCriteria.findFilmById(1L)).willReturn(Optional.of(film));
-        when(filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO))).thenThrow(
+        when(filmRepositoryCriteria.updateFilm(boToModelConverter.filmBoToModel(filmBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> filmService.updateCriteria(filmBO));

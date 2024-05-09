@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.model.Actor;
 import com.example.demo.repository.cb.ActorRepositoryCriteria;
 import com.example.demo.repository.jpa.ActorRepository;
 import com.example.demo.servcice.ActorService;
@@ -31,7 +32,6 @@ public class ActorServiceImpl implements ActorService {
 
 	@Override
 	public List<ActorBo> getAll() {
-
 		return actorRepository.findAll().stream().map(actor -> modelToBo.actorToActorBo(actor)).toList();
 	}
 
@@ -45,10 +45,14 @@ public class ActorServiceImpl implements ActorService {
 	@Override
 	public ActorBo create(ActorBo actorBo) throws AlreadyExistsExeption {
 		if (actorRepository.existsById(actorBo.getIdActor())) {
-
 			throw new AlreadyExistsExeption("El actor con el id:" + actorBo.getIdActor() + " ya existe");
 		}
-		return modelToBo.actorToActorBo(actorRepository.save(boToModel.boToActor(actorBo)));
+		Actor actor = boToModel.boToActor(actorBo);
+		actor = actorRepository.save(actor);
+		if (actor == null) {
+			throw new RuntimeException("Error al crear el actor");
+		}
+		return modelToBo.actorToActorBo(actor);
 	}
 
 	@Override
@@ -84,12 +88,11 @@ public class ActorServiceImpl implements ActorService {
 	@Override
 	public void deleteByIdCriteria(long id) throws NotFoundException {
 		if (actorRepositoryCriteria.getById(id) != null) {
-			actorRepository.deleteById(id);
+			actorRepositoryCriteria.deleteById(id);
 
 		} else {
 			throw new NotFoundException("No se ha encontrado el actor que quiere borrar con el id: " + id);
 		}
-
 	}
 
 }

@@ -145,7 +145,7 @@ public class SerieServiceImpl implements SerieService {
             savedSerieBO.setProducer(serieBO.getProducer());
             savedSerieBO.setActors(serieBO.getActors());
             return modelToBoConverter.serieModelToBo(
-                    serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(savedSerieBO)));
+                    serieRepositoryCriteria.updateSerie(boToModelConverter.serieBoToModel(savedSerieBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

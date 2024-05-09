@@ -1,4 +1,169 @@
 package com.viewnex.bsan.practica04.service.impl;
 
-public class DirectorServiceImpl {
+import com.viewnex.bsan.practica04.bo.DirectorBo;
+import com.viewnex.bsan.practica04.entity.Director;
+import com.viewnex.bsan.practica04.exception.service.BadInputDataException;
+import com.viewnex.bsan.practica04.exception.service.DuplicateUniqueFieldException;
+import com.viewnex.bsan.practica04.exception.service.MissingRequiredFieldException;
+import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
+import com.viewnex.bsan.practica04.repository.DirectorRepository;
+import com.viewnex.bsan.practica04.service.DirectorService;
+import com.viewnex.bsan.practica04.util.constants.LogMessages;
+import com.viewnex.bsan.practica04.util.mapper.ServiceLevelDirectorMapper;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Implementation for the {@code DirectorService} interface.
+ *
+ * @author Antonio Gil
+ */
+@Service
+public class DirectorServiceImpl implements DirectorService {
+
+    private final DirectorRepository repository;
+    private final ServiceLevelDirectorMapper mapper;
+
+    public DirectorServiceImpl(DirectorRepository repository, ServiceLevelDirectorMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
+
+    @Override
+    public List<DirectorBo> getAll() {
+        return repository.findAll().stream().map(mapper::entityToBo).toList();
+    }
+
+    @Override
+    public List<DirectorBo> customGetAll() {
+        // TODO Implement custom repositories and the corresponding service operations
+        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+    }
+
+    @Override
+    public DirectorBo getById(long id) {
+        Optional<Director> foundEntity = repository.findById(id);
+
+        if (foundEntity.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+            );
+        }
+
+        return mapper.entityToBo(foundEntity.orElseThrow());
+    }
+
+    @Override
+    public DirectorBo customGetById(long id) {
+        // TODO Implement custom repositories and the corresponding service operations
+        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+    }
+
+    @Override
+    public void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new MissingRequiredFieldException(
+                    String.format(LogMessages.REQUIRED_FIELD, "name"), "name"
+            );
+        }
+    }
+
+    @Override
+    public void validateAge(int age) {
+        if (age < 0) {
+            throw new BadInputDataException(
+                    String.format(LogMessages.NEGATIVE_NUMBER_NOT_ALLOWED, "age")
+            );
+        }
+    }
+
+    @Override
+    public void validateNationality(String nationality) {
+        if (nationality == null || nationality.isBlank()) {
+            throw new MissingRequiredFieldException(
+                    String.format(LogMessages.REQUIRED_FIELD, "nationality"), "nationality"
+            );
+        }
+    }
+
+    @Override
+    public void validateDirector(DirectorBo director) {
+        if (director == null) {
+            throw new MissingRequiredFieldException(
+                    String.format(LogMessages.NULL_NOT_ALLOWED, LogMessages.DIRECTOR_ENTITY_NAME),
+                    LogMessages.DIRECTOR_ENTITY_NAME
+            );
+        }
+
+        validateName(director.getName());
+        validateAge(director.getAge());
+        validateNationality(director.getNationality());
+    }
+
+    @Override
+    public DirectorBo create(DirectorBo director) {
+        validateDirector(director);
+
+        if (repository.existsById(director.getId())) {
+            throw new DuplicateUniqueFieldException(
+                    String.format(LogMessages.RESOURCE_ALREADY_EXISTS, LogMessages.DIRECTOR_ENTITY_NAME,
+                            director.getId()),
+                    "id"
+            );
+        }
+
+        Director entityToSave = mapper.boToEntity(director);
+        Director savedEntity = repository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
+    }
+
+    @Override
+    public DirectorBo customCreate(DirectorBo director) {
+        // TODO Implement custom repositories and the corresponding service operations
+        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+    }
+
+    @Override
+    public DirectorBo update(long id, DirectorBo newDirector) {
+        validateDirector(newDirector);
+        newDirector.setId(id);
+
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+            );
+        }
+
+        Director entityToSave = mapper.boToEntity(newDirector);
+        Director savedEntity = repository.save(entityToSave);
+
+        return mapper.entityToBo(savedEntity);
+    }
+
+    @Override
+    public DirectorBo customUpdate(long id, DirectorBo newDirector) {
+        // TODO Implement custom repositories and the corresponding service operations
+        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+    }
+
+    @Override
+    public void deleteById(long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    String.format(LogMessages.RESOURCE_NOT_FOUND, LogMessages.DIRECTOR_ENTITY_NAME, id)
+            );
+        }
+
+        repository.deleteById(id);
+    }
+
+    @Override
+    public void customDeleteById(long id) {
+        // TODO Implement custom repositories and the corresponding service operations
+        throw new UnsupportedOperationException(LogMessages.NOT_YET_IMPLEMENTED);
+    }
+
 }
