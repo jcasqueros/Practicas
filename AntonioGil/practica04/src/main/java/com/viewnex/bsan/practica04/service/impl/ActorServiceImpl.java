@@ -91,7 +91,6 @@ public class ActorServiceImpl implements ActorService {
         if (age < 0) {
             String message = MessageBuilder.negativeNumberNotAllowedMessage("age");
             LOGGER.warn(message);
-
             throw new BadInputDataException(message);
         }
     }
@@ -101,7 +100,7 @@ public class ActorServiceImpl implements ActorService {
         if (nationality == null || nationality.isBlank()) {
             String message = MessageBuilder.buildMissingRequiredFieldMessage("nationality");
             LOGGER.warn(message);
-            throw new MissingRequiredFieldException(message);
+            throw new MissingRequiredFieldException(message, "nationality");
         }
     }
 

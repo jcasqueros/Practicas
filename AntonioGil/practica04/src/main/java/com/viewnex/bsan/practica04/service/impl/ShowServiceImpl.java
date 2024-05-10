@@ -55,10 +55,9 @@ public class ShowServiceImpl implements ShowService {
         Optional<Show> foundEntity = repository.findById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -69,10 +68,9 @@ public class ShowServiceImpl implements ShowService {
         Optional<Show> foundEntity = customRepository.getById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -82,27 +80,27 @@ public class ShowServiceImpl implements ShowService {
     @Override
     public void validateTitle(String title) {
         if (title == null || title.isBlank()) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildMissingRequiredFieldMessage("title"), "title"
-            );
+            String message = MessageBuilder.buildMissingRequiredFieldMessage("title");
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, "title");
         }
     }
 
     @Override
     public void validateYear(int year) {
         if (year < 0) {
-            throw new BadInputDataException(
-                    MessageBuilder.negativeNumberNotAllowedMessage("year")
-            );
+            String message = MessageBuilder.negativeNumberNotAllowedMessage("year");
+            LOGGER.warn(message);
+            throw new BadInputDataException(message);
         }
     }
 
     @Override
     public void validateShow(ShowBo show) {
         if (show == null) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildNullNotAllowedMessage(Messages.SHOW_ENTITY_NAME), Messages.SHOW_ENTITY_NAME
-            );
+            String message = MessageBuilder.buildMissingRequiredFieldMessage(Messages.SHOW_ENTITY_NAME);
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, Messages.SHOW_ENTITY_NAME);
         }
 
         validateTitle(show.getTitle());
@@ -114,9 +112,9 @@ public class ShowServiceImpl implements ShowService {
         validateShow(show);
 
         if (repository.existsById(show.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.SHOW_ENTITY_NAME, show.getId()), "id"
-            );
+            String message = MessageBuilder.buildResourceAlreadyExistsMessage(Messages.SHOW_ENTITY_NAME, show.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         Show entityToSave = mapper.boToEntity(show);
@@ -130,9 +128,9 @@ public class ShowServiceImpl implements ShowService {
         validateShow(show);
 
         if (customRepository.existsById(show.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.SHOW_ENTITY_NAME, show.getId()), "id"
-            );
+            String message = MessageBuilder.buildResourceAlreadyExistsMessage(Messages.SHOW_ENTITY_NAME, show.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         Show entityToSave = mapper.boToEntity(show);
@@ -147,10 +145,9 @@ public class ShowServiceImpl implements ShowService {
         newShow.setId(id);
 
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         Show entityToSave = mapper.boToEntity(newShow);
@@ -165,10 +162,9 @@ public class ShowServiceImpl implements ShowService {
         newShow.setId(id);
 
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         Show entityToSave = mapper.boToEntity(newShow);
@@ -180,10 +176,9 @@ public class ShowServiceImpl implements ShowService {
     @Override
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         repository.deleteById(id);
@@ -192,9 +187,9 @@ public class ShowServiceImpl implements ShowService {
     @Override
     public void customDeleteById(long id) {
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         customRepository.deleteById(id);
