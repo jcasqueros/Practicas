@@ -56,9 +56,9 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
         Optional<ProductionCompany> foundEntity = repository.findById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -69,9 +69,9 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
         Optional<ProductionCompany> foundEntity = customRepository.getById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -80,28 +80,28 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     @Override
     public void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildMissingRequiredFieldMessage("name"), "name"
-            );
+            String message = MessageBuilder.buildMissingRequiredFieldMessage("name");
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, "name");
         }
     }
 
     @Override
     public void validateYear(int year) {
         if (year < 0) {
-            throw new BadInputDataException(
-                    MessageBuilder.negativeNumberNotAllowedMessage("year")
-            );
+            String message = MessageBuilder.negativeNumberNotAllowedMessage("year");
+            LOGGER.warn(message);
+            throw new BadInputDataException(message);
         }
     }
 
     @Override
     public void validateCompany(ProductionCompanyBo company) {
         if (company == null) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildNullNotAllowedMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME),
-                    Messages.PRODUCTION_COMPANY_ENTITY_NAME
-            );
+            String message =
+                    MessageBuilder.buildMissingRequiredFieldMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME);
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, Messages.PRODUCTION_COMPANY_ENTITY_NAME);
         }
     }
 
@@ -110,11 +110,10 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
         validateCompany(company);
 
         if (repository.existsById(company.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME,
-                            company.getId()),
-                    "id"
-            );
+            String message = MessageBuilder.buildResourceAlreadyExistsMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME,
+                    company.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         ProductionCompany entityToSave = mapper.boToEntity(company);
@@ -128,11 +127,10 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
         validateCompany(company);
 
         if (customRepository.existsById(company.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME,
-                            company.getId()),
-                    "id"
-            );
+            String message = MessageBuilder.buildResourceAlreadyExistsMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME,
+                    company.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         ProductionCompany entityToSave = mapper.boToEntity(company);
@@ -147,9 +145,9 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
         newCompany.setId(id);
 
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         ProductionCompany entityToSave = mapper.boToEntity(newCompany);
@@ -164,9 +162,9 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
         newCompany.setId(id);
 
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         ProductionCompany entityToSave = mapper.boToEntity(newCompany);
@@ -178,9 +176,9 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     @Override
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         repository.deleteById(id);
@@ -189,9 +187,9 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     @Override
     public void customDeleteById(long id) {
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         customRepository.deleteById(id);

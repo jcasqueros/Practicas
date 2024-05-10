@@ -55,9 +55,9 @@ public class FilmServiceImpl implements FilmService {
         Optional<Film> foundEntity = repository.findById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -68,9 +68,9 @@ public class FilmServiceImpl implements FilmService {
         Optional<Film> foundEntity = customRepository.getById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -79,27 +79,27 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void validateTitle(String title) {
         if (title == null || title.isBlank()) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildMissingRequiredFieldMessage("title")
-            );
+            String message = MessageBuilder.buildMissingRequiredFieldMessage("title");
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, "title");
         }
     }
 
     @Override
     public void validateYear(int year) {
         if (year < 0) {
-            throw new BadInputDataException(
-                    MessageBuilder.negativeNumberNotAllowedMessage("year")
-            );
+            String message = MessageBuilder.negativeNumberNotAllowedMessage("year");
+            LOGGER.warn(message);
+            throw new BadInputDataException(message);
         }
     }
 
     @Override
     public void validateFilm(FilmBo film) {
         if (film == null) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildNullNotAllowedMessage(Messages.FILM_ENTITY_NAME)
-            );
+            String message = MessageBuilder.buildNullNotAllowedMessage(Messages.FILM_ENTITY_NAME);
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, Messages.FILM_ENTITY_NAME);
         }
 
         validateTitle(film.getTitle());
@@ -109,9 +109,9 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBo create(FilmBo film) {
         if (repository.existsById(film.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.FILM_ENTITY_NAME, film.getId()), "id"
-            );
+            String message = MessageBuilder.buildResourceAlreadyExistsMessage(Messages.FILM_ENTITY_NAME, film.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         validateFilm(film);
@@ -125,10 +125,9 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBo customCreate(FilmBo film) {
         if (customRepository.existsById(film.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.FILM_ENTITY_NAME, film.getId()),
-                    "id"
-            );
+            String message = MessageBuilder.buildResourceAlreadyExistsMessage(Messages.FILM_ENTITY_NAME, film.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         validateFilm(film);
@@ -144,9 +143,9 @@ public class FilmServiceImpl implements FilmService {
         newFilm.setId(id);
 
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         validateFilm(newFilm);
@@ -162,9 +161,9 @@ public class FilmServiceImpl implements FilmService {
         newFilm.setId(id);
 
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         validateFilm(newFilm);
@@ -178,9 +177,9 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         repository.deleteById(id);
@@ -189,9 +188,9 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void customDeleteById(long id) {
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         customRepository.deleteById(id);

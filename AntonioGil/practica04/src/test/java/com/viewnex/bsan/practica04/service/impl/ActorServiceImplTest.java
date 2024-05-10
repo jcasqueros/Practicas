@@ -8,7 +8,6 @@ import com.viewnex.bsan.practica04.exception.service.MissingRequiredFieldExcepti
 import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.repository.ActorRepository;
 import com.viewnex.bsan.practica04.repository.custom.CustomActorRepository;
-import com.viewnex.bsan.practica04.sampledata.ActorSampleData;
 import com.viewnex.bsan.practica04.util.mapper.ServiceLevelActorMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -374,7 +373,7 @@ class ActorServiceImplTest {
         assertDoesNotThrow(() -> service.deleteById(id));
     }
 
-    @DisplayName("[ActorServiceImpl] customDeleteById (should throw ResourceNotFoundexception)")
+    @DisplayName("[ActorServiceImpl] customDeleteById (should throw ResourceNotFoundException)")
     @Test
     void givenNonExistentActorId_whenCustomDeleteById_thenThrow() {
         final long id = -1;

@@ -3,8 +3,8 @@ package com.pracs.films.bussiness.services;
 import com.pracs.films.bussiness.bo.FilmBO;
 import com.pracs.films.exceptions.ServiceException;
 import com.pracs.films.persistence.models.Film;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Service of the model {@link Film}
@@ -38,11 +38,11 @@ public interface FilmService {
     FilmBO findById(long id) throws ServiceException;
 
     /**
-     * Method for get all films
+     * Method for get all films paginated
      *
      * @return List of FilmBO
      */
-    List<FilmBO> findAll() throws ServiceException;
+    Page<FilmBO> findAll(Pageable pageable) throws ServiceException;
 
     /**
      * Method for delete a film by his id
@@ -76,11 +76,11 @@ public interface FilmService {
     FilmBO findByIdCriteria(long id) throws ServiceException;
 
     /**
-     * Method for get all films
+     * Method for get all films paginated
      *
      * @return List of FilmBO
      */
-    List<FilmBO> findAllCriteria() throws ServiceException;
+    Page<FilmBO> findAllCriteria(Pageable pageable) throws ServiceException;
 
     /**
      * Method for delete a film by his id

@@ -11,6 +11,9 @@ import com.pracs.films.presentation.dto.ActorDtoOut;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,18 +45,22 @@ public class ActorController {
      * @throws ServiceException
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<ActorDtoOut>> findAll(@RequestParam boolean method) throws ServiceException {
+    public ResponseEntity<List<ActorDtoOut>> findAll(@RequestParam boolean method, @RequestParam int page,
+            @RequestParam int size, @RequestParam String sort) throws ServiceException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
         if (method) {
             try {
                 return new ResponseEntity<>(
-                        actorService.findAllCriteria().stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                        actorService.findAllCriteria(pageable).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
                         HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            return new ResponseEntity<>(actorService.findAll().stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+            return new ResponseEntity<>(
+                    actorService.findAll(pageable).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
                     HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());

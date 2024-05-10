@@ -27,7 +27,7 @@ import java.util.Optional;
 @Service
 public class DirectorServiceImpl implements DirectorService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("DirectorService");
+    private static final Logger LOGGER = LoggerFactory.getLogger(DirectorServiceImpl.class.getCanonicalName());
 
     private final DirectorRepository repository;
     private final CustomDirectorRepository customRepository;
@@ -55,9 +55,9 @@ public class DirectorServiceImpl implements DirectorService {
         Optional<Director> foundEntity = repository.findById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -68,9 +68,9 @@ public class DirectorServiceImpl implements DirectorService {
         Optional<Director> foundEntity = customRepository.getById(id);
 
         if (foundEntity.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         return mapper.entityToBo(foundEntity.orElseThrow());
@@ -79,36 +79,36 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildMissingRequiredFieldMessage("name")
-            );
+            String message = MessageBuilder.buildMissingRequiredFieldMessage("name");
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, "name");
         }
     }
 
     @Override
     public void validateAge(int age) {
         if (age < 0) {
-            throw new BadInputDataException(
-                    MessageBuilder.negativeNumberNotAllowedMessage("age")
-            );
+            String message = MessageBuilder.negativeNumberNotAllowedMessage("age");
+            LOGGER.warn(message);
+            throw new BadInputDataException(message);
         }
     }
 
     @Override
     public void validateNationality(String nationality) {
         if (nationality == null || nationality.isBlank()) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildMissingRequiredFieldMessage("nationality")
-            );
+            String message = MessageBuilder.buildMissingRequiredFieldMessage("nationality");
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, "nationality");
         }
     }
 
     @Override
     public void validateDirector(DirectorBo director) {
         if (director == null) {
-            throw new MissingRequiredFieldException(
-                    MessageBuilder.buildNullNotAllowedMessage(Messages.DIRECTOR_ENTITY_NAME), Messages.DIRECTOR_ENTITY_NAME
-            );
+            String message = MessageBuilder.buildNullNotAllowedMessage(Messages.DIRECTOR_ENTITY_NAME);
+            LOGGER.warn(message);
+            throw new MissingRequiredFieldException(message, Messages.DIRECTOR_ENTITY_NAME);
         }
 
         validateName(director.getName());
@@ -121,10 +121,10 @@ public class DirectorServiceImpl implements DirectorService {
         validateDirector(director);
 
         if (repository.existsById(director.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.DIRECTOR_ENTITY_NAME, director.getId()),
-                    "id"
-            );
+            String message =
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.DIRECTOR_ENTITY_NAME, director.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         Director entityToSave = mapper.boToEntity(director);
@@ -138,10 +138,10 @@ public class DirectorServiceImpl implements DirectorService {
         validateDirector(director);
 
         if (customRepository.existsById(director.getId())) {
-            throw new DuplicateUniqueFieldException(
-                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.DIRECTOR_ENTITY_NAME, director.getId()),
-                    "id"
-            );
+            String message =
+                    MessageBuilder.buildResourceAlreadyExistsMessage(Messages.DIRECTOR_ENTITY_NAME, director.getId());
+            LOGGER.warn(message);
+            throw new DuplicateUniqueFieldException(message, "id");
         }
 
         Director entityToSave = mapper.boToEntity(director);
@@ -156,9 +156,9 @@ public class DirectorServiceImpl implements DirectorService {
         newDirector.setId(id);
 
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         Director entityToSave = mapper.boToEntity(newDirector);
@@ -173,9 +173,9 @@ public class DirectorServiceImpl implements DirectorService {
         newDirector.setId(id);
 
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         Director entityToSave = mapper.boToEntity(newDirector);
@@ -187,9 +187,9 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public void deleteById(long id) {
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         repository.deleteById(id);
@@ -198,9 +198,9 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public void customDeleteById(long id) {
         if (!customRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id)
-            );
+            String message = MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id);
+            LOGGER.warn(message);
+            throw new ResourceNotFoundException(message);
         }
 
         customRepository.deleteById(id);

@@ -8,14 +8,17 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.models.Producer;
 import com.pracs.films.persistence.repositories.criteria.impl.ProducerRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,11 +44,12 @@ public class ProducerServiceImpl implements ProducerService {
     @Override
     public ProducerBO save(ProducerBO producerBO) throws ServiceException {
         try {
-
+            //Comprobar si existe ya un productor registrado con el mismo id.
             if (producerRepository.existsById(producerBO.getId())) {
                 throw new DuplicatedIdException("Existing production");
             }
 
+            // Conversión de model a bo del resultado de crear un productor.
             return modelToBoConverter.producerModelToBo(
                     producerRepository.save(boToModelConverter.producerBoToModel(producerBO)));
         } catch (NestedRuntimeException e) {
@@ -57,11 +61,16 @@ public class ProducerServiceImpl implements ProducerService {
     @Override
     public ProducerBO update(ProducerBO producerBO) throws ServiceException {
         try {
+            // Búsqueda de un productor con el id introducido para comprobar que existe
             ProducerBO savedproducerBO = modelToBoConverter.producerModelToBo(
                     producerRepository.findById(producerBO.getId())
                             .orElseThrow(() -> new EntityNotFoundException(errorProducer)));
+
+            //Actualización con los campos introducidos
             savedproducerBO.setName(producerBO.getName());
             savedproducerBO.setDebut(producerBO.getDebut());
+
+            // Conversion de model a bo del resultado de guardar un productor
             return modelToBoConverter.producerModelToBo(
                     producerRepository.save(boToModelConverter.producerBoToModel(savedproducerBO)));
         } catch (NestedRuntimeException e) {
@@ -73,6 +82,7 @@ public class ProducerServiceImpl implements ProducerService {
     @Override
     public ProducerBO findById(long id) throws ServiceException {
         try {
+            //Comprobar si existe ya un productor registrado con el mismo id.
             return modelToBoConverter.producerModelToBo(
                     producerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorProducer)));
         } catch (NestedRuntimeException e) {
@@ -82,17 +92,20 @@ public class ProducerServiceImpl implements ProducerService {
     }
 
     @Override
-    public List<ProducerBO> findAll() throws ServiceException {
-        List<ProducerBO> producersBO = new ArrayList<>();
-
+    public Page<ProducerBO> findAll(Pageable pageable) throws ServiceException {
         try {
-            producersBO = producerRepository.findAll().stream().map(modelToBoConverter::producerModelToBo).toList();
+            //Búsqueda de los todos lo productors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Producer> filmPage = producerRepository.findAll(pageable);
+            List<ProducerBO> prodoucerBOList = filmPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
-            if (producersBO.isEmpty()) {
-                throw new EmptyException("No films");
+            Page<ProducerBO> producerBOPage = new PageImpl<>(prodoucerBOList, filmPage.getPageable(),
+                    filmPage.getTotalPages());
+
+            if (prodoucerBOList.isEmpty()) {
+                throw new EmptyException("No producers");
             }
 
-            return producersBO;
+            return producerBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
@@ -102,7 +115,7 @@ public class ProducerServiceImpl implements ProducerService {
     @Override
     public void deleteById(long id) throws ServiceException {
         try {
-
+            //Comprobar si el productor no existe
             if (!producerRepository.existsById(id)) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorProducer);
@@ -118,11 +131,12 @@ public class ProducerServiceImpl implements ProducerService {
     @Override
     public ProducerBO saveCriteria(ProducerBO producerBO) throws ServiceException {
         try {
-
+            //Comprobar si existe ya un productor registrado con el mismo id.
             if (!producerRepositoryCriteria.findProducerById(producerBO.getId()).isEmpty()) {
                 throw new DuplicatedIdException("Existing production");
             }
 
+            // Conversión de model a bo del resultado de crear un productor.
             return modelToBoConverter.producerModelToBo(
                     producerRepositoryCriteria.saveProducer(boToModelConverter.producerBoToModel(producerBO)));
         } catch (NestedRuntimeException e) {
@@ -134,12 +148,16 @@ public class ProducerServiceImpl implements ProducerService {
     @Override
     public ProducerBO updateCriteria(ProducerBO producerBO) throws ServiceException {
         try {
+            // Búsqueda de un productor con el id introducido para comprobar que existe
             ProducerBO savedproducerBO = modelToBoConverter.producerModelToBo(
                     producerRepositoryCriteria.findProducerById(producerBO.getId())
                             .orElseThrow(() -> new EntityNotFoundException(errorProducer)));
 
+            //Actualización con los campos introducidos
             savedproducerBO.setName(producerBO.getName());
             savedproducerBO.setDebut(producerBO.getDebut());
+
+            // Conversion de model a bo del resultado de guardar un productor
             return modelToBoConverter.producerModelToBo(
                     producerRepositoryCriteria.updateProducer(boToModelConverter.producerBoToModel(savedproducerBO)));
         } catch (NestedRuntimeException e) {
@@ -151,6 +169,7 @@ public class ProducerServiceImpl implements ProducerService {
     @Override
     public ProducerBO findByIdCriteria(long id) throws ServiceException {
         try {
+            // Conversión de model a bo del resultado de buscar un productor por id.
             return modelToBoConverter.producerModelToBo(producerRepositoryCriteria.findProducerById(id)
                     .orElseThrow(() -> new EntityNotFoundException(errorProducer)));
         } catch (NestedRuntimeException e) {
@@ -160,18 +179,20 @@ public class ProducerServiceImpl implements ProducerService {
     }
 
     @Override
-    public List<ProducerBO> findAllCriteria() throws ServiceException {
-        List<ProducerBO> producersBO = new ArrayList<>();
-
+    public Page<ProducerBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
-            producersBO = producerRepositoryCriteria.findAllProducer().stream()
-                    .map(modelToBoConverter::producerModelToBo).toList();
+            //Búsqueda de los todos lo productors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Producer> filmPage = producerRepository.findAll(pageable);
+            List<ProducerBO> prodoucerBOList = filmPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
-            if (producersBO.isEmpty()) {
-                throw new EmptyException("No films");
+            Page<ProducerBO> producerBOPage = new PageImpl<>(prodoucerBOList, filmPage.getPageable(),
+                    filmPage.getTotalPages());
+
+            if (prodoucerBOList.isEmpty()) {
+                throw new EmptyException("No producers");
             }
 
-            return producersBO;
+            return producerBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
@@ -181,7 +202,7 @@ public class ProducerServiceImpl implements ProducerService {
     @Override
     public void deleteByIdCriteria(long id) throws ServiceException {
         try {
-
+            //Comprobar si existe el productor con el id pasado
             if (producerRepositoryCriteria.findProducerById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorProducer);

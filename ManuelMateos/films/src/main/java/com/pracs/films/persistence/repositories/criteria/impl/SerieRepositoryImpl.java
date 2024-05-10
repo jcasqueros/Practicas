@@ -10,6 +10,9 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -55,14 +58,36 @@ public class SerieRepositoryImpl implements SerieCustomRepository {
     }
 
     @Override
-    public List<Serie> findAllSerie() {
+    public Page<Serie> findAllSerie(Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Serie> criteriaQuery = criteriaBuilder.createQuery(Serie.class);
 
         Root<Serie> serie = criteriaQuery.from(Serie.class);
         criteriaQuery.select(serie);
 
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        String sort = String.valueOf(pageable.getSort()).split(":")[0].trim();
+        criteriaQuery.orderBy(criteriaBuilder.asc(serie.get(sort)));
+
+        TypedQuery<Serie> query = entityManager.createQuery(criteriaQuery);
+
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+
+        List<Serie> series = query.getResultList();
+
+        long totalElements = countAllSeries();
+
+        return new PageImpl<>(series, pageable, totalElements);
+    }
+
+    private long countAllSeries() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+
+        Root<Serie> serie = countQuery.from(Serie.class);
+        countQuery.select(criteriaBuilder.count(serie));
+
+        return entityManager.createQuery(countQuery).getSingleResult();
     }
 
     @Override

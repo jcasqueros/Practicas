@@ -1,6 +1,7 @@
 package com.pracs.films.presentation.dto;
 
 import com.pracs.films.persistence.models.Producer;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -20,10 +21,12 @@ public class ProducerDtoIn {
     private long id;
 
     @NotBlank
+    @Schema(description = "Name of the producer", example = "Michael Productions")
     private String name;
 
     @NotNull
     @Min(1900)
     @Max(2024)
+    @Schema(description = "Born age producer´s", example = "1985")
     private int debut;
 }

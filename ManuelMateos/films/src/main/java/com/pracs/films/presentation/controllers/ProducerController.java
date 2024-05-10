@@ -11,6 +11,9 @@ import com.pracs.films.presentation.dto.ProducerDtoOut;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,19 +45,23 @@ public class ProducerController {
      * @throws ServiceException
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<ProducerDtoOut>> findAll(@RequestParam boolean method) throws ServiceException {
+    public ResponseEntity<List<ProducerDtoOut>> findAll(@RequestParam boolean method, @RequestParam int page,
+            @RequestParam int size, @RequestParam String sort) throws ServiceException {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
         if (method) {
             try {
                 return new ResponseEntity<>(
-                        producerService.findAllCriteria().stream().map(boToDtoConverter::producerBoToDtoOut).toList(),
-                        HttpStatus.OK);
+                        producerService.findAllCriteria(pageable).stream().map(boToDtoConverter::producerBoToDtoOut)
+                                .toList(), HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
             return new ResponseEntity<>(
-                    producerService.findAll().stream().map(boToDtoConverter::producerBoToDtoOut).toList(),
+                    producerService.findAll(pageable).stream().map(boToDtoConverter::producerBoToDtoOut).toList(),
                     HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
