@@ -8,11 +8,15 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.models.Producer;
 import com.pracs.films.persistence.repositories.criteria.impl.ProducerRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -89,18 +93,20 @@ public class ProducerServiceImpl implements ProducerService {
     }
 
     @Override
-    public List<ProducerBO> findAll() throws ServiceException {
-        List<ProducerBO> producersBO = new ArrayList<>();
-
+    public Page<ProducerBO> findAll(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo productors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            producersBO = producerRepository.findAll().stream().map(modelToBoConverter::producerModelToBo).toList();
+            Page<Producer> filmPage = producerRepository.findAll(pageable);
+            List<ProducerBO> prodoucerBOList = filmPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
-            if (producersBO.isEmpty()) {
-                throw new EmptyException("No films");
+            Page<ProducerBO> producerBOPage = new PageImpl<>(prodoucerBOList, filmPage.getPageable(),
+                    filmPage.getTotalPages());
+
+            if (prodoucerBOList.isEmpty()) {
+                throw new EmptyException("No producers");
             }
 
-            return producersBO;
+            return producerBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

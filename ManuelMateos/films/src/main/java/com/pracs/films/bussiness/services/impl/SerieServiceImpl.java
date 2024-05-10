@@ -8,11 +8,15 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.models.Serie;
 import com.pracs.films.persistence.repositories.criteria.impl.SerieRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.SerieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -90,18 +94,20 @@ public class SerieServiceImpl implements SerieService {
     }
 
     @Override
-    public List<SerieBO> findAll() throws ServiceException {
-        List<SerieBO> seriesBO = new ArrayList<>();
-
+    public Page<SerieBO> findAll(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo series, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            seriesBO = serieRepository.findAll().stream().map(modelToBoConverter::serieModelToBo).toList();
+            Page<Serie> seriePage = serieRepository.findAll(pageable);
+            List<SerieBO> serieBOList = seriePage.stream().map(modelToBoConverter::serieModelToBo).toList();
 
-            if (seriesBO.isEmpty()) {
-                throw new EmptyException("No films");
+            Page<SerieBO> directorBOPage = new PageImpl<>(serieBOList, seriePage.getPageable(),
+                    seriePage.getTotalPages());
+
+            if (serieBOList.isEmpty()) {
+                throw new EmptyException("No series");
             }
 
-            return seriesBO;
+            return directorBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

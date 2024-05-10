@@ -3,6 +3,8 @@ package com.pracs.films.bussiness.services;
 import com.pracs.films.bussiness.bo.SerieBO;
 import com.pracs.films.exceptions.ServiceException;
 import com.pracs.films.persistence.models.Serie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -38,11 +40,11 @@ public interface SerieService {
     SerieBO findById(long id) throws ServiceException;
 
     /**
-     * Method for get all series
+     * Method for get all series paginated
      *
      * @return List of SerieBO
      */
-    List<SerieBO> findAll() throws ServiceException;
+    Page<SerieBO> findAll(Pageable pageable) throws ServiceException;
 
     /**
      * Method for delete a serie by his id

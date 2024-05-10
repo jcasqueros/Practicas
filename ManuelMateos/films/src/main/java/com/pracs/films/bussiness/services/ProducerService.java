@@ -3,6 +3,8 @@ package com.pracs.films.bussiness.services;
 import com.pracs.films.bussiness.bo.ProducerBO;
 import com.pracs.films.exceptions.ServiceException;
 import com.pracs.films.persistence.models.Producer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -38,11 +40,11 @@ public interface ProducerService {
     ProducerBO findById(long id) throws ServiceException;
 
     /**
-     * Method for get all producers
+     * Method for get all producers paginated
      *
      * @return List of ProducerBO
      */
-    List<ProducerBO> findAll() throws ServiceException;
+    Page<ProducerBO> findAll(Pageable pageable) throws ServiceException;
 
     /**
      * Method for delete a producer by his id

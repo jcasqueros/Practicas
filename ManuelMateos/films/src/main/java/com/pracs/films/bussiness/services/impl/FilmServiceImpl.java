@@ -8,11 +8,15 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.models.Film;
 import com.pracs.films.persistence.repositories.criteria.impl.FilmRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.FilmRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -89,18 +93,20 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmBO> findAll() throws ServiceException {
-        List<FilmBO> filmsBO = new ArrayList<>();
-
+    public Page<FilmBO> findAll(Pageable pageable) throws ServiceException {
         try {
-            //Búsqueda de los todos lo peliculas, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            filmsBO = filmRepository.findAll().stream().map(modelToBoConverter::filmModelToBo).toList();
+            //Búsqueda de los todos las peliculas, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Film> filmPage = filmRepository.findAll(pageable);
+            List<FilmBO> filmBOList = filmPage.stream().map(modelToBoConverter::filmModelToBo).toList();
 
-            if (filmsBO.isEmpty()) {
+            Page<FilmBO> filmBOPage = new PageImpl<>(filmBOList, filmPage.getPageable(), filmPage.getTotalPages());
+
+            if (filmBOList.isEmpty()) {
                 throw new EmptyException("No films");
             }
 
-            return filmsBO;
+            return filmBOPage;
+
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

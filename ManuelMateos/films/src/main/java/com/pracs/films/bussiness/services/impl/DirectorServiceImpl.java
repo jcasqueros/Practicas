@@ -8,11 +8,15 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.models.Director;
 import com.pracs.films.persistence.repositories.criteria.impl.DirectorRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -90,18 +94,20 @@ public class DirectorServiceImpl implements DirectorService {
     }
 
     @Override
-    public List<DirectorBO> findAll() throws ServiceException {
-        List<DirectorBO> directorsBO = new ArrayList<>();
-
+    public Page<DirectorBO> findAll(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo directors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            directorsBO = directorRepository.findAll().stream().map(modelToBoConverter::directorModelToBo).toList();
+            Page<Director> directorPage = directorRepository.findAll(pageable);
+            List<DirectorBO> directorBOList = directorPage.stream().map(modelToBoConverter::directorModelToBo).toList();
 
-            if (directorsBO.isEmpty()) {
+            Page<DirectorBO> directorBOPage = new PageImpl<>(directorBOList, directorPage.getPageable(),
+                    directorPage.getTotalPages());
+
+            if (directorBOList.isEmpty()) {
                 throw new EmptyException("No directors");
             }
 
-            return directorsBO;
+            return directorBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

@@ -4,6 +4,8 @@ import com.pracs.films.bussiness.bo.DirectorBO;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.ServiceException;
 import com.pracs.films.persistence.models.Director;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -39,11 +41,11 @@ public interface DirectorService {
     DirectorBO findById(long id) throws ServiceException;
 
     /**
-     * Method for get all directors
+     * Method for get all directors paginated
      *
      * @return List of DirectorBO
      */
-    List<DirectorBO> findAll() throws EmptyException, ServiceException;
+    Page<DirectorBO> findAll(Pageable pageable) throws EmptyException, ServiceException;
 
     /**
      * Method for delete a director by his id
