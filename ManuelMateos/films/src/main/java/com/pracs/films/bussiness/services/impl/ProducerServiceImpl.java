@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -180,19 +179,20 @@ public class ProducerServiceImpl implements ProducerService {
     }
 
     @Override
-    public List<ProducerBO> findAllCriteria() throws ServiceException {
-        List<ProducerBO> producersBO = new ArrayList<>();
-
+    public Page<ProducerBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo productors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            producersBO = producerRepositoryCriteria.findAllProducer().stream()
-                    .map(modelToBoConverter::producerModelToBo).toList();
+            Page<Producer> filmPage = producerRepository.findAll(pageable);
+            List<ProducerBO> prodoucerBOList = filmPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
-            if (producersBO.isEmpty()) {
-                throw new EmptyException("No films");
+            Page<ProducerBO> producerBOPage = new PageImpl<>(prodoucerBOList, filmPage.getPageable(),
+                    filmPage.getTotalPages());
+
+            if (prodoucerBOList.isEmpty()) {
+                throw new EmptyException("No producers");
             }
 
-            return producersBO;
+            return producerBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

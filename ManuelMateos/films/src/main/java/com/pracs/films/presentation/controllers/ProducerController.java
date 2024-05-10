@@ -47,18 +47,19 @@ public class ProducerController {
     @GetMapping("/findAll")
     public ResponseEntity<List<ProducerDtoOut>> findAll(@RequestParam boolean method, @RequestParam int page,
             @RequestParam int size, @RequestParam String sort) throws ServiceException {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
         if (method) {
             try {
                 return new ResponseEntity<>(
-                        producerService.findAllCriteria().stream().map(boToDtoConverter::producerBoToDtoOut).toList(),
-                        HttpStatus.OK);
+                        producerService.findAllCriteria(pageable).stream().map(boToDtoConverter::producerBoToDtoOut)
+                                .toList(), HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-
             return new ResponseEntity<>(
                     producerService.findAll(pageable).stream().map(boToDtoConverter::producerBoToDtoOut).toList(),
                     HttpStatus.OK);

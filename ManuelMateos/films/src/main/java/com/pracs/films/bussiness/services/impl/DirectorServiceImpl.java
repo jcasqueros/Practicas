@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -182,19 +181,20 @@ public class DirectorServiceImpl implements DirectorService {
     }
 
     @Override
-    public List<DirectorBO> findAllCriteria() throws ServiceException {
-        List<DirectorBO> directorsBO = new ArrayList<>();
-
+    public Page<DirectorBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo directors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            directorsBO = directorRepositoryCriteria.findAllDirector().stream()
-                    .map(modelToBoConverter::directorModelToBo).toList();
+            Page<Director> directorPage = directorRepository.findAll(pageable);
+            List<DirectorBO> directorBOList = directorPage.stream().map(modelToBoConverter::directorModelToBo).toList();
 
-            if (directorsBO.isEmpty()) {
+            Page<DirectorBO> directorBOPage = new PageImpl<>(directorBOList, directorPage.getPageable(),
+                    directorPage.getTotalPages());
+
+            if (directorBOList.isEmpty()) {
                 throw new EmptyException("No directors");
             }
 
-            return directorsBO;
+            return directorBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

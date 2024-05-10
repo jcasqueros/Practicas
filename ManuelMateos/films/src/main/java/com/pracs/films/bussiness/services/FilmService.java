@@ -6,8 +6,6 @@ import com.pracs.films.persistence.models.Film;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 /**
  * Service of the model {@link Film}
  *
@@ -78,11 +76,11 @@ public interface FilmService {
     FilmBO findByIdCriteria(long id) throws ServiceException;
 
     /**
-     * Method for get all films
+     * Method for get all films paginated
      *
      * @return List of FilmBO
      */
-    List<FilmBO> findAllCriteria() throws ServiceException;
+    Page<FilmBO> findAllCriteria(Pageable pageable) throws ServiceException;
 
     /**
      * Method for delete a film by his id

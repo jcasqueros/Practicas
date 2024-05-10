@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Controller of {@link Actor}
  *
@@ -43,20 +45,20 @@ public class ActorController {
      * @throws ServiceException
      */
     @GetMapping("/findAll")
-    public ResponseEntity<?> findAll(@RequestParam boolean method, @RequestParam int page, @RequestParam int size,
-            @RequestParam String sort) throws ServiceException {
+    public ResponseEntity<List<ActorDtoOut>> findAll(@RequestParam boolean method, @RequestParam int page,
+            @RequestParam int size, @RequestParam String sort) throws ServiceException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
         if (method) {
             try {
                 return new ResponseEntity<>(
-                        actorService.findAllCriteria().stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                        actorService.findAllCriteria(pageable).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
                         HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-
             return new ResponseEntity<>(
                     actorService.findAll(pageable).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
                     HttpStatus.OK);

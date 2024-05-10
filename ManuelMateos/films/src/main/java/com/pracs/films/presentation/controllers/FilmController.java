@@ -47,18 +47,19 @@ public class FilmController {
     @GetMapping("/findAll")
     public ResponseEntity<List<FilmDtoOut>> findAll(@RequestParam boolean method, @RequestParam int page,
             @RequestParam int size, @RequestParam String sort) throws ServiceException {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
         if (method) {
             try {
                 return new ResponseEntity<>(
-                        filmService.findAllCriteria().stream().map(boToDtoConverter::filmBoToDtoOut).toList(),
+                        filmService.findAllCriteria(pageable).stream().map(boToDtoConverter::filmBoToDtoOut).toList(),
                         HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-
             return new ResponseEntity<>(
                     filmService.findAll(pageable).stream().map(boToDtoConverter::filmBoToDtoOut).toList(),
                     HttpStatus.OK);

@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -106,7 +105,6 @@ public class FilmServiceImpl implements FilmService {
             }
 
             return filmBOPage;
-
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
@@ -182,18 +180,19 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmBO> findAllCriteria() throws ServiceException {
-        List<FilmBO> filmsBO = new ArrayList<>();
-
+    public Page<FilmBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo peliculas, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            filmsBO = filmRepositoryCriteria.findAllFilm().stream().map(modelToBoConverter::filmModelToBo).toList();
+            Page<Film> filmPage = filmRepository.findAll(pageable);
+            List<FilmBO> filmBOList = filmPage.stream().map(modelToBoConverter::filmModelToBo).toList();
 
-            if (filmsBO.isEmpty()) {
+            Page<FilmBO> filmBOPage = new PageImpl<>(filmBOList, filmPage.getPageable(), filmPage.getTotalPages());
+
+            if (filmBOList.isEmpty()) {
                 throw new EmptyException("No films");
             }
 
-            return filmsBO;
+            return filmBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

@@ -7,8 +7,6 @@ import com.pracs.films.persistence.models.Director;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 /**
  * Service of the model {@link Director}
  *
@@ -79,11 +77,11 @@ public interface DirectorService {
     DirectorBO findByIdCriteria(long id) throws ServiceException;
 
     /**
-     * Method for get all directors
+     * Method for get all directors paginated
      *
      * @return List of DirectorBO
      */
-    List<DirectorBO> findAllCriteria() throws EmptyException, ServiceException;
+    Page<DirectorBO> findAllCriteria(Pageable pageable) throws EmptyException, ServiceException;
 
     /**
      * Method for delete a director by his id

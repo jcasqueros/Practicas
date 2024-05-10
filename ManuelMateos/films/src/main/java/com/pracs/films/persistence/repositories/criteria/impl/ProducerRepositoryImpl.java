@@ -10,6 +10,9 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -55,14 +58,36 @@ public class ProducerRepositoryImpl implements ProducerCustomRepository {
     }
 
     @Override
-    public List<Producer> findAllProducer() {
+    public Page<Producer> findAllProducer(Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Producer> criteriaQuery = criteriaBuilder.createQuery(Producer.class);
 
         Root<Producer> producer = criteriaQuery.from(Producer.class);
         criteriaQuery.select(producer);
 
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        String sort = String.valueOf(pageable.getSort()).split(":")[0].trim();
+        criteriaQuery.orderBy(criteriaBuilder.asc(producer.get(sort)));
+
+        TypedQuery<Producer> query = entityManager.createQuery(criteriaQuery);
+
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+
+        List<Producer> producers = query.getResultList();
+
+        long totalElements = countAllProducers();
+
+        return new PageImpl<>(producers, pageable, totalElements);
+    }
+
+    private long countAllProducers() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+
+        Root<Producer> producer = countQuery.from(Producer.class);
+        countQuery.select(criteriaBuilder.count(producer));
+
+        return entityManager.createQuery(countQuery).getSingleResult();
     }
 
     @Override

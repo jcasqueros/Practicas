@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -179,18 +178,20 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public List<ActorBO> findAllCriteria() throws ServiceException {
-        List<ActorBO> actorsBO = new ArrayList<>();
-
+    public Page<ActorBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
-            //Búsqueda de los todos lo actors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            actorsBO = actorRepositoryCriteria.findAllActor().stream().map(modelToBoConverter::actorModelToBo).toList();
+            //Búsqueda de los todos los actores, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Actor> actorPage = actorRepositoryCriteria.findAllActors(pageable);
 
-            if (actorsBO.isEmpty()) {
+            List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
+
+            Page<ActorBO> actorBOPage = new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
+
+            if (actorBOList.isEmpty()) {
                 throw new EmptyException("No actors");
             }
 
-            return actorsBO;
+            return actorBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
