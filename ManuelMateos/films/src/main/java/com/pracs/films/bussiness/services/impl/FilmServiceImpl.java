@@ -41,11 +41,12 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO save(FilmBO filmBO) throws ServiceException {
         try {
-
+            //Comprobar si existe ya un pelicula registrado con el mismo id.
             if (filmRepository.existsById(filmBO.getId())) {
                 throw new DuplicatedIdException("Existing production");
             }
 
+            // Conversión de model a bo del resultado de crear un pelicula.
             return modelToBoConverter.filmModelToBo(filmRepository.save(boToModelConverter.filmBoToModel(filmBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
@@ -56,13 +57,18 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO update(FilmBO filmBO) throws ServiceException {
         try {
+            // Búsqueda de un pelicula con el id introducido para comprobar que existe
             FilmBO savedfilmBO = modelToBoConverter.filmModelToBo(filmRepository.findById(filmBO.getId())
                     .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+
+            //Actualización con los campos introducidos
             savedfilmBO.setTitle(filmBO.getTitle());
             savedfilmBO.setDebut(filmBO.getDebut());
             savedfilmBO.setDirector(filmBO.getDirector());
             savedfilmBO.setProducer(filmBO.getProducer());
             savedfilmBO.setActors(filmBO.getActors());
+
+            // Conversion de model a bo del resultado de guardar un pelicula
             return modelToBoConverter.filmModelToBo(filmRepository.save(boToModelConverter.filmBoToModel(savedfilmBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
@@ -73,6 +79,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO findById(long id) throws ServiceException {
         try {
+            //Comprobar si existe ya un pelicula registrado con el mismo id.
             return modelToBoConverter.filmModelToBo(
                     filmRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorProduction)));
         } catch (NestedRuntimeException e) {
@@ -86,6 +93,7 @@ public class FilmServiceImpl implements FilmService {
         List<FilmBO> filmsBO = new ArrayList<>();
 
         try {
+            //Búsqueda de los todos lo peliculas, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             filmsBO = filmRepository.findAll().stream().map(modelToBoConverter::filmModelToBo).toList();
 
             if (filmsBO.isEmpty()) {
@@ -102,7 +110,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void deleteById(long id) throws ServiceException {
         try {
-
+            //Comprobar si el pelicula no existe
             if (!filmRepository.existsById(id)) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorProduction);
@@ -118,11 +126,12 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO saveCriteria(FilmBO filmBO) throws ServiceException {
         try {
-
+            //Comprobar si existe ya un pelicula registrado con el mismo id.
             if (!filmRepositoryCriteria.findFilmById(filmBO.getId()).isEmpty()) {
                 throw new DuplicatedIdException("Existing production");
             }
 
+            // Conversión de model a bo del resultado de crear un pelicula.
             return modelToBoConverter.filmModelToBo(
                     filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO)));
         } catch (NestedRuntimeException e) {
@@ -134,14 +143,18 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO updateCriteria(FilmBO filmBO) throws ServiceException {
         try {
+            // Búsqueda de un pelicula con el id introducido para comprobar que existe
             FilmBO savedfilmBO = modelToBoConverter.filmModelToBo(filmRepositoryCriteria.findFilmById(filmBO.getId())
                     .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
 
+            //Actualización con los campos introducidos
             savedfilmBO.setTitle(filmBO.getTitle());
             savedfilmBO.setDebut(filmBO.getDebut());
             savedfilmBO.setDirector(filmBO.getDirector());
             savedfilmBO.setProducer(filmBO.getProducer());
             savedfilmBO.setActors(filmBO.getActors());
+
+            // Conversion de model a bo del resultado de guardar un pelicula
             return modelToBoConverter.filmModelToBo(
                     filmRepositoryCriteria.updateFilm(boToModelConverter.filmBoToModel(savedfilmBO)));
         } catch (NestedRuntimeException e) {
@@ -153,6 +166,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO findByIdCriteria(long id) throws ServiceException {
         try {
+            // Conversión de model a bo del resultado de buscar un pelicula por id.
             return modelToBoConverter.filmModelToBo(filmRepositoryCriteria.findFilmById(id)
                     .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
         } catch (NestedRuntimeException e) {
@@ -166,6 +180,7 @@ public class FilmServiceImpl implements FilmService {
         List<FilmBO> filmsBO = new ArrayList<>();
 
         try {
+            //Búsqueda de los todos lo peliculas, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             filmsBO = filmRepositoryCriteria.findAllFilm().stream().map(modelToBoConverter::filmModelToBo).toList();
 
             if (filmsBO.isEmpty()) {
@@ -182,7 +197,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void deleteByIdCriteria(long id) throws ServiceException {
         try {
-
+            //Comprobar si existe el pelicula con el id pasado
             if (filmRepositoryCriteria.findFilmById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorProduction);

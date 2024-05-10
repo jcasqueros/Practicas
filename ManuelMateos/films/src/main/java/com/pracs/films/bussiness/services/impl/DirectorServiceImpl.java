@@ -41,11 +41,12 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO save(DirectorBO directorBO) throws ServiceException {
         try {
-
+            //Comprobar si existe ya un director registrado con el mismo id.
             if (directorRepository.existsById(directorBO.getId())) {
                 throw new DuplicatedIdException("Existing person");
             }
 
+            // Conversión de model a bo del resultado de crear un director.
             return modelToBoConverter.directorModelToBo(
                     directorRepository.save(boToModelConverter.directorBoToModel(directorBO)));
         } catch (NestedRuntimeException e) {
@@ -57,12 +58,17 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO update(DirectorBO directorBO) throws ServiceException {
         try {
+            // Búsqueda de un director con el id introducido para comprobar que existe
             DirectorBO savedDirectorBO = modelToBoConverter.directorModelToBo(
                     directorRepository.findById(directorBO.getId())
                             .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+
+            //Actualización con los campos introducidos
             savedDirectorBO.setName(directorBO.getName());
             savedDirectorBO.setAge(directorBO.getAge());
             savedDirectorBO.setNationality(directorBO.getNationality());
+
+            // Conversion de model a bo del resultado de guardar un director
             return modelToBoConverter.directorModelToBo(
                     directorRepository.save(boToModelConverter.directorBoToModel(savedDirectorBO)));
         } catch (NestedRuntimeException e) {
@@ -74,6 +80,7 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO findById(long id) throws ServiceException {
         try {
+            //Comprobar si existe ya un director registrado con el mismo id.
             return modelToBoConverter.directorModelToBo(
                     directorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorPerson)));
         } catch (NestedRuntimeException e) {
@@ -87,6 +94,7 @@ public class DirectorServiceImpl implements DirectorService {
         List<DirectorBO> directorsBO = new ArrayList<>();
 
         try {
+            //Búsqueda de los todos lo directors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             directorsBO = directorRepository.findAll().stream().map(modelToBoConverter::directorModelToBo).toList();
 
             if (directorsBO.isEmpty()) {
@@ -103,7 +111,7 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public void deleteById(long id) throws ServiceException {
         try {
-
+            //Comprobar si el director no existe
             if (!directorRepository.existsById(id)) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorPerson);
@@ -119,11 +127,12 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO saveCriteria(DirectorBO directorBO) throws ServiceException {
         try {
-
+            //Comprobar si existe ya un director registrado con el mismo id.
             if (!directorRepositoryCriteria.findDirectorById(directorBO.getId()).isEmpty()) {
                 throw new DuplicatedIdException("Existing person");
             }
 
+            // Conversión de model a bo del resultado de crear un director.
             return modelToBoConverter.directorModelToBo(
                     directorRepositoryCriteria.saveDirector(boToModelConverter.directorBoToModel(directorBO)));
         } catch (NestedRuntimeException e) {
@@ -135,13 +144,17 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO updateCriteria(DirectorBO directorBO) throws ServiceException {
         try {
+            // Búsqueda de un director con el id introducido para comprobar que existe
             DirectorBO savedDirectorBO = modelToBoConverter.directorModelToBo(
                     directorRepositoryCriteria.findDirectorById(directorBO.getId())
                             .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
 
+            //Actualización con los campos introducidos
             savedDirectorBO.setName(directorBO.getName());
             savedDirectorBO.setAge(directorBO.getAge());
             savedDirectorBO.setNationality(directorBO.getNationality());
+
+            // Conversion de model a bo del resultado de guardar un director
             return modelToBoConverter.directorModelToBo(
                     directorRepositoryCriteria.updateDirector(boToModelConverter.directorBoToModel(savedDirectorBO)));
         } catch (NestedRuntimeException e) {
@@ -153,6 +166,7 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO findByIdCriteria(long id) throws ServiceException {
         try {
+            // Conversión de model a bo del resultado de buscar un director por id.
             return modelToBoConverter.directorModelToBo(directorRepositoryCriteria.findDirectorById(id)
                     .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
         } catch (NestedRuntimeException e) {
@@ -166,6 +180,7 @@ public class DirectorServiceImpl implements DirectorService {
         List<DirectorBO> directorsBO = new ArrayList<>();
 
         try {
+            //Búsqueda de los todos lo directors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             directorsBO = directorRepositoryCriteria.findAllDirector().stream()
                     .map(modelToBoConverter::directorModelToBo).toList();
 
@@ -183,7 +198,7 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public void deleteByIdCriteria(long id) throws ServiceException {
         try {
-
+            //Comprobar si existe el director con el id pasado
             if (directorRepositoryCriteria.findDirectorById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorPerson);

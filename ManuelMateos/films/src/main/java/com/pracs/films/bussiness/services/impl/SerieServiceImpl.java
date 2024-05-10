@@ -41,11 +41,12 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public SerieBO save(SerieBO serieBO) throws ServiceException {
         try {
-
+            //Comprobar si existe ya un serie registrado con el mismo id.
             if (serieRepository.existsById(serieBO.getId())) {
                 throw new DuplicatedIdException("Existing production");
             }
 
+            // Conversión de model a bo del resultado de crear un serie.
             return modelToBoConverter.serieModelToBo(serieRepository.save(boToModelConverter.serieBoToModel(serieBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
@@ -56,13 +57,18 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public SerieBO update(SerieBO serieBO) throws ServiceException {
         try {
+            // Búsqueda de un serie con el id introducido para comprobar que existe
             SerieBO savedSerieBO = modelToBoConverter.serieModelToBo(serieRepository.findById(serieBO.getId())
                     .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+
+            //Actualización con los campos introducidos
             savedSerieBO.setTitle(serieBO.getTitle());
             savedSerieBO.setDebut(serieBO.getDebut());
             savedSerieBO.setDirector(serieBO.getDirector());
             savedSerieBO.setProducer(serieBO.getProducer());
             savedSerieBO.setActors(serieBO.getActors());
+
+            // Conversion de model a bo del resultado de guardar un serie
             return modelToBoConverter.serieModelToBo(
                     serieRepository.save(boToModelConverter.serieBoToModel(savedSerieBO)));
         } catch (NestedRuntimeException e) {
@@ -74,6 +80,7 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public SerieBO findById(long id) throws ServiceException {
         try {
+            //Comprobar si existe ya un serie registrado con el mismo id.
             return modelToBoConverter.serieModelToBo(
                     serieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorProduction)));
         } catch (NestedRuntimeException e) {
@@ -87,6 +94,7 @@ public class SerieServiceImpl implements SerieService {
         List<SerieBO> seriesBO = new ArrayList<>();
 
         try {
+            //Búsqueda de los todos lo series, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             seriesBO = serieRepository.findAll().stream().map(modelToBoConverter::serieModelToBo).toList();
 
             if (seriesBO.isEmpty()) {
@@ -103,7 +111,7 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public void deleteById(long id) throws ServiceException {
         try {
-
+            //Comprobar si el serie no existe
             if (!serieRepository.existsById(id)) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorProduction);
@@ -119,11 +127,12 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public SerieBO saveCriteria(SerieBO serieBO) throws ServiceException {
         try {
-
+            //Comprobar si existe ya un serie registrado con el mismo id.
             if (!serieRepositoryCriteria.findSerieById(serieBO.getId()).isEmpty()) {
                 throw new DuplicatedIdException("Existing production");
             }
 
+            // Conversión de model a bo del resultado de crear un serie.
             return modelToBoConverter.serieModelToBo(
                     serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO)));
         } catch (NestedRuntimeException e) {
@@ -135,15 +144,18 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public SerieBO updateCriteria(SerieBO serieBO) throws ServiceException {
         try {
+            // Búsqueda de un serie con el id introducido para comprobar que existe
             SerieBO savedSerieBO = modelToBoConverter.serieModelToBo(
                     serieRepositoryCriteria.findSerieById(serieBO.getId())
                             .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
-
+            //Actualización con los campos introducidos
             savedSerieBO.setTitle(serieBO.getTitle());
             savedSerieBO.setDebut(serieBO.getDebut());
             savedSerieBO.setDirector(serieBO.getDirector());
             savedSerieBO.setProducer(serieBO.getProducer());
             savedSerieBO.setActors(serieBO.getActors());
+
+            // Conversion de model a bo del resultado de guardar un serie
             return modelToBoConverter.serieModelToBo(
                     serieRepositoryCriteria.updateSerie(boToModelConverter.serieBoToModel(savedSerieBO)));
         } catch (NestedRuntimeException e) {
@@ -155,6 +167,7 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public SerieBO findByIdCriteria(long id) throws ServiceException {
         try {
+            // Conversión de model a bo del resultado de buscar un serie por id.
             return modelToBoConverter.serieModelToBo(serieRepositoryCriteria.findSerieById(id)
                     .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
         } catch (NestedRuntimeException e) {
@@ -168,6 +181,7 @@ public class SerieServiceImpl implements SerieService {
         List<SerieBO> seriesBO = new ArrayList<>();
 
         try {
+            //Búsqueda de los todos lo series, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             seriesBO = serieRepositoryCriteria.findAllSerie().stream().map(modelToBoConverter::serieModelToBo).toList();
 
             if (seriesBO.isEmpty()) {
@@ -184,6 +198,7 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public void deleteByIdCriteria(long id) throws ServiceException {
         try {
+            //Comprobar si existe el serie con el id pasado
             if (serieRepositoryCriteria.findSerieById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorProduction);

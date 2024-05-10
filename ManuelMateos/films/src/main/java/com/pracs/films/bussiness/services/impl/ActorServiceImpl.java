@@ -42,10 +42,12 @@ public class ActorServiceImpl implements ActorService {
     public ActorBO save(ActorBO actorBO) throws ServiceException {
         try {
 
+            //Comprobar si existe ya un actor registrado con el mismo id.
             if (actorRepository.existsById(actorBO.getId())) {
                 throw new DuplicatedIdException("Existing person");
             }
 
+            // Conversión de model a bo del resultado de crear un actor.
             return modelToBoConverter.actorModelToBo(actorRepository.save(boToModelConverter.actorBoToModel(actorBO)));
         } catch (NestedRuntimeException e) {
             log.error(errorService);
@@ -56,11 +58,16 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO update(ActorBO actorBO) throws ServiceException {
         try {
+            // Búsqueda de un actor con el id introducido para comprobar que existe
             ActorBO savedActorBO = modelToBoConverter.actorModelToBo(actorRepository.findById(actorBO.getId())
                     .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+
+            //Actualización con los campos introducidos
             savedActorBO.setName(actorBO.getName());
             savedActorBO.setAge(actorBO.getAge());
             savedActorBO.setNationality(actorBO.getNationality());
+
+            // Conversion de model a bo del resultado de guardar un actor
             return modelToBoConverter.actorModelToBo(
                     actorRepository.save(boToModelConverter.actorBoToModel(savedActorBO)));
         } catch (NestedRuntimeException e) {
@@ -72,6 +79,7 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO findById(long id) throws ServiceException {
         try {
+            // Conversión de model a bo del resultado de buscar un actor por id.
             return modelToBoConverter.actorModelToBo(
                     actorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorPerson)));
         } catch (NestedRuntimeException e) {
@@ -85,6 +93,7 @@ public class ActorServiceImpl implements ActorService {
         List<ActorBO> actorsBO = new ArrayList<>();
 
         try {
+            //Búsqueda de los todos lo actors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             actorsBO = actorRepository.findAll().stream().map(modelToBoConverter::actorModelToBo).toList();
 
             if (actorsBO.isEmpty()) {
@@ -102,6 +111,7 @@ public class ActorServiceImpl implements ActorService {
     public void deleteById(long id) throws ServiceException {
         try {
 
+            //Comprobar si el actor no existe
             if (!actorRepository.existsById(id)) {
                 throw new EntityNotFoundException(errorPerson);
             }
@@ -116,9 +126,12 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO saveCriteria(ActorBO actorBO) throws ServiceException {
         try {
+            //Comprobar si existe ya un actor registrado con el mismo id.
             if (!actorRepositoryCriteria.findActorById(actorBO.getId()).isEmpty()) {
                 throw new DuplicatedIdException("Existing person");
             }
+
+            // Conversión de model a bo del resultado de crear un actor.
             return modelToBoConverter.actorModelToBo(
                     actorRepositoryCriteria.saveActor(boToModelConverter.actorBoToModel(actorBO)));
         } catch (NestedRuntimeException e) {
@@ -130,15 +143,16 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO updateCriteria(ActorBO actorBO) throws ServiceException {
         try {
+            // Búsqueda de un actor con el id introducido para comprobar que existe
             ActorBO savedActorBO = modelToBoConverter.actorModelToBo(
                     actorRepositoryCriteria.findActorById(actorBO.getId())
                             .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
-
+            //Actualización con los campos introducidos
             savedActorBO.setName(actorBO.getName());
             savedActorBO.setAge(actorBO.getAge());
             savedActorBO.setNationality(actorBO.getNationality());
 
-            System.out.println(savedActorBO);
+            // Conversion de model a bo del resultado de guardar un actor
             return modelToBoConverter.actorModelToBo(
                     actorRepositoryCriteria.updateActor(boToModelConverter.actorBoToModel(savedActorBO)));
         } catch (NestedRuntimeException e) {
@@ -150,6 +164,7 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO findByIdCriteria(long id) throws ServiceException {
         try {
+            // Conversión de model a bo del resultado de buscar un actor por id.
             return modelToBoConverter.actorModelToBo(actorRepositoryCriteria.findActorById(id)
                     .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
         } catch (NestedRuntimeException e) {
@@ -163,6 +178,7 @@ public class ActorServiceImpl implements ActorService {
         List<ActorBO> actorsBO = new ArrayList<>();
 
         try {
+            //Búsqueda de los todos lo actors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             actorsBO = actorRepositoryCriteria.findAllActor().stream().map(modelToBoConverter::actorModelToBo).toList();
 
             if (actorsBO.isEmpty()) {
@@ -179,6 +195,7 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public void deleteByIdCriteria(long id) throws ServiceException {
         try {
+            //Comprobar si existe el actor con el id pasado
             if (actorRepositoryCriteria.findActorById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
                 throw new EntityNotFoundException(errorPerson);
