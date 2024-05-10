@@ -9,6 +9,7 @@ import com.viewnext.films.persistencelayer.repository.criteria.DirectorCriteriaR
 import com.viewnext.films.persistencelayer.repository.jpa.DirectorJPARepository;
 import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.List;
  *
  * @author Francisco Balonero Olivera
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DirectorServiceImpl implements DirectorService {
@@ -51,9 +53,9 @@ public class DirectorServiceImpl implements DirectorService {
             return converter.directorEntityToBO(
                     directorCriteriaRepository.getDirectorById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching director by id: {}", id, e);
             throw new ServiceException("The director could not be searched", e);
         }
-
     }
 
     @Override
@@ -65,11 +67,10 @@ public class DirectorServiceImpl implements DirectorService {
             } else {
                 throw new NotFoundException();
             }
-
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all directors", e);
             throw new ServiceException("The directors could not be searched", e);
         }
-
     }
 
     @Override
@@ -77,6 +78,7 @@ public class DirectorServiceImpl implements DirectorService {
         try {
             directorCriteriaRepository.deleteDirector(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting director by id: {}", id, e);
             throw new ServiceException("The director could not be deleted", e);
         }
     }
@@ -88,6 +90,7 @@ public class DirectorServiceImpl implements DirectorService {
             return converter.directorEntityToBO(
                     directorCriteriaRepository.updateDirector(converter.directorBOToEntity(directorBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error updating director: {}", directorBO, e);
             throw new ServiceException("The director could not be updated", e);
         }
     }
@@ -98,9 +101,9 @@ public class DirectorServiceImpl implements DirectorService {
             return converter.directorEntityToBO(
                     directorCriteriaRepository.createDirector(converter.directorBOToEntity(directorBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating director: {}", directorBO, e);
             throw new ServiceException("The director could not be created", e);
         }
-
     }
 
     @Override
@@ -108,9 +111,9 @@ public class DirectorServiceImpl implements DirectorService {
         try {
             return converter.directorEntityToBO(directorJPARepository.findById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching director by id: {}", id, e);
             throw new ServiceException("The director could not be searched", e);
         }
-
     }
 
     @Override
@@ -123,6 +126,7 @@ public class DirectorServiceImpl implements DirectorService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all directors", e);
             throw new ServiceException("The directors could not be searched", e);
         }
     }
@@ -132,6 +136,7 @@ public class DirectorServiceImpl implements DirectorService {
         try {
             directorJPARepository.deleteById(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting director by id: {}", id, e);
             throw new ServiceException("The director could not be deleted", e);
         }
     }
@@ -146,9 +151,9 @@ public class DirectorServiceImpl implements DirectorService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error updating director: {}", directorBO, e);
             throw new ServiceException("The director could not be updated", e);
         }
-
     }
 
     @Override
@@ -156,8 +161,8 @@ public class DirectorServiceImpl implements DirectorService {
         try {
             return converter.directorEntityToBO(directorJPARepository.save(converter.directorBOToEntity(directorBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating director: {}", directorBO, e);
             throw new ServiceException("The director could not be created", e);
         }
     }
-
 }

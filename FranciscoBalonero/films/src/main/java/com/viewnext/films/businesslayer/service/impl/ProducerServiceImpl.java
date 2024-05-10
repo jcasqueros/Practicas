@@ -9,6 +9,7 @@ import com.viewnext.films.persistencelayer.repository.criteria.ProducerCriteriaR
 import com.viewnext.films.persistencelayer.repository.jpa.ProducerJPARepository;
 import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.List;
  *
  * @author Francisco Balonero Olivera
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProducerServiceImpl implements ProducerService {
@@ -51,9 +53,9 @@ public class ProducerServiceImpl implements ProducerService {
             return converter.producerEntityToBO(
                     producerCriteriaRepository.getProducerById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching producer by id: {}", id, e);
             throw new ServiceException("The producer could not be searched", e);
         }
-
     }
 
     @Override
@@ -65,11 +67,10 @@ public class ProducerServiceImpl implements ProducerService {
             } else {
                 throw new NotFoundException();
             }
-
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all producers", e);
             throw new ServiceException("The producers could not be searched", e);
         }
-
     }
 
     @Override
@@ -77,6 +78,7 @@ public class ProducerServiceImpl implements ProducerService {
         try {
             producerCriteriaRepository.deleteProducer(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting producer by id: {}", id, e);
             throw new ServiceException("The producer could not be deleted", e);
         }
     }
@@ -88,6 +90,7 @@ public class ProducerServiceImpl implements ProducerService {
             return converter.producerEntityToBO(
                     producerCriteriaRepository.updateProducer(converter.producerBOToEntity(producerBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error updating producer: {}", producerBO, e);
             throw new ServiceException("The producer could not be updated", e);
         }
     }
@@ -98,9 +101,9 @@ public class ProducerServiceImpl implements ProducerService {
             return converter.producerEntityToBO(
                     producerCriteriaRepository.createProducer(converter.producerBOToEntity(producerBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating producer: {}", producerBO, e);
             throw new ServiceException("The producer could not be created", e);
         }
-
     }
 
     @Override
@@ -108,9 +111,9 @@ public class ProducerServiceImpl implements ProducerService {
         try {
             return converter.producerEntityToBO(producerJPARepository.findById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching producer by id: {}", id, e);
             throw new ServiceException("The producer could not be searched", e);
         }
-
     }
 
     @Override
@@ -123,6 +126,7 @@ public class ProducerServiceImpl implements ProducerService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all producers", e);
             throw new ServiceException("The producers could not be searched", e);
         }
     }
@@ -132,6 +136,7 @@ public class ProducerServiceImpl implements ProducerService {
         try {
             producerJPARepository.deleteById(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting producer by id: {}", id, e);
             throw new ServiceException("The producer could not be deleted", e);
         }
     }
@@ -146,9 +151,9 @@ public class ProducerServiceImpl implements ProducerService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error updating producer: {}", producerBO, e);
             throw new ServiceException("The producer could not be updated", e);
         }
-
     }
 
     @Override
@@ -156,8 +161,8 @@ public class ProducerServiceImpl implements ProducerService {
         try {
             return converter.producerEntityToBO(producerJPARepository.save(converter.producerBOToEntity(producerBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating producer: {}", producerBO, e);
             throw new ServiceException("The producer could not be created", e);
         }
     }
-
 }

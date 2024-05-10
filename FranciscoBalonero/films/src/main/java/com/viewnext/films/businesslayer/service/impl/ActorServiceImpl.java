@@ -9,6 +9,7 @@ import com.viewnext.films.persistencelayer.repository.criteria.ActorCriteriaRepo
 import com.viewnext.films.persistencelayer.repository.jpa.ActorJPARepository;
 import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ActorServiceImpl implements ActorService {
 
     /**
@@ -51,9 +53,9 @@ public class ActorServiceImpl implements ActorService {
             return converter.actorEntityToBO(
                     actorCriteriaRepository.getActorById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching actor by id: {}", id, e);
             throw new ServiceException("The actor could not be searched", e);
         }
-
     }
 
     @Override
@@ -65,11 +67,10 @@ public class ActorServiceImpl implements ActorService {
             } else {
                 throw new NotFoundException();
             }
-
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all actors", e);
             throw new ServiceException("The actors could not be searched", e);
         }
-
     }
 
     @Override
@@ -77,6 +78,7 @@ public class ActorServiceImpl implements ActorService {
         try {
             actorCriteriaRepository.deleteActor(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting actor by id: {}", id, e);
             throw new ServiceException("The actor could not be deleted", e);
         }
     }
@@ -87,6 +89,7 @@ public class ActorServiceImpl implements ActorService {
         try {
             return converter.actorEntityToBO(actorCriteriaRepository.updateActor(converter.actorBOToEntity(actorBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error updating actor: {}", actorBO, e);
             throw new ServiceException("The actor could not be updated", e);
         }
     }
@@ -96,9 +99,9 @@ public class ActorServiceImpl implements ActorService {
         try {
             return converter.actorEntityToBO(actorCriteriaRepository.createActor(converter.actorBOToEntity(actorBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating actor: {}", actorBO, e);
             throw new ServiceException("The actor could not be created", e);
         }
-
     }
 
     @Override
@@ -106,9 +109,9 @@ public class ActorServiceImpl implements ActorService {
         try {
             return converter.actorEntityToBO(actorJPARepository.findById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching actor by id: {}", id, e);
             throw new ServiceException("The actor could not be searched", e);
         }
-
     }
 
     @Override
@@ -121,6 +124,7 @@ public class ActorServiceImpl implements ActorService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all actors", e);
             throw new ServiceException("The actors could not be searched", e);
         }
     }
@@ -130,6 +134,7 @@ public class ActorServiceImpl implements ActorService {
         try {
             actorJPARepository.deleteById(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting actor by id: {}", id, e);
             throw new ServiceException("The actor could not be deleted", e);
         }
     }
@@ -143,9 +148,9 @@ public class ActorServiceImpl implements ActorService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error updating actor: {}", actorBO, e);
             throw new ServiceException("The actor could not be updated", e);
         }
-
     }
 
     @Override
@@ -153,8 +158,8 @@ public class ActorServiceImpl implements ActorService {
         try {
             return converter.actorEntityToBO(actorJPARepository.save(converter.actorBOToEntity(actorBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating actor: {}", actorBO, e);
             throw new ServiceException("The actor could not be created", e);
         }
     }
-
 }

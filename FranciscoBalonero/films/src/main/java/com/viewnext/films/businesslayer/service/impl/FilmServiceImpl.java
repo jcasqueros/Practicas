@@ -9,6 +9,7 @@ import com.viewnext.films.persistencelayer.repository.criteria.FilmCriteriaRepos
 import com.viewnext.films.persistencelayer.repository.jpa.FilmJPARepository;
 import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.List;
  *
  * @author Francisco Balonero Olivera
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
@@ -50,9 +52,9 @@ public class FilmServiceImpl implements FilmService {
         try {
             return converter.filmEntityToBO(filmCriteriaRepository.getFilmById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching film by id: {}", id, e);
             throw new ServiceException("The film could not be searched", e);
         }
-
     }
 
     @Override
@@ -64,11 +66,10 @@ public class FilmServiceImpl implements FilmService {
             } else {
                 throw new NotFoundException();
             }
-
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all films", e);
             throw new ServiceException("The films could not be searched", e);
         }
-
     }
 
     @Override
@@ -76,6 +77,7 @@ public class FilmServiceImpl implements FilmService {
         try {
             filmCriteriaRepository.deleteFilm(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting film by id: {}", id, e);
             throw new ServiceException("The film could not be deleted", e);
         }
     }
@@ -86,6 +88,7 @@ public class FilmServiceImpl implements FilmService {
         try {
             return converter.filmEntityToBO(filmCriteriaRepository.updateFilm(converter.filmBOToEntity(filmBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error updating film: {}", filmBO, e);
             throw new ServiceException("The film could not be updated", e);
         }
     }
@@ -95,9 +98,9 @@ public class FilmServiceImpl implements FilmService {
         try {
             return converter.filmEntityToBO(filmCriteriaRepository.createFilm(converter.filmBOToEntity(filmBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating film: {}", filmBO, e);
             throw new ServiceException("The film could not be created", e);
         }
-
     }
 
     @Override
@@ -105,9 +108,9 @@ public class FilmServiceImpl implements FilmService {
         try {
             return converter.filmEntityToBO(filmJPARepository.findById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching film by id: {}", id, e);
             throw new ServiceException("The film could not be searched", e);
         }
-
     }
 
     @Override
@@ -120,6 +123,7 @@ public class FilmServiceImpl implements FilmService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all films", e);
             throw new ServiceException("The films could not be searched", e);
         }
     }
@@ -129,6 +133,7 @@ public class FilmServiceImpl implements FilmService {
         try {
             filmJPARepository.deleteById(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting film by id: {}", id, e);
             throw new ServiceException("The film could not be deleted", e);
         }
     }
@@ -142,9 +147,9 @@ public class FilmServiceImpl implements FilmService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error updating film: {}", filmBO, e);
             throw new ServiceException("The film could not be updated", e);
         }
-
     }
 
     @Override
@@ -152,8 +157,8 @@ public class FilmServiceImpl implements FilmService {
         try {
             return converter.filmEntityToBO(filmJPARepository.save(converter.filmBOToEntity(filmBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating film: {}", filmBO, e);
             throw new ServiceException("The film could not be created", e);
         }
     }
-
 }

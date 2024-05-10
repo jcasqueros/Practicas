@@ -5,7 +5,7 @@ target/
 **/src/test/**/target/
 mvnw.cmd
 mvnw
-
+spring.log
 ### STS ###
 .apt_generated
 .classpath

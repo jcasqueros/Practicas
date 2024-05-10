@@ -9,6 +9,7 @@ import com.viewnext.films.persistencelayer.repository.criteria.SerieCriteriaRepo
 import com.viewnext.films.persistencelayer.repository.jpa.SerieJPARepository;
 import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.List;
  *
  * @author Francisco Balonero Olivera
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SerieServiceImpl implements SerieService {
@@ -51,9 +53,9 @@ public class SerieServiceImpl implements SerieService {
             return converter.serieEntityToBO(
                     serieCriteriaRepository.getSerieById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching serie by id: {}", id, e);
             throw new ServiceException("The serie could not be searched", e);
         }
-
     }
 
     @Override
@@ -65,11 +67,10 @@ public class SerieServiceImpl implements SerieService {
             } else {
                 throw new NotFoundException();
             }
-
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all series", e);
             throw new ServiceException("The series could not be searched", e);
         }
-
     }
 
     @Override
@@ -77,6 +78,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             serieCriteriaRepository.deleteSerie(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting serie by id: {}", id, e);
             throw new ServiceException("The serie could not be deleted", e);
         }
     }
@@ -87,6 +89,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             return converter.serieEntityToBO(serieCriteriaRepository.updateSerie(converter.serieBOToEntity(serieBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error updating serie: {}", serieBO, e);
             throw new ServiceException("The serie could not be updated", e);
         }
     }
@@ -96,9 +99,9 @@ public class SerieServiceImpl implements SerieService {
         try {
             return converter.serieEntityToBO(serieCriteriaRepository.createSerie(converter.serieBOToEntity(serieBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating serie: {}", serieBO, e);
             throw new ServiceException("The serie could not be created", e);
         }
-
     }
 
     @Override
@@ -106,9 +109,9 @@ public class SerieServiceImpl implements SerieService {
         try {
             return converter.serieEntityToBO(serieJPARepository.findById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            log.error("Error searching serie by id: {}", id, e);
             throw new ServiceException("The serie could not be searched", e);
         }
-
     }
 
     @Override
@@ -121,6 +124,7 @@ public class SerieServiceImpl implements SerieService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error searching all series", e);
             throw new ServiceException("The series could not be searched", e);
         }
     }
@@ -130,6 +134,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             serieJPARepository.deleteById(id);
         } catch (NestedRuntimeException e) {
+            log.error("Error deleting serie by id: {}", id, e);
             throw new ServiceException("The serie could not be deleted", e);
         }
     }
@@ -143,9 +148,9 @@ public class SerieServiceImpl implements SerieService {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            log.error("Error updating serie: {}", serieBO, e);
             throw new ServiceException("The serie could not be updated", e);
         }
-
     }
 
     @Override
@@ -153,8 +158,8 @@ public class SerieServiceImpl implements SerieService {
         try {
             return converter.serieEntityToBO(serieJPARepository.save(converter.serieBOToEntity(serieBO)));
         } catch (NestedRuntimeException e) {
+            log.error("Error creating serie: {}", serieBO, e);
             throw new ServiceException("The serie could not be created", e);
         }
     }
-
 }
