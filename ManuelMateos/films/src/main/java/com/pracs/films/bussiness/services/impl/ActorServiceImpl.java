@@ -8,14 +8,17 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.models.Actor;
 import com.pracs.films.persistence.repositories.criteria.impl.ActorRepositoryImpl;
 import com.pracs.films.persistence.repositories.jpa.ActorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,18 +92,19 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public List<ActorBO> findAll() throws ServiceException {
-        List<ActorBO> actorsBO = new ArrayList<>();
-
+    public Page<ActorBO> findAll(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo actors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            actorsBO = actorRepository.findAll().stream().map(modelToBoConverter::actorModelToBo).toList();
+            Page<Actor> actorPage = actorRepository.findAll(pageable);
+            List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
 
-            if (actorsBO.isEmpty()) {
+            Page<ActorBO> actorBOPage = new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
+
+            if (actorBOList.isEmpty()) {
                 throw new EmptyException("No actors");
             }
 
-            return actorsBO;
+            return actorBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
@@ -174,18 +178,20 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public List<ActorBO> findAllCriteria() throws ServiceException {
-        List<ActorBO> actorsBO = new ArrayList<>();
-
+    public Page<ActorBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
-            //Búsqueda de los todos lo actors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            actorsBO = actorRepositoryCriteria.findAllActor().stream().map(modelToBoConverter::actorModelToBo).toList();
+            //Búsqueda de los todos los actores, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Actor> actorPage = actorRepositoryCriteria.findAllActors(pageable);
 
-            if (actorsBO.isEmpty()) {
+            List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
+
+            Page<ActorBO> actorBOPage = new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
+
+            if (actorBOList.isEmpty()) {
                 throw new EmptyException("No actors");
             }
 
-            return actorsBO;
+            return actorBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

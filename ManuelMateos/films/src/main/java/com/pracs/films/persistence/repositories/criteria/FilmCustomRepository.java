@@ -1,8 +1,9 @@
 package com.pracs.films.persistence.repositories.criteria;
 
 import com.pracs.films.persistence.models.Film;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,11 +38,11 @@ public interface FilmCustomRepository {
     Optional<Film> findFilmById(long id);
 
     /**
-     * Method for get all films
+     * Method for get all films paginated
      *
      * @return List of Film
      */
-    List<Film> findAllFilm();
+    Page<Film> findAllFilm(Pageable pageable);
 
     /**
      * Method for delete a film by his id

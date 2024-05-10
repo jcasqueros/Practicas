@@ -3,8 +3,8 @@ package com.pracs.films.bussiness.services;
 import com.pracs.films.bussiness.bo.ActorBO;
 import com.pracs.films.exceptions.ServiceException;
 import com.pracs.films.persistence.models.Actor;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Service of the model {@link Actor}
@@ -38,11 +38,12 @@ public interface ActorService {
     ActorBO findById(long id) throws ServiceException;
 
     /**
-     * Method for get all actors
+     * Method for get all actors paginated
      *
+     * @param pageable
      * @return List of ActorBO
      */
-    List<ActorBO> findAll() throws ServiceException;
+    Page<ActorBO> findAll(Pageable pageable) throws ServiceException;
 
     /**
      * Method for delete an actor by his id
@@ -80,7 +81,7 @@ public interface ActorService {
      *
      * @return List of ActorBO
      */
-    List<ActorBO> findAllCriteria() throws ServiceException;
+    Page<ActorBO> findAllCriteria(Pageable pageable) throws ServiceException;
 
     /**
      * Method for delete an actor by his id
