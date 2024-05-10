@@ -187,7 +187,7 @@ class ActorServicesImplTest {
 	@Test
 	void testGetByIdCriteria() throws NotFoundException {
 
-		when(actorRepositoryCriteria.getById(1L)).thenReturn(actor1);
+		when(actorRepositoryCriteria.getById(1L)).thenReturn(Optional.of(actor1));
 		when(modelToBo.actorToActorBo(actor1)).thenReturn(actorBo1);
 
 		ActorBo result = actorServiceImpl.getByIdCriteria(1L);
@@ -199,6 +199,7 @@ class ActorServicesImplTest {
 		when(boToModel.boToActor(actorBo1)).thenReturn(actor1);
 		when(actorRepositoryCriteria.create(actor1)).thenReturn(actor1);
 		when(modelToBo.actorToActorBo(actor1)).thenReturn(actorBo1);
+		when(actorRepositoryCriteria.getById(actor1.getIdActor())).thenReturn(Optional.empty());
 
 		// Act
 		ActorBo result = actorServiceImpl.createCriteria(actorBo1);
@@ -214,7 +215,7 @@ class ActorServicesImplTest {
 	@Test
 	void testCreateCriteriaAlreadyExistsExeption() throws AlreadyExistsExeption, NotFoundException {
 
-		when(actorRepositoryCriteria.getById(actor1.getIdActor())).thenReturn(actor1);
+		when(actorRepositoryCriteria.getById(actor1.getIdActor())).thenReturn(Optional.of(actor1));
 		assertThrows(AlreadyExistsExeption.class, () -> actorServiceImpl.createCriteria(actorBo1));
 
 	}
@@ -222,7 +223,7 @@ class ActorServicesImplTest {
 	@Test
 	void testDeleteByIdCriteria() throws NotFoundException {
 		Long id = 1L;
-		when(actorRepositoryCriteria.getById(id)).thenReturn(actor1);
+		when(actorRepositoryCriteria.getById(id)).thenReturn(Optional.of(actor1));
 
 		// Act
 		actorServiceImpl.deleteByIdCriteria(id);

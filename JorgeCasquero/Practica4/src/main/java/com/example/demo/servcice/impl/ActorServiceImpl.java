@@ -71,12 +71,13 @@ public class ActorServiceImpl implements ActorService {
 
 	@Override
 	public ActorBo getByIdCriteria(long id) throws NotFoundException {
-		return modelToBo.actorToActorBo(actorRepositoryCriteria.getById(id));
+		return modelToBo.actorToActorBo(actorRepositoryCriteria.getById(id)
+				.orElseThrow(() -> new NotFoundException("no se ha encontrado el actor con el id " + id)));
 	}
 
 	@Override
 	public ActorBo createCriteria(ActorBo actorBo) throws AlreadyExistsExeption, NotFoundException {
-		if (actorRepositoryCriteria.getById(actorBo.getIdActor()) != null) {
+		if (!actorRepositoryCriteria.getById(actorBo.getIdActor()).isEmpty()) {
 
 			throw new AlreadyExistsExeption("El actor con el id:" + actorBo.getIdActor() + " ya existe");
 		}

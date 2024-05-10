@@ -1,6 +1,7 @@
 package com.example.demo.repository.cb.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -32,27 +33,36 @@ public class ActorCriteriaImpl implements ActorRepositoryCriteria {
 	}
 
 	@Override
-	public Actor getById(long id) throws NotFoundException {
+	public Optional<Actor> getById(long id) throws NotFoundException {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Actor> cq = cb.createQuery(Actor.class);
 		Root<Actor> root = cq.from(Actor.class);
 		cq.where(cb.equal(root.get("id"), id));
-		return entityManager.createQuery(cq).getSingleResult();
+		return Optional.of(entityManager.createQuery(cq).getSingleResult());
 	}
 
 	@Override
-	public Actor create(Actor actor) throws AlreadyExistsExeption {
+	public Actor create(Actor actor) throws AlreadyExistsExeption, NotFoundException {
 
-		return entityManager.merge(actor);
+		if (getById(actor.getIdActor()).isEmpty()) {
+			entityManager.persist(actor);
+		} else {
+			entityManager.merge(actor);
+		}
+
+		return actor;
 	}
 
 	@Override
 	public void deleteById(long id) throws NotFoundException {
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Actor> cq = cb.createQuery(Actor.class);
-		Root<Actor> root = cq.from(Actor.class);
-		cq.where(cb.equal(root.get("id"), id));
-		entityManager.createQuery(cq).executeUpdate();
+		Optional<Actor> actor = getById(id);
+		if (actor != null) {
+			entityManager.remove(actor.get());
+			entityManager.flush();
+		} else {
+			throw new NotFoundException("No se encontró un actor con el ID " + id);
+		}
+
 	}
 
 }
