@@ -17,6 +17,7 @@ public interface DirectorService {
 	DirectorBo createCriteria(DirectorBo directorBo) throws AlreadyExistsExeption, NotFoundException;
 
 	void deleteById(long id) throws NotFoundException;
+	
 	void deleteByIdCriteria(long id) throws NotFoundException;
 
 }

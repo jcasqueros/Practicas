@@ -3,6 +3,7 @@ package com.example.demo.presentation.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,8 +59,12 @@ public class PeliculaController {
 		} else {
 			pelicula = boToDto.boToPeliculaDto(peliculaService.getByIdCriteria(id));
 		}
+		if (pelicula != null) {
+			return ResponseEntity.ok(pelicula);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 
-		return ResponseEntity.ok(pelicula);
 	}
 
 	@PostMapping("/save")
@@ -71,20 +76,24 @@ public class PeliculaController {
 		} else {
 			savedPelicula = boToDto.boToPeliculaDto(peliculaService.createCriteria(dtoToBo.dtoToPeliculaBo(pelicula)));
 		}
-		return ResponseEntity.ok(savedPelicula);
+		return ResponseEntity.status(HttpStatus.CREATED).body(savedPelicula);
 	}
 
 	@DeleteMapping("delete/{id}")
 	public ResponseEntity<Object> deleteByid(@PathVariable long id, @RequestParam boolean metodo)
 			throws NotFoundException {
-		if (metodo) {
-			peliculaService.deleteById(id);
+		try {
+			if (metodo) {
+				peliculaService.deleteById(id);
 
-		} else {
-			peliculaService.deleteByIdCriteria(id);
+			} else {
+				peliculaService.deleteByIdCriteria(id);
+			}
+
+			return ResponseEntity.noContent().build();
+		} catch (NotFoundException e) {
+			return ResponseEntity.notFound().build();
 		}
-
-		return ResponseEntity.noContent().build();
 
 	}
 

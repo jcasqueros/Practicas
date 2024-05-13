@@ -3,6 +3,7 @@ package com.example.demo.presentation.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,7 +62,7 @@ public class DirectorController {
 		if (director != null) {
 			return ResponseEntity.ok(director);
 		} else {
-			throw new NotFoundException("Actor no encontrado con el id: " + id);
+			return ResponseEntity.notFound().build();
 		}
 	}
 
@@ -71,20 +72,25 @@ public class DirectorController {
 		DirectorDto savedActor;
 		if (metodo) {
 			savedActor = boToDto.boToDirectorDto(directorService.create(dtoToBo.dtoToDirectorBo(director)));
+
 		} else {
 			savedActor = boToDto.boToDirectorDto(directorService.createCriteria(dtoToBo.dtoToDirectorBo(director)));
 		}
-		return ResponseEntity.ok(savedActor);
+		return ResponseEntity.status(HttpStatus.CREATED).body(savedActor);
 	}
 
 	@DeleteMapping("delete/{id}")
 	public ResponseEntity<Void> deleteByid(@PathVariable long id, @RequestParam boolean metodo)
 			throws NotFoundException {
-		if (metodo) {
-			directorService.deleteById(id);
-		} else {
-			directorService.deleteByIdCriteria(id);
+		try {
+			if (metodo) {
+				directorService.deleteById(id);
+			} else {
+				directorService.deleteByIdCriteria(id);
+			}
+			return ResponseEntity.noContent().build();
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().build();
 		}
-		return ResponseEntity.noContent().build();
 	}
 }
