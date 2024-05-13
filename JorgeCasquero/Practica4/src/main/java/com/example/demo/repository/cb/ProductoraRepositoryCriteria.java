@@ -1,13 +1,14 @@
 package com.example.demo.repository.cb;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.example.demo.model.Productora;
 import com.example.demo.servcice.exception.AlreadyExistsExeption;
 import com.example.demo.servcice.exception.NotFoundException;
 
 public interface ProductoraRepositoryCriteria {
-	List<Productora> getAll();
+	Page<Productora> getAll(Pageable pageable);
 
 	Productora getById(long id) throws NotFoundException;
 

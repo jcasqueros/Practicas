@@ -1,13 +1,14 @@
 package com.example.demo.repository.cb;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.example.demo.model.Serie;
 import com.example.demo.servcice.exception.AlreadyExistsExeption;
 import com.example.demo.servcice.exception.NotFoundException;
 
 public interface SerieRepositoryCriteria {
-	List<Serie> getAll();
+	Page<Serie> getAll(Pageable pageable);
 
 	Serie getById(long id) throws NotFoundException;
 
