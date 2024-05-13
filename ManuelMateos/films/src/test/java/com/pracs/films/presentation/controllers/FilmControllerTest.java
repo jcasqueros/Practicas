@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -184,9 +185,10 @@ class FilmControllerTest {
     @Test
     void givenNothing_whenFindAll_thenReturnFilmDTOList() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
-        given(filmService.findAll()).willReturn(List.of(filmBO));
+        Page<FilmBO> page = new PageImpl<>(List.of(filmBO), PageRequest.of(0, 5, Sort.by("title").ascending()), 10);
+        given(filmService.findAll(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/films/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/films/findAll?method=false&page=5&size=10&sort=title"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -196,9 +198,9 @@ class FilmControllerTest {
     void givenNothing_whenFindAll_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.findAll()).willThrow(new ServiceException(""));
+        given(filmService.findAll(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/films/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/films/findAll?method=false&page=5&size=10&sort=title"));
 
         response.andExpect(status().isBadRequest());
     }
@@ -208,9 +210,10 @@ class FilmControllerTest {
     void givenNothing_whenFindAllCriteria_thenReturnFilmDTOList() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.findAllCriteria()).willReturn(List.of(filmBO));
+        Page<FilmBO> page = new PageImpl<>(List.of(filmBO), PageRequest.of(0, 5, Sort.by("title").ascending()), 10);
+        given(filmService.findAllCriteria(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/films/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/films/findAll?method=true&page=5&size=10&sort=title"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -220,9 +223,9 @@ class FilmControllerTest {
     void givenNothing_whenFindAllCriteria_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.findAllCriteria()).willThrow(new ServiceException(""));
+        given(filmService.findAllCriteria(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/films/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/films/findAll?method=true&page=5&size=10&sort=title"));
 
         response.andExpect(status().isBadRequest());
     }

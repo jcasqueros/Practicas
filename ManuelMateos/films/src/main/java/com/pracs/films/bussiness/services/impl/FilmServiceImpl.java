@@ -96,13 +96,14 @@ public class FilmServiceImpl implements FilmService {
         try {
             //Búsqueda de los todos las peliculas, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             Page<Film> filmPage = filmRepository.findAll(pageable);
+
+            if (filmPage.isEmpty()) {
+                throw new EmptyException("No films");
+            }
+
             List<FilmBO> filmBOList = filmPage.stream().map(modelToBoConverter::filmModelToBo).toList();
 
             Page<FilmBO> filmBOPage = new PageImpl<>(filmBOList, filmPage.getPageable(), filmPage.getTotalPages());
-
-            if (filmBOList.isEmpty()) {
-                throw new EmptyException("No films");
-            }
 
             return filmBOPage;
         } catch (NestedRuntimeException e) {
@@ -183,14 +184,15 @@ public class FilmServiceImpl implements FilmService {
     public Page<FilmBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo peliculas, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            Page<Film> filmPage = filmRepository.findAll(pageable);
+            Page<Film> filmPage = filmRepositoryCriteria.findAllFilm(pageable);
+
+            if (filmPage.isEmpty()) {
+                throw new EmptyException("No films");
+            }
+
             List<FilmBO> filmBOList = filmPage.stream().map(modelToBoConverter::filmModelToBo).toList();
 
             Page<FilmBO> filmBOPage = new PageImpl<>(filmBOList, filmPage.getPageable(), filmPage.getTotalPages());
-
-            if (filmBOList.isEmpty()) {
-                throw new EmptyException("No films");
-            }
 
             return filmBOPage;
         } catch (NestedRuntimeException e) {

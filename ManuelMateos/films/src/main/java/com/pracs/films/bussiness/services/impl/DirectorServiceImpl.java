@@ -97,15 +97,16 @@ public class DirectorServiceImpl implements DirectorService {
         try {
             //Búsqueda de los todos lo directors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             Page<Director> directorPage = directorRepository.findAll(pageable);
+
+            if (directorPage.isEmpty()) {
+                throw new EmptyException("No directors");
+            }
+
             List<DirectorBO> directorBOList = directorPage.stream().map(modelToBoConverter::directorModelToBo).toList();
 
             Page<DirectorBO> directorBOPage = new PageImpl<>(directorBOList, directorPage.getPageable(),
                     directorPage.getTotalPages());
-
-            if (directorBOList.isEmpty()) {
-                throw new EmptyException("No directors");
-            }
-
+            
             return directorBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
@@ -184,15 +185,16 @@ public class DirectorServiceImpl implements DirectorService {
     public Page<DirectorBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo directors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            Page<Director> directorPage = directorRepository.findAll(pageable);
+            Page<Director> directorPage = directorRepositoryCriteria.findAllDirector(pageable);
+
+            if (directorPage.isEmpty()) {
+                throw new EmptyException("No directors");
+            }
+
             List<DirectorBO> directorBOList = directorPage.stream().map(modelToBoConverter::directorModelToBo).toList();
 
             Page<DirectorBO> directorBOPage = new PageImpl<>(directorBOList, directorPage.getPageable(),
                     directorPage.getTotalPages());
-
-            if (directorBOList.isEmpty()) {
-                throw new EmptyException("No directors");
-            }
 
             return directorBOPage;
         } catch (NestedRuntimeException e) {

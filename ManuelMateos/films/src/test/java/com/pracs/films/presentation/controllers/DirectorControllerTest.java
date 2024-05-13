@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -100,9 +101,11 @@ class DirectorControllerTest {
     @Test
     void givenNothing_whenFindAll_thenReturnDirectorDTOList() throws Exception {
         given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
-        given(directorService.findAll()).willReturn(List.of(directorBO));
+        Page<DirectorBO> page = new PageImpl<>(List.of(directorBO), PageRequest.of(0, 5, Sort.by("name").ascending()),
+                10);
+        given(directorService.findAll(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/directors/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/directors/findAll?method=false&page=5&size=10&sort=name"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -112,9 +115,9 @@ class DirectorControllerTest {
     void givenNothing_whenFindAll_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
         given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
-        given(directorService.findAll()).willThrow(new ServiceException(""));
+        given(directorService.findAll(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/directors/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/directors/findAll?method=false&page=5&size=10&sort=name"));
 
         response.andExpect(status().isBadRequest());
     }
@@ -124,9 +127,11 @@ class DirectorControllerTest {
     void givenNothing_whenFindAllCriteria_thenReturnDirectorDTOList() throws Exception {
         given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
         given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
-        given(directorService.findAllCriteria()).willReturn(List.of(directorBO));
+        Page<DirectorBO> page = new PageImpl<>(List.of(directorBO), PageRequest.of(0, 5, Sort.by("name").ascending()),
+                10);
+        given(directorService.findAllCriteria(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/directors/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/directors/findAll?method=true&page=5&size=10&sort=name"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -136,9 +141,9 @@ class DirectorControllerTest {
     void givenNothing_whenFindAllCriteria_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
         given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
-        given(directorService.findAllCriteria()).willThrow(new ServiceException(""));
+        given(directorService.findAllCriteria(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/directors/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/directors/findAll?method=true&page=5&size=10&sort=name"));
 
         response.andExpect(status().isBadRequest());
     }

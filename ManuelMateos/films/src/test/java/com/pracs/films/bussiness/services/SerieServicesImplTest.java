@@ -25,6 +25,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,8 @@ class SerieServicesImplTest {
 
     @InjectMocks
     private SerieServiceImpl serieService;
+
+    private Pageable pageable;
 
     private Actor actor;
 
@@ -129,6 +132,8 @@ class SerieServicesImplTest {
         serieBO.setActors(actorsBO);
         serieBO.setProducer(producerBO);
         serieBO.setDirector(directorBO);
+
+        pageable = PageRequest.of(0, 5, Sort.by("title").ascending());
     }
 
     @DisplayName("JUnit test for save an serie - positive")
@@ -229,27 +234,29 @@ class SerieServicesImplTest {
     @Test
     void givenNothing_whenFindAll_thenReturnSerieBoObject() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
-        given(serieRepository.findAll()).willReturn(List.of(serie));
+        Page<Serie> page = new PageImpl<>(List.of(serie), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(serieRepository.findAll(pageable)).willReturn(page);
 
-        List<SerieBO> savedseriesBO = serieService.findAll();
+        Page<SerieBO> savedSeriesBO = serieService.findAll(pageable);
 
-        assertEquals(1, savedseriesBO.size());
+        assertEquals(1, savedSeriesBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all series - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowEmptyException() throws ServiceException {
-        given(serieRepository.findAll()).willReturn(List.of());
+        Page<Serie> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(serieRepository.findAll(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> serieService.findAll());
+        assertThrows(EmptyException.class, () -> serieService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for get all series - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowNestedRuntimeException() throws ServiceException {
-        given(serieRepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(serieRepository.findAll(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> serieService.findAll());
+        assertThrows(ServiceException.class, () -> serieService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for delete an serie by his id - positive")
@@ -379,27 +386,29 @@ class SerieServicesImplTest {
     @Test
     void givenNothing_whenFindAllCriteria_thenReturnSerieBoObject() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
-        given(serieRepositoryCriteria.findAllSerie()).willReturn(List.of(serie));
+        Page<Serie> page = new PageImpl<>(List.of(serie), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(serieRepositoryCriteria.findAllSerie(pageable)).willReturn(page);
 
-        List<SerieBO> savedseriesBO = serieService.findAllCriteria();
+        Page<SerieBO> savedSeriesBO = serieService.findAllCriteria(pageable);
 
-        assertEquals(1, savedseriesBO.size());
+        assertEquals(1, savedSeriesBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all series - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowEmptyException() throws ServiceException {
-        given(serieRepositoryCriteria.findAllSerie()).willReturn(List.of());
+        Page<Serie> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(serieRepositoryCriteria.findAllSerie(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> serieService.findAllCriteria());
+        assertThrows(EmptyException.class, () -> serieService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for get all series - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        given(serieRepositoryCriteria.findAllSerie()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(serieRepositoryCriteria.findAllSerie(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> serieService.findAllCriteria());
+        assertThrows(ServiceException.class, () -> serieService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for delete an serie by his id - positive")

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -100,9 +101,10 @@ class ActorControllerTest {
     @Test
     void givenNothing_whenFindAll_thenReturnActorDTOList() throws Exception {
         given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
-        given(actorService.findAll()).willReturn(List.of(actorBO));
+        Page<ActorBO> page = new PageImpl<>(List.of(actorBO), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(actorService.findAll(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/actors/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/actors/findAll?method=false&page=5&size=10&sort=name"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -112,9 +114,9 @@ class ActorControllerTest {
     void givenNothing_whenFindAll_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
         given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
-        given(actorService.findAll()).willThrow(new ServiceException(""));
+        given(actorService.findAll(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/actors/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/actors/findAll?method=false&page=5&size=10&sort=name"));
 
         response.andExpect(status().isBadRequest());
     }
@@ -124,9 +126,10 @@ class ActorControllerTest {
     void givenNothing_whenFindAllCriteria_thenReturnActorDTOList() throws Exception {
         given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
         given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
-        given(actorService.findAllCriteria()).willReturn(List.of(actorBO));
+        Page<ActorBO> page = new PageImpl<>(List.of(actorBO), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(actorService.findAllCriteria(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/actors/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/actors/findAll?method=true&page=5&size=10&sort=name"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -136,9 +139,9 @@ class ActorControllerTest {
     void givenNothing_whenFindAllCriteria_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
         given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
-        given(actorService.findAllCriteria()).willThrow(new ServiceException(""));
+        given(actorService.findAllCriteria(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/actors/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/actors/findAll?method=true&page=5&size=10&sort=name"));
 
         response.andExpect(status().isBadRequest());
     }

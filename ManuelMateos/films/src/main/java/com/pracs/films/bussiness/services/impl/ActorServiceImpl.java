@@ -96,13 +96,14 @@ public class ActorServiceImpl implements ActorService {
         try {
             //Búsqueda de los todos lo actors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             Page<Actor> actorPage = actorRepository.findAll(pageable);
+
+            if (actorPage.isEmpty()) {
+                throw new EmptyException("No actors");
+            }
+
             List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
 
             Page<ActorBO> actorBOPage = new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
-
-            if (actorBOList.isEmpty()) {
-                throw new EmptyException("No actors");
-            }
 
             return actorBOPage;
         } catch (NestedRuntimeException e) {
@@ -183,13 +184,13 @@ public class ActorServiceImpl implements ActorService {
             //Búsqueda de los todos los actores, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             Page<Actor> actorPage = actorRepositoryCriteria.findAllActors(pageable);
 
+            if (actorPage.isEmpty()) {
+                throw new EmptyException("No actors");
+            }
+
             List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
 
             Page<ActorBO> actorBOPage = new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
-
-            if (actorBOList.isEmpty()) {
-                throw new EmptyException("No actors");
-            }
 
             return actorBOPage;
         } catch (NestedRuntimeException e) {

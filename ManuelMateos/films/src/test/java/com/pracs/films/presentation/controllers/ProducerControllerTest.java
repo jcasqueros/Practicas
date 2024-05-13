@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -97,9 +98,11 @@ class ProducerControllerTest {
     @Test
     void givenNothing_whenFindAll_thenReturnProducerDTOList() throws Exception {
         given(boToDtoConverter.producerBoToDtoOut(producerBO)).willReturn(producerDtoOut);
-        given(producerService.findAll()).willReturn(List.of(producerBO));
+        Page<ProducerBO> page = new PageImpl<>(List.of(producerBO), PageRequest.of(0, 5, Sort.by("name").ascending()),
+                10);
+        given(producerService.findAll(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/producers/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/producers/findAll?method=false&page=5&size=10&sort=name"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -109,9 +112,11 @@ class ProducerControllerTest {
     void givenNothing_whenFindAll_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.producerBoToDtoOut(producerBO)).willReturn(producerDtoOut);
         given(dtoToBoConverter.producerDtoToBo(producerDtoIn)).willReturn(producerBO);
-        given(producerService.findAll()).willThrow(new ServiceException(""));
+        Page<ProducerBO> page = new PageImpl<>(List.of(producerBO), PageRequest.of(0, 5, Sort.by("name").ascending()),
+                10);
+        given(producerService.findAll(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/producers/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/producers/findAll?method=false&page=5&size=10&sort=name"));
 
         response.andExpect(status().isBadRequest());
     }
@@ -121,9 +126,11 @@ class ProducerControllerTest {
     void givenNothing_whenFindAllCriteria_thenReturnProducerDTOList() throws Exception {
         given(boToDtoConverter.producerBoToDtoOut(producerBO)).willReturn(producerDtoOut);
         given(dtoToBoConverter.producerDtoToBo(producerDtoIn)).willReturn(producerBO);
-        given(producerService.findAllCriteria()).willReturn(List.of(producerBO));
+        Page<ProducerBO> page = new PageImpl<>(List.of(producerBO), PageRequest.of(0, 5, Sort.by("name").ascending()),
+                10);
+        given(producerService.findAllCriteria(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/producers/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/producers/findAll?method=true&page=5&size=10&sort=name"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -133,9 +140,9 @@ class ProducerControllerTest {
     void givenNothing_whenFindAllCriteria_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.producerBoToDtoOut(producerBO)).willReturn(producerDtoOut);
         given(dtoToBoConverter.producerDtoToBo(producerDtoIn)).willReturn(producerBO);
-        given(producerService.findAllCriteria()).willThrow(new ServiceException(""));
+        given(producerService.findAllCriteria(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/producers/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/producers/findAll?method=true&page=5&size=10&sort=name"));
 
         response.andExpect(status().isBadRequest());
     }

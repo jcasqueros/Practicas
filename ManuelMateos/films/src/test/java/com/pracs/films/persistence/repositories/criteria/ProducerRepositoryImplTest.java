@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,9 +73,10 @@ class ProducerRepositoryImplTest {
     @Test
     void givenNothing_whenFindAllProducer_thenReturnProducerList() {
 
-        List<Producer> savedProducers = producerRepository.findAllProducer();
+        Page<Producer> savedProducers = producerRepository.findAllProducer(
+                PageRequest.of(0, 5, Sort.by("name").ascending()));
 
-        assertEquals(1000, savedProducers.size());
+        assertEquals(5, savedProducers.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for delete a producer")

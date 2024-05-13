@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,9 +120,9 @@ class filmRepositoryImplTest {
     @Test
     void givenNothing_whenFindAllFilm_thenReturnFilmList() {
 
-        List<Film> savedFilms = filmRepository.findAllFilm();
+        Page<Film> savedFilms = filmRepository.findAllFilm(PageRequest.of(0, 5, Sort.by("title").ascending()));
 
-        assertEquals(499, savedFilms.size());
+        assertEquals(5, savedFilms.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for delete a film")

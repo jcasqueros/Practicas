@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,8 @@ class ActorServicesImplTest {
     @InjectMocks
     private ActorServiceImpl actorService;
 
+    private Pageable pageable;
+
     private Actor actor;
 
     private ActorBO actorBO;
@@ -68,6 +71,8 @@ class ActorServicesImplTest {
         actorBO.setName("prueba");
         actorBO.setAge(20);
         actorBO.setNationality("Spain");
+
+        pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
     }
 
     @DisplayName("JUnit test for save an actor - positive")
@@ -169,27 +174,29 @@ class ActorServicesImplTest {
     @Test
     void givenNothing_whenFindAll_thenReturnActorBoObject() throws ServiceException {
         given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
-        given(actorRepository.findAll()).willReturn(List.of(actor));
+        Page<Actor> page = new PageImpl<>(List.of(actor), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(actorRepository.findAll(pageable)).willReturn(page);
 
-        List<ActorBO> savedActorsBO = actorService.findAll();
+        Page<ActorBO> savedActorsBO = actorService.findAll(PageRequest.of(0, 5, Sort.by("name").ascending()));
 
-        assertEquals(1, savedActorsBO.size());
+        assertEquals(1, savedActorsBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all actors - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowEmptyException() throws ServiceException {
-        given(actorRepository.findAll()).willReturn(List.of());
+        Page<Actor> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 0);
+        given(actorRepository.findAll(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> actorService.findAll());
+        assertThrows(EmptyException.class, () -> actorService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for get all actors - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowNestedRuntimeException() throws ServiceException {
-        given(actorRepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(actorRepository.findAll(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> actorService.findAll());
+        assertThrows(ServiceException.class, () -> actorService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for delete an actor by his id - positive")
@@ -320,27 +327,29 @@ class ActorServicesImplTest {
     @Test
     void givenNothing_whenFindAllCriteria_thenReturnActorBoObject() throws ServiceException {
         given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
-        given(actorRepositoryCriteria.findAllActor()).willReturn(List.of(actor));
+        Page<Actor> page = new PageImpl<>(List.of(actor), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(actorRepositoryCriteria.findAllActors(pageable)).willReturn(page);
 
-        List<ActorBO> savedActorsBO = actorService.findAllCriteria();
+        Page<ActorBO> savedActorsBO = actorService.findAllCriteria(pageable);
 
-        assertEquals(1, savedActorsBO.size());
+        assertEquals(1, savedActorsBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all actors - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowEmptyException() throws ServiceException {
-        given(actorRepositoryCriteria.findAllActor()).willReturn(List.of());
+        Page<Actor> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(actorRepositoryCriteria.findAllActors(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> actorService.findAllCriteria());
+        assertThrows(EmptyException.class, () -> actorService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for get all actors - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        given(actorRepositoryCriteria.findAllActor()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(actorRepositoryCriteria.findAllActors(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> actorService.findAllCriteria());
+        assertThrows(ServiceException.class, () -> actorService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for delete an actor by his id - positive")
