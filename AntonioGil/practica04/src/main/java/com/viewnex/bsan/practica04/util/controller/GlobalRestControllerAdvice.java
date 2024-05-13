@@ -57,11 +57,4 @@ public class GlobalRestControllerAdvice {
                 request.getDescription(false));
     }
 
-    @ExceptionHandler(value = {ServiceLevelException.class})
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public RestApiErrorMessage serviceLevelException(BadInputDataException ex, WebRequest request) {
-        return new RestApiErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), LocalDateTime.now(), ex.getMessage(),
-                request.getDescription(false));
-    }
-
 }

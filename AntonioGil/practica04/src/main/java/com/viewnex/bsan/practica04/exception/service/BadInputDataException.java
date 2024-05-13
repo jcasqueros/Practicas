@@ -8,7 +8,7 @@ import java.io.Serial;
  *
  * @author Antonio Gil
  */
-public class BadInputDataException extends ServiceLevelException {
+public class BadInputDataException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = 1L;

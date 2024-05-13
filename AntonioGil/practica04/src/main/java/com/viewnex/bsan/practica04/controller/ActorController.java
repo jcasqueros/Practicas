@@ -2,12 +2,13 @@ package com.viewnex.bsan.practica04.controller;
 
 import com.viewnex.bsan.practica04.bo.ActorBo;
 import com.viewnex.bsan.practica04.service.ActorService;
+import com.viewnex.bsan.practica04.util.constants.RestApiPaths;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("${practica04.rest-api.paths.actors}")
+@RequestMapping(RestApiPaths.BASE_ACTORS_PATH)
 public class ActorController {
 
     private final ActorService service;

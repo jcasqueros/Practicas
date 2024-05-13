@@ -1,8 +1,5 @@
 package com.viewnex.bsan.practica04.dto;
 
-import com.viewnex.bsan.practica04.bo.ActorBo;
-import com.viewnex.bsan.practica04.bo.DirectorBo;
-import com.viewnex.bsan.practica04.bo.ProductionCompanyBo;
 import lombok.*;
 
 import java.util.Set;
@@ -22,10 +19,10 @@ public class FilmReadDto {
 
     int year;
 
-    DirectorBo director;
+    DirectorReadDto director;
 
-    ProductionCompanyBo productionCompany;
+    ProductionCompanyReadDto productionCompany;
 
-    Set<ActorBo> actors;
+    Set<ActorReadDto> actors;
 
 }

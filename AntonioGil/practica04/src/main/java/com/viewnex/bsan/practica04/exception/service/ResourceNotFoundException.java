@@ -8,7 +8,7 @@ import java.io.Serial;
  *
  * @author Antonio Gil
  */
-public class ResourceNotFoundException extends ServiceLevelException {
+public class ResourceNotFoundException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = 1L;
