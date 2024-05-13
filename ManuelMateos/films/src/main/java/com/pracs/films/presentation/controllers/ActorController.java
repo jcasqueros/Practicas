@@ -67,6 +67,34 @@ public class ActorController {
         }
     }
 
+    @GetMapping("/findAllFilter")
+    public ResponseEntity<List<ActorDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
+            @RequestParam(required = false) List<Integer> ages,
+            @RequestParam(required = false) List<String> nationalities, @RequestParam boolean method,
+            @RequestParam String sort, @RequestParam String order) throws ServiceException {
+
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
+
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        actorService.findAllCriteriaFilter(pageable, names, ages, nationalities).stream()
+                                .map(boToDtoConverter::actorBoToDtoOut).toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    actorService.findAll(pageable).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
     /**
      * Method for get an actor by his id.
      *

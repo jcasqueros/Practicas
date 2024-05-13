@@ -6,6 +6,8 @@ import com.pracs.films.persistence.models.Actor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * Service of the model {@link Actor}
  *
@@ -77,11 +79,24 @@ public interface ActorService {
     ActorBO findByIdCriteria(long id) throws ServiceException;
 
     /**
-     * Method for get all actors
+     * Method for get all actors paginated
      *
      * @return List of ActorBO
      */
     Page<ActorBO> findAllCriteria(Pageable pageable) throws ServiceException;
+
+    /**
+     * Method for get all actors paginated and filtered
+     *
+     * @param pageable
+     * @param names
+     * @param ages
+     * @param nationalities
+     * @return
+     * @throws ServiceException
+     */
+    Page<ActorBO> findAllCriteriaFilter(Pageable pageable, List<String> names, List<Integer> ages,
+            List<String> nationalities) throws ServiceException;
 
     /**
      * Method for delete an actor by his id
