@@ -3,6 +3,7 @@ package com.example.demo.presentation.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,12 +56,17 @@ public class ProductoraController {
 			throws NotFoundException {
 		log.debug("Solicitud de la consulta a la productora con id: " + id + ".");
 		ProductoraDto productoraDto;
+
 		if (metodo) {
 			productoraDto = boToDto.boToProductoraDto(productoraService.getById(id));
 		} else {
 			productoraDto = boToDto.boToProductoraDto(productoraService.getByIdCriteria(id));
 		}
-		return ResponseEntity.ok(productoraDto);
+		if (productoraDto != null) {
+			return ResponseEntity.ok(productoraDto);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	@PostMapping("/save")
@@ -74,7 +80,7 @@ public class ProductoraController {
 			savedProductora = boToDto
 					.boToProductoraDto(productoraService.createCriteria(dtoToBo.dtoToProductoraBo(productora)));
 		}
-		return ResponseEntity.ok(savedProductora);
+		return ResponseEntity.status(HttpStatus.CREATED).body(savedProductora);
 	}
 
 	@DeleteMapping("delete/{id}")
