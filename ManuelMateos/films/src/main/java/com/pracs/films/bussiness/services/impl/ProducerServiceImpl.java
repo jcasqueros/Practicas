@@ -96,14 +96,15 @@ public class ProducerServiceImpl implements ProducerService {
         try {
             //Búsqueda de los todos lo productors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             Page<Producer> filmPage = producerRepository.findAll(pageable);
+
+            if (filmPage.isEmpty()) {
+                throw new EmptyException("No producers");
+            }
+
             List<ProducerBO> prodoucerBOList = filmPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
             Page<ProducerBO> producerBOPage = new PageImpl<>(prodoucerBOList, filmPage.getPageable(),
                     filmPage.getTotalPages());
-
-            if (prodoucerBOList.isEmpty()) {
-                throw new EmptyException("No producers");
-            }
 
             return producerBOPage;
         } catch (NestedRuntimeException e) {
@@ -182,15 +183,16 @@ public class ProducerServiceImpl implements ProducerService {
     public Page<ProducerBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo productors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            Page<Producer> filmPage = producerRepository.findAll(pageable);
+            Page<Producer> filmPage = producerRepositoryCriteria.findAllProducer(pageable);
+
+            if (filmPage.isEmpty()) {
+                throw new EmptyException("No producers");
+            }
+
             List<ProducerBO> prodoucerBOList = filmPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
             Page<ProducerBO> producerBOPage = new PageImpl<>(prodoucerBOList, filmPage.getPageable(),
                     filmPage.getTotalPages());
-
-            if (prodoucerBOList.isEmpty()) {
-                throw new EmptyException("No producers");
-            }
 
             return producerBOPage;
         } catch (NestedRuntimeException e) {

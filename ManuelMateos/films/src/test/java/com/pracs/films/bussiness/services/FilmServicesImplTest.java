@@ -25,6 +25,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,8 @@ class FilmServicesImplTest {
 
     @InjectMocks
     private FilmServiceImpl filmService;
+
+    private Pageable pageable;
 
     private Actor actor;
 
@@ -129,6 +132,8 @@ class FilmServicesImplTest {
         filmBO.setActors(actorsBO);
         filmBO.setProducer(producerBO);
         filmBO.setDirector(directorBO);
+
+        pageable = PageRequest.of(0, 5, Sort.by("title").ascending());
     }
 
     @DisplayName("JUnit test for save a film - positive")
@@ -229,27 +234,29 @@ class FilmServicesImplTest {
     @Test
     void givenNothing_whenFindAll_thenReturnFilmBoObject() throws ServiceException {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
-        given(filmRepository.findAll()).willReturn(List.of(film));
+        Page<Film> page = new PageImpl<>(List.of(film), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(filmRepository.findAll(pageable)).willReturn(page);
 
-        List<FilmBO> savedfilmsBO = filmService.findAll();
+        Page<FilmBO> savedfilmsBO = filmService.findAll(pageable);
 
-        assertEquals(1, savedfilmsBO.size());
+        assertEquals(1, savedfilmsBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all films - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowEmptyException() throws ServiceException {
-        given(filmRepository.findAll()).willReturn(List.of());
+        Page<Film> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(filmRepository.findAll(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> filmService.findAll());
+        assertThrows(EmptyException.class, () -> filmService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for get all films - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowNestedRuntimeException() throws ServiceException {
-        given(filmRepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(filmRepository.findAll(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> filmService.findAll());
+        assertThrows(ServiceException.class, () -> filmService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for delete a film by his id - positive")
@@ -378,27 +385,29 @@ class FilmServicesImplTest {
     @Test
     void givenNothing_whenFindAllCriteria_thenReturnFilmBoObject() throws ServiceException {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
-        given(filmRepositoryCriteria.findAllFilm()).willReturn(List.of(film));
+        Page<Film> page = new PageImpl<>(List.of(film), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(filmRepositoryCriteria.findAllFilm(pageable)).willReturn(page);
 
-        List<FilmBO> savedfilmsBO = filmService.findAllCriteria();
+        Page<FilmBO> savedFilmsBO = filmService.findAllCriteria(pageable);
 
-        assertEquals(1, savedfilmsBO.size());
+        assertEquals(1, savedFilmsBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all films - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowEmptyException() throws ServiceException {
-        given(filmRepositoryCriteria.findAllFilm()).willReturn(List.of());
+        Page<Film> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(filmRepositoryCriteria.findAllFilm(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> filmService.findAllCriteria());
+        assertThrows(EmptyException.class, () -> filmService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for get all films - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        given(filmRepositoryCriteria.findAllFilm()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(filmRepositoryCriteria.findAllFilm(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> filmService.findAllCriteria());
+        assertThrows(ServiceException.class, () -> filmService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for delete a film by his id - positive")

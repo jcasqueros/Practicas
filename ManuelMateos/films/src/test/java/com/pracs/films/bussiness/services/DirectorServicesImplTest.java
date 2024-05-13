@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,8 @@ class DirectorServicesImplTest {
     @InjectMocks
     private DirectorServiceImpl directorService;
 
+    private Pageable pageable;
+
     private Director director;
 
     private DirectorBO directorBO;
@@ -68,6 +71,8 @@ class DirectorServicesImplTest {
         directorBO.setName("prueba");
         directorBO.setAge(20);
         directorBO.setNationality("Spain");
+
+        pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
     }
 
     @DisplayName("JUnit test for save a director - positive")
@@ -169,27 +174,29 @@ class DirectorServicesImplTest {
     @Test
     void givenNothing_whenFindAll_thenReturnDirectorBObject() throws ServiceException {
         given(modelToBoConverter.directorModelToBo(director)).willReturn(directorBO);
-        given(directorRepository.findAll()).willReturn(List.of(director));
+        Page<Director> page = new PageImpl<>(List.of(director), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(directorRepository.findAll(pageable)).willReturn(page);
 
-        List<DirectorBO> saveddirectorsBO = directorService.findAll();
+        Page<DirectorBO> saveddirectorsBO = directorService.findAll(pageable);
 
-        assertEquals(1, saveddirectorsBO.size());
+        assertEquals(1, saveddirectorsBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all directors - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowEmptyException() throws ServiceException {
-        given(directorRepository.findAll()).willReturn(List.of());
+        Page<Director> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(directorRepository.findAll(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> directorService.findAll());
+        assertThrows(EmptyException.class, () -> directorService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for get all directors - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowNestedRuntimeException() throws ServiceException {
-        given(directorRepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(directorRepository.findAll(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> directorService.findAll());
+        assertThrows(ServiceException.class, () -> directorService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for delete a director by his id - positive")
@@ -322,27 +329,29 @@ class DirectorServicesImplTest {
     @Test
     void givenNothing_whenFindAllCriteria_thenReturnDirectorBObject() throws ServiceException {
         given(modelToBoConverter.directorModelToBo(director)).willReturn(directorBO);
-        given(directorRepositoryCriteria.findAllDirector()).willReturn(List.of(director));
+        Page<Director> page = new PageImpl<>(List.of(director), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(directorRepositoryCriteria.findAllDirector(pageable)).willReturn(page);
 
-        List<DirectorBO> saveddirectorsBO = directorService.findAllCriteria();
+        Page<DirectorBO> savedDirectorsBO = directorService.findAllCriteria(pageable);
 
-        assertEquals(1, saveddirectorsBO.size());
+        assertEquals(1, savedDirectorsBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all directors - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowEmptyException() throws ServiceException {
-        given(directorRepositoryCriteria.findAllDirector()).willReturn(List.of());
+        Page<Director> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(directorRepositoryCriteria.findAllDirector(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> directorService.findAllCriteria());
+        assertThrows(EmptyException.class, () -> directorService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for get all directors - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        given(directorRepositoryCriteria.findAllDirector()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(directorRepositoryCriteria.findAllDirector(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> directorService.findAllCriteria());
+        assertThrows(ServiceException.class, () -> directorService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for delete a director by his id - positive")

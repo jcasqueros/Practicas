@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,8 @@ class ProducerServicesImplTest {
     @InjectMocks
     private ProducerServiceImpl producerService;
 
+    private Pageable pageable;
+
     private Producer producer;
 
     private ProducerBO producerBO;
@@ -66,6 +69,8 @@ class ProducerServicesImplTest {
         producerBO.setId(1L);
         producerBO.setName("prueba");
         producerBO.setDebut(2020);
+
+        pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
     }
 
     @DisplayName("JUnit test for save an producer - positive")
@@ -166,27 +171,29 @@ class ProducerServicesImplTest {
     @Test
     void givenNothing_whenFindAll_thenReturnProducerBoObject() throws ServiceException {
         given(modelToBoConverter.producerModelToBo(producer)).willReturn(producerBO);
-        given(producerRepository.findAll()).willReturn(List.of(producer));
+        Page<Producer> page = new PageImpl<>(List.of(producer), pageable, 10);
+        given(producerRepository.findAll(pageable)).willReturn(page);
 
-        List<ProducerBO> savedproducersBO = producerService.findAll();
+        Page<ProducerBO> savedProducersBO = producerService.findAll(pageable);
 
-        assertEquals(1, savedproducersBO.size());
+        assertEquals(1, savedProducersBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all producers - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowEmptyException() throws ServiceException {
-        given(producerRepository.findAll()).willReturn(List.of());
+        Page<Producer> page = new PageImpl<>(List.of(), pageable, 10);
+        given(producerRepository.findAll(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> producerService.findAll());
+        assertThrows(EmptyException.class, () -> producerService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for get all producers - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowNestedRuntimeException() throws ServiceException {
-        given(producerRepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(producerRepository.findAll(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> producerService.findAll());
+        assertThrows(ServiceException.class, () -> producerService.findAll(pageable));
     }
 
     @DisplayName("JUnit test for delete an producer by his id - positive")
@@ -318,27 +325,29 @@ class ProducerServicesImplTest {
     @Test
     void givenNothing_whenFindAllCriteria_thenReturnProducerBoObject() throws ServiceException {
         given(modelToBoConverter.producerModelToBo(producer)).willReturn(producerBO);
-        given(producerRepositoryCriteria.findAllProducer()).willReturn(List.of(producer));
+        Page<Producer> page = new PageImpl<>(List.of(producer), pageable, 10);
+        given(producerRepositoryCriteria.findAllProducer(pageable)).willReturn(page);
 
-        List<ProducerBO> savedproducersBO = producerService.findAllCriteria();
+        Page<ProducerBO> savedproducersBO = producerService.findAllCriteria(pageable);
 
-        assertEquals(1, savedproducersBO.size());
+        assertEquals(1, savedproducersBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all producers - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowEmptyException() throws ServiceException {
-        given(producerRepositoryCriteria.findAllProducer()).willReturn(List.of());
+        Page<Producer> page = new PageImpl<>(List.of(), pageable, 10);
+        given(producerRepositoryCriteria.findAllProducer(pageable)).willReturn(page);
 
-        assertThrows(EmptyException.class, () -> producerService.findAllCriteria());
+        assertThrows(EmptyException.class, () -> producerService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for get all producers - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        given(producerRepositoryCriteria.findAllProducer()).willThrow(InvalidDataAccessApiUsageException.class);
+        given(producerRepositoryCriteria.findAllProducer(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> producerService.findAllCriteria());
+        assertThrows(ServiceException.class, () -> producerService.findAllCriteria(pageable));
     }
 
     @DisplayName("JUnit test for delete an producer by his id - positive")

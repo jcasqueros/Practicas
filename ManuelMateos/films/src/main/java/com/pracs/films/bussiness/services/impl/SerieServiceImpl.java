@@ -97,14 +97,15 @@ public class SerieServiceImpl implements SerieService {
         try {
             //Búsqueda de los todos lo series, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
             Page<Serie> seriePage = serieRepository.findAll(pageable);
+
+            if (seriePage.isEmpty()) {
+                throw new EmptyException("No series");
+            }
+
             List<SerieBO> serieBOList = seriePage.stream().map(modelToBoConverter::serieModelToBo).toList();
 
             Page<SerieBO> directorBOPage = new PageImpl<>(serieBOList, seriePage.getPageable(),
                     seriePage.getTotalPages());
-
-            if (serieBOList.isEmpty()) {
-                throw new EmptyException("No series");
-            }
 
             return directorBOPage;
         } catch (NestedRuntimeException e) {
@@ -185,15 +186,16 @@ public class SerieServiceImpl implements SerieService {
     public Page<SerieBO> findAllCriteria(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo series, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-            Page<Serie> seriePage = serieRepository.findAll(pageable);
+            Page<Serie> seriePage = serieRepositoryCriteria.findAllSerie(pageable);
+
+            if (seriePage.isEmpty()) {
+                throw new EmptyException("No series");
+            }
+
             List<SerieBO> serieBOList = seriePage.stream().map(modelToBoConverter::serieModelToBo).toList();
 
             Page<SerieBO> directorBOPage = new PageImpl<>(serieBOList, seriePage.getPageable(),
                     seriePage.getTotalPages());
-
-            if (serieBOList.isEmpty()) {
-                throw new EmptyException("No series");
-            }
 
             return directorBOPage;
         } catch (NestedRuntimeException e) {

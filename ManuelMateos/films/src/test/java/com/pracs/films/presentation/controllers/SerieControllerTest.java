@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -184,9 +185,10 @@ class SerieControllerTest {
     @Test
     void givenNothing_whenFindAll_thenReturnActorDTOList() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
-        given(serieService.findAll()).willReturn(List.of(serieBO));
+        Page<SerieBO> page = new PageImpl<>(List.of(serieBO), PageRequest.of(0, 5, Sort.by("title").ascending()), 10);
+        given(serieService.findAll(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/series/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/series/findAll?method=false&page=5&size=10&sort=title"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -196,9 +198,9 @@ class SerieControllerTest {
     void givenNothing_whenFindAll_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.findAll()).willThrow(new ServiceException(""));
+        given(serieService.findAll(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/series/findAll?method=false"));
+        ResultActions response = mockMvc.perform(get("/series/findAll?method=false&page=5&size=10&sort=title"));
 
         response.andExpect(status().isBadRequest());
     }
@@ -208,9 +210,10 @@ class SerieControllerTest {
     void givenNothing_whenFindAllCriteria_thenReturnActorDTOList() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.findAllCriteria()).willReturn(List.of(serieBO));
+        Page<SerieBO> page = new PageImpl<>(List.of(serieBO), PageRequest.of(0, 5, Sort.by("title").ascending()), 10);
+        given(serieService.findAllCriteria(any(Pageable.class))).willReturn(page);
 
-        ResultActions response = mockMvc.perform(get("/series/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/series/findAll?method=true&page=5&size=10&sort=title"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -220,9 +223,9 @@ class SerieControllerTest {
     void givenNothing_whenFindAllCriteria_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.findAllCriteria()).willThrow(new ServiceException(""));
+        given(serieService.findAllCriteria(any(Pageable.class))).willThrow(new ServiceException(""));
 
-        ResultActions response = mockMvc.perform(get("/series/findAll?method=true"));
+        ResultActions response = mockMvc.perform(get("/series/findAll?method=true&page=5&size=10&sort=title"));
 
         response.andExpect(status().isBadRequest());
     }
