@@ -106,7 +106,7 @@ public class DirectorServiceImpl implements DirectorService {
 
             Page<DirectorBO> directorBOPage = new PageImpl<>(directorBOList, directorPage.getPageable(),
                     directorPage.getTotalPages());
-            
+
             return directorBOPage;
         } catch (NestedRuntimeException e) {
             log.error(errorService);
@@ -197,6 +197,27 @@ public class DirectorServiceImpl implements DirectorService {
                     directorPage.getTotalPages());
 
             return directorBOPage;
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public Page<DirectorBO> findAllCriteriaFilter(Pageable pageable, List<String> names, List<Integer> ages,
+            List<String> nationalities) throws ServiceException {
+        try {
+            //Búsqueda de los todos los directores, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Director> directorPage = directorRepositoryCriteria.findAllFilter(pageable, names, ages,
+                    nationalities);
+
+            if (directorPage.isEmpty()) {
+                throw new EmptyException("No directors");
+            }
+
+            List<DirectorBO> directorBOList = directorPage.stream().map(modelToBoConverter::directorModelToBo).toList();
+
+            return new PageImpl<>(directorBOList, directorPage.getPageable(), directorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

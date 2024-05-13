@@ -8,8 +8,14 @@ import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
+import com.pracs.films.persistence.models.Actor;
+import com.pracs.films.persistence.models.Director;
+import com.pracs.films.persistence.models.Producer;
 import com.pracs.films.persistence.models.Serie;
 import com.pracs.films.persistence.repositories.criteria.impl.SerieRepositoryImpl;
+import com.pracs.films.persistence.repositories.jpa.ActorRepository;
+import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
+import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
 import com.pracs.films.persistence.repositories.jpa.SerieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +25,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +39,12 @@ public class SerieServiceImpl implements SerieService {
     private final ModelToBoConverter modelToBoConverter;
 
     private final BoToModelConverter boToModelConverter;
+
+    private final ActorRepository actorRepository;
+
+    private final DirectorRepository directorRepository;
+
+    private final ProducerRepository producerRepository;
 
     private final SerieRepository serieRepository;
 
@@ -198,6 +211,43 @@ public class SerieServiceImpl implements SerieService {
                     seriePage.getTotalPages());
 
             return directorBOPage;
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public Page<SerieBO> findAllCriteriaFilter(Pageable pageable, List<String> titles, List<Integer> ages,
+            List<String> directors, List<String> producers, List<String> actors) throws ServiceException {
+        try {
+            //Búsqueda de los todos las series, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            List<Director> directorList = new ArrayList<>();
+            List<Producer> producerList = new ArrayList<>();
+            List<Actor> actorList = new ArrayList<>();
+
+            if (directors != null && !directors.isEmpty()) {
+                directors.forEach(d -> directorList.addAll(directorRepository.findByName(d)));
+            }
+
+            if (producers != null && !producers.isEmpty()) {
+                producers.forEach(p -> producerList.addAll(producerRepository.findByName(p)));
+            }
+
+            if (actors != null && !actors.isEmpty()) {
+                actors.forEach(a -> actorList.addAll(actorRepository.findByName(a)));
+            }
+
+            Page<Serie> seriePage = serieRepositoryCriteria.findAllFilter(pageable, titles, ages, directorList,
+                    producerList, actorList);
+
+            if (seriePage.isEmpty()) {
+                throw new EmptyException("No films");
+            }
+
+            List<SerieBO> serieBOList = seriePage.stream().map(modelToBoConverter::serieModelToBo).toList();
+
+            return new PageImpl<>(serieBOList, seriePage.getPageable(), seriePage.getTotalPages());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

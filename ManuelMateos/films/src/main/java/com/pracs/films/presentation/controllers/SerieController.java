@@ -69,6 +69,49 @@ public class SerieController {
     }
 
     /**
+     * Method for get all films pginated and filtered
+     *
+     * @param names
+     * @param ages
+     * @param directors
+     * @param producers
+     * @param actors
+     * @param method
+     * @param sort
+     * @param order
+     * @return
+     * @throws ServiceException
+     */
+    @GetMapping("/findAllFilter")
+    public ResponseEntity<List<SerieDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
+            @RequestParam(required = false) List<Integer> ages, @RequestParam(required = false) List<String> directors,
+            @RequestParam(required = false) List<String> producers, @RequestParam(required = false) List<String> actors,
+            @RequestParam boolean method, @RequestParam String sort, @RequestParam String order)
+            throws ServiceException {
+
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
+
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        serieService.findAllCriteriaFilter(pageable, names, ages, directors, producers, actors).stream()
+                                .map(boToDtoConverter::serieBoToDtoOut).toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    serieService.findAll(pageable).stream().map(boToDtoConverter::serieBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
      * Method for get a serie by his id.
      *
      * @param id

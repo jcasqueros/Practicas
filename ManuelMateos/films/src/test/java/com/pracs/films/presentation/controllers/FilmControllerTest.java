@@ -230,6 +230,33 @@ class FilmControllerTest {
         response.andExpect(status().isBadRequest());
     }
 
+    @DisplayName("Junit test for get all films filtered- positive")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenReturnFilmDTOList() throws Exception {
+        Page<FilmBO> page = new PageImpl<>(List.of(filmBO), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(filmService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList(), anyList(), anyList(),
+                anyList())).willReturn(page);
+        given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
+
+        ResultActions response = mockMvc.perform(
+                get("/films/findAllFilter?names=prueba&ages=2020&directors=prueba&producers=prueba&actors=prueba&method=true&sort=title&order=asc"));
+
+        response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get all films filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
+        given(filmService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList(), anyList(), anyList(),
+                anyList())).willThrow(new ServiceException(""));
+
+        ResultActions response = mockMvc.perform(
+                get("/films/findAllFilter?names=prueba&ages=2020&directors=prueba&producers=prueba&actors=prueba&method=true&sort=title&order=asc"));
+
+        response.andExpect(status().isBadRequest());
+    }
+
     @DisplayName("Junit test for get a serie by his id - positive")
     @Test
     void givenActorId_whenGetById_thenUserDTO() throws Exception {

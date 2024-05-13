@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +80,16 @@ class DirectorRepositoryImplTest {
 
         Page<Director> savedDirectors = directorRepository.findAllDirector(
                 PageRequest.of(0, 5, Sort.by("name").ascending()));
+
+        assertEquals(5, savedDirectors.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all directors filtered")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllDirectorFilter_thenReturnDirectorList() {
+
+        Page<Director> savedDirectors = directorRepository.findAllFilter(
+                PageRequest.of(0, 5, Sort.by("name").ascending()), List.of(), List.of(8), List.of());
 
         assertEquals(5, savedDirectors.getNumberOfElements());
     }

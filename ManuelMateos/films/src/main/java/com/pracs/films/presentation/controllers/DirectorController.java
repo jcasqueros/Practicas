@@ -69,6 +69,46 @@ public class DirectorController {
     }
 
     /**
+     * Method for get all directors paginated and filtered
+     *
+     * @param names
+     * @param ages
+     * @param nationalities
+     * @param method
+     * @param sort
+     * @param order
+     * @return
+     * @throws ServiceException
+     */
+    @GetMapping("/findAllFilter")
+    public ResponseEntity<List<DirectorDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
+            @RequestParam(required = false) List<Integer> ages,
+            @RequestParam(required = false) List<String> nationalities, @RequestParam boolean method,
+            @RequestParam String sort, @RequestParam String order) throws ServiceException {
+
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
+
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        directorService.findAllCriteriaFilter(pageable, names, ages, nationalities).stream()
+                                .map(boToDtoConverter::directorBoToDtoOut).toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    directorService.findAll(pageable).stream().map(boToDtoConverter::directorBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
      * Method for get a director by his id.
      *
      * @param id

@@ -13,8 +13,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +78,43 @@ public class ProducerRepositoryImpl implements ProducerCustomRepository {
         List<Producer> producers = query.getResultList();
 
         long totalElements = countAllProducers();
+
+        return new PageImpl<>(producers, pageable, totalElements);
+    }
+
+    @Override
+    public Page<Producer> findAllFilter(Pageable pageable, List<String> names, List<Integer> ages) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Producer> query = criteriaBuilder.createQuery(Producer.class);
+        Root<Producer> root = query.from(Producer.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (names != null && !names.isEmpty()) {
+            predicates.add(root.get("name").in(names));
+        }
+
+        if (ages != null && !ages.isEmpty()) {
+            predicates.add(root.get("debut").in(ages));
+        }
+
+        query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+
+        for (Sort.Order order : pageable.getSort()) {
+            if (order.getDirection().isAscending()) {
+                query.orderBy(criteriaBuilder.asc(root.get(order.getProperty())));
+            } else {
+                query.orderBy(criteriaBuilder.desc(root.get(order.getProperty())));
+            }
+        }
+
+        TypedQuery<Producer> typedQuery = entityManager.createQuery(query);
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        List<Producer> producers = typedQuery.getResultList();
+
+        long totalElements = entityManager.createQuery(query).getResultList().size();
 
         return new PageImpl<>(producers, pageable, totalElements);
     }

@@ -354,6 +354,39 @@ class DirectorServicesImplTest {
         assertThrows(ServiceException.class, () -> directorService.findAllCriteria(pageable));
     }
 
+    @DisplayName("JUnit test for get all directors filtered - positive")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllCriteriaFilter_thenReturnDirectorBoList() throws ServiceException {
+        given(modelToBoConverter.directorModelToBo(director)).willReturn(directorBO);
+        Page<Director> page = new PageImpl<>(List.of(director), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(directorRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(20), List.of())).willReturn(page);
+
+        Page<DirectorBO> savedDirectorBO = directorService.findAllCriteriaFilter(pageable, List.of(), List.of(20),
+                List.of());
+
+        assertEquals(1, savedDirectorBO.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all directors filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowEmptyException() throws ServiceException {
+        Page<Director> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(directorRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(20), List.of())).willReturn(page);
+
+        assertThrows(EmptyException.class,
+                () -> directorService.findAllCriteriaFilter(pageable, List.of(), List.of(20), List.of()));
+    }
+
+    @DisplayName("JUnit test for get all directors filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowNestedRuntimeException() throws ServiceException {
+        given(directorRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(20), List.of())).willThrow(
+                InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> directorService.findAllCriteriaFilter(pageable, List.of(), List.of(20), List.of()));
+    }
+
     @DisplayName("JUnit test for delete a director by his id - positive")
     @Test
     void givendirectorId_whenDeleteByIdCriteria_thenReturnDirectorBObject() throws ServiceException {

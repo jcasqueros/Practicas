@@ -202,6 +202,26 @@ public class ProducerServiceImpl implements ProducerService {
     }
 
     @Override
+    public Page<ProducerBO> findAllCriteriaFilter(Pageable pageable, List<String> names, List<Integer> ages)
+            throws ServiceException {
+        try {
+            //Búsqueda de los todos los productores, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Producer> producerPage = producerRepositoryCriteria.findAllFilter(pageable, names, ages);
+
+            if (producerPage.isEmpty()) {
+                throw new EmptyException("No producers");
+            }
+
+            List<ProducerBO> producerBOList = producerPage.stream().map(modelToBoConverter::producerModelToBo).toList();
+
+            return new PageImpl<>(producerBOList, producerPage.getPageable(), producerPage.getTotalPages());
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
     public void deleteByIdCriteria(long id) throws ServiceException {
         try {
             //Comprobar si existe el productor con el id pasado
