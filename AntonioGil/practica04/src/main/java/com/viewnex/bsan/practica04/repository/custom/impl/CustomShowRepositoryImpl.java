@@ -27,7 +27,7 @@ public class CustomShowRepositoryImpl implements CustomShowRepository {
     }
 
     @Override
-    public List<Show> getAll() {
+    public List<Show> findAll() {
         CriteriaQuery<Show> query = criteriaBuilder.createQuery(Show.class);
         Root<Show> shows = query.from(Show.class);
 
@@ -53,7 +53,7 @@ public class CustomShowRepositoryImpl implements CustomShowRepository {
     }
 
     @Override
-    public Optional<Show> getById(long id) {
+    public Optional<Show> findById(long id) {
         CriteriaQuery<Show> query = criteriaBuilder.createQuery(Show.class);
         Root<Show> shows = query.from(Show.class);
 

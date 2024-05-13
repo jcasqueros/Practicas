@@ -18,7 +18,7 @@ public interface CustomShowRepository {
      *
      * @return A list containing all the shows registered in the system
      */
-    List<Show> getAll();
+    List<Show> findAll();
 
     /**
      * Checks whether a show with the given ID exists in the system.
@@ -34,7 +34,7 @@ public interface CustomShowRepository {
      * @param id The ID for the show
      * @return An {@code Optional} containing the found show, or an empty {@code Optional} if it wasn't found
      */
-    Optional<Show> getById(long id);
+    Optional<Show> findById(long id);
 
     /**
      * Saves the given show to the system.

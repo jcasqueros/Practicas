@@ -27,7 +27,7 @@ public class CustomFilmRepositoryImpl implements CustomFilmRepository {
     }
 
     @Override
-    public List<Film> getAll() {
+    public List<Film> findAll() {
         CriteriaQuery<Film> query = criteriaBuilder.createQuery(Film.class);
         Root<Film> films = query.from(Film.class);
 
@@ -53,7 +53,7 @@ public class CustomFilmRepositoryImpl implements CustomFilmRepository {
     }
 
     @Override
-    public Optional<Film> getById(long id) {
+    public Optional<Film> findById(long id) {
         CriteriaQuery<Film> query = criteriaBuilder.createQuery(Film.class);
         Root<Film> films = query.from(Film.class);
 

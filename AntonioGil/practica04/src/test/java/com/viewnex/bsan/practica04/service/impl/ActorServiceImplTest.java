@@ -80,7 +80,7 @@ class ActorServiceImplTest {
     @DisplayName("[ActorServiceImpl] customGetAll (success)")
     @Test
     void givenActors_whenCustomGetAll_thenReturnActorList() {
-        Mockito.when(customRepository.getAll()).thenReturn(SAMPLE_ACTORS);
+        Mockito.when(customRepository.findAll()).thenReturn(SAMPLE_ACTORS);
         Mockito.when(mapper.entityToBo(SAMPLE_ACTORS.get(0))).thenReturn(
                 ActorBo.builder().id(1L).name("ACTOR1").age(30).nationality("USA").build()
         );
@@ -144,7 +144,7 @@ class ActorServiceImplTest {
     void givenNonExistentActorId_whenCustomGetById_thenThrow() {
         final long id = -1;
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.empty());
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> service.customGetById(id));
     }
@@ -155,7 +155,7 @@ class ActorServiceImplTest {
         final long id = 4;
         final ActorBo expectedActor = ActorBo.builder().id(id).name("ACTOR5").age(35).nationality("ITA").build();
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.of(SAMPLE_ACTORS.get(3)));
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.of(SAMPLE_ACTORS.get(3)));
         Mockito.when(mapper.entityToBo(SAMPLE_ACTORS.get(3))).thenReturn(expectedActor);
 
         final ActorBo foundActor = service.customGetById(id);

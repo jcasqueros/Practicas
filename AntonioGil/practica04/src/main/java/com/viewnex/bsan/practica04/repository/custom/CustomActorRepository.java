@@ -18,7 +18,7 @@ public interface CustomActorRepository {
      *
      * @return A list containing all the actors registered in the system
      */
-    List<Actor> getAll();
+    List<Actor> findAll();
 
     /**
      * Checks whether an actor with the given ID exists in the system.
@@ -34,7 +34,7 @@ public interface CustomActorRepository {
      * @param id The ID for the actor
      * @return An {@code Optional} containing the found actor, or an empty {@code Optional} if it wasn't found
      */
-    Optional<Actor> getById(long id);
+    Optional<Actor> findById(long id);
 
     /**
      * Saves the given actor to the system.

@@ -48,7 +48,7 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public List<ActorBo> customGetAll() {
-        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
+        return customRepository.findAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public ActorBo customGetById(long id) {
-        Optional<Actor> foundEntity = customRepository.getById(id);
+        Optional<Actor> foundEntity = customRepository.findById(id);
 
         if (foundEntity.isEmpty()) {
             String message = MessageBuilder.buildResourceNotFoundMessage(Messages.ACTOR_ENTITY_NAME, id);

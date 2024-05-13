@@ -40,7 +40,7 @@ class CustomDirectorRepositoryImplTest {
     @DisplayName("[CustomDirectorRepositoryImpl] findAll (should find empty list)")
     @Test
     void givenNoDirectors_whenFindAll_thenReturnEmptyList() {
-        final List<Director> foundDirectors = repository.getAll();
+        final List<Director> foundDirectors = repository.findAll();
 
         assertTrue(foundDirectors.isEmpty());
     }
@@ -50,7 +50,7 @@ class CustomDirectorRepositoryImplTest {
     void givenDirectors_whenFindAll_thenReturnDirectorList() {
         SAMPLE_DIRECTORS.forEach(testEntityManager::persist);
 
-        final List<Director> foundDirectors = repository.getAll();
+        final List<Director> foundDirectors = repository.findAll();
 
         assertFalse(foundDirectors.isEmpty());
         assertEquals(SAMPLE_DIRECTORS.size(), foundDirectors.size());
@@ -80,7 +80,7 @@ class CustomDirectorRepositoryImplTest {
     void givenNonExistentDirectorId_whenFindById_thenReturnEmpty() {
         final long id = -1;
 
-        final Optional<Director> foundDirector = repository.getById(id);
+        final Optional<Director> foundDirector = repository.findById(id);
 
         assertTrue(foundDirector.isEmpty());
     }
@@ -93,7 +93,7 @@ class CustomDirectorRepositoryImplTest {
         final Director director = SAMPLE_DIRECTORS.get(3);
         final Long id = director.getId();
 
-        final Director foundDirector = repository.getById(id).orElseThrow();
+        final Director foundDirector = repository.findById(id).orElseThrow();
 
         assertEquals(id, foundDirector.getId());
         assertEquals(director.getName(), foundDirector.getName());

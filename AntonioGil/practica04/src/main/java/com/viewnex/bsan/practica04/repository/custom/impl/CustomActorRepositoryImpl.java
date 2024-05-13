@@ -27,7 +27,7 @@ public class CustomActorRepositoryImpl implements CustomActorRepository {
     }
 
     @Override
-    public List<Actor> getAll() {
+    public List<Actor> findAll() {
         CriteriaQuery<Actor> query = criteriaBuilder.createQuery(Actor.class);
         Root<Actor> actors = query.from(Actor.class);
 
@@ -53,7 +53,7 @@ public class CustomActorRepositoryImpl implements CustomActorRepository {
     }
 
     @Override
-    public Optional<Actor> getById(long id) {
+    public Optional<Actor> findById(long id) {
         CriteriaQuery<Actor> query = criteriaBuilder.createQuery(Actor.class);
         Root<Actor> actors = query.from(Actor.class);
 

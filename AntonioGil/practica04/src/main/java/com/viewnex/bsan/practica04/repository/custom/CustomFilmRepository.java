@@ -18,7 +18,7 @@ public interface CustomFilmRepository {
      *
      * @return A list containing all the films registered in the system
      */
-    List<Film> getAll();
+    List<Film> findAll();
 
     /**
      * Checks whether a film with the given ID exists in the system.
@@ -34,7 +34,7 @@ public interface CustomFilmRepository {
      * @param id The ID for the film
      * @return An {@code Optional} containing the found film, or an empty {@code Optional} if it wasn't found
      */
-    Optional<Film> getById(long id);
+    Optional<Film> findById(long id);
 
     /**
      * Saves the given film to the system.

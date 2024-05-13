@@ -47,7 +47,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<FilmBo> customGetAll() {
-        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
+        return customRepository.findAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public FilmBo customGetById(long id) {
-        Optional<Film> foundEntity = customRepository.getById(id);
+        Optional<Film> foundEntity = customRepository.findById(id);
 
         if (foundEntity.isEmpty()) {
             String message = MessageBuilder.buildResourceNotFoundMessage(Messages.FILM_ENTITY_NAME, id);

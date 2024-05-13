@@ -40,7 +40,7 @@ class CustomProductionCompanyRepositoryImplTest {
     @DisplayName("[CustomProductionCompanyRepositoryImpl] findAll (should find empty list)")
     @Test
     void givenNoCompanies_whenFindAll_thenReturnEmptyList() {
-        final List<ProductionCompany> foundCompanies = repository.getAll();
+        final List<ProductionCompany> foundCompanies = repository.findAll();
 
         assertTrue(foundCompanies.isEmpty());
     }
@@ -50,7 +50,7 @@ class CustomProductionCompanyRepositoryImplTest {
     void givenCompanies_whenFindAll_thenReturnCompanyList() {
         SAMPLE_COMPANIES.forEach(testEntityManager::persist);
 
-        final List<ProductionCompany> foundCompanies = repository.getAll();
+        final List<ProductionCompany> foundCompanies = repository.findAll();
 
         assertFalse(foundCompanies.isEmpty());
         assertEquals(SAMPLE_COMPANIES.size(), foundCompanies.size());
@@ -80,7 +80,7 @@ class CustomProductionCompanyRepositoryImplTest {
     void givenNonExistentCompanyId_whenFindById_thenReturnEmpty() {
         final long id = -1;
 
-        final Optional<ProductionCompany> foundCompany = repository.getById(id);
+        final Optional<ProductionCompany> foundCompany = repository.findById(id);
 
         assertTrue(foundCompany.isEmpty());
     }
@@ -93,7 +93,7 @@ class CustomProductionCompanyRepositoryImplTest {
         final ProductionCompany company = SAMPLE_COMPANIES.get(1);
         final Long id = company.getId();
 
-        final ProductionCompany foundCompany = repository.getById(id).orElseThrow();
+        final ProductionCompany foundCompany = repository.findById(id).orElseThrow();
 
         assertEquals(id, foundCompany.getId());
         assertEquals(company.getName(), foundCompany.getName());

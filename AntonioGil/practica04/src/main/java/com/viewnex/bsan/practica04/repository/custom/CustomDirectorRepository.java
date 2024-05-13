@@ -18,7 +18,7 @@ public interface CustomDirectorRepository {
      *
      * @return A list containing all the directors registered in the system
      */
-    List<Director> getAll();
+    List<Director> findAll();
 
     /**
      * Checks whether a director with the given ID exists in the system.
@@ -34,7 +34,7 @@ public interface CustomDirectorRepository {
      * @param id The ID for the director
      * @return An {@code Optional} containing the found director, or an empty {@code Optional} if it wasn't found
      */
-    Optional<Director> getById(long id);
+    Optional<Director> findById(long id);
 
     /**
      * Saves the given director to the system.

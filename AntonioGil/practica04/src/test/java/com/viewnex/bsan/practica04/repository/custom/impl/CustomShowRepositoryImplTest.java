@@ -54,7 +54,7 @@ class CustomShowRepositoryImplTest {
     @DisplayName("[ShowRepository] findAll (should find empty list)")
     @Test
     void givenNoShows_whenFindAll_thenReturnEmptyList() {
-        final List<Show> foundShows = repository.getAll();
+        final List<Show> foundShows = repository.findAll();
 
         assertTrue(foundShows.isEmpty());
     }
@@ -64,7 +64,7 @@ class CustomShowRepositoryImplTest {
     void givenShows_whenFindAll_thenReturnShowList() {
         SAMPLE_SHOWS.forEach(this::persistShowWithNestedEntities);
 
-        final List<Show> foundShows = repository.getAll();
+        final List<Show> foundShows = repository.findAll();
 
         assertFalse(foundShows.isEmpty());
         assertEquals(SAMPLE_SHOWS.size(), foundShows.size());
@@ -94,7 +94,7 @@ class CustomShowRepositoryImplTest {
     void givenNonExistentShowId_whenFindById_thenReturnEmpty() {
         final long id = -1;
 
-        final Optional<Show> foundShow = repository.getById(id);
+        final Optional<Show> foundShow = repository.findById(id);
 
         assertTrue(foundShow.isEmpty());
     }
@@ -107,7 +107,7 @@ class CustomShowRepositoryImplTest {
         final Show show = SAMPLE_SHOWS.get(1);
         final Long id = show.getId();
 
-        final Show foundShow = repository.getById(id).orElseThrow();
+        final Show foundShow = repository.findById(id).orElseThrow();
 
         assertEquals(id, foundShow.getId());
         assertEquals(show.getTitle(), foundShow.getTitle());
