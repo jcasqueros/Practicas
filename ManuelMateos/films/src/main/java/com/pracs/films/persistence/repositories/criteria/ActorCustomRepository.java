@@ -4,6 +4,7 @@ import com.pracs.films.persistence.models.Actor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,6 +44,17 @@ public interface ActorCustomRepository {
      * @return List of Actor
      */
     Page<Actor> findAllActors(Pageable pageable);
+
+    /**
+     * Method for get all actors by differents atribbutes
+     *
+     * @param pageable
+     * @param names
+     * @param ages
+     * @param nationalities
+     * @return
+     */
+    Page<Actor> findAllFilter(Pageable pageable, List<String> names, List<Integer> ages, List<String> nationalities);
 
     /**
      * Method for delete an actor by his id

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,16 +80,26 @@ class ActorRepositoryImplTest {
 
     @DisplayName("JUnit test for get all actors")
     @Test
-    void givenNothing_whenFindAllActor_thenReturnActorList() {
+    void givenPageable_whenFindAllActor_thenReturnActorList() {
 
         Page<Actor> savedActors = actorRepository.findAllActors(PageRequest.of(0, 5, Sort.by("name").ascending()));
 
         assertEquals(5, savedActors.getNumberOfElements());
     }
 
+    @DisplayName("JUnit test for get all actors filtered")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllActorFilter_thenReturnActorList() {
+
+        Page<Actor> savedActors = actorRepository.findAllFilter(PageRequest.of(0, 5, Sort.by("name").ascending()),
+                List.of(), List.of(8), List.of());
+
+        assertEquals(5, savedActors.getNumberOfElements());
+    }
+
     @DisplayName("JUnit test for delete an actor")
     @Test
-    void givenActorId_whenDeleteActorByid_thenDelete() {
+    void givenActorId_whenDeleteActorById_thenDelete() {
 
         actorRepository.deleteActorById(actor);
 

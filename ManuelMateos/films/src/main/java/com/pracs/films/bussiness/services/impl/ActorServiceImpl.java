@@ -103,9 +103,7 @@ public class ActorServiceImpl implements ActorService {
 
             List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
 
-            Page<ActorBO> actorBOPage = new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
-
-            return actorBOPage;
+            return new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());
@@ -190,9 +188,27 @@ public class ActorServiceImpl implements ActorService {
 
             List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
 
-            Page<ActorBO> actorBOPage = new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
+            return new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
+        } catch (NestedRuntimeException e) {
+            log.error(errorService);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
 
-            return actorBOPage;
+    @Override
+    public Page<ActorBO> findAllCriteriaFilter(Pageable pageable, List<String> names, List<Integer> ages,
+            List<String> nationalities) throws ServiceException {
+        try {
+            //Búsqueda de los todos los actores, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Actor> actorPage = actorRepositoryCriteria.findAllFilter(pageable, names, ages, nationalities);
+
+            if (actorPage.isEmpty()) {
+                throw new EmptyException("No actors");
+            }
+
+            List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
+
+            return new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
             log.error(errorService);
             throw new ServiceException(e.getLocalizedMessage());

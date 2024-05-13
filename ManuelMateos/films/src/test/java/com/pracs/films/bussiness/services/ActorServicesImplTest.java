@@ -325,7 +325,7 @@ class ActorServicesImplTest {
 
     @DisplayName("JUnit test for get all actors - positive")
     @Test
-    void givenNothing_whenFindAllCriteria_thenReturnActorBoObject() throws ServiceException {
+    void givenNothing_whenFindAllCriteria_thenReturnActorBoOList() throws ServiceException {
         given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
         Page<Actor> page = new PageImpl<>(List.of(actor), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
         given(actorRepositoryCriteria.findAllActors(pageable)).willReturn(page);
@@ -350,6 +350,38 @@ class ActorServicesImplTest {
         given(actorRepositoryCriteria.findAllActors(pageable)).willThrow(InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> actorService.findAllCriteria(pageable));
+    }
+
+    @DisplayName("JUnit test for get all actors filtered - positive")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllCriteriaFilter_thenReturnActorBoList() throws ServiceException {
+        given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
+        Page<Actor> page = new PageImpl<>(List.of(actor), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(actorRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(20), List.of())).willReturn(page);
+
+        Page<ActorBO> savedActorsBO = actorService.findAllCriteriaFilter(pageable, List.of(), List.of(20), List.of());
+
+        assertEquals(1, savedActorsBO.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all actors filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowEmptyException() throws ServiceException {
+        Page<Actor> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(actorRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(20), List.of())).willReturn(page);
+
+        assertThrows(EmptyException.class,
+                () -> actorService.findAllCriteriaFilter(pageable, List.of(), List.of(20), List.of()));
+    }
+
+    @DisplayName("JUnit test for get all actors filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowNestedRuntimeException() throws ServiceException {
+        given(actorRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(20), List.of())).willThrow(
+                InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> actorService.findAllCriteriaFilter(pageable, List.of(), List.of(20), List.of()));
     }
 
     @DisplayName("JUnit test for delete an actor by his id - positive")
