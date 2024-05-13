@@ -411,6 +411,43 @@ class SerieServicesImplTest {
         assertThrows(ServiceException.class, () -> serieService.findAllCriteria(pageable));
     }
 
+    @DisplayName("JUnit test for get all series filtered - positive")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllCriteriaFilter_thenReturnSeriesBoList() throws ServiceException {
+        given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
+        Page<Serie> page = new PageImpl<>(List.of(serie), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(serieRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                List.of())).willReturn(page);
+
+        Page<SerieBO> savedSerieBO = serieService.findAllCriteriaFilter(pageable, List.of(), List.of(2020), List.of(),
+                List.of(), List.of());
+
+        assertEquals(1, savedSerieBO.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all series filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowEmptyException() throws ServiceException {
+        Page<Serie> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(serieRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                List.of())).willReturn(page);
+
+        assertThrows(EmptyException.class,
+                () -> serieService.findAllCriteriaFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                        List.of()));
+    }
+
+    @DisplayName("JUnit test for get all series filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowNestedRuntimeException() throws ServiceException {
+        given(serieRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                List.of())).willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> serieService.findAllCriteriaFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                        List.of()));
+    }
+
     @DisplayName("JUnit test for delete an serie by his id - positive")
     @Test
     void givenserieId_whenDeleteByIdCriteria_thenReturnSerieBoObject() throws ServiceException {

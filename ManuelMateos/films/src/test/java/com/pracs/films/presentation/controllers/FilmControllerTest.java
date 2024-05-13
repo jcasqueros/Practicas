@@ -181,7 +181,7 @@ class FilmControllerTest {
         filmDtoOut.setActors(actorsDtoOut);
     }
 
-    @DisplayName("Junit test for get all series - positive")
+    @DisplayName("Junit test for get all films - positive")
     @Test
     void givenNothing_whenFindAll_thenReturnFilmDTOList() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -193,7 +193,7 @@ class FilmControllerTest {
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
 
-    @DisplayName("Junit test for get all series - negative")
+    @DisplayName("Junit test for get all films - negative")
     @Test
     void givenNothing_whenFindAll_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -205,7 +205,7 @@ class FilmControllerTest {
         response.andExpect(status().isBadRequest());
     }
 
-    @DisplayName("Junit test for get all series - positive")
+    @DisplayName("Junit test for get all films - positive")
     @Test
     void givenNothing_whenFindAllCriteria_thenReturnFilmDTOList() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -218,7 +218,7 @@ class FilmControllerTest {
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
 
-    @DisplayName("Junit test for get all series - negative")
+    @DisplayName("Junit test for get all films - negative")
     @Test
     void givenNothing_whenFindAllCriteria_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -230,7 +230,34 @@ class FilmControllerTest {
         response.andExpect(status().isBadRequest());
     }
 
-    @DisplayName("Junit test for get a serie by his id - positive")
+    @DisplayName("Junit test for get all films filtered- positive")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenReturnFilmDTOList() throws Exception {
+        Page<FilmBO> page = new PageImpl<>(List.of(filmBO), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(filmService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList(), anyList(), anyList(),
+                anyList())).willReturn(page);
+        given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
+
+        ResultActions response = mockMvc.perform(
+                get("/films/findAllFilter?names=prueba&ages=2020&directors=prueba&producers=prueba&actors=prueba&method=true&sort=title&order=asc"));
+
+        response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get all films filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
+        given(filmService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList(), anyList(), anyList(),
+                anyList())).willThrow(new ServiceException(""));
+
+        ResultActions response = mockMvc.perform(
+                get("/films/findAllFilter?names=prueba&ages=2020&directors=prueba&producers=prueba&actors=prueba&method=true&sort=title&order=asc"));
+
+        response.andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("Junit test for get a film by his id - positive")
     @Test
     void givenActorId_whenGetById_thenUserDTO() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -244,7 +271,7 @@ class FilmControllerTest {
                 .andExpect(jsonPath("$.debut", is(filmDtoOut.getDebut())));
     }
 
-    @DisplayName("Junit test for get a serie by his id - negative")
+    @DisplayName("Junit test for get a film by his id - negative")
     @Test
     void givenActorId_whenGetById_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -256,7 +283,7 @@ class FilmControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 
-    @DisplayName("Junit test for get a serie by his id - positive")
+    @DisplayName("Junit test for get a film by his id - positive")
     @Test
     void givenActorId_whenGetByIdCriteria_thenUserDTO() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -270,7 +297,7 @@ class FilmControllerTest {
                 .andExpect(jsonPath("$.debut", is(filmDtoOut.getDebut())));
     }
 
-    @DisplayName("Junit test for get a serie by his id - negative")
+    @DisplayName("Junit test for get a film by his id - negative")
     @Test
     void givenActorId_whenGetByIdCriteria_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -342,7 +369,7 @@ class FilmControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 
-    @DisplayName("Junit test for update a serie - positive")
+    @DisplayName("Junit test for update a film - positive")
     @Test
     void givenFilmDTO_whenUpdate_thenUpdatedFilmDTO() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -363,7 +390,7 @@ class FilmControllerTest {
                 .andExpect(jsonPath("$.nationality", is("updated")));
     }
 
-    @DisplayName("Junit test for update a serie - negative")
+    @DisplayName("Junit test for update a film - negative")
     @Test
     void givenFilmDTO_whenUpdate_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -382,7 +409,7 @@ class FilmControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 
-    @DisplayName("Junit test for update a serie - positive")
+    @DisplayName("Junit test for update a film - positive")
     @Test
     void givenFilmDTO_whenUpdateCriteria_thenUpdatedFilmDTO() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -403,7 +430,7 @@ class FilmControllerTest {
                 .andExpect(jsonPath("$.nationality", is("updated")));
     }
 
-    @DisplayName("Junit test for update a serie - negative")
+    @DisplayName("Junit test for update a film - negative")
     @Test
     void givenFilmDTO_whenUpdateCriteria_thenThrowServiceException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
@@ -422,7 +449,7 @@ class FilmControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 
-    @DisplayName("Junit test for delete a serie by his id - positive")
+    @DisplayName("Junit test for delete a film by his id - positive")
     @Test
     void givenActorId_whenDeleteById_thenDelete() throws Exception {
         willDoNothing().given(filmService).deleteById(filmBO.getId());
@@ -433,7 +460,7 @@ class FilmControllerTest {
         response.andDo(print()).andExpect(status().isNoContent());
     }
 
-    @DisplayName("Junit test for delete a serie by his id - negative")
+    @DisplayName("Junit test for delete a film by his id - negative")
     @Test
     void givenActorId_whenDeleteById_thenThrowServiceException() throws Exception {
         willThrow(new ServiceException("")).given(filmService).deleteById(filmBO.getId());
@@ -444,7 +471,7 @@ class FilmControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 
-    @DisplayName("Junit test for delete a serie by his id - positive")
+    @DisplayName("Junit test for delete a film by his id - positive")
     @Test
     void givenActorId_whenDeleteByIdCriteria_thenDelete() throws Exception {
         willDoNothing().given(filmService).deleteByIdCriteria(filmBO.getId());
@@ -455,7 +482,7 @@ class FilmControllerTest {
         response.andDo(print()).andExpect(status().isNoContent());
     }
 
-    @DisplayName("Junit test for delete a serie by his id - negative")
+    @DisplayName("Junit test for delete a film by his id - negative")
     @Test
     void givenActorId_whenDeleteByIdCriteria_thenThrowServiceException() throws Exception {
         willThrow(new ServiceException("")).given(filmService).deleteByIdCriteria(filmBO.getId());

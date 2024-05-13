@@ -410,6 +410,43 @@ class FilmServicesImplTest {
         assertThrows(ServiceException.class, () -> filmService.findAllCriteria(pageable));
     }
 
+    @DisplayName("JUnit test for get all films filtered - positive")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllCriteriaFilter_thenReturnFilmsBoList() throws ServiceException {
+        given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
+        Page<Film> page = new PageImpl<>(List.of(film), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(filmRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                List.of())).willReturn(page);
+
+        Page<FilmBO> savedFilmBO = filmService.findAllCriteriaFilter(pageable, List.of(), List.of(2020), List.of(),
+                List.of(), List.of());
+
+        assertEquals(1, savedFilmBO.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all films filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowEmptyException() throws ServiceException {
+        Page<Film> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(filmRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                List.of())).willReturn(page);
+
+        assertThrows(EmptyException.class,
+                () -> filmService.findAllCriteriaFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                        List.of()));
+    }
+
+    @DisplayName("JUnit test for get all films filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowNestedRuntimeException() throws ServiceException {
+        given(filmRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                List.of())).willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> filmService.findAllCriteriaFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
+                        List.of()));
+    }
+
     @DisplayName("JUnit test for delete a film by his id - positive")
     @Test
     void givenfilmId_whenDeleteByIdCriteria_thenReturnFilmBoObject() throws ServiceException {
