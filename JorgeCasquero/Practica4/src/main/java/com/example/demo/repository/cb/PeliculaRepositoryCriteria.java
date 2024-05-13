@@ -1,13 +1,15 @@
 package com.example.demo.repository.cb;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import com.example.demo.model.Actor;
 import com.example.demo.model.Pelicula;
 import com.example.demo.servcice.exception.AlreadyExistsExeption;
 import com.example.demo.servcice.exception.NotFoundException;
 
 public interface PeliculaRepositoryCriteria {
-	List<Pelicula> getAll();
+	Page<Pelicula> getAll(Pageable pageable);
 
 	Pelicula getById(long id) throws NotFoundException;
 
