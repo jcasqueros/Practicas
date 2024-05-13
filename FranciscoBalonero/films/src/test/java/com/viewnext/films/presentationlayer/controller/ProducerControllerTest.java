@@ -84,17 +84,6 @@ class ProducerControllerTest {
     }
 
     @Test
-    @DisplayName("Criteria Get all producers : correct case")
-    void givenSelectTrue_whenCriteriaGetAllProducers_thenReturnAllProducers() throws Exception {
-        given(producerService.criteriaGetAll()).willReturn(List.of(producerBO));
-        given(converter.producerBOToOutDTO(any(ProducerBO.class))).willReturn(producerOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Producer/getAllProducers?select=true"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
-    }
-
-    @Test
     @DisplayName("Criteria Get producer by id : correct case")
     void givenSelectTrue_whenCriteriaGetProducerById_thenReturnProducer() throws Exception {
         given(producerService.criteriaGetById(1L)).willReturn(producerBO);
@@ -151,9 +140,49 @@ class ProducerControllerTest {
     @DisplayName("Criteria Get all producers : incorrect case -> ServiceException")
     void givenSelectTrue_whenCriteriaGetAllProducers_thenThrowServiceException() throws Exception {
         given(converter.producerBOToOutDTO(any(ProducerBO.class))).willReturn(producerOutDTO);
-        given(producerService.criteriaGetAll()).willThrow(new NotFoundException());
+        given(producerService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(
+                new NotFoundException());
 
-        ResultActions response = mockMvc.perform(get("/api/v1/Producer/getAllProducers?select=true"));
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Producer/getAllProducers?select=true&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Criteria Get all producers : correct case")
+    void givenSelectTrue_whenCriteriaGetAllProducers_thenReturnAllProducers() throws Exception {
+        given(producerService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(
+                List.of(producerBO));
+        given(converter.producerBOToOutDTO(any(ProducerBO.class))).willReturn(producerOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Producer/getAllProducers?select=true&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all producers : correct case")
+    void givenSelectFalse_whenJPAGetAllProducers_thenReturnAllProducers() throws Exception {
+        given(producerService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(List.of(producerBO));
+        given(converter.producerBOToOutDTO(producerBO)).willReturn(producerOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Producer/getAllProducers?select=false&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all producers : incorrect case -> ServiceException")
+    void givenSelectFalse_whenJPAGetAllProducers_thenThrowServiceException() throws Exception {
+        given(converter.producerBOToOutDTO(any(ProducerBO.class))).willReturn(producerOutDTO);
+        given(producerService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(
+                new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Producer/getAllProducers?select=false&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
@@ -207,18 +236,6 @@ class ProducerControllerTest {
     }
 
     @Test
-    @DisplayName("JPA Get all producers : correct case")
-    void givenSelectTrue_whenJPAGetAllProducers_thenReturnAllProducers() throws Exception {
-
-        given(producerService.jpaGetAll()).willReturn(List.of(producerBO));
-        given(converter.producerBOToOutDTO(producerBO)).willReturn(producerOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Producer/getAllProducers?select=false"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
-    }
-
-    @Test
     @DisplayName("JPA Get producer by id : correct case")
     void givenSelectTrue_whenJPAGetProducerById_thenReturnProducer() throws Exception {
         given(producerService.jpaGetById(1L)).willReturn(producerBO);
@@ -269,17 +286,6 @@ class ProducerControllerTest {
 
         response.andDo(print()).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is(producerUpdateDTO.getName())));
-    }
-
-    @Test
-    @DisplayName("JPA Get all producers : incorrect case -> ServiceException")
-    void givenSelectTrue_whenJPAGetAllProducers_thenThrowServiceException() throws Exception {
-        given(converter.producerBOToOutDTO(any(ProducerBO.class))).willReturn(producerOutDTO);
-        given(producerService.jpaGetAll()).willThrow(new NotFoundException());
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Producer/getAllProducers?select=false"));
-
-        response.andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test

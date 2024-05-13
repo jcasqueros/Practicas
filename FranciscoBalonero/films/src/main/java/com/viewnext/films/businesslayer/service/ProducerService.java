@@ -15,34 +15,34 @@ import java.util.List;
  * <p>Example usage:</p>
  * <pre>
  * {@code
- * // Obtain a instance of ProducerService
+ * // Obtain an instance of ProducerService
  * ProducerService producerService = // instantiate or inject the implementation
  *
- * // Retrieve a producer by ID using Criteria
+ * // Retrieve an producer by ID using Criteria
  * ProducerBO producer = producerService.criteriaGetById(1L);
  *
  * // Retrieve all producers using Criteria
  * List<ProducerBO> producers = producerService.criteriaGetAll();
  *
- * // Delete a producer by ID using Criteria
+ * // Delete an producer by ID using Criteria
  * producerService.criteriaDeleteById(1L);
  *
- * // Update a producer using Criteria
+ * // Update an producer using Criteria
  * ProducerBO updatedProducer = producerService.criteriaUpdate(producer);
  *
  * // Create a new producer using Criteria
  * ProducerBO createdProducer = producerService.criteriaCreate(producer);
  *
- * // Retrieve a producer by ID using JPA
+ * // Retrieve an producer by ID using JPA
  * ProducerBO producer = producerService.jpaGetById(1L);
  *
  * // Retrieve all producers using JPA
  * List<ProducerBO> producers = producerService.jpaGetAll();
  *
- * // Delete a producer by ID using JPA
+ * // Delete an producer by ID using JPA
  * producerService.jpaDeleteById(1L);
  *
- * // Update a producer using JPA
+ * // Update an producer using JPA
  * ProducerBO updatedProducer = producerService.jpaUpdate(producer);
  *
  * // Create a new producer using JPA
@@ -71,13 +71,22 @@ public interface ProducerService {
     ProducerBO criteriaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all producers using Criteria.
+     * Retrieves all producers using Criteria, paginated and sorted.
      *
-     * @return A {@link List} of all {@link ProducerBO} .
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link ProducerBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<ProducerBO> criteriaGetAll() throws ServiceException;
+    List<ProducerBO> criteriaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException;
 
     /**
      * Deletes a producer by ID using Criteria.
@@ -123,13 +132,21 @@ public interface ProducerService {
     ProducerBO jpaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all producers using JPA.
+     * Retrieves all producers using JPA, paginated and sorted.
      *
-     * @return A {@link List} of all {@link ProducerBO}.
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link ProducerBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<ProducerBO> jpaGetAll() throws ServiceException;
+    List<ProducerBO> jpaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
 
     /**
      * Deletes a producer by ID using JPA.

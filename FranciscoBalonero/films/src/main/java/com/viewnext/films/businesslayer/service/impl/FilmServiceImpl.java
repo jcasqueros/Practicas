@@ -11,6 +11,9 @@ import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,46 +30,56 @@ import java.util.List;
  *
  * @author Francisco Balonero Olivera
  */
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FilmServiceImpl implements FilmService {
 
+    // Inyección de dependencias
     /**
      * The film criteria repository.
      */
     private final FilmCriteriaRepository filmCriteriaRepository;
-
     /**
      * The film JPA repository.
      */
     private final FilmJPARepository filmJPARepository;
-
     /**
      * The converter for converting between entity and business objects.
      */
     private final Converter converter;
 
+    // Métodos para interactuar con la capa de persistencia utilizando Criteria API
     @Override
     public FilmBO criteriaGetById(long id) throws ServiceException {
         try {
+            // Busca un film por ID utilizando Criteria API
             return converter.filmEntityToBO(filmCriteriaRepository.getFilmById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching film by id: {}", id, e);
             throw new ServiceException("The film could not be searched", e);
         }
     }
 
     @Override
-    public List<FilmBO> criteriaGetAll() throws ServiceException {
+    public List<FilmBO> criteriaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException {
         try {
-            List<Film> films = filmCriteriaRepository.getAllFilms();
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca todos los filmes utilizando Criteria API
+            List<Film> films = filmCriteriaRepository.getAllFilms(pageable);
             if (!films.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
                 return films.stream().map(converter::filmEntityToBO).toList();
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching all films", e);
             throw new ServiceException("The films could not be searched", e);
         }
@@ -75,8 +88,10 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void criteriaDeleteById(Long id) throws ServiceException {
         try {
+            // Elimina un film por ID utilizando Criteria API
             filmCriteriaRepository.deleteFilm(id);
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error deleting film by id: {}", id, e);
             throw new ServiceException("The film could not be deleted", e);
         }
@@ -84,10 +99,13 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public FilmBO criteriaUpdate(FilmBO filmBO) throws ServiceException {
+        // Verifica si el film existe antes de actualizarlo
         criteriaGetById(filmBO.getId());
         try {
+            // Actualiza un film utilizando Criteria API
             return converter.filmEntityToBO(filmCriteriaRepository.updateFilm(converter.filmBOToEntity(filmBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error updating film: {}", filmBO, e);
             throw new ServiceException("The film could not be updated", e);
         }
@@ -96,33 +114,45 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO criteriaCreate(FilmBO filmBO) throws ServiceException {
         try {
+            // Crea un film utilizando Criteria API
             return converter.filmEntityToBO(filmCriteriaRepository.createFilm(converter.filmBOToEntity(filmBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error creating film: {}", filmBO, e);
             throw new ServiceException("The film could not be created", e);
         }
     }
 
+    // Métodos para interactuar con la capa de persistencia utilizando JPA
     @Override
     public FilmBO jpaGetById(long id) throws ServiceException {
         try {
+            // Busca un film por ID utilizando JPA
             return converter.filmEntityToBO(filmJPARepository.findById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching film by id: {}", id, e);
             throw new ServiceException("The film could not be searched", e);
         }
     }
 
     @Override
-    public List<FilmBO> jpaGetAll() throws ServiceException {
+    public List<FilmBO> jpaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException {
         try {
-            List<Film> films = filmJPARepository.findAll();
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca todos los filmes utilizando JPA
+            List<Film> films = filmJPARepository.findAll(pageable).getContent();
             if (!films.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
                 return films.stream().map(converter::filmEntityToBO).toList();
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching all films", e);
             throw new ServiceException("The films could not be searched", e);
         }
@@ -131,8 +161,10 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void jpaDeleteById(Long id) throws ServiceException {
         try {
+            // Elimina un film por ID utilizando JPA
             filmJPARepository.deleteById(id);
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error deleting film by id: {}", id, e);
             throw new ServiceException("The film could not be deleted", e);
         }
@@ -141,12 +173,15 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO jpaUpdate(FilmBO filmBO) throws ServiceException {
         try {
+            // Verifica si el film existe antes de actualizarlo
             if (filmJPARepository.existsById(filmBO.getId())) {
+                // Actualiza un film utilizando JPA
                 return converter.filmEntityToBO(filmJPARepository.save(converter.filmBOToEntity(filmBO)));
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error updating film: {}", filmBO, e);
             throw new ServiceException("The film could not be updated", e);
         }
@@ -155,8 +190,10 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO jpaCreate(FilmBO filmBO) throws ServiceException {
         try {
+            // Crea un film utilizando JPA
             return converter.filmEntityToBO(filmJPARepository.save(converter.filmBOToEntity(filmBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error creating film: {}", filmBO, e);
             throw new ServiceException("The film could not be created", e);
         }

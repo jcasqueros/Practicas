@@ -11,6 +11,9 @@ import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,47 +30,57 @@ import java.util.List;
  *
  * @author Francisco Balonero Olivera
  */
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DirectorServiceImpl implements DirectorService {
 
+    // Inyección de dependencias
     /**
      * The director criteria repository.
      */
     private final DirectorCriteriaRepository directorCriteriaRepository;
-
     /**
      * The director JPA repository.
      */
     private final DirectorJPARepository directorJPARepository;
-
     /**
      * The converter for converting between entity and business objects.
      */
     private final Converter converter;
 
+    // Métodos para interactuar con la capa de persistencia utilizando Criteria API
     @Override
     public DirectorBO criteriaGetById(long id) throws ServiceException {
         try {
+            // Busca un director por ID utilizando Criteria API
             return converter.directorEntityToBO(
                     directorCriteriaRepository.getDirectorById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching director by id: {}", id, e);
             throw new ServiceException("The director could not be searched", e);
         }
     }
 
     @Override
-    public List<DirectorBO> criteriaGetAll() throws ServiceException {
+    public List<DirectorBO> criteriaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException {
         try {
-            List<Director> directors = directorCriteriaRepository.getAllDirectors();
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca todos los directores utilizando Criteria API
+            List<Director> directors = directorCriteriaRepository.getAllDirectors(pageable);
             if (!directors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
                 return directors.stream().map(converter::directorEntityToBO).toList();
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching all directors", e);
             throw new ServiceException("The directors could not be searched", e);
         }
@@ -76,8 +89,10 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public void criteriaDeleteById(Long id) throws ServiceException {
         try {
+            // Elimina un director por ID utilizando Criteria API
             directorCriteriaRepository.deleteDirector(id);
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error deleting director by id: {}", id, e);
             throw new ServiceException("The director could not be deleted", e);
         }
@@ -85,11 +100,14 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public DirectorBO criteriaUpdate(DirectorBO directorBO) throws ServiceException {
+        // Verifica si el director existe antes de actualizarlo
         criteriaGetById(directorBO.getId());
         try {
+            // Actualiza un director utilizando Criteria API
             return converter.directorEntityToBO(
                     directorCriteriaRepository.updateDirector(converter.directorBOToEntity(directorBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error updating director: {}", directorBO, e);
             throw new ServiceException("The director could not be updated", e);
         }
@@ -98,34 +116,46 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO criteriaCreate(DirectorBO directorBO) throws ServiceException {
         try {
+            // Crea un director utilizando Criteria API
             return converter.directorEntityToBO(
                     directorCriteriaRepository.createDirector(converter.directorBOToEntity(directorBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error creating director: {}", directorBO, e);
             throw new ServiceException("The director could not be created", e);
         }
     }
 
+    // Métodos para interactuar con la capa de persistencia utilizando JPA
     @Override
     public DirectorBO jpaGetById(long id) throws ServiceException {
         try {
+            // Busca un director por ID utilizando JPA
             return converter.directorEntityToBO(directorJPARepository.findById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching director by id: {}", id, e);
             throw new ServiceException("The director could not be searched", e);
         }
     }
 
     @Override
-    public List<DirectorBO> jpaGetAll() throws ServiceException {
+    public List<DirectorBO> jpaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException {
         try {
-            List<Director> directors = directorJPARepository.findAll();
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca todos los directores utilizando JPA
+            List<Director> directors = directorJPARepository.findAll(pageable).getContent();
             if (!directors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
                 return directors.stream().map(converter::directorEntityToBO).toList();
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching all directors", e);
             throw new ServiceException("The directors could not be searched", e);
         }
@@ -134,8 +164,10 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public void jpaDeleteById(Long id) throws ServiceException {
         try {
+            // Elimina un director por ID utilizando JPA
             directorJPARepository.deleteById(id);
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error deleting director by id: {}", id, e);
             throw new ServiceException("The director could not be deleted", e);
         }
@@ -144,13 +176,16 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO jpaUpdate(DirectorBO directorBO) throws ServiceException {
         try {
+            // Verifica si el director existe antes de actualizarlo
             if (directorJPARepository.existsById(directorBO.getId())) {
+                // Actualiza un director utilizando JPA
                 return converter.directorEntityToBO(
                         directorJPARepository.save(converter.directorBOToEntity(directorBO)));
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error updating director: {}", directorBO, e);
             throw new ServiceException("The director could not be updated", e);
         }
@@ -159,8 +194,10 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public DirectorBO jpaCreate(DirectorBO directorBO) throws ServiceException {
         try {
+            // Crea un director utilizando JPA
             return converter.directorEntityToBO(directorJPARepository.save(converter.directorBOToEntity(directorBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error creating director: {}", directorBO, e);
             throw new ServiceException("The director could not be created", e);
         }

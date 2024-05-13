@@ -138,17 +138,6 @@ class FilmControllerTest {
     }
 
     @Test
-    @DisplayName("Criteria Get all films : correct case")
-    void givenSelectTrue_whenCriteriaGetAllFilms_thenReturnAllFilms() throws Exception {
-        given(filmService.criteriaGetAll()).willReturn(List.of(filmBO));
-        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Film/getAllFilms?select=true"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
-    }
-
-    @Test
     @DisplayName("Criteria Get film by id : correct case")
     void givenSelectTrue_whenCriteriaGetFilmById_thenReturnFilm() throws Exception {
         given(filmService.criteriaGetById(1L)).willReturn(filmBO);
@@ -157,6 +146,55 @@ class FilmControllerTest {
         ResultActions response = mockMvc.perform(get("/api/v1/Film/getFilm?select=true&id=1"));
 
         response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.title", is("Friends")));
+    }
+
+    @Test
+    @DisplayName("Criteria Get all films : incorrect case -> ServiceException")
+    void givenSelectTrue_whenCriteriaGetAllFilms_thenThrowServiceException() throws Exception {
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+        given(filmService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(
+                new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/getAllFilms?select=true&pageNumber=0&pageSize=10&sortBy=title&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Criteria Get all films : correct case")
+    void givenSelectTrue_whenCriteriaGetAllFilms_thenReturnAllFilms() throws Exception {
+        given(filmService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(List.of(filmBO));
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/getAllFilms?select=true&pageNumber=0&pageSize=10&sortBy=title&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all films : correct case")
+    void givenSelectFalse_whenJPAGetAllFilms_thenReturnAllFilms() throws Exception {
+        given(filmService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(List.of(filmBO));
+        given(converter.filmBOToOutDTO(filmBO)).willReturn(filmOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/getAllFilms?select=false&pageNumber=0&pageSize=10&sortBy=title&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all films : incorrect case -> ServiceException")
+    void givenSelectFalse_whenJPAGetAllFilms_thenThrowServiceException() throws Exception {
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+        given(filmService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/getAllFilms?select=false&pageNumber=0&pageSize=10&sortBy=title&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test
@@ -198,17 +236,6 @@ class FilmControllerTest {
 
         response.andDo(print()).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title", is(filmUpdateDTO.getTitle())));
-    }
-
-    @Test
-    @DisplayName("Criteria Get all films : incorrect case -> ServiceException")
-    void givenSelectTrue_whenCriteriaGetAllFilms_thenThrowServiceException() throws Exception {
-        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
-        given(filmService.criteriaGetAll()).willThrow(new NotFoundException());
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Film/getAllFilms?select=true"));
-
-        response.andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test
@@ -257,18 +284,6 @@ class FilmControllerTest {
                         .content(objectMapper.writeValueAsString(filmUpdateDTO)));
 
         response.andDo(print()).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("JPA Get all films : correct case")
-    void givenSelectTrue_whenJPAGetAllFilms_thenReturnAllFilms() throws Exception {
-
-        given(filmService.jpaGetAll()).willReturn(List.of(filmBO));
-        given(converter.filmBOToOutDTO(filmBO)).willReturn(filmOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Film/getAllFilms?select=false"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
 
     @Test
@@ -321,17 +336,6 @@ class FilmControllerTest {
 
         response.andDo(print()).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title", is(filmUpdateDTO.getTitle())));
-    }
-
-    @Test
-    @DisplayName("JPA Get all films : incorrect case -> ServiceException")
-    void givenSelectTrue_whenJPAGetAllFilms_thenThrowServiceException() throws Exception {
-        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
-        given(filmService.jpaGetAll()).willThrow(new NotFoundException());
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Film/getAllFilms?select=false"));
-
-        response.andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test

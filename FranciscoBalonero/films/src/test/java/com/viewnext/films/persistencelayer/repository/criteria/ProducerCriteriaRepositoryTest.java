@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -44,11 +46,12 @@ class ProducerCriteriaRepositoryTest {
 
     @Test
     @DisplayName("Get all producers operation")
-    void givenNothing_whenGetAllProducers_thenReturnListWithAllProducers() {
+    void givenNothing_whenGetAllProducers_thenReturnPageWithAllProducers() {
 
         Producer createdProducer = producerCriteriaRepository.createProducer(producer);
 
-        List<Producer> foundProducers = producerCriteriaRepository.getAllProducers();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 producers
+        List<Producer> foundProducers = producerCriteriaRepository.getAllProducers(pageable);
 
         assertThat(foundProducers).isNotNull();
         assertThat(foundProducers.get(0)).isEqualTo(createdProducer);

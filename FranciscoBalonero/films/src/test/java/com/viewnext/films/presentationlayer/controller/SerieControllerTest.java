@@ -138,17 +138,6 @@ class SerieControllerTest {
     }
 
     @Test
-    @DisplayName("Criteria Get all series : correct case")
-    void givenSelectTrue_whenCriteriaGetAllSeries_thenReturnAllSeries() throws Exception {
-        given(serieService.criteriaGetAll()).willReturn(List.of(serieBO));
-        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Serie/getAllSeries?select=true"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
-    }
-
-    @Test
     @DisplayName("Criteria Get serie by id : correct case")
     void givenSelectTrue_whenCriteriaGetSerieById_thenReturnSerie() throws Exception {
         given(serieService.criteriaGetById(1L)).willReturn(serieBO);
@@ -201,22 +190,60 @@ class SerieControllerTest {
     }
 
     @Test
-    @DisplayName("Criteria Get all series : incorrect case -> ServiceException")
-    void givenSelectTrue_whenCriteriaGetAllSeries_thenThrowServiceException() throws Exception {
-        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
-        given(serieService.criteriaGetAll()).willThrow(new NotFoundException());
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Serie/getAllSeries?select=true"));
-
-        response.andDo(print()).andExpect(status().isNotFound());
-    }
-
-    @Test
     @DisplayName("Criteria Get serie by id : incorrect case -> ServiceException")
     void givenSelectTrue_whenCriteriaGetSerieById_thenThrowServiceException() throws Exception {
         given(serieService.criteriaGetById(1L)).willThrow(new NotFoundException());
 
         ResultActions response = mockMvc.perform(get("/api/v1/Serie/getSerie?select=true&id=1"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Criteria Get all series : incorrect case -> ServiceException")
+    void givenSelectTrue_whenCriteriaGetAllSeries_thenThrowServiceException() throws Exception {
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+        given(serieService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(
+                new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/getAllSeries?select=true&pageNumber=0&pageSize=10&sortBy=title&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Criteria Get all series : correct case")
+    void givenSelectTrue_whenCriteriaGetAllSeries_thenReturnAllSeries() throws Exception {
+        given(serieService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(List.of(serieBO));
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/getAllSeries?select=true&pageNumber=0&pageSize=10&sortBy=title&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all series : correct case")
+    void givenSelectFalse_whenJPAGetAllSeries_thenReturnAllSeries() throws Exception {
+        given(serieService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(List.of(serieBO));
+        given(converter.serieBOToOutDTO(serieBO)).willReturn(serieOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/getAllSeries?select=false&pageNumber=0&pageSize=10&sortBy=title&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all series : incorrect case -> ServiceException")
+    void givenSelectFalse_whenJPAGetAllSeries_thenThrowServiceException() throws Exception {
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+        given(serieService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/getAllSeries?select=false&pageNumber=0&pageSize=10&sortBy=title&sortOrder=true"));
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
@@ -257,18 +284,6 @@ class SerieControllerTest {
                         .content(objectMapper.writeValueAsString(serieUpdateDTO)));
 
         response.andDo(print()).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("JPA Get all series : correct case")
-    void givenSelectTrue_whenJPAGetAllSeries_thenReturnAllSeries() throws Exception {
-
-        given(serieService.jpaGetAll()).willReturn(List.of(serieBO));
-        given(converter.serieBOToOutDTO(serieBO)).willReturn(serieOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Serie/getAllSeries?select=false"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
 
     @Test
@@ -321,17 +336,6 @@ class SerieControllerTest {
 
         response.andDo(print()).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title", is(serieUpdateDTO.getTitle())));
-    }
-
-    @Test
-    @DisplayName("JPA Get all series : incorrect case -> ServiceException")
-    void givenSelectTrue_whenJPAGetAllSeries_thenThrowServiceException() throws Exception {
-        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
-        given(serieService.jpaGetAll()).willThrow(new NotFoundException());
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Serie/getAllSeries?select=false"));
-
-        response.andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test

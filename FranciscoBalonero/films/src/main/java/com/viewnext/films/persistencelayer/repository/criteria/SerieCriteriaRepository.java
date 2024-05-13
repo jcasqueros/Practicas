@@ -1,6 +1,7 @@
 package com.viewnext.films.persistencelayer.repository.criteria;
 
 import com.viewnext.films.persistencelayer.entity.Serie;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,14 +46,16 @@ public interface SerieCriteriaRepository {
     Serie createSerie(Serie serie);
 
     /**
-     * Retrieves all {@link Serie}.
+     * Retrieves all {@link Serie} paginated and sorted.
      *
-     * @return a {@link List} of all {@link Serie}
+     * @param pageable
+     *         {@link Pageable} the pagination and sorting information
+     * @return a {@link List} of all {@link Serie} matching the pagination and sorting criteria
      */
-    List<Serie> getAllSeries();
+    List<Serie> getAllSeries(Pageable pageable);
 
     /**
-     * Retrieves a {@link Serie} by ID.
+     * Retrieves an {@link Serie} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Serie} to be retrieved

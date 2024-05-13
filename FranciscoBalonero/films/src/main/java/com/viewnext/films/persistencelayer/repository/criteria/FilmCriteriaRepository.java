@@ -1,6 +1,7 @@
 package com.viewnext.films.persistencelayer.repository.criteria;
 
 import com.viewnext.films.persistencelayer.entity.Film;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,14 +45,16 @@ public interface FilmCriteriaRepository {
     Film createFilm(Film film);
 
     /**
-     * Retrieves all {@link Film}.
+     * Retrieves all {@link Film} paginated and sorted.
      *
-     * @return a {@link List} of all {@link Film}
+     * @param pageable
+     *         {@link Pageable} the pagination and sorting information
+     * @return a {@link List} of all {@link Film} matching the pagination and sorting criteria
      */
-    List<Film> getAllFilms();
+    List<Film> getAllFilms(Pageable pageable);
 
     /**
-     * Retrieves a {@link Film} by ID.
+     * Retrieves an {@link Film} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Film} to be retrieved

@@ -17,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -90,10 +93,11 @@ class ActorServiceImplTest {
     @DisplayName("Criteria get all: correct case")
     void givenNothing_whenCriteriaGetAll_thenReturnListWithAllActorsBO() throws ServiceException {
         List<Actor> actors = List.of(actor);
-        BDDMockito.given(actorCriteriaRepository.getAllActors()).willReturn(actors);
+        BDDMockito.given(actorCriteriaRepository.getAllActors(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(actors);
         BDDMockito.given(converter.actorEntityToBO(actor)).willReturn(actorBO);
 
-        List<ActorBO> result = actorService.criteriaGetAll();
+        List<ActorBO> result = actorService.criteriaGetAll(0, 10, "name", false);
 
         assertThat(result).isNotNull().hasSize(1).contains(actorBO);
     }
@@ -101,17 +105,19 @@ class ActorServiceImplTest {
     @Test
     @DisplayName("Criteria get all: no actors found")
     void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
-        BDDMockito.given(actorCriteriaRepository.getAllActors()).willReturn(List.of());
+        BDDMockito.given(actorCriteriaRepository.getAllActors(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(List.of());
 
-        assertThrows(NotFoundException.class, () -> actorService.criteriaGetAll());
+        assertThrows(NotFoundException.class, () -> actorService.criteriaGetAll(0, 10, "name", false));
     }
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
     void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
-        BDDMockito.given(actorCriteriaRepository.getAllActors()).willThrow(InvalidDataAccessApiUsageException.class);
+        BDDMockito.given(actorCriteriaRepository.getAllActors(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> actorService.criteriaGetAll());
+        assertThrows(ServiceException.class, () -> actorService.criteriaGetAll(0, 10, "name", false));
     }
 
     @Test
@@ -198,26 +204,6 @@ class ActorServiceImplTest {
     }
 
     @Test
-    @DisplayName("JPA get all: correct case")
-    void givenNothing_whenJpaGetAll_thenReturnListWithAllActorsBO() throws ServiceException {
-        List<Actor> actors = List.of(actor);
-        BDDMockito.given(actorJPARepository.findAll()).willReturn(actors);
-        BDDMockito.given(converter.actorEntityToBO(actor)).willReturn(actorBO);
-
-        List<ActorBO> result = actorService.jpaGetAll();
-
-        assertThat(result).isNotNull().hasSize(1).contains(actorBO);
-    }
-
-    @Test
-    @DisplayName("JPA get all: no actors found")
-    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
-        BDDMockito.given(actorJPARepository.findAll()).willReturn(List.of());
-
-        assertThrows(NotFoundException.class, () -> actorService.jpaGetAll());
-    }
-
-    @Test
     @DisplayName("JPA delete by id: correct case")
     void givenId_whenJpaDeleteById_thenDeleteActor() throws ServiceException {
         BDDMockito.willDoNothing().given(actorJPARepository).deleteById(1L);
@@ -270,9 +256,32 @@ class ActorServiceImplTest {
     @Test
     @DisplayName("JPA get all: nested runtime exception")
     void givenNothing_whenJpaGetAll_thenThrowNestedRuntimeException() {
-        BDDMockito.given(actorJPARepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        BDDMockito.given(actorJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> actorService.jpaGetAll());
+        assertThrows(ServiceException.class, () -> actorService.jpaGetAll(0, 10, "name", false));
+    }
+
+    @Test
+    @DisplayName("JPA get all: correct case")
+    void givenNothing_whenJpaGetAll_thenReturnListWithAllActorsBO() throws ServiceException {
+        List<Actor> actors = List.of(actor);
+        BDDMockito.given(actorJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(new PageImpl<>(actors));
+        BDDMockito.given(converter.actorEntityToBO(actor)).willReturn(actorBO);
+
+        List<ActorBO> result = actorService.jpaGetAll(0, 10, "name", false);
+
+        assertThat(result).isNotNull().hasSize(1).contains(actorBO);
+    }
+
+    @Test
+    @DisplayName("JPA get all: no actors found")
+    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
+        BDDMockito.given(actorJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(new PageImpl<>(List.of()));
+
+        assertThrows(NotFoundException.class, () -> actorService.jpaGetAll(0, 10, "name", false));
     }
 
     @Test
@@ -289,7 +298,7 @@ class ActorServiceImplTest {
         BDDMockito.given(actorJPARepository.existsById(actorBO.getId())).willReturn(true);
         BDDMockito.given(actorJPARepository.save(actor)).willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.actorBOToEntity(actorBO)).willReturn(actor);
-        
+
         assertThrows(ServiceException.class, () -> actorService.jpaUpdate(actorBO));
     }
 

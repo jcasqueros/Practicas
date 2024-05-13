@@ -74,17 +74,6 @@ class DirectorControllerTest {
     }
 
     @Test
-    @DisplayName("Criteria Get all directors : correct case")
-    void givenSelectTrue_whenCriteriaGetAllDirectors_thenReturnAllDirectors() throws Exception {
-        given(directorService.criteriaGetAll()).willReturn(List.of(directorBO));
-        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Director/getAllDirectors?select=true"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
-    }
-
-    @Test
     @DisplayName("Criteria Get director by id : correct case")
     void givenSelectTrue_whenCriteriaGetDirectorById_thenReturnDirector() throws Exception {
         given(directorService.criteriaGetById(1L)).willReturn(directorBO);
@@ -146,9 +135,49 @@ class DirectorControllerTest {
     @DisplayName("Criteria Get all directors : incorrect case -> ServiceException")
     void givenSelectTrue_whenCriteriaGetAllDirectors_thenThrowServiceException() throws Exception {
         given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
-        given(directorService.criteriaGetAll()).willThrow(new NotFoundException());
+        given(directorService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(
+                new NotFoundException());
 
-        ResultActions response = mockMvc.perform(get("/api/v1/Director/getAllDirectors?select=true"));
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/getAllDirectors?select=true&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Criteria Get all directors : correct case")
+    void givenSelectTrue_whenCriteriaGetAllDirectors_thenReturnAllDirectors() throws Exception {
+        given(directorService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(
+                List.of(directorBO));
+        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/getAllDirectors?select=true&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all directors : correct case")
+    void givenSelectFalse_whenJPAGetAllDirectors_thenReturnAllDirectors() throws Exception {
+        given(directorService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(List.of(directorBO));
+        given(converter.directorBOToOutDTO(directorBO)).willReturn(directorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/getAllDirectors?select=false&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all directors : incorrect case -> ServiceException")
+    void givenSelectFalse_whenJPAGetAllDirectors_thenThrowServiceException() throws Exception {
+        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
+        given(directorService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(
+                new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/getAllDirectors?select=false&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
@@ -199,18 +228,6 @@ class DirectorControllerTest {
                         .content(objectMapper.writeValueAsString(directorUpdateDTO)));
 
         response.andDo(print()).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("JPA Get all directors : correct case")
-    void givenSelectTrue_whenJPAGetAllDirectors_thenReturnAllDirectors() throws Exception {
-
-        given(directorService.jpaGetAll()).willReturn(List.of(directorBO));
-        given(converter.directorBOToOutDTO(directorBO)).willReturn(directorOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Director/getAllDirectors?select=false"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
 
     @Test
@@ -268,17 +285,6 @@ class DirectorControllerTest {
                         .content(objectMapper.writeValueAsString(directorUpdateDTO)));
 
         response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("Jane Doe")));
-    }
-
-    @Test
-    @DisplayName("JPA Get all directors : incorrect case -> ServiceException")
-    void givenSelectTrue_whenJPAGetAllDirectors_thenThrowServiceException() throws Exception {
-        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
-        given(directorService.jpaGetAll()).willThrow(new NotFoundException());
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Director/getAllDirectors?select=false"));
-
-        response.andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test

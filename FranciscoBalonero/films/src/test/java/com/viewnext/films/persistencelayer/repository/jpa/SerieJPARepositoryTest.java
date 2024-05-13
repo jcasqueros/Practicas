@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -56,14 +58,15 @@ class SerieJPARepositoryTest {
 
     @Test
     @DisplayName("Find all series operation")
-    void givenNothing_whenFindAllSeries_thenReturnListWithAllSeries() {
+    void givenNothing_whenFindAllSeries_thenReturnPageWithAllSeries() {
 
         Serie savedSerie = serieJPARepository.save(serie);
 
-        List<Serie> foundSeries = serieJPARepository.findAll();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 series
+        Page<Serie> foundSeriesPage = serieJPARepository.findAll(pageable);
 
-        assertThat(foundSeries).isNotNull();
-        assertThat(foundSeries.get(0)).isEqualTo(savedSerie);
+        assertThat(foundSeriesPage).isNotNull();
+        assertThat(foundSeriesPage.getContent().get(0)).isEqualTo(savedSerie);
 
     }
 

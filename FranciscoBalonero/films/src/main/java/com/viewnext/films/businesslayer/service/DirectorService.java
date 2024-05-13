@@ -10,39 +10,40 @@ import java.util.List;
  * Service interface containing methods for managing directors.
  *
  * <p>This interface declares methods for retrieving, creating, updating, and deleting directors using both Criteria
- * and JPA.</p>
+ * and
+ * JPA.</p>
  *
  * <p>Example usage:</p>
  * <pre>
  * {@code
- * // Obtain a instance of DirectorService
+ * // Obtain an instance of DirectorService
  * DirectorService directorService = // instantiate or inject the implementation
  *
- * // Retrieve a director by ID using Criteria
+ * // Retrieve an director by ID using Criteria
  * DirectorBO director = directorService.criteriaGetById(1L);
  *
  * // Retrieve all directors using Criteria
  * List<DirectorBO> directors = directorService.criteriaGetAll();
  *
- * // Delete a director by ID using Criteria
+ * // Delete an director by ID using Criteria
  * directorService.criteriaDeleteById(1L);
  *
- * // Update a director using Criteria
+ * // Update an director using Criteria
  * DirectorBO updatedDirector = directorService.criteriaUpdate(director);
  *
  * // Create a new director using Criteria
  * DirectorBO createdDirector = directorService.criteriaCreate(director);
  *
- * // Retrieve a director by ID using JPA
+ * // Retrieve an director by ID using JPA
  * DirectorBO director = directorService.jpaGetById(1L);
  *
  * // Retrieve all directors using JPA
  * List<DirectorBO> directors = directorService.jpaGetAll();
  *
- * // Delete a director by ID using JPA
+ * // Delete an director by ID using JPA
  * directorService.jpaDeleteById(1L);
  *
- * // Update a director using JPA
+ * // Update an director using JPA
  * DirectorBO updatedDirector = directorService.jpaUpdate(director);
  *
  * // Create a new director using JPA
@@ -71,13 +72,22 @@ public interface DirectorService {
     DirectorBO criteriaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all directors using Criteria.
+     * Retrieves all directors using Criteria, paginated and sorted.
      *
-     * @return A {@link List} of all {@link DirectorBO} .
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link DirectorBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<DirectorBO> criteriaGetAll() throws ServiceException;
+    List<DirectorBO> criteriaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException;
 
     /**
      * Deletes a director by ID using Criteria.
@@ -123,13 +133,21 @@ public interface DirectorService {
     DirectorBO jpaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all directors using JPA.
+     * Retrieves all directors using JPA, paginated and sorted.
      *
-     * @return A {@link List} of all {@link DirectorBO}.
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link DirectorBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<DirectorBO> jpaGetAll() throws ServiceException;
+    List<DirectorBO> jpaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
 
     /**
      * Deletes a director by ID using JPA.

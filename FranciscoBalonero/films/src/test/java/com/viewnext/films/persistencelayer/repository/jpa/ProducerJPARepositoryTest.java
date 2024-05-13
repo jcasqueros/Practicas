@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -56,14 +58,15 @@ class ProducerJPARepositoryTest {
 
     @Test
     @DisplayName("Find all producers operation")
-    void givenNothing_whenFindAllProducers_thenReturnListWithAllProducers() {
+    void givenNothing_whenFindAllProducers_thenReturnPageWithAllProducers() {
 
         Producer savedProducer = producerJPARepository.save(producer);
 
-        List<Producer> foundProducers = producerJPARepository.findAll();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 producers
+        Page<Producer> foundProducersPage = producerJPARepository.findAll(pageable);
 
-        assertThat(foundProducers).isNotNull();
-        assertThat(foundProducers.get(0)).isEqualTo(savedProducer);
+        assertThat(foundProducersPage).isNotNull();
+        assertThat(foundProducersPage.getContent().get(0)).isEqualTo(savedProducer);
 
     }
 

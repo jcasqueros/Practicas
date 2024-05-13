@@ -71,13 +71,22 @@ public interface ActorService {
     ActorBO criteriaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all actors using Criteria.
+     * Retrieves all actors using Criteria, paginated and sorted.
      *
-     * @return A {@link List} of all {@link ActorBO} .
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link ActorBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<ActorBO> criteriaGetAll() throws ServiceException;
+    List<ActorBO> criteriaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException;
 
     /**
      * Deletes an actor by ID using Criteria.
@@ -123,13 +132,21 @@ public interface ActorService {
     ActorBO jpaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all actors using JPA.
+     * Retrieves all actors using JPA, paginated and sorted.
      *
-     * @return A {@link List} of all {@link ActorBO}.
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link ActorBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<ActorBO> jpaGetAll() throws ServiceException;
+    List<ActorBO> jpaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
 
     /**
      * Deletes an actor by ID using JPA.

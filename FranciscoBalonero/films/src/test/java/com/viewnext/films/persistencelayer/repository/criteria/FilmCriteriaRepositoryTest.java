@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
@@ -80,11 +82,12 @@ class FilmCriteriaRepositoryTest {
 
     @Test
     @DisplayName("Get all films operation")
-    void givenNothing_whenGetAllFilms_thenReturnListWithAllFilms() {
+    void givenNothing_whenGetAllFilms_thenReturnPageWithAllFilms() {
 
         Film createdFilm = filmCriteriaRepository.createFilm(film);
 
-        List<Film> foundFilms = filmCriteriaRepository.getAllFilms();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 films
+        List<Film> foundFilms = filmCriteriaRepository.getAllFilms(pageable);
 
         assertThat(foundFilms).isNotNull();
         assertThat(foundFilms.get(0)).isEqualTo(createdFilm);

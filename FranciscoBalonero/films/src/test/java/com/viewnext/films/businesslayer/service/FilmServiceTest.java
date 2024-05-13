@@ -23,6 +23,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,10 +143,11 @@ class FilmServiceImplTest {
     @DisplayName("Criteria get all: correct case")
     void givenNothing_whenCriteriaGetAll_thenReturnListWithAllFilmsBO() throws ServiceException {
         List<Film> films = List.of(film);
-        BDDMockito.given(filmCriteriaRepository.getAllFilms()).willReturn(films);
+        BDDMockito.given(filmCriteriaRepository.getAllFilms(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willReturn(films);
         BDDMockito.given(converter.filmEntityToBO(film)).willReturn(filmBO);
 
-        List<FilmBO> result = filmService.criteriaGetAll();
+        List<FilmBO> result = filmService.criteriaGetAll(0, 10, "title", false);
 
         assertThat(result).isNotNull().hasSize(1).contains(filmBO);
     }
@@ -151,17 +155,19 @@ class FilmServiceImplTest {
     @Test
     @DisplayName("Criteria get all: no films found")
     void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
-        BDDMockito.given(filmCriteriaRepository.getAllFilms()).willReturn(List.of());
+        BDDMockito.given(filmCriteriaRepository.getAllFilms(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willReturn(List.of());
 
-        assertThrows(NotFoundException.class, () -> filmService.criteriaGetAll());
+        assertThrows(NotFoundException.class, () -> filmService.criteriaGetAll(0, 10, "title", false));
     }
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
     void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
-        BDDMockito.given(filmCriteriaRepository.getAllFilms()).willThrow(InvalidDataAccessApiUsageException.class);
+        BDDMockito.given(filmCriteriaRepository.getAllFilms(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> filmService.criteriaGetAll());
+        assertThrows(ServiceException.class, () -> filmService.criteriaGetAll(0, 10, "title", false));
     }
 
     @Test
@@ -246,26 +252,6 @@ class FilmServiceImplTest {
     }
 
     @Test
-    @DisplayName("JPA get all: correct case")
-    void givenNothing_whenJpaGetAll_thenReturnListWithAllFilmsBO() throws ServiceException {
-        List<Film> films = List.of(film);
-        BDDMockito.given(filmJPARepository.findAll()).willReturn(films);
-        BDDMockito.given(converter.filmEntityToBO(film)).willReturn(filmBO);
-
-        List<FilmBO> result = filmService.jpaGetAll();
-
-        assertThat(result).isNotNull().hasSize(1).contains(filmBO);
-    }
-
-    @Test
-    @DisplayName("JPA get all: no films found")
-    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
-        BDDMockito.given(filmJPARepository.findAll()).willReturn(List.of());
-
-        assertThrows(NotFoundException.class, () -> filmService.jpaGetAll());
-    }
-
-    @Test
     @DisplayName("JPA delete by id: correct case")
     void givenId_whenJpaDeleteById_thenDeleteFilm() throws ServiceException {
         BDDMockito.willDoNothing().given(filmJPARepository).deleteById(1L);
@@ -319,9 +305,32 @@ class FilmServiceImplTest {
     @Test
     @DisplayName("JPA get all: nested runtime exception")
     void givenNothing_whenJpaGetAll_thenThrowNestedRuntimeException() {
-        BDDMockito.given(filmJPARepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        BDDMockito.given(filmJPARepository.findAll(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> filmService.jpaGetAll());
+        assertThrows(ServiceException.class, () -> filmService.jpaGetAll(0, 10, "title", false));
+    }
+
+    @Test
+    @DisplayName("JPA get all: correct case")
+    void givenNothing_whenJpaGetAll_thenReturnListWithAllFilmsBO() throws ServiceException {
+        List<Film> films = List.of(film);
+        BDDMockito.given(filmJPARepository.findAll(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willReturn(new PageImpl<>(films));
+        BDDMockito.given(converter.filmEntityToBO(film)).willReturn(filmBO);
+
+        List<FilmBO> result = filmService.jpaGetAll(0, 10, "title", false);
+
+        assertThat(result).isNotNull().hasSize(1).contains(filmBO);
+    }
+
+    @Test
+    @DisplayName("JPA get all: no films found")
+    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
+        BDDMockito.given(filmJPARepository.findAll(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willReturn(new PageImpl<>(List.of()));
+
+        assertThrows(NotFoundException.class, () -> filmService.jpaGetAll(0, 10, "title", false));
     }
 
     @Test
@@ -347,7 +356,7 @@ class FilmServiceImplTest {
     void givenFilmBO_whenJpaCreate_thenThrowNestedRuntimeException() {
         BDDMockito.given(filmJPARepository.save(film)).willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.filmBOToEntity(filmBO)).willReturn(film);
-        
+
         assertThrows(ServiceException.class, () -> filmService.jpaCreate(filmBO));
     }
 

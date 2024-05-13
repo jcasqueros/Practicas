@@ -1,6 +1,7 @@
 package com.viewnext.films.persistencelayer.repository.criteria;
 
 import com.viewnext.films.persistencelayer.entity.Actor;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,11 +46,13 @@ public interface ActorCriteriaRepository {
     Actor createActor(Actor actor);
 
     /**
-     * Retrieves all {@link Actor}.
+     * Retrieves all {@link Actor} paginated and sorted.
      *
-     * @return a {@link List} of all {@link Actor}
+     * @param pageable
+     *         {@link Pageable} the pagination and sorting information
+     * @return a {@link List} of all {@link Actor} matching the pagination and sorting criteria
      */
-    List<Actor> getAllActors();
+    List<Actor> getAllActors(Pageable pageable);
 
     /**
      * Retrieves an {@link Actor} by ID.
