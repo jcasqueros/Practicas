@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pracs.films.bussiness.bo.ProducerBO;
 import com.pracs.films.bussiness.services.ProducerService;
 import com.pracs.films.exceptions.ServiceException;
-import com.pracs.films.persistence.repositories.jpa.ActorRepository;
-import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
-import com.pracs.films.persistence.repositories.jpa.FilmRepository;
-import com.pracs.films.persistence.repositories.jpa.SerieRepository;
+import com.pracs.films.persistence.repositories.jpa.*;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ProducerDtoIn;
@@ -53,6 +50,9 @@ class ProducerControllerTest {
 
     @MockBean
     private ProducerService producerService;
+
+    @MockBean
+    private ProducerRepository producerRepository;
 
     @MockBean
     private DirectorRepository directorRepository;

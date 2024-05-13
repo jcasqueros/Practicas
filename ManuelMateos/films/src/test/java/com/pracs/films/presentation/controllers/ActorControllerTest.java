@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pracs.films.bussiness.bo.ActorBO;
 import com.pracs.films.bussiness.services.ActorService;
 import com.pracs.films.exceptions.ServiceException;
-import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
-import com.pracs.films.persistence.repositories.jpa.FilmRepository;
-import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
-import com.pracs.films.persistence.repositories.jpa.SerieRepository;
+import com.pracs.films.persistence.repositories.jpa.*;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ActorDtoIn;
@@ -53,6 +50,9 @@ class ActorControllerTest {
 
     @MockBean
     private ActorService actorService;
+
+    @MockBean
+    private ActorRepository actorRepository;
 
     @MockBean
     private DirectorRepository directorRepository;

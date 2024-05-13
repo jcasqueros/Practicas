@@ -357,7 +357,7 @@ class ProducerServicesImplTest {
         Page<Producer> page = new PageImpl<>(List.of(producer), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
         given(producerRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020))).willReturn(page);
 
-        Page<ProducerBO> savedProducersBO = producerService.findAllCriteriaFilter(pageable, List.of(), List.of(20));
+        Page<ProducerBO> savedProducersBO = producerService.findAllCriteriaFilter(pageable, List.of(), List.of(2020));
 
         assertEquals(1, savedProducersBO.getNumberOfElements());
     }
