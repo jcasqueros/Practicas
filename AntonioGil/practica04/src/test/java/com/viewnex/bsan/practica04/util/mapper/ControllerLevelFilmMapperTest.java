@@ -68,12 +68,13 @@ class ControllerLevelFilmMapperTest {
     void givenDto_whenDtoToBo_thenMappingIsCorrect() {
         FilmUpsertDto dto = FilmUpsertDto.builder().id(10L).title("FILM10").year(2005)
                 .director(DirectorUpsertDto.builder().id(1L).name("DIRECTOR1").age(40).nationality("ITA").build())
-                .productionCompany(ProductionCompanyUpsertDto.builder().id(1L).name("COMPANY1").yearFounded(1995).build())
+                .productionCompany(
+                        ProductionCompanyUpsertDto.builder().id(1L).name("COMPANY1").yearFounded(1995).build())
                 .actors(Set.of(ActorUpsertDto.builder().id(1L).name("ACTOR1").age(30).nationality("USA").build(),
-                                ActorUpsertDto.builder().id(2L).name("ACTOR2").age(50).nationality("ESP").build(),
-                                ActorUpsertDto.builder().id(3L).name("ACTOR3").age(45).nationality("FRA").build(),
-                                ActorUpsertDto.builder().id(4L).name("ACTOR4").age(25).nationality("USA").build(),
-                                ActorUpsertDto.builder().id(5L).name("ACTOR5").age(35).nationality("ITA").build())
+                        ActorUpsertDto.builder().id(2L).name("ACTOR2").age(50).nationality("ESP").build(),
+                        ActorUpsertDto.builder().id(3L).name("ACTOR3").age(45).nationality("FRA").build(),
+                        ActorUpsertDto.builder().id(4L).name("ACTOR4").age(25).nationality("USA").build(),
+                        ActorUpsertDto.builder().id(5L).name("ACTOR5").age(35).nationality("ITA").build())
                 )
                 .build();
 

@@ -1,12 +1,8 @@
 package com.viewnex.bsan.practica04.util.mapper;
 
-import com.viewnex.bsan.practica04.bo.DirectorBo;
 import com.viewnex.bsan.practica04.bo.ProductionCompanyBo;
-import com.viewnex.bsan.practica04.dto.DirectorReadDto;
-import com.viewnex.bsan.practica04.dto.DirectorUpsertDto;
 import com.viewnex.bsan.practica04.dto.ProductionCompanyReadDto;
 import com.viewnex.bsan.practica04.dto.ProductionCompanyUpsertDto;
-import com.viewnex.bsan.practica04.entity.ProductionCompany;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
