@@ -67,6 +67,18 @@ public class ActorController {
         }
     }
 
+    /**
+     * Method for get all actors filtered
+     *
+     * @param names
+     * @param ages
+     * @param nationalities
+     * @param method
+     * @param sort
+     * @param order
+     * @return
+     * @throws ServiceException
+     */
     @GetMapping("/findAllFilter")
     public ResponseEntity<List<ActorDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
             @RequestParam(required = false) List<Integer> ages,

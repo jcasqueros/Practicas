@@ -198,9 +198,10 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public Page<ActorBO> findAllCriteriaFilter(Pageable pageable, List<String> names, List<Integer> ages,
             List<String> nationalities) throws ServiceException {
-        //Búsqueda de los todos los actores, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
-        Page<Actor> actorPage = actorRepositoryCriteria.findAllFilter(pageable, names, ages, nationalities);
         try {
+            //Búsqueda de los todos los actores, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+            Page<Actor> actorPage = actorRepositoryCriteria.findAllFilter(pageable, names, ages, nationalities);
+
             if (actorPage.isEmpty()) {
                 throw new EmptyException("No actors");
             }
