@@ -142,7 +142,7 @@ class ShowServiceImplTest {
     @DisplayName("[ShowServiceImpl] customGetAll (success)")
     @Test
     void givenShows_whenCustomGetAll_thenReturnShowList() {
-        Mockito.when(customRepository.getAll()).thenReturn(SAMPLE_SHOWS);
+        Mockito.when(customRepository.findAll()).thenReturn(SAMPLE_SHOWS);
         Mockito.when(mapper.entityToBo(SAMPLE_SHOWS.get(0))).thenReturn(ShowBo.builder().id(1L).title("SHOW1")
                 .year(2015).director(DirectorBo.builder().id(1L).name("DIRECTOR1").age(40).nationality("ITA").build())
                 .productionCompany(ProductionCompanyBo.builder().id(1L).name("PRODUCTION_COMPANY1")
@@ -269,7 +269,7 @@ class ShowServiceImplTest {
     void givenNonExistentShowId_whenCustomGetById_thenThrow() {
         final long id = -1;
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.empty());
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> service.customGetById(id));
     }
@@ -286,7 +286,7 @@ class ShowServiceImplTest {
                         ActorBo.builder().id(2L).name("ACTOR2").age(50).nationality("ESP").build()))
                 .build();
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.of(SAMPLE_SHOWS.get(2)));
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.of(SAMPLE_SHOWS.get(2)));
         Mockito.when(mapper.entityToBo(SAMPLE_SHOWS.get(2))).thenReturn(expectedShow);
 
         final ShowBo foundShow = service.customGetById(id);

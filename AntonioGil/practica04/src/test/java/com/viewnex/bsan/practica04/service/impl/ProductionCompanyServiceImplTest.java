@@ -80,7 +80,7 @@ class ProductionCompanyServiceImplTest {
     @DisplayName("[ProductionCompanyServiceImpl] customGetAll (success)")
     @Test
     void givenCompanies_whenCustomGetAll_thenReturnCompanyList() {
-        Mockito.when(customRepository.getAll()).thenReturn(SAMPLE_COMPANIES);
+        Mockito.when(customRepository.findAll()).thenReturn(SAMPLE_COMPANIES);
         Mockito.when(mapper.entityToBo(SAMPLE_COMPANIES.get(0))).thenReturn(
                 ProductionCompanyBo.builder().id(1L).name("PRODUCTION_COMPANY1").yearFounded(1995).build()
         );
@@ -144,7 +144,7 @@ class ProductionCompanyServiceImplTest {
     void givenNonExistentCompanyId_whenCustomGetById_thenThrow() {
         final long id = -1;
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.empty());
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> service.customGetById(id));
     }
@@ -156,7 +156,7 @@ class ProductionCompanyServiceImplTest {
         final ProductionCompanyBo expectedCompany =
                 ProductionCompanyBo.builder().id(4L).name("PRODUCTION_COMPANY4").yearFounded(2000).build();
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.of(SAMPLE_COMPANIES.get(3)));
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.of(SAMPLE_COMPANIES.get(3)));
         Mockito.when(mapper.entityToBo(SAMPLE_COMPANIES.get(3))).thenReturn(expectedCompany);
 
         final ProductionCompanyBo foundCompany = service.customGetById(id);

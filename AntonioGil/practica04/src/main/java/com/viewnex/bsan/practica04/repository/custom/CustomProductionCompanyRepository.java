@@ -18,7 +18,7 @@ public interface CustomProductionCompanyRepository {
      *
      * @return A list containing all the companies registered in the system
      */
-    List<ProductionCompany> getAll();
+    List<ProductionCompany> findAll();
 
     /**
      * Checks whether a production company with the given ID exists in the system.
@@ -34,7 +34,7 @@ public interface CustomProductionCompanyRepository {
      * @param id The ID for the company
      * @return An {@code Optional} containing the found company, or an empty {@code Optional} if it wasn't found
      */
-    Optional<ProductionCompany> getById(long id);
+    Optional<ProductionCompany> findById(long id);
 
     /**
      * Saves the given production company to the system.

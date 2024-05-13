@@ -142,7 +142,7 @@ class FilmServiceImplTest {
     @DisplayName("[FilmServiceImpl] customGetAll (success)")
     @Test
     void givenFilms_whenCustomGetAll_thenReturnFilmList() {
-        Mockito.when(customRepository.getAll()).thenReturn(SAMPLE_FILMS);
+        Mockito.when(customRepository.findAll()).thenReturn(SAMPLE_FILMS);
         Mockito.when(mapper.entityToBo(SAMPLE_FILMS.get(0))).thenReturn(FilmBo.builder().id(1L).title("FILM1")
                 .year(2005).director(DirectorBo.builder().id(5L).name("DIRECTOR5").age(45).nationality("USA").build())
                 .productionCompany(ProductionCompanyBo.builder().id(4L).name("PRODUCTION_COMPANY4")
@@ -268,7 +268,7 @@ class FilmServiceImplTest {
     void givenNonExistentFilmId_whenCustomGetById_thenThrow() {
         final long id = -1;
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.empty());
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> service.customGetById(id));
     }
@@ -285,7 +285,7 @@ class FilmServiceImplTest {
                         ActorBo.builder().id(2L).name("ACTOR2").age(50).nationality("ESP").build()))
                 .build();
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.of(SAMPLE_FILMS.get(4)));
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.of(SAMPLE_FILMS.get(4)));
         Mockito.when(mapper.entityToBo(SAMPLE_FILMS.get(4))).thenReturn(expectedFilm);
 
         final FilmBo foundFilm = service.customGetById(id);

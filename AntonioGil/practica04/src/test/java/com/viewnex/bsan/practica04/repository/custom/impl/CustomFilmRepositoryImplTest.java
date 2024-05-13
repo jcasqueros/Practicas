@@ -54,7 +54,7 @@ class CustomFilmRepositoryImplTest {
     @DisplayName("[CustomFilmRepositoryImpl] findAll (should find empty list)")
     @Test
     void givenNoFilms_whenFindAll_thenReturnEmptyList() {
-        final List<Film> foundFilms = repository.getAll();
+        final List<Film> foundFilms = repository.findAll();
 
         assertTrue(foundFilms.isEmpty());
     }
@@ -64,7 +64,7 @@ class CustomFilmRepositoryImplTest {
     void givenFilms_whenFindAll_thenReturnFilmList() {
         SAMPLE_FILMS.forEach(this::persistFilmWithNestedEntities);
 
-        final List<Film> foundFilms = repository.getAll();
+        final List<Film> foundFilms = repository.findAll();
 
         assertFalse(foundFilms.isEmpty());
         assertEquals(SAMPLE_FILMS.size(), foundFilms.size());
@@ -94,7 +94,7 @@ class CustomFilmRepositoryImplTest {
     void givenNonExistentFilmId_whenFindById_thenReturnEmpty() {
         final long id = -1;
 
-        final Optional<Film> foundFilm = repository.getById(id);
+        final Optional<Film> foundFilm = repository.findById(id);
 
         assertTrue(foundFilm.isEmpty());
     }
@@ -107,7 +107,7 @@ class CustomFilmRepositoryImplTest {
         final Film film = SAMPLE_FILMS.get(4);
         final Long id = film.getId();
 
-        final Film foundFilm = repository.getById(id).orElseThrow();
+        final Film foundFilm = repository.findById(id).orElseThrow();
 
         assertEquals(id, foundFilm.getId());
         assertEquals(film.getTitle(), foundFilm.getTitle());

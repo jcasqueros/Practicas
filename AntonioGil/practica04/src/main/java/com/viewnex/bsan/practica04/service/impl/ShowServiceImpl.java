@@ -47,7 +47,7 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public List<ShowBo> customGetAll() {
-        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
+        return customRepository.findAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public ShowBo customGetById(long id) {
-        Optional<Show> foundEntity = customRepository.getById(id);
+        Optional<Show> foundEntity = customRepository.findById(id);
 
         if (foundEntity.isEmpty()) {
             String message = MessageBuilder.buildResourceNotFoundMessage(Messages.SHOW_ENTITY_NAME, id);

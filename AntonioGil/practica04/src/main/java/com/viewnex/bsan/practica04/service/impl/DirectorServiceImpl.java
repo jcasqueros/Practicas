@@ -47,7 +47,7 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public List<DirectorBo> customGetAll() {
-        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
+        return customRepository.findAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public DirectorBo customGetById(long id) {
-        Optional<Director> foundEntity = customRepository.getById(id);
+        Optional<Director> foundEntity = customRepository.findById(id);
 
         if (foundEntity.isEmpty()) {
             String message = MessageBuilder.buildResourceNotFoundMessage(Messages.DIRECTOR_ENTITY_NAME, id);

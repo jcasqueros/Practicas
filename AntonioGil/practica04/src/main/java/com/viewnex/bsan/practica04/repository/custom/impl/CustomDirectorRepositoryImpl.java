@@ -27,7 +27,7 @@ public class CustomDirectorRepositoryImpl implements CustomDirectorRepository {
     }
 
     @Override
-    public List<Director> getAll() {
+    public List<Director> findAll() {
         CriteriaQuery<Director> query = criteriaBuilder.createQuery(Director.class);
         Root<Director> directors = query.from(Director.class);
 
@@ -53,7 +53,7 @@ public class CustomDirectorRepositoryImpl implements CustomDirectorRepository {
     }
 
     @Override
-    public Optional<Director> getById(long id) {
+    public Optional<Director> findById(long id) {
         CriteriaQuery<Director> query = criteriaBuilder.createQuery(Director.class);
         Root<Director> directors = query.from(Director.class);
 

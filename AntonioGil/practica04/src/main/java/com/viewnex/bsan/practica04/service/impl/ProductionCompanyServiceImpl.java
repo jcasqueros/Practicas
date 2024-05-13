@@ -48,7 +48,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
     @Override
     public List<ProductionCompanyBo> customGetAll() {
-        return customRepository.getAll().stream().map(mapper::entityToBo).toList();
+        return customRepository.findAll().stream().map(mapper::entityToBo).toList();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
 
     @Override
     public ProductionCompanyBo customGetById(long id) {
-        Optional<ProductionCompany> foundEntity = customRepository.getById(id);
+        Optional<ProductionCompany> foundEntity = customRepository.findById(id);
 
         if (foundEntity.isEmpty()) {
             String message = MessageBuilder.buildResourceNotFoundMessage(Messages.PRODUCTION_COMPANY_ENTITY_NAME, id);

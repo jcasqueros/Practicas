@@ -80,7 +80,7 @@ class DirectorServiceImplTest {
     @DisplayName("[DirectorServiceImpl] getAll (success)")
     @Test
     void givenDirectors_whenCustomGetAll_thenReturnDirectorList() {
-        Mockito.when(customRepository.getAll()).thenReturn(SAMPLE_DIRECTORS);
+        Mockito.when(customRepository.findAll()).thenReturn(SAMPLE_DIRECTORS);
         Mockito.when(mapper.entityToBo(SAMPLE_DIRECTORS.get(0))).thenReturn(
                 DirectorBo.builder().id(1L).name("DIRECTOR1").age(40).nationality("ITA").build()
         );
@@ -145,7 +145,7 @@ class DirectorServiceImplTest {
     void givenNonExistentDirectorId_whenCustomGetById_thenThrow() {
         final long id = -1;
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.empty());
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> service.customGetById(id));
     }
@@ -157,7 +157,7 @@ class DirectorServiceImplTest {
         final DirectorBo expectedDirector =
                 DirectorBo.builder().id(3L).name("DIRECTOR3").age(55).nationality("FRA").build();
 
-        Mockito.when(customRepository.getById(id)).thenReturn(Optional.of(SAMPLE_DIRECTORS.get(2)));
+        Mockito.when(customRepository.findById(id)).thenReturn(Optional.of(SAMPLE_DIRECTORS.get(2)));
         Mockito.when(mapper.entityToBo(SAMPLE_DIRECTORS.get(2))).thenReturn(expectedDirector);
 
         final DirectorBo foundDirector = service.customGetById(id);

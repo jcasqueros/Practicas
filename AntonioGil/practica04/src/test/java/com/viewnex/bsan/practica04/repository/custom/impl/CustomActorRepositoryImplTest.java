@@ -36,20 +36,20 @@ class CustomActorRepositoryImplTest {
         this.testEntityManager = testEntityManager;
     }
 
-    @DisplayName("[CustomActorRepositoryImpl] getAll (should find empty list)")
+    @DisplayName("[CustomActorRepositoryImpl] findAll (should find empty list)")
     @Test
-    void givenNoActors_whenGetAll_thenReturnEmptyList() {
-        final List<Actor> foundActors = repository.getAll();
+    void givenNoActors_whenFindAll_thenReturnEmptyList() {
+        final List<Actor> foundActors = repository.findAll();
 
         assertTrue(foundActors.isEmpty());
     }
 
-    @DisplayName("[CustomActorRepositoryImpl] getAll (should find actors)")
+    @DisplayName("[CustomActorRepositoryImpl] findAll (should find actors)")
     @Test
-    void givenActors_whenGetAll_thenReturnActorList() {
+    void givenActors_whenFindAll_thenReturnActorList() {
         SAMPLE_ACTORS.forEach(testEntityManager::persist);
 
-        final List<Actor> foundActors = repository.getAll();
+        final List<Actor> foundActors = repository.findAll();
 
         assertFalse(foundActors.isEmpty());
         assertEquals(SAMPLE_ACTORS.size(), foundActors.size());
@@ -74,24 +74,24 @@ class CustomActorRepositoryImplTest {
         assertTrue(repository.existsById(id));
     }
 
-    @DisplayName("[CustomActorRepositoryImpl] getById (nonexistent actor)")
+    @DisplayName("[CustomActorRepositoryImpl] findById (nonexistent actor)")
     @Test
-    void givenNonExistentActorId_whenGetById_thenReturnEmpty() {
+    void givenNonExistentActorId_whenFindById_thenReturnEmpty() {
         final long id = -1;
 
-        final Optional<Actor> foundActor = repository.getById(id);
+        final Optional<Actor> foundActor = repository.findById(id);
 
         assertTrue(foundActor.isEmpty());
     }
 
-    @DisplayName("[CustomActorRepositoryImpl] getById (existing actor)")
+    @DisplayName("[CustomActorRepositoryImpl] findById (existing actor)")
     @Test
-    void givenActorId_whenGetById_thenReturnActorObject() {
+    void givenActorId_whenFindById_thenReturnActorObject() {
         SAMPLE_ACTORS.forEach(testEntityManager::persist);
         final Actor actor = SAMPLE_ACTORS.get(3);
         final Long id = actor.getId();
 
-        final Actor foundActor = repository.getById(id).orElseThrow();
+        final Actor foundActor = repository.findById(id).orElseThrow();
 
         assertEquals(id, foundActor.getId());
         assertEquals(actor.getName(), foundActor.getName());

@@ -27,7 +27,7 @@ public class CustomProductionCompanyRepositoryImpl implements CustomProductionCo
     }
 
     @Override
-    public List<ProductionCompany> getAll() {
+    public List<ProductionCompany> findAll() {
         CriteriaQuery<ProductionCompany> query = criteriaBuilder.createQuery(ProductionCompany.class);
         Root<ProductionCompany> companies = query.from(ProductionCompany.class);
 
@@ -53,7 +53,7 @@ public class CustomProductionCompanyRepositoryImpl implements CustomProductionCo
     }
 
     @Override
-    public Optional<ProductionCompany> getById(long id) {
+    public Optional<ProductionCompany> findById(long id) {
         CriteriaQuery<ProductionCompany> query = criteriaBuilder.createQuery(ProductionCompany.class);
         Root<ProductionCompany> companies = query.from(ProductionCompany.class);
 
