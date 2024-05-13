@@ -350,6 +350,38 @@ class ProducerServicesImplTest {
         assertThrows(ServiceException.class, () -> producerService.findAllCriteria(pageable));
     }
 
+    @DisplayName("JUnit test for get all producers filtered - positive")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllCriteriaFilter_thenReturnProducerBoList() throws ServiceException {
+        given(modelToBoConverter.producerModelToBo(producer)).willReturn(producerBO);
+        Page<Producer> page = new PageImpl<>(List.of(producer), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(producerRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020))).willReturn(page);
+
+        Page<ProducerBO> savedProducersBO = producerService.findAllCriteriaFilter(pageable, List.of(), List.of(20));
+
+        assertEquals(1, savedProducersBO.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all producers filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowEmptyException() throws ServiceException {
+        Page<Producer> page = new PageImpl<>(List.of(), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
+        given(producerRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020))).willReturn(page);
+
+        assertThrows(EmptyException.class,
+                () -> producerService.findAllCriteriaFilter(pageable, List.of(), List.of(2020)));
+    }
+
+    @DisplayName("JUnit test for get all producers filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowNestedRuntimeException() throws ServiceException {
+        given(producerRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020))).willThrow(
+                InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> producerService.findAllCriteriaFilter(pageable, List.of(), List.of(2020)));
+    }
+
     @DisplayName("JUnit test for delete an producer by his id - positive")
     @Test
     void givenproducerId_whenDeleteByIdCriteria_thenReturnProducerBoObject() throws ServiceException {

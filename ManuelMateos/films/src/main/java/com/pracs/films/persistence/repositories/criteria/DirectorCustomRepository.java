@@ -4,6 +4,7 @@ import com.pracs.films.persistence.models.Director;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,6 +44,17 @@ public interface DirectorCustomRepository {
      * @return List of Director
      */
     Page<Director> findAllDirector(Pageable pageable);
+
+    /**
+     * Method for get all directors by differents atribbutes
+     *
+     * @param pageable
+     * @param names
+     * @param ages
+     * @param nationalities
+     * @return
+     */
+    Page<Director> findAllFilter(Pageable pageable, List<String> names, List<Integer> ages, List<String> nationalities);
 
     /**
      * Method for delete a director by his id

@@ -6,6 +6,8 @@ import com.pracs.films.persistence.models.Serie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * Service of the model {@link Serie}
  *
@@ -81,6 +83,21 @@ public interface SerieService {
      * @return List of SerieBO
      */
     Page<SerieBO> findAllCriteria(Pageable pageable) throws ServiceException;
+
+    /**
+     * Method for get all series paginated and filtered
+     *
+     * @param pageable
+     * @param titles
+     * @param ages
+     * @param directors
+     * @param producers
+     * @param actors
+     * @return
+     * @throws ServiceException
+     */
+    Page<SerieBO> findAllCriteriaFilter(Pageable pageable, List<String> titles, List<Integer> ages,
+            List<String> directors, List<String> producers, List<String> actors) throws ServiceException;
 
     /**
      * Method for delete a serie by his id

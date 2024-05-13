@@ -147,6 +147,33 @@ class ProducerControllerTest {
         response.andExpect(status().isBadRequest());
     }
 
+    @DisplayName("Junit test for get all producers filtered- positive")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenReturnActorDTOList() throws Exception {
+        Page<ProducerBO> page = new PageImpl<>(List.of(producerBO), PageRequest.of(0, 5, Sort.by("name").ascending()),
+                10);
+        given(producerService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList())).willReturn(page);
+        given(boToDtoConverter.producerBoToDtoOut(producerBO)).willReturn(producerDtoOut);
+
+        ResultActions response = mockMvc.perform(
+                get("/producers/findAllFilter?names=prueba&ages=25&method=true&sort=name&order=asc"));
+
+        response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get all producers filtered - negative")
+    @Test
+    void givenNothing_whenFindAllCriteriaFilter_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.producerBoToDtoOut(producerBO)).willReturn(producerDtoOut);
+        given(producerService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList())).willThrow(
+                new ServiceException(""));
+
+        ResultActions response = mockMvc.perform(
+                get("/producers/findAllFilter?names=prueba&ages=25Spain&method=true&sort=name&order=asc"));
+
+        response.andExpect(status().isBadRequest());
+    }
+
     @DisplayName("Junit test for get a producer by his id - positive")
     @Test
     void givenProducerId_whenGetById_thenUserDTO() throws Exception {

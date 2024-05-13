@@ -6,6 +6,8 @@ import com.pracs.films.persistence.models.Producer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * Service of the model {@link Producer}
  *
@@ -43,6 +45,18 @@ public interface ProducerService {
      * @return List of ProducerBO
      */
     Page<ProducerBO> findAll(Pageable pageable) throws ServiceException;
+
+    /**
+     * Method for get all directors paginated and filtered
+     *
+     * @param pageable
+     * @param names
+     * @param ages
+     * @return
+     * @throws ServiceException
+     */
+    Page<ProducerBO> findAllCriteriaFilter(Pageable pageable, List<String> names, List<Integer> ages)
+            throws ServiceException;
 
     /**
      * Method for delete a producer by his id

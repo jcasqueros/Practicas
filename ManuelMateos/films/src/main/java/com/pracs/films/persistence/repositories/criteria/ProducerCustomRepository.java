@@ -4,6 +4,7 @@ import com.pracs.films.persistence.models.Producer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,6 +44,16 @@ public interface ProducerCustomRepository {
      * @return List of Producer
      */
     Page<Producer> findAllProducer(Pageable pageable);
+
+    /**
+     * Method for get all producers by differents atribbutes
+     *
+     * @param pageable
+     * @param names
+     * @param ages
+     * @return
+     */
+    Page<Producer> findAllFilter(Pageable pageable, List<String> names, List<Integer> ages);
 
     /**
      * Method for delete a producer by his id

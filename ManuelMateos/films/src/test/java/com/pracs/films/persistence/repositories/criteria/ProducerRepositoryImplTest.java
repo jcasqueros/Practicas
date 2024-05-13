@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,6 +78,16 @@ class ProducerRepositoryImplTest {
                 PageRequest.of(0, 5, Sort.by("name").ascending()));
 
         assertEquals(5, savedProducers.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all actors filtered")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllActorFilter_thenReturnActorList() {
+
+        Page<Producer> savedProducer = producerRepository.findAllFilter(
+                PageRequest.of(0, 5, Sort.by("name").ascending()), List.of(), List.of(2020));
+
+        assertEquals(5, savedProducer.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for delete a producer")

@@ -68,6 +68,32 @@ public class ProducerController {
         }
     }
 
+    @GetMapping("/findAllFilter")
+    public ResponseEntity<List<ProducerDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
+            @RequestParam(required = false) List<Integer> ages, @RequestParam boolean method, @RequestParam String sort,
+            @RequestParam String order) throws ServiceException {
+
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
+
+        if (method) {
+            try {
+                return new ResponseEntity<>(producerService.findAllCriteriaFilter(pageable, names, ages).stream()
+                        .map(boToDtoConverter::producerBoToDtoOut).toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    producerService.findAll(pageable).stream().map(boToDtoConverter::producerBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
     /**
      * Method for get a producer by his id.
      *

@@ -148,6 +148,34 @@ class DirectorControllerTest {
         response.andExpect(status().isBadRequest());
     }
 
+    @DisplayName("Junit test for get all directors filtered- positive")
+    @Test
+    void givenAttributes_whenFindAllCriteriaFilter_thenReturnActorDTOList() throws Exception {
+        Page<DirectorBO> page = new PageImpl<>(List.of(directorBO), PageRequest.of(0, 5, Sort.by("name").ascending()),
+                10);
+        given(directorService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList(), anyList())).willReturn(
+                page);
+        given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
+
+        ResultActions response = mockMvc.perform(
+                get("/directors/findAllFilter?names=prueba&ages=25&nationalities=Spain&method=true&sort=name&order=asc"));
+
+        response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get all directors filtered - negative")
+    @Test
+    void givenAttributes_whenFindAllCriteriaFilter_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
+        given(directorService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList(), anyList())).willThrow(
+                new ServiceException(""));
+
+        ResultActions response = mockMvc.perform(
+                get("/directors/findAllFilter?names=prueba&ages=25&nationalities=Spain&method=true&sort=name&order=asc"));
+
+        response.andExpect(status().isBadRequest());
+    }
+
     @DisplayName("Junit test for get a director by his id - positive")
     @Test
     void givenDirectorId_whenGetById_thenUserDTO() throws Exception {

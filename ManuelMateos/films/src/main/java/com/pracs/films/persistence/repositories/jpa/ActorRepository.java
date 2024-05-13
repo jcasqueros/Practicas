@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository of the class {@link Actor}
  *
@@ -22,4 +24,12 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
      * @return
      */
     public Page<Actor> findAll(Pageable pageable);
+
+    /**
+     * Method for get all actors by his name
+     *
+     * @param name
+     * @return
+     */
+    public List<Actor> findByName(String name);
 }
