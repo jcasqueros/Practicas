@@ -5,6 +5,14 @@ import com.viewnex.bsan.practica04.dto.ProductionCompanyReadDto;
 import com.viewnex.bsan.practica04.dto.ProductionCompanyUpsertDto;
 import org.mapstruct.Mapper;
 
+/**
+ * The {@code ControllerLevelProductionCompanyMapper} interface is a MapStruct mapper that handles conversions between
+ * {@code ProductionCompanyBo} business objects and {@code ProductionCompanyReadDto} or
+ * {@code ProductionCompanyUpsertDto} data transfer objects. It is used by controllers to convert between native
+ * objects from each layer (business logic and presentation).
+ *
+ * @author Antonio Gil
+ */
 @Mapper(componentModel = "spring")
 public interface ControllerLevelProductionCompanyMapper {
 

@@ -23,6 +23,11 @@ import java.util.function.Predicate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Unit test for {@code ServiceLevelFilmMapper} (implementation provided by MapStruct).
+ *
+ * @author Antonio Gil
+ */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {ServiceLevelFilmMapperImpl.class})
 class ServiceLevelFilmMapperTest {

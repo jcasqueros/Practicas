@@ -23,6 +23,11 @@ import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for {@code ShowRepository} (implementation provided by Spring Data JPA).
+ *
+ * @author Antonio Gil
+ */
 @DataJpaTest
 class ShowRepositoryTest {
 

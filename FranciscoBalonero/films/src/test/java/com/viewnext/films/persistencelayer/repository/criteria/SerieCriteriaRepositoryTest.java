@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
@@ -80,11 +82,12 @@ class SerieCriteriaRepositoryTest {
 
     @Test
     @DisplayName("Get all series operation")
-    void givenNothing_whenGetAllSeries_thenReturnListWithAllSeries() {
+    void givenNothing_whenGetAllSeries_thenReturnPageWithAllSeries() {
 
         Serie createdSerie = serieCriteriaRepository.createSerie(serie);
 
-        List<Serie> foundSeries = serieCriteriaRepository.getAllSeries();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 series
+        List<Serie> foundSeries = serieCriteriaRepository.getAllSeries(pageable);
 
         assertThat(foundSeries).isNotNull();
         assertThat(foundSeries.get(0)).isEqualTo(createdSerie);

@@ -15,34 +15,34 @@ import java.util.List;
  * <p>Example usage:</p>
  * <pre>
  * {@code
- * // Obtain a instance of SerieService
+ * // Obtain an instance of SerieService
  * SerieService serieService = // instantiate or inject the implementation
  *
- * // Retrieve a serie by ID using Criteria
+ * // Retrieve an serie by ID using Criteria
  * SerieBO serie = serieService.criteriaGetById(1L);
  *
  * // Retrieve all series using Criteria
  * List<SerieBO> series = serieService.criteriaGetAll();
  *
- * // Delete a serie by ID using Criteria
+ * // Delete an serie by ID using Criteria
  * serieService.criteriaDeleteById(1L);
  *
- * // Update a serie using Criteria
+ * // Update an serie using Criteria
  * SerieBO updatedSerie = serieService.criteriaUpdate(serie);
  *
  * // Create a new serie using Criteria
  * SerieBO createdSerie = serieService.criteriaCreate(serie);
  *
- * // Retrieve a serie by ID using JPA
+ * // Retrieve an serie by ID using JPA
  * SerieBO serie = serieService.jpaGetById(1L);
  *
  * // Retrieve all series using JPA
  * List<SerieBO> series = serieService.jpaGetAll();
  *
- * // Delete a serie by ID using JPA
+ * // Delete an serie by ID using JPA
  * serieService.jpaDeleteById(1L);
  *
- * // Update a serie using JPA
+ * // Update an serie using JPA
  * SerieBO updatedSerie = serieService.jpaUpdate(serie);
  *
  * // Create a new serie using JPA
@@ -71,13 +71,22 @@ public interface SerieService {
     SerieBO criteriaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all series using Criteria.
+     * Retrieves all series using Criteria, paginated and sorted.
      *
-     * @return A {@link List} of all {@link SerieBO} .
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link SerieBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<SerieBO> criteriaGetAll() throws ServiceException;
+    List<SerieBO> criteriaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException;
 
     /**
      * Deletes a serie by ID using Criteria.
@@ -123,13 +132,21 @@ public interface SerieService {
     SerieBO jpaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all series using JPA.
+     * Retrieves all series using JPA, paginated and sorted.
      *
-     * @return A {@link List} of all {@link SerieBO}.
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link SerieBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<SerieBO> jpaGetAll() throws ServiceException;
+    List<SerieBO> jpaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
 
     /**
      * Deletes a serie by ID using JPA.

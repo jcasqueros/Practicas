@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -46,11 +48,12 @@ class DirectorCriteriaRepositoryTest {
 
     @Test
     @DisplayName("Get all directors operation")
-    void givenNothing_whenGetAllDirectors_thenReturnListWithAllDirectors() {
+    void givenNothing_whenGetAllDirectors_thenReturnPageWithAllDirectors() {
 
         Director createdDirector = directorCriteriaRepository.createDirector(director);
 
-        List<Director> foundDirectors = directorCriteriaRepository.getAllDirectors();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 directors
+        List<Director> foundDirectors = directorCriteriaRepository.getAllDirectors(pageable);
 
         assertThat(foundDirectors).isNotNull();
         assertThat(foundDirectors.get(0)).isEqualTo(createdDirector);

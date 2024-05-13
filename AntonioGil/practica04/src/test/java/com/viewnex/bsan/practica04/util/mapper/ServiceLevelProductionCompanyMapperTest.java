@@ -11,6 +11,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Unit test for {@code ServiceLevelProductionCompanyMapper} (implementation provided by MapStruct).
+ *
+ * @author Antonio Gil
+ */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {ServiceLevelProductionCompanyMapperImpl.class})
 class ServiceLevelProductionCompanyMapperTest {

@@ -16,6 +16,11 @@ import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for {@code CustomActorRepositoryImpl}.
+ *
+ * @author Antonio Gil
+ */
 @DataJpaTest
 @Import(CrudPeliculasAppTestConfig.class)
 class CustomDirectorRepositoryImplTest {

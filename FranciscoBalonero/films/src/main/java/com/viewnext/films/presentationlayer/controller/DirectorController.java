@@ -41,15 +41,18 @@ public class DirectorController {
     @Operation(summary = "Get all Directors")
     @GetMapping("/getAllDirectors")
     public ResponseEntity<List<DirectorOutDTO>> getAllDirectors(
-            @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select)
+            @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
+            @RequestParam(defaultValue = "name") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
             throws ServiceException {
         if (select) {
-            return new ResponseEntity<>(
-                    directorService.criteriaGetAll().stream().map(converter::directorBOToOutDTO).toList(),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(directorService.criteriaGetAll(pageNumber, pageSize, sortBy, sortOrder).stream()
+                    .map(converter::directorBOToOutDTO).toList(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(
-                    directorService.jpaGetAll().stream().map(converter::directorBOToOutDTO).toList(), HttpStatus.OK);
+            return new ResponseEntity<>(directorService.jpaGetAll(pageNumber, pageSize, sortBy, sortOrder).stream()
+                    .map(converter::directorBOToOutDTO).toList(), HttpStatus.OK);
         }
     }
 

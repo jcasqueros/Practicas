@@ -1,6 +1,7 @@
 package com.viewnext.films.persistencelayer.repository.criteria;
 
 import com.viewnext.films.persistencelayer.entity.Producer;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,14 +46,16 @@ public interface ProducerCriteriaRepository {
     Producer createProducer(Producer producer);
 
     /**
-     * Retrieves all {@link Producer}.
+     * Retrieves all {@link Producer} paginated and sorted.
      *
-     * @return a {@link List} of all {@link Producer}
+     * @param pageable
+     *         {@link Pageable} the pagination and sorting information
+     * @return a {@link List} of all {@link Producer} matching the pagination and sorting criteria
      */
-    List<Producer> getAllProducers();
+    List<Producer> getAllProducers(Pageable pageable);
 
     /**
-     * Retrieves a {@link Producer} by ID.
+     * Retrieves an {@link Producer} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Producer} to be retrieved

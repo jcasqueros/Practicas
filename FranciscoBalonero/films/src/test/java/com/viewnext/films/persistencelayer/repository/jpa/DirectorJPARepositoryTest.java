@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -58,14 +60,15 @@ class DirectorJPARepositoryTest {
 
     @Test
     @DisplayName("Find all directors operation")
-    void givenNothing_whenFindAllDirectors_thenReturnListWithAllDirectors() {
+    void givenNothing_whenFindAllDirectors_thenReturnPageWithAllDirectors() {
 
         Director savedDirector = directorJPARepository.save(director);
 
-        List<Director> foundDirectors = directorJPARepository.findAll();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 directors
+        Page<Director> foundDirectorsPage = directorJPARepository.findAll(pageable);
 
-        assertThat(foundDirectors).isNotNull();
-        assertThat(foundDirectors.get(0)).isEqualTo(savedDirector);
+        assertThat(foundDirectorsPage).isNotNull();
+        assertThat(foundDirectorsPage.getContent().get(0)).isEqualTo(savedDirector);
 
     }
 

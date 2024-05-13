@@ -4,6 +4,12 @@ import lombok.Getter;
 
 import java.io.Serial;
 
+/**
+ * The {@code DuplicateUniqueFieldException} class is a service-level exception type that represents a failed create or
+ * update operation due to a uniqueness constraint violation.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 public class DuplicateUniqueFieldException extends BadInputDataException {
 

@@ -5,6 +5,11 @@ import com.viewnex.bsan.practica04.entity.Show;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Sample data for shows. Useful for unit tests, especially if they involve mocking.
+ *
+ * @author Antonio Gil
+ */
 public class ShowSampleData {
 
     public static final List<Show> SAMPLE_SHOWS = List.of(

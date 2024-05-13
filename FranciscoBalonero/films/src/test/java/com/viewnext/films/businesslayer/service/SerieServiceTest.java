@@ -23,6 +23,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,10 +143,11 @@ class SerieServiceImplTest {
     @DisplayName("Criteria get all: correct case")
     void givenNothing_whenCriteriaGetAll_thenReturnListWithAllSeriesBO() throws ServiceException {
         List<Serie> series = List.of(serie);
-        BDDMockito.given(serieCriteriaRepository.getAllSeries()).willReturn(series);
+        BDDMockito.given(serieCriteriaRepository.getAllSeries(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willReturn(series);
         BDDMockito.given(converter.serieEntityToBO(serie)).willReturn(serieBO);
 
-        List<SerieBO> result = serieService.criteriaGetAll();
+        List<SerieBO> result = serieService.criteriaGetAll(0, 10, "title", false);
 
         assertThat(result).isNotNull().hasSize(1).contains(serieBO);
     }
@@ -151,17 +155,19 @@ class SerieServiceImplTest {
     @Test
     @DisplayName("Criteria get all: no series found")
     void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
-        BDDMockito.given(serieCriteriaRepository.getAllSeries()).willReturn(List.of());
+        BDDMockito.given(serieCriteriaRepository.getAllSeries(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willReturn(List.of());
 
-        assertThrows(NotFoundException.class, () -> serieService.criteriaGetAll());
+        assertThrows(NotFoundException.class, () -> serieService.criteriaGetAll(0, 10, "title", false));
     }
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
     void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
-        BDDMockito.given(serieCriteriaRepository.getAllSeries()).willThrow(InvalidDataAccessApiUsageException.class);
+        BDDMockito.given(serieCriteriaRepository.getAllSeries(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> serieService.criteriaGetAll());
+        assertThrows(ServiceException.class, () -> serieService.criteriaGetAll(0, 10, "title", false));
     }
 
     @Test
@@ -248,26 +254,6 @@ class SerieServiceImplTest {
     }
 
     @Test
-    @DisplayName("JPA get all: correct case")
-    void givenNothing_whenJpaGetAll_thenReturnListWithAllSeriesBO() throws ServiceException {
-        List<Serie> series = List.of(serie);
-        BDDMockito.given(serieJPARepository.findAll()).willReturn(series);
-        BDDMockito.given(converter.serieEntityToBO(serie)).willReturn(serieBO);
-
-        List<SerieBO> result = serieService.jpaGetAll();
-
-        assertThat(result).isNotNull().hasSize(1).contains(serieBO);
-    }
-
-    @Test
-    @DisplayName("JPA get all: no series found")
-    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
-        BDDMockito.given(serieJPARepository.findAll()).willReturn(List.of());
-
-        assertThrows(NotFoundException.class, () -> serieService.jpaGetAll());
-    }
-
-    @Test
     @DisplayName("JPA delete by id: correct case")
     void givenId_whenJpaDeleteById_thenDeleteSerie() throws ServiceException {
         BDDMockito.willDoNothing().given(serieJPARepository).deleteById(1L);
@@ -314,16 +300,39 @@ class SerieServiceImplTest {
     @DisplayName("JPA get by id: nested runtime exception")
     void givenId_whenJpaGetById_thenThrowNestedRuntimeException() {
         BDDMockito.given(serieJPARepository.findById(1L)).willThrow(InvalidDataAccessApiUsageException.class);
-        
+
         assertThrows(ServiceException.class, () -> serieService.jpaGetById(1L));
     }
 
     @Test
     @DisplayName("JPA get all: nested runtime exception")
     void givenNothing_whenJpaGetAll_thenThrowNestedRuntimeException() {
-        BDDMockito.given(serieJPARepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        BDDMockito.given(serieJPARepository.findAll(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> serieService.jpaGetAll());
+        assertThrows(ServiceException.class, () -> serieService.jpaGetAll(0, 10, "title", false));
+    }
+
+    @Test
+    @DisplayName("JPA get all: correct case")
+    void givenNothing_whenJpaGetAll_thenReturnListWithAllSeriesBO() throws ServiceException {
+        List<Serie> series = List.of(serie);
+        BDDMockito.given(serieJPARepository.findAll(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willReturn(new PageImpl<>(series));
+        BDDMockito.given(converter.serieEntityToBO(serie)).willReturn(serieBO);
+
+        List<SerieBO> result = serieService.jpaGetAll(0, 10, "title", false);
+
+        assertThat(result).isNotNull().hasSize(1).contains(serieBO);
+    }
+
+    @Test
+    @DisplayName("JPA get all: no series found")
+    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
+        BDDMockito.given(serieJPARepository.findAll(PageRequest.of(0, 10, Sort.by("title").ascending())))
+                .willReturn(new PageImpl<>(List.of()));
+
+        assertThrows(NotFoundException.class, () -> serieService.jpaGetAll(0, 10, "title", false));
     }
 
     @Test

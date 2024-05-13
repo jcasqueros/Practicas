@@ -1,6 +1,9 @@
 package com.viewnex.bsan.practica04.util.controller;
 
-import com.viewnex.bsan.practica04.exception.service.*;
+import com.viewnex.bsan.practica04.exception.service.BadInputDataException;
+import com.viewnex.bsan.practica04.exception.service.DuplicateUniqueFieldException;
+import com.viewnex.bsan.practica04.exception.service.MissingRequiredFieldException;
+import com.viewnex.bsan.practica04.exception.service.ResourceNotFoundException;
 import com.viewnex.bsan.practica04.util.MessageBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +14,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.LocalDateTime;
 
+/**
+ * Global controller advice for the REST API controllers.
+ *
+ * @author Antonio Gil
+ */
 @RestControllerAdvice
 public class GlobalRestControllerAdvice {
 
@@ -49,13 +57,6 @@ public class GlobalRestControllerAdvice {
         return new RestApiErrorMessage(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(),
                 MessageBuilder.parameterTypeMismatchMessage(ex.getParameter().getParameterName(),
                         ex.getParameter().getParameterType().getSimpleName()),
-                request.getDescription(false));
-    }
-
-    @ExceptionHandler(value = {ServiceLevelException.class})
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public RestApiErrorMessage serviceLevelException(BadInputDataException ex, WebRequest request) {
-        return new RestApiErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), LocalDateTime.now(), ex.getMessage(),
                 request.getDescription(false));
     }
 

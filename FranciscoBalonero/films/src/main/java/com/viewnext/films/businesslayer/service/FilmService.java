@@ -15,34 +15,34 @@ import java.util.List;
  * <p>Example usage:</p>
  * <pre>
  * {@code
- * // Obtain a instance of FilmService
+ * // Obtain an instance of FilmService
  * FilmService filmService = // instantiate or inject the implementation
  *
- * // Retrieve a film by ID using Criteria
+ * // Retrieve an film by ID using Criteria
  * FilmBO film = filmService.criteriaGetById(1L);
  *
  * // Retrieve all films using Criteria
  * List<FilmBO> films = filmService.criteriaGetAll();
  *
- * // Delete a film by ID using Criteria
+ * // Delete an film by ID using Criteria
  * filmService.criteriaDeleteById(1L);
  *
- * // Update a film using Criteria
+ * // Update an film using Criteria
  * FilmBO updatedFilm = filmService.criteriaUpdate(film);
  *
  * // Create a new film using Criteria
  * FilmBO createdFilm = filmService.criteriaCreate(film);
  *
- * // Retrieve a film by ID using JPA
+ * // Retrieve an film by ID using JPA
  * FilmBO film = filmService.jpaGetById(1L);
  *
  * // Retrieve all films using JPA
  * List<FilmBO> films = filmService.jpaGetAll();
  *
- * // Delete a film by ID using JPA
+ * // Delete an film by ID using JPA
  * filmService.jpaDeleteById(1L);
  *
- * // Update a film using JPA
+ * // Update an film using JPA
  * FilmBO updatedFilm = filmService.jpaUpdate(film);
  *
  * // Create a new film using JPA
@@ -71,13 +71,21 @@ public interface FilmService {
     FilmBO criteriaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all films using Criteria.
+     * Retrieves all films using Criteria, paginated and sorted.
      *
-     * @return A {@link List} of all {@link FilmBO} .
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link FilmBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<FilmBO> criteriaGetAll() throws ServiceException;
+    List<FilmBO> criteriaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
 
     /**
      * Deletes a film by ID using Criteria.
@@ -123,13 +131,21 @@ public interface FilmService {
     FilmBO jpaGetById(long id) throws ServiceException;
 
     /**
-     * Retrieves all films using JPA.
+     * Retrieves all films using JPA, paginated and sorted.
      *
-     * @return A {@link List} of all {@link FilmBO}.
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         true for ascending order, false for descending order
+     * @return A {@link List} of all {@link FilmBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
      */
-    List<FilmBO> jpaGetAll() throws ServiceException;
+    List<FilmBO> jpaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
 
     /**
      * Deletes a film by ID using JPA.

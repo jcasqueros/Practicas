@@ -107,7 +107,7 @@ public interface ProductionCompanyService {
     /**
      * Updates the company with the given ID.
      *
-     * @param id      The ID for the company that shall be updated
+     * @param id         The ID for the company that shall be updated
      * @param newCompany The new data for the company; this object's {@code id} is ignored for consistency reasons
      * @throws ResourceNotFoundException if no company with the given ID is found
      * @throws BadInputDataException     if the given company is null, or if the title is null/blank, or if the year is
@@ -119,7 +119,7 @@ public interface ProductionCompanyService {
      * Updates the company with the given ID. This method uses a custom repository implementation instead of the
      * standard Spring Data JPA implementation.
      *
-     * @param id      The ID for the company that shall be updated
+     * @param id         The ID for the company that shall be updated
      * @param newCompany The new data for the company; this object's {@code id} is ignored for consistency reasons
      * @throws ResourceNotFoundException if no company with the given ID is found
      * @throws BadInputDataException     if the given company is null, or if the title is null/blank, or if the year is

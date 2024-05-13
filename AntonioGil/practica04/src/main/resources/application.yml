@@ -10,13 +10,3 @@ spring:
 logging:
   level:
     root: INFO
-
-practica04:
-  rest-api:
-    paths:
-      base: /api/v1
-      actors: ${practica04.rest-api.paths.base}/actor
-      directors: ${practica04.rest-api.paths.base}/director
-      films: ${practica04.rest-api.paths.base}/film
-      production-companies: ${practica04.rest-api.paths.base}/production_company
-      shows: ${practica04.rest-api.paths.base}/show

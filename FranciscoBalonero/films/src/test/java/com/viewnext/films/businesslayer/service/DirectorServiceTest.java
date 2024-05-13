@@ -17,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -91,10 +94,11 @@ class DirectorServiceImplTest {
     @DisplayName("Criteria get all: correct case")
     void givenNothing_whenCriteriaGetAll_thenReturnListWithAllDirectorsBO() throws ServiceException {
         List<Director> directors = List.of(director);
-        BDDMockito.given(directorCriteriaRepository.getAllDirectors()).willReturn(directors);
+        BDDMockito.given(directorCriteriaRepository.getAllDirectors(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(directors);
         BDDMockito.given(converter.directorEntityToBO(director)).willReturn(directorBO);
 
-        List<DirectorBO> result = directorService.criteriaGetAll();
+        List<DirectorBO> result = directorService.criteriaGetAll(0, 10, "name", false);
 
         assertThat(result).isNotNull().hasSize(1).contains(directorBO);
     }
@@ -102,18 +106,19 @@ class DirectorServiceImplTest {
     @Test
     @DisplayName("Criteria get all: no directors found")
     void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
-        BDDMockito.given(directorCriteriaRepository.getAllDirectors()).willReturn(List.of());
+        BDDMockito.given(directorCriteriaRepository.getAllDirectors(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(List.of());
 
-        assertThrows(NotFoundException.class, () -> directorService.criteriaGetAll());
+        assertThrows(NotFoundException.class, () -> directorService.criteriaGetAll(0, 10, "name", false));
     }
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
     void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
-        BDDMockito.given(directorCriteriaRepository.getAllDirectors())
+        BDDMockito.given(directorCriteriaRepository.getAllDirectors(PageRequest.of(0, 10, Sort.by("name").ascending())))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> directorService.criteriaGetAll());
+        assertThrows(ServiceException.class, () -> directorService.criteriaGetAll(0, 10, "name", false));
     }
 
     @Test
@@ -200,26 +205,6 @@ class DirectorServiceImplTest {
     }
 
     @Test
-    @DisplayName("JPA get all: correct case")
-    void givenNothing_whenJpaGetAll_thenReturnListWithAllDirectorsBO() throws ServiceException {
-        List<Director> directors = List.of(director);
-        BDDMockito.given(directorJPARepository.findAll()).willReturn(directors);
-        BDDMockito.given(converter.directorEntityToBO(director)).willReturn(directorBO);
-
-        List<DirectorBO> result = directorService.jpaGetAll();
-
-        assertThat(result).isNotNull().hasSize(1).contains(directorBO);
-    }
-
-    @Test
-    @DisplayName("JPA get all: no directors found")
-    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
-        BDDMockito.given(directorJPARepository.findAll()).willReturn(List.of());
-
-        assertThrows(NotFoundException.class, () -> directorService.jpaGetAll());
-    }
-
-    @Test
     @DisplayName("JPA delete by id: correct case")
     void givenId_whenJpaDeleteById_thenDeleteDirector() throws ServiceException {
         BDDMockito.willDoNothing().given(directorJPARepository).deleteById(1L);
@@ -273,9 +258,32 @@ class DirectorServiceImplTest {
     @Test
     @DisplayName("JPA get all: nested runtime exception")
     void givenNothing_whenJpaGetAll_thenThrowNestedRuntimeException() {
-        BDDMockito.given(directorJPARepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        BDDMockito.given(directorJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> directorService.jpaGetAll());
+        assertThrows(ServiceException.class, () -> directorService.jpaGetAll(0, 10, "name", false));
+    }
+
+    @Test
+    @DisplayName("JPA get all: correct case")
+    void givenNothing_whenJpaGetAll_thenReturnListWithAllDirectorsBO() throws ServiceException {
+        List<Director> directors = List.of(director);
+        BDDMockito.given(directorJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(new PageImpl<>(directors));
+        BDDMockito.given(converter.directorEntityToBO(director)).willReturn(directorBO);
+
+        List<DirectorBO> result = directorService.jpaGetAll(0, 10, "name", false);
+
+        assertThat(result).isNotNull().hasSize(1).contains(directorBO);
+    }
+
+    @Test
+    @DisplayName("JPA get all: no directors found")
+    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
+        BDDMockito.given(directorJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(new PageImpl<>(List.of()));
+
+        assertThrows(NotFoundException.class, () -> directorService.jpaGetAll(0, 10, "name", false));
     }
 
     @Test
@@ -301,7 +309,7 @@ class DirectorServiceImplTest {
     void givenDirectorBO_whenJpaCreate_thenThrowNestedRuntimeException() {
         BDDMockito.given(directorJPARepository.save(director)).willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.directorBOToEntity(directorBO)).willReturn(director);
-        
+
         assertThrows(ServiceException.class, () -> directorService.jpaCreate(directorBO));
     }
 

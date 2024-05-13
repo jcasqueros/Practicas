@@ -5,6 +5,11 @@ import com.viewnex.bsan.practica04.entity.Film;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Sample data for films. Useful for unit tests, especially if they involve mocking.
+ *
+ * @author Antonio Gil
+ */
 public class FilmSampleData {
 
     public static final List<Film> SAMPLE_FILMS = List.of(

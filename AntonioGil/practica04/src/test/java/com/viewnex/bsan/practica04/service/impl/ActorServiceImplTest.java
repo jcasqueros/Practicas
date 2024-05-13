@@ -23,6 +23,11 @@ import java.util.Optional;
 import static com.viewnex.bsan.practica04.sampledata.ActorSampleData.SAMPLE_ACTORS;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for {@code ActorServiceImpl}.
+ *
+ * @author Antonio Gil
+ */
 @ExtendWith(MockitoExtension.class)
 class ActorServiceImplTest {
 

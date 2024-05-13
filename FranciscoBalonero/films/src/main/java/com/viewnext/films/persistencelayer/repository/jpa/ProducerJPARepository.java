@@ -1,6 +1,8 @@
 package com.viewnext.films.persistencelayer.repository.jpa;
 
 import com.viewnext.films.persistencelayer.entity.Producer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +18,14 @@ import org.springframework.stereotype.Repository;
  **/
 @Repository
 public interface ProducerJPARepository extends JpaRepository<Producer, Long> {
+
+    /**
+     * Retrieves a page of producers matching the given pagination and sorting criteria.
+     *
+     * @param pageable
+     *         the pagination and sorting information
+     * @return a page of producers matching the pagination and sorting criteria
+     */
+
+    Page<Producer> findAll(Pageable pageable);
 }

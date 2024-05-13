@@ -41,15 +41,18 @@ public class FilmController {
     @Operation(summary = "Get all Films")
     @GetMapping("/getAllFilms")
     public ResponseEntity<List<FilmOutDTO>> getAllFilms(
-            @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select)
+            @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
+            @RequestParam(defaultValue = "title") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
             throws ServiceException {
         if (select) {
-            return new ResponseEntity<>(filmService.criteriaGetAll().stream().map(converter::filmBOToOutDTO).toList(),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(filmService.criteriaGetAll(pageNumber, pageSize, sortBy, sortOrder).stream()
+                    .map(converter::filmBOToOutDTO).toList(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(filmService.jpaGetAll().stream().map(converter::filmBOToOutDTO).toList(),
-                    HttpStatus.OK);
-
+            return new ResponseEntity<>(filmService.jpaGetAll(pageNumber, pageSize, sortBy, sortOrder).stream()
+                    .map(converter::filmBOToOutDTO).toList(), HttpStatus.OK);
         }
     }
 

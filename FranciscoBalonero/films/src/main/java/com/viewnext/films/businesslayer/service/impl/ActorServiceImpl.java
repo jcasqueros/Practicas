@@ -11,6 +11,9 @@ import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,47 +30,57 @@ import java.util.List;
  *
  * @author Francisco Balonero Olivera
  */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ActorServiceImpl implements ActorService {
 
+    // Inyección de dependencias
     /**
      * The actor criteria repository.
      */
     private final ActorCriteriaRepository actorCriteriaRepository;
-
     /**
      * The actor JPA repository.
      */
     private final ActorJPARepository actorJPARepository;
-
     /**
      * The converter for converting between entity and business objects.
      */
     private final Converter converter;
 
+    // Métodos para interactuar con la capa de persistencia utilizando Criteria API
     @Override
     public ActorBO criteriaGetById(long id) throws ServiceException {
         try {
+            // Busca un actor por ID utilizando Criteria API
             return converter.actorEntityToBO(
                     actorCriteriaRepository.getActorById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching actor by id: {}", id, e);
             throw new ServiceException("The actor could not be searched", e);
         }
     }
 
     @Override
-    public List<ActorBO> criteriaGetAll() throws ServiceException {
+    public List<ActorBO> criteriaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException {
         try {
-            List<Actor> actors = actorCriteriaRepository.getAllActors();
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca todos los actores utilizando Criteria API
+            List<Actor> actors = actorCriteriaRepository.getAllActors(pageable);
             if (!actors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
                 return actors.stream().map(converter::actorEntityToBO).toList();
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching all actors", e);
             throw new ServiceException("The actors could not be searched", e);
         }
@@ -76,8 +89,10 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public void criteriaDeleteById(Long id) throws ServiceException {
         try {
+            // Elimina un actor por ID utilizando Criteria API
             actorCriteriaRepository.deleteActor(id);
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error deleting actor by id: {}", id, e);
             throw new ServiceException("The actor could not be deleted", e);
         }
@@ -85,10 +100,13 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public ActorBO criteriaUpdate(ActorBO actorBO) throws ServiceException {
+        // Verifica si el actor existe antes de actualizarlo
         criteriaGetById(actorBO.getId());
         try {
+            // Actualiza un actor utilizando Criteria API
             return converter.actorEntityToBO(actorCriteriaRepository.updateActor(converter.actorBOToEntity(actorBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error updating actor: {}", actorBO, e);
             throw new ServiceException("The actor could not be updated", e);
         }
@@ -97,33 +115,45 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO criteriaCreate(ActorBO actorBO) throws ServiceException {
         try {
+            // Crea un actor utilizando Criteria API
             return converter.actorEntityToBO(actorCriteriaRepository.createActor(converter.actorBOToEntity(actorBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error creating actor: {}", actorBO, e);
             throw new ServiceException("The actor could not be created", e);
         }
     }
 
+    // Métodos para interactuar con la capa de persistencia utilizando JPA
     @Override
     public ActorBO jpaGetById(long id) throws ServiceException {
         try {
+            // Busca un actor por ID utilizando JPA
             return converter.actorEntityToBO(actorJPARepository.findById(id).orElseThrow(NotFoundException::new));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching actor by id: {}", id, e);
             throw new ServiceException("The actor could not be searched", e);
         }
     }
 
     @Override
-    public List<ActorBO> jpaGetAll() throws ServiceException {
+    public List<ActorBO> jpaGetAll(int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException {
         try {
-            List<Actor> actors = actorJPARepository.findAll();
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca todos los actores utilizando JPA
+            List<Actor> actors = actorJPARepository.findAll(pageable).getContent();
             if (!actors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
                 return actors.stream().map(converter::actorEntityToBO).toList();
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error searching all actors", e);
             throw new ServiceException("The actors could not be searched", e);
         }
@@ -132,8 +162,10 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public void jpaDeleteById(Long id) throws ServiceException {
         try {
+            // Elimina un actor por ID utilizando JPA
             actorJPARepository.deleteById(id);
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error deleting actor by id: {}", id, e);
             throw new ServiceException("The actor could not be deleted", e);
         }
@@ -142,12 +174,15 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO jpaUpdate(ActorBO actorBO) throws ServiceException {
         try {
+            // Verifica si el actor existe antes de actualizarlo
             if (actorJPARepository.existsById(actorBO.getId())) {
+                // Actualiza un actor utilizando JPA
                 return converter.actorEntityToBO(actorJPARepository.save(converter.actorBOToEntity(actorBO)));
             } else {
                 throw new NotFoundException();
             }
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error updating actor: {}", actorBO, e);
             throw new ServiceException("The actor could not be updated", e);
         }
@@ -156,8 +191,10 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public ActorBO jpaCreate(ActorBO actorBO) throws ServiceException {
         try {
+            // Crea un actor utilizando JPA
             return converter.actorEntityToBO(actorJPARepository.save(converter.actorBOToEntity(actorBO)));
         } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
             log.error("Error creating actor: {}", actorBO, e);
             throw new ServiceException("The actor could not be created", e);
         }

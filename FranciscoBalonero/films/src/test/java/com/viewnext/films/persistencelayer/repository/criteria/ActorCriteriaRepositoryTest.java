@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -46,11 +48,12 @@ class ActorCriteriaRepositoryTest {
 
     @Test
     @DisplayName("Get all actors operation")
-    void givenNothing_whenGetAllActors_thenReturnListWithAllActors() {
+    void givenNothing_whenGetAllActors_thenReturnPageWithAllActors() {
 
         Actor createdActor = actorCriteriaRepository.createActor(actor);
 
-        List<Actor> foundActors = actorCriteriaRepository.getAllActors();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 actors
+        List<Actor> foundActors = actorCriteriaRepository.getAllActors(pageable);
 
         assertThat(foundActors).isNotNull();
         assertThat(foundActors.get(0)).isEqualTo(createdActor);

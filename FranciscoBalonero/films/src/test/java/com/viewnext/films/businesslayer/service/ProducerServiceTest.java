@@ -17,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -89,10 +92,11 @@ class ProducerServiceImplTest {
     @DisplayName("Criteria get all: correct case")
     void givenNothing_whenCriteriaGetAll_thenReturnListWithAllProducersBO() throws ServiceException {
         List<Producer> producers = List.of(producer);
-        BDDMockito.given(producerCriteriaRepository.getAllProducers()).willReturn(producers);
+        BDDMockito.given(producerCriteriaRepository.getAllProducers(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(producers);
         BDDMockito.given(converter.producerEntityToBO(producer)).willReturn(producerBO);
 
-        List<ProducerBO> result = producerService.criteriaGetAll();
+        List<ProducerBO> result = producerService.criteriaGetAll(0, 10, "name", false);
 
         assertThat(result).isNotNull().hasSize(1).contains(producerBO);
     }
@@ -100,18 +104,19 @@ class ProducerServiceImplTest {
     @Test
     @DisplayName("Criteria get all: no producers found")
     void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
-        BDDMockito.given(producerCriteriaRepository.getAllProducers()).willReturn(List.of());
+        BDDMockito.given(producerCriteriaRepository.getAllProducers(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(List.of());
 
-        assertThrows(NotFoundException.class, () -> producerService.criteriaGetAll());
+        assertThrows(NotFoundException.class, () -> producerService.criteriaGetAll(0, 10, "name", false));
     }
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
     void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
-        BDDMockito.given(producerCriteriaRepository.getAllProducers())
+        BDDMockito.given(producerCriteriaRepository.getAllProducers(PageRequest.of(0, 10, Sort.by("name").ascending())))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> producerService.criteriaGetAll());
+        assertThrows(ServiceException.class, () -> producerService.criteriaGetAll(0, 10, "name", false));
     }
 
     @Test
@@ -198,26 +203,6 @@ class ProducerServiceImplTest {
     }
 
     @Test
-    @DisplayName("JPA get all: correct case")
-    void givenNothing_whenJpaGetAll_thenReturnListWithAllProducersBO() throws ServiceException {
-        List<Producer> producers = List.of(producer);
-        BDDMockito.given(producerJPARepository.findAll()).willReturn(producers);
-        BDDMockito.given(converter.producerEntityToBO(producer)).willReturn(producerBO);
-
-        List<ProducerBO> result = producerService.jpaGetAll();
-
-        assertThat(result).isNotNull().hasSize(1).contains(producerBO);
-    }
-
-    @Test
-    @DisplayName("JPA get all: no producers found")
-    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
-        BDDMockito.given(producerJPARepository.findAll()).willReturn(List.of());
-
-        assertThrows(NotFoundException.class, () -> producerService.jpaGetAll());
-    }
-
-    @Test
     @DisplayName("JPA delete by id: correct case")
     void givenId_whenJpaDeleteById_thenDeleteProducer() throws ServiceException {
         BDDMockito.willDoNothing().given(producerJPARepository).deleteById(1L);
@@ -264,16 +249,39 @@ class ProducerServiceImplTest {
     @DisplayName("JPA get by id: nested runtime exception")
     void givenId_whenJpaGetById_thenThrowNestedRuntimeException() {
         BDDMockito.given(producerJPARepository.findById(1L)).willThrow(InvalidDataAccessApiUsageException.class);
-        
+
         assertThrows(ServiceException.class, () -> producerService.jpaGetById(1L));
     }
 
     @Test
     @DisplayName("JPA get all: nested runtime exception")
     void givenNothing_whenJpaGetAll_thenThrowNestedRuntimeException() {
-        BDDMockito.given(producerJPARepository.findAll()).willThrow(InvalidDataAccessApiUsageException.class);
+        BDDMockito.given(producerJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willThrow(InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> producerService.jpaGetAll());
+        assertThrows(ServiceException.class, () -> producerService.jpaGetAll(0, 10, "name", false));
+    }
+
+    @Test
+    @DisplayName("JPA get all: correct case")
+    void givenNothing_whenJpaGetAll_thenReturnListWithAllProducersBO() throws ServiceException {
+        List<Producer> producers = List.of(producer);
+        BDDMockito.given(producerJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(new PageImpl<>(producers));
+        BDDMockito.given(converter.producerEntityToBO(producer)).willReturn(producerBO);
+
+        List<ProducerBO> result = producerService.jpaGetAll(0, 10, "name", false);
+
+        assertThat(result).isNotNull().hasSize(1).contains(producerBO);
+    }
+
+    @Test
+    @DisplayName("JPA get all: no producers found")
+    void givenNothing_whenJpaGetAll_thenThrowNotFoundException() {
+        BDDMockito.given(producerJPARepository.findAll(PageRequest.of(0, 10, Sort.by("name").ascending())))
+                .willReturn(new PageImpl<>(List.of()));
+
+        assertThrows(NotFoundException.class, () -> producerService.jpaGetAll(0, 10, "name", false));
     }
 
     @Test

@@ -11,6 +11,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Unit test for {@code ServiceLevelActorMapper} (implementation provided by MapStruct).
+ *
+ * @author Antonio Gil
+ */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {ServiceLevelActorMapperImpl.class})
 class ServiceLevelActorMapperTest {

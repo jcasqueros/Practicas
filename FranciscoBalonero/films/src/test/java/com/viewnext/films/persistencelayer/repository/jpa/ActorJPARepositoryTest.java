@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -58,14 +60,15 @@ class ActorJPARepositoryTest {
 
     @Test
     @DisplayName("Find all actors operation")
-    void givenNothing_whenFindAllActors_thenReturnListWithAllActors() {
+    void givenNothing_whenFindAllActors_thenReturnPageWithAllActors() {
 
         Actor savedActor = actorJPARepository.save(actor);
 
-        List<Actor> foundActors = actorJPARepository.findAll();
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 actors
+        Page<Actor> foundActorsPage = actorJPARepository.findAll(pageable);
 
-        assertThat(foundActors).isNotNull();
-        assertThat(foundActors.get(0)).isEqualTo(savedActor);
+        assertThat(foundActorsPage).isNotNull();
+        assertThat(foundActorsPage.getContent().get(0)).isEqualTo(savedActor);
 
     }
 

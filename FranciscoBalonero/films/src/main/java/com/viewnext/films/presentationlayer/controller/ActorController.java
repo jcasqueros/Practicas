@@ -41,15 +41,19 @@ public class ActorController {
     @Operation(summary = "Get all Actors")
     @GetMapping("/getAllActors")
     public ResponseEntity<List<ActorOutDTO>> getAllActors(
-            @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select)
+            @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
+            @RequestParam(defaultValue = "name") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
             throws ServiceException {
 
         if (select) {
-            return new ResponseEntity<>(actorService.criteriaGetAll().stream().map(converter::actorBOToOutDTO).toList(),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(actorService.criteriaGetAll(pageNumber, pageSize, sortBy, sortOrder).stream()
+                    .map(converter::actorBOToOutDTO).toList(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(actorService.jpaGetAll().stream().map(converter::actorBOToOutDTO).toList(),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(actorService.jpaGetAll(pageNumber, pageSize, sortBy, sortOrder).stream()
+                    .map(converter::actorBOToOutDTO).toList(), HttpStatus.OK);
         }
 
     }

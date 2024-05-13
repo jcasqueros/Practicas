@@ -13,14 +13,43 @@ import java.util.Optional;
  */
 public interface CustomFilmRepository {
 
+    /**
+     * Finds all films registered in the system.
+     *
+     * @return A list containing all the films registered in the system
+     */
     List<Film> getAll();
 
+    /**
+     * Checks whether a film with the given ID exists in the system.
+     *
+     * @param id The ID for the film
+     * @return True if a film with the given ID exists, false otherwise
+     */
     boolean existsById(long id);
 
+    /**
+     * Finds the film with the given ID, if it exists.
+     *
+     * @param id The ID for the film
+     * @return An {@code Optional} containing the found film, or an empty {@code Optional} if it wasn't found
+     */
     Optional<Film> getById(long id);
 
+    /**
+     * Saves the given film to the system.
+     *
+     * @param film The film that shall be saved
+     * @return The film as it was saved
+     */
     Film save(Film film);
 
+    /**
+     * Deletes the film with the given ID.
+     *
+     * @param id The ID for the film that shall be deleted
+     * @return True if a film was deleted, false otherwise
+     */
     boolean deleteById(long id);
 
 }

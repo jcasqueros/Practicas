@@ -1,6 +1,7 @@
 package com.viewnext.films.persistencelayer.repository.criteria;
 
 import com.viewnext.films.persistencelayer.entity.Director;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,14 +46,16 @@ public interface DirectorCriteriaRepository {
     Director createDirector(Director director);
 
     /**
-     * Retrieves all {@link Director}.
+     * Retrieves all {@link Director} paginated and sorted.
      *
-     * @return a {@link List} of all {@link Director}
+     * @param pageable
+     *         {@link Pageable} the pagination and sorting information
+     * @return a {@link List} of all {@link Director} matching the pagination and sorting criteria
      */
-    List<Director> getAllDirectors();
+    List<Director> getAllDirectors(Pageable pageable);
 
     /**
-     * Retrieves a {@link Director} by ID.
+     * Retrieves an {@link Director} by ID.
      *
      * @param id
      *         {@link Long} the ID of the {@link Director} to be retrieved

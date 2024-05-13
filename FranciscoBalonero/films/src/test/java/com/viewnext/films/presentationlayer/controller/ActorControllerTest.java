@@ -74,17 +74,6 @@ class ActorControllerTest {
     }
 
     @Test
-    @DisplayName("Criteria Get all actors : correct case")
-    void givenSelectTrue_whenCriteriaGetAllActors_thenReturnAllActors() throws Exception {
-        given(actorService.criteriaGetAll()).willReturn(List.of(actorBO));
-        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Actor/getAllActors?select=true"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
-    }
-
-    @Test
     @DisplayName("Criteria Get actor by id : correct case")
     void givenSelectTrue_whenCriteriaGetActorById_thenReturnActor() throws Exception {
         given(actorService.criteriaGetById(1L)).willReturn(actorBO);
@@ -143,12 +132,50 @@ class ActorControllerTest {
     }
 
     @Test
+    @DisplayName("Criteria Get all actors : correct case")
+    void givenSelectTrue_whenCriteriaGetAllActors_thenReturnAllActors() throws Exception {
+        given(actorService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(List.of(actorBO));
+        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/getAllActors?select=true&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
     @DisplayName("Criteria Get all actors : incorrect case -> ServiceException")
     void givenSelectTrue_whenCriteriaGetAllActors_thenThrowServiceException() throws Exception {
         given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
-        given(actorService.criteriaGetAll()).willThrow(new NotFoundException());
+        given(actorService.criteriaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(
+                new NotFoundException());
 
-        ResultActions response = mockMvc.perform(get("/api/v1/Actor/getAllActors?select=true"));
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/getAllActors?select=true&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("JPA Get all actors : correct case")
+    void givenSelectFalse_whenJPAGetAllActors_thenReturnAllActors() throws Exception {
+        given(actorService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willReturn(List.of(actorBO));
+        given(converter.actorBOToOutDTO(actorBO)).willReturn(actorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/getAllActors?select=false&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("JPA Get all actors : incorrect case -> ServiceException")
+    void givenSelectFalse_whenJPAGetAllActors_thenThrowServiceException() throws Exception {
+        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
+        given(actorService.jpaGetAll(anyInt(), anyInt(), anyString(), anyBoolean())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/getAllActors?select=false&pageNumber=0&pageSize=10&sortBy=name&sortOrder=true"));
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
@@ -199,18 +226,6 @@ class ActorControllerTest {
                         .content(objectMapper.writeValueAsString(actorUpdateDTO)));
 
         response.andDo(print()).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("JPA Get all actors : correct case")
-    void givenSelectTrue_whenJPAGetAllActors_thenReturnAllActors() throws Exception {
-
-        given(actorService.jpaGetAll()).willReturn(List.of(actorBO));
-        given(converter.actorBOToOutDTO(actorBO)).willReturn(actorOutDTO);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Actor/getAllActors?select=false"));
-
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
 
     @Test
@@ -268,17 +283,6 @@ class ActorControllerTest {
                         .content(objectMapper.writeValueAsString(actorUpdateDTO)));
 
         response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("Jane Doe")));
-    }
-
-    @Test
-    @DisplayName("JPA Get all actors : incorrect case -> ServiceException")
-    void givenSelectTrue_whenJPAGetAllActors_thenThrowServiceException() throws Exception {
-        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
-        given(actorService.jpaGetAll()).willThrow(new NotFoundException());
-
-        ResultActions response = mockMvc.perform(get("/api/v1/Actor/getAllActors?select=false"));
-
-        response.andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test
