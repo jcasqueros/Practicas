@@ -4,13 +4,15 @@ import java.text.MessageFormat;
 
 import static com.viewnex.bsan.practica04.util.constants.Messages.*;
 
+/**
+ * Utility class that encapsulates the implementation details for message formatting and building logic. It provides a
+ * simple mechanism to create error messages for most cases contemplated for the project.
+ *
+ * @author Antonio Gil
+ */
 public class MessageBuilder {
 
     private MessageBuilder() {
-    }
-
-    public static String buildMethodCalledMessage(String methodName) {
-        return MessageFormat.format(METHOD_CALLED, methodName);
     }
 
     public static String buildResourceNotFoundMessage(String resourceClassName, Object id) {

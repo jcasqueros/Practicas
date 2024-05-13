@@ -4,6 +4,11 @@ import com.viewnex.bsan.practica04.entity.Director;
 
 import java.util.List;
 
+/**
+ * Sample data for directors. Useful for unit tests, especially if they involve mocking.
+ *
+ * @author Antonio Gil
+ */
 public class DirectorSampleData {
     public static final List<Director> SAMPLE_DIRECTORS = List.of(
             Director.builder().id(1L).name("DIRECTOR1").age(40).nationality("ITA").build(),

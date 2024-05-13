@@ -1,8 +1,14 @@
 package com.viewnex.bsan.practica04.util.constants;
 
+/**
+ * Literal constants for messages, especially in exceptions and logging.
+ *
+ * @author Antonio Gil
+ */
 public class Messages {
 
-    private Messages() {}
+    private Messages() {
+    }
 
     public static final String ACTOR_ENTITY_NAME = "actor";
     public static final String DIRECTOR_ENTITY_NAME = "director";

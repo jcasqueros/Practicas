@@ -4,6 +4,11 @@ import com.viewnex.bsan.practica04.entity.ProductionCompany;
 
 import java.util.List;
 
+/**
+ * Sample data for production companies. Useful for unit tests, especially if they involve mocking.
+ *
+ * @author Antonio Gil
+ */
 public class ProductionCompanySampleData {
 
     public static final List<ProductionCompany> SAMPLE_COMPANIES = List.of(

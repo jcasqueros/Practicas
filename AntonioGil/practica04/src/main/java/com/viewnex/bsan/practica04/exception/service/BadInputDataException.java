@@ -2,6 +2,12 @@ package com.viewnex.bsan.practica04.exception.service;
 
 import java.io.Serial;
 
+/**
+ * The {@code BadInputDataException} class is a service-level exception type that represents a failed operation because
+ * of malformed or semantically invalid input data.
+ *
+ * @author Antonio Gil
+ */
 public class BadInputDataException extends ServiceLevelException {
 
     @Serial

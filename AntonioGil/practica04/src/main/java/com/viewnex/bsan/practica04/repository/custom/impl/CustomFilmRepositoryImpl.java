@@ -10,6 +10,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation for the {@code CustomFilmRepository} interface.
+ *
+ * @author Antonio Gil
+ */
 @Repository
 public class CustomFilmRepositoryImpl implements CustomFilmRepository {
 

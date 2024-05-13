@@ -4,6 +4,11 @@ import com.viewnex.bsan.practica04.entity.Actor;
 
 import java.util.List;
 
+/**
+ * Sample data for actors. Useful for unit tests, especially if they involve mocking.
+ *
+ * @author Antonio Gil
+ */
 public class ActorSampleData {
     public static final List<Actor> SAMPLE_ACTORS = List.of(
             Actor.builder().id(1L).name("ACTOR1").age(30).nationality("USA").build(),

@@ -5,6 +5,11 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * POJO class that packs all the relevant data that shall be returned on REST API errors.
+ *
+ * @author Antonio Gil
+ */
 @Getter
 @AllArgsConstructor
 public class RestApiErrorMessage {

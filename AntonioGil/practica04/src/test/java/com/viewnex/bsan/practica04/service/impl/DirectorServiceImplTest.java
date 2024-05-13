@@ -23,6 +23,11 @@ import java.util.Optional;
 import static com.viewnex.bsan.practica04.sampledata.DirectorSampleData.SAMPLE_DIRECTORS;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for {@code DirectorServiceImpl}.
+ *
+ * @author Antonio Gil
+ */
 @ExtendWith(MockitoExtension.class)
 class DirectorServiceImplTest {
 
@@ -304,7 +309,7 @@ class DirectorServiceImplTest {
         final DirectorBo director =
                 DirectorBo.builder().id(id).name("DIRECTOR05").age(45).nationality("USA").build();
 
-        Mockito.when(repository.existsById(id)).thenReturn(false);
+        Mockito.when(repository.existsById(id)).thenReturn(true);
         Mockito.when(mapper.boToEntity(director)).thenReturn(
                 Director.builder().id(id).name("DIRECTOR05").age(45).nationality("USA").build()
         );
@@ -313,7 +318,7 @@ class DirectorServiceImplTest {
         Mockito.when(mapper.entityToBo(Director.builder().id(id).name("DIRECTOR05").age(45).nationality("USA").build()))
                 .thenReturn(director);
 
-        final DirectorBo savedDirector = service.create(director);
+        final DirectorBo savedDirector = service.update(id, director);
 
         assertEquals(director.getId(), savedDirector.getId());
         assertEquals(director.getName(), savedDirector.getName());
@@ -336,10 +341,9 @@ class DirectorServiceImplTest {
     @Test
     void givenActorId_whenCustomUpdate_thenActorIsUpdated() {
         final long id = 5;
-        final DirectorBo director =
-                DirectorBo.builder().id(id).name("DIRECTOR05").age(45).nationality("USA").build();
+        final DirectorBo director = DirectorBo.builder().id(id).name("DIRECTOR05").age(45).nationality("USA").build();
 
-        Mockito.when(customRepository.existsById(id)).thenReturn(false);
+        Mockito.when(customRepository.existsById(id)).thenReturn(true);
         Mockito.when(mapper.boToEntity(director)).thenReturn(
                 Director.builder().id(id).name("DIRECTOR05").age(45).nationality("USA").build()
         );
@@ -349,7 +353,7 @@ class DirectorServiceImplTest {
         Mockito.when(mapper.entityToBo(Director.builder().id(id).name("DIRECTOR05").age(45).nationality("USA").build()))
                 .thenReturn(director);
 
-        final DirectorBo savedDirector = service.customCreate(director);
+        final DirectorBo savedDirector = service.customUpdate(id, director);
 
         assertEquals(director.getId(), savedDirector.getId());
         assertEquals(director.getName(), savedDirector.getName());

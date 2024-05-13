@@ -15,6 +15,11 @@ import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for {@code DirectorRepository} (implementation provided by Spring Data JPA).
+ *
+ * @author Antonio Gil
+ */
 @DataJpaTest
 class DirectorRepositoryTest {
 

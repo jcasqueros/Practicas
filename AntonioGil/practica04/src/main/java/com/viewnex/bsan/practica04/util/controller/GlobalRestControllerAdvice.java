@@ -11,6 +11,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.LocalDateTime;
 
+/**
+ * Global controller advice for the REST API controllers.
+ *
+ * @author Antonio Gil
+ */
 @RestControllerAdvice
 public class GlobalRestControllerAdvice {
 

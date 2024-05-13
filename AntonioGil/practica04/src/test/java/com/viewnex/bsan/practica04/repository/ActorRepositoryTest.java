@@ -15,6 +15,11 @@ import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for {@code ActorRepository} (implementation provided by Spring Data JPA).
+ *
+ * @author Antonio Gil
+ */
 @DataJpaTest
 class ActorRepositoryTest {
     private static final List<Actor> SAMPLE_ACTORS = ActorSampleData.SAMPLE_ACTORS;
