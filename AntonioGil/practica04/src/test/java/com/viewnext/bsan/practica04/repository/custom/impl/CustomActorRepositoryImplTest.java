@@ -57,7 +57,7 @@ class CustomActorRepositoryImplTest {
 
         // Assert
         assertFalse(foundActors.isEmpty());
-        assertEquals(pageSize, foundActors.size());
+        assertEquals(expectedActors.size(), foundActors.size());
         assertTrue(foundActors.containsAll(expectedActors));
     }
 

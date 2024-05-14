@@ -1,13 +1,10 @@
 package com.viewnext.bsan.practica04.repository.custom.impl;
 
 import com.viewnext.bsan.practica04.entity.ProductionCompany;
-import com.viewnext.bsan.practica04.entity.ProductionCompany_;
-import com.viewnext.bsan.practica04.repository.custom.CustomProductionCompanyRepository;
-import com.viewnext.bsan.practica04.entity.ProductionCompany;
-import com.viewnext.bsan.practica04.entity.ProductionCompany_;
 import com.viewnext.bsan.practica04.repository.custom.CustomProductionCompanyRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,38 +31,87 @@ public class CustomProductionCompanyRepositoryImpl implements CustomProductionCo
 
     @Override
     public List<ProductionCompany> findAll(Pageable pageable) {
-        // TODO: Re-do this method
-        return List.of();
+        // Step 1. Create a CriteriaQuery
+        CriteriaQuery<ProductionCompany> criteriaQuery = criteriaBuilder.createQuery(ProductionCompany.class);
+        Root<ProductionCompany> companies = criteriaQuery.from(ProductionCompany.class);
+        criteriaQuery.select(companies);
+
+        // Step 2. Create a TypedQuery from the CriteriaQuery above (this allows us to apply pagination)
+        TypedQuery<ProductionCompany> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        // Step 3. Return the result list
+        return typedQuery.getResultList();
     }
 
     @Override
     public List<ProductionCompany> findAll(Specification<ProductionCompany> spec, Pageable pageable) {
-        // TODO: Re-do this method
-        return List.of();
+        // Step 1. Create a CriteriaQuery with the given filtering criteria
+        CriteriaQuery<ProductionCompany> criteriaQuery = criteriaBuilder.createQuery(ProductionCompany.class);
+        Root<ProductionCompany> companies = criteriaQuery.from(ProductionCompany.class);
+        criteriaQuery.select(companies).where(spec.toPredicate(companies, criteriaQuery, criteriaBuilder));
+
+        // Step 2. Create a TypedQuery from the CriteriaQuery above (this allows us to apply pagination)
+        TypedQuery<ProductionCompany> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        // Step 3. Return the result list
+        return typedQuery.getResultList();
     }
 
     @Override
     public boolean existsById(long id) {
-        // TODO: Re-do this method
-        return false;
+        // Step 1. Create a CriteriaQuery with the given filtering criteria
+        CriteriaQuery<ProductionCompany> criteriaQuery = criteriaBuilder.createQuery(ProductionCompany.class);
+        Root<ProductionCompany> companies = criteriaQuery.from(ProductionCompany.class);
+        Predicate idMatches = criteriaBuilder.equal(companies.get("id"), id);
+        criteriaQuery.select(companies).where(idMatches);
+
+        // Step 2. Try to execute the query and return an appropriate result
+        try {
+            entityManager.createQuery(criteriaQuery).getSingleResult();
+            return true;
+        } catch (NoResultException ex) {
+            return false;
+        }
     }
 
     @Override
     public Optional<ProductionCompany> findById(long id) {
-        // TODO: Re-do this method
-        return Optional.empty();
+        // Step 1. Create a CriteriaQuery with the given filtering criteria
+        CriteriaQuery<ProductionCompany> criteriaQuery = criteriaBuilder.createQuery(ProductionCompany.class);
+        Root<ProductionCompany> companies = criteriaQuery.from(ProductionCompany.class);
+        Predicate idMatches = criteriaBuilder.equal(companies.get("id"), id);
+        criteriaQuery.select(companies).where(idMatches);
+
+        // Step 2. Try to execute the query and return the result
+        try {
+            ProductionCompany foundEntity = entityManager.createQuery(criteriaQuery).getSingleResult();
+            return Optional.of(foundEntity);
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public ProductionCompany save(ProductionCompany company) {
-        // TODO: Re-do this method
-        return null;
+        entityManager.persist(company);
+        return company;
     }
 
     @Override
     public boolean deleteById(long id) {
-        // TODO: Re-do this method
-        return false;
+        // Step 1. Create a CriteriaDelete with the given filtering criteria
+        CriteriaDelete<ProductionCompany> criteriaDelete = criteriaBuilder.createCriteriaDelete(ProductionCompany.class);
+        Root<ProductionCompany> companies = criteriaDelete.from(ProductionCompany.class);
+        Predicate idMatches = criteriaBuilder.equal(companies.get("id"), id);
+        criteriaDelete.where(idMatches);
+
+        // Step 2. Execute the delete query and return an appropriate result
+        int affectedEntityCount = entityManager.createQuery(criteriaDelete).executeUpdate();
+        return affectedEntityCount > 0;
     }
 
 }

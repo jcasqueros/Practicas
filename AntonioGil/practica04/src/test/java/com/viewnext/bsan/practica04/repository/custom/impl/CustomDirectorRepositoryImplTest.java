@@ -58,7 +58,7 @@ class CustomDirectorRepositoryImplTest {
 
         // Assert
         assertFalse(foundDirectors.isEmpty());
-        assertEquals(pageSize, foundDirectors.size());
+        assertEquals(expectedDirectors.size(), foundDirectors.size());
         assertTrue(foundDirectors.containsAll(expectedDirectors));
     }
 
