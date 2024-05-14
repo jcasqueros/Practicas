@@ -1,7 +1,6 @@
 package com.santander.peliculacrud.model.api;
 
-import com.santander.peliculacrud.model.input.Actor;
-import com.santander.peliculacrud.model.input.Director;
+import com.santander.peliculacrud.model.entity.Director;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

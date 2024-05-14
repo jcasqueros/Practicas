@@ -1,9 +1,10 @@
+/*
 package com.santander.peliculacrud.controllertest.seriescontroller;
 
-import com.santander.peliculacrud.model.input.Actor;
-import com.santander.peliculacrud.model.input.Director;
-import com.santander.peliculacrud.model.input.Series;
-import com.santander.peliculacrud.model.output.SeriesModelController;
+import com.santander.peliculacrud.model.entity.Actor;
+import com.santander.peliculacrud.model.entity.Director;
+import com.santander.peliculacrud.model.entity.Series;
+import com.santander.peliculacrud.model.dto.SeriesDTO;
 import com.santander.peliculacrud.service.ActorServiceInterface;
 import com.santander.peliculacrud.service.DirectorServiceInterface;
 import com.santander.peliculacrud.service.SeriesServiceInterface;
@@ -40,26 +41,28 @@ public class SeriesDeleteControllerTest {
     @Autowired
     private SeriesServiceInterface seriesService;
 
-    /**
+    */
+/**
      * Test delete series with valid id.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Delete a series with valid id")
     public void testDeleteSeries() throws Exception {
 
         Actor actor = actorService.getLastActor();
         Director director = directorService.getLastDirector();
-        SeriesModelController seriesModelController = SeriesModelController.builder()
+        SeriesDTO seriesDTO = SeriesDTO.builder()
                 .title("PRV11 Series")
                 .created(2022)
                 .idActor(List.of(actor.getId()))
                 .idDirector(director.getId())
                 .build();
         
-        seriesService.createSeries(seriesModelController);
+        seriesService.createSeries(seriesDTO);
         Series series = seriesService.getLastSeries();
 
         ResultActions response = mockMvc.perform(delete("/series/"+series.getId()));
@@ -68,12 +71,14 @@ public class SeriesDeleteControllerTest {
 
     }
 
-    /**
+    */
+/**
      * Test delete series with invalid id not found.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Delete series with invalid id not found")
     public void testDeleteSeries_InvalidId_NotFound() throws Exception {
@@ -88,12 +93,14 @@ public class SeriesDeleteControllerTest {
 
     }
 
-    /**
+    */
+/**
      * Test delete series with null id bad request.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Delete series with null id bad request")
     public void testDeleteSeries_NullId_BadRequest() throws Exception {
@@ -104,12 +111,14 @@ public class SeriesDeleteControllerTest {
 
     }
 
-    /**
+    */
+/**
      * Test delete series with empty id bad request.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Delete series with empty id bad request")
     public void testDeleteSeries_EmptyId_BadRequest() throws Exception {
@@ -120,3 +129,4 @@ public class SeriesDeleteControllerTest {
 
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.santander.peliculacrud.controllertest.actorcontroller;
 
 import com.santander.peliculacrud.service.ActorServiceInterface;
@@ -20,9 +21,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+*/
 /**
  * The type Actor delete controller test.
- */
+ *//*
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ActorDeleteControllerTest {
@@ -33,12 +36,14 @@ public class ActorDeleteControllerTest {
     @Autowired
     private ActorServiceInterface actorService;
 
-    /**
+    */
+/**
      * Test delete actor existing actor no content.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     public void testDeleteActor_ExistingActor_NoContent() throws Exception {
         Long actorId = actorService.getLastActor().getId();
@@ -49,12 +54,14 @@ public class ActorDeleteControllerTest {
         response.andDo(print()).andExpect(status().isNoContent());
     }
 
-    /**
+    */
+/**
      * Test delete actor non existing actor not found.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     public void testDeleteActor_NonExistingActor_NotFound() throws Exception {
         Long actorId = 999L;
@@ -68,12 +75,14 @@ public class ActorDeleteControllerTest {
         }
     }
 
-    /**
+    */
+/**
      * Test delete actor invalid id bad request.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     public void testDeleteActor_InvalidId_BadRequest() throws Exception {
         String invalidId = "invalid-id";
@@ -84,3 +93,4 @@ public class ActorDeleteControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 }
+*/

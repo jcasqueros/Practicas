@@ -1,4 +1,4 @@
-package com.santander.peliculacrud.model.output;
+package com.santander.peliculacrud.model.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -9,14 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The type Actor out.
+ * The type Director dto.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ActorModelController {
-
+public class DirectorDTO {
     @NotNull(message = "Name can´t be null")
     @Pattern(regexp = "[^\\s]+.*", message = "Name cannot be empty or contain only spaces")
     private String name;

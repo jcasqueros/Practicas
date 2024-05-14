@@ -1,4 +1,4 @@
-package com.santander.peliculacrud.model.output;
+package com.santander.peliculacrud.model.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SeriesModelController {
+public class SeriesDTO {
 
     @NotNull(message = "Title can´t be null")
     @NotEmpty

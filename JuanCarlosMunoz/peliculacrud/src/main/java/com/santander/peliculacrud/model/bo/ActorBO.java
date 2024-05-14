@@ -1,20 +1,23 @@
-package com.santander.peliculacrud.model.output;
+package com.santander.peliculacrud.model.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ActorModelService {
+public class ActorBO {
 
-    String name;
+    private long id;
 
-    int age;
+    private String name;
 
-    String nation;
+    private int age;
+
+    private String nation;
 
 }

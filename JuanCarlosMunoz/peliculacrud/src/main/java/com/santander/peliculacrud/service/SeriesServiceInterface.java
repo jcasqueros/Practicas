@@ -1,8 +1,7 @@
 package com.santander.peliculacrud.service;
 
-import com.santander.peliculacrud.model.input.Series;
-import com.santander.peliculacrud.model.output.SeriesModelController;
-import com.santander.peliculacrud.model.output.SeriesModelService;
+import com.santander.peliculacrud.model.bo.SeriesBO;
+import com.santander.peliculacrud.model.entity.Series;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,27 +17,27 @@ public interface SeriesServiceInterface {
      *
      * @param id
      *         the id
-     * @param seriesModelController
+     * @param seriesBO
      *         the series in
      * @return the boolean
      */
-    boolean updateSeries(Long id, SeriesModelController seriesModelController);
+    boolean updateSeries(Long id, SeriesBO seriesBO);
 
     /**
      * Create series boolean.
      *
-     * @param seriesModelController
+     * @param seriesBO
      *         the series in
      * @return the boolean
      */
-    boolean createSeries(SeriesModelController seriesModelController);
+    boolean createSeries(SeriesBO seriesBO);
 
     /**
      * Gets all series.
      *
      * @return the all series
      */
-    List<SeriesModelService> getAllSeries();
+    List<SeriesBO> getAllSeries();
 
     /**
      * Series out series out.
@@ -47,7 +46,7 @@ public interface SeriesServiceInterface {
      *         the id
      * @return the series out
      */
-    SeriesModelService seriesOut(Long id);
+    SeriesBO seriesOut(Long id);
 
     /**
      * Delete series boolean.

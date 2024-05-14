@@ -3,29 +3,28 @@ package com.santander.peliculacrud.service.impl;
 import com.santander.peliculacrud.model.api.ActorRepository;
 import com.santander.peliculacrud.model.api.DirectorRepository;
 import com.santander.peliculacrud.model.api.FilmRepository;
-import com.santander.peliculacrud.model.input.Actor;
-import com.santander.peliculacrud.model.input.Director;
-import com.santander.peliculacrud.model.input.Film;
-import com.santander.peliculacrud.model.output.FilmModelController;
-import com.santander.peliculacrud.model.output.FilmModelService;
+import com.santander.peliculacrud.model.bo.ActorBO;
+import com.santander.peliculacrud.model.bo.FilmBO;
+import com.santander.peliculacrud.model.entity.Actor;
+import com.santander.peliculacrud.model.entity.Director;
+import com.santander.peliculacrud.model.entity.Film;
 import com.santander.peliculacrud.service.FilmServiceInterface;
-import com.santander.peliculacrud.util.CommonOperation;
-import com.santander.peliculacrud.util.TransformObjects;
-import jakarta.validation.Valid;
+import com.santander.peliculacrud.util.mapper.FilmBOMapper;
+import com.santander.peliculacrud.util.mapper.SeriesBOMapper;
+import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The type Film service.
  */
+
 @Service
 public class FilmService implements FilmServiceInterface {
 
@@ -39,145 +38,131 @@ public class FilmService implements FilmServiceInterface {
     private DirectorRepository directorRepository;
 
     @Autowired
-    private TransformObjects transformObjects;
+    private final FilmBOMapper filmBOMapper = Mappers.getMapper(FilmBOMapper.class);
 
-    @Autowired
-    private Validator validator;
 
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
-
-    @Autowired
-    private CommonOperation commonOperation;
 
     /**
      * Create film boolean.
      *
-     * @param filmModelController
+     * @param filmBO
      *         the film out
      * @return the boolean
      */
-    public boolean createFilm(@Valid FilmModelController filmModelController) {
 
-        boolean create = false;
+    public FilmBO createFilm(FilmBO filmBO) {
 
-        BindingResult result = new BeanPropertyBindingResult(filmModelController, "FilmModelController");
-        validator.validate(filmModelController, result);
-
-        if (result.hasErrors()) {
-            commonOperation.showErrorModel(logger, result);
-            throw new RuntimeException("Invalid actor data: " + result.getAllErrors());
-        } else {
-
-            Director director = directorRepository.findById(filmModelController.getIdDirector()).orElse(null);
-            List<Actor> actors = actorRepository.findAllById(filmModelController.getIdActor());
+        FilmBO filmBOReturn = FilmBO.builder().build();
+        //Se comprueba que los directores y actores se encuentran en el repositorio
+        try {
+            Director director = directorRepository.findById(filmBO.getDirector().getId()).orElse(null);
+            List<Long> idActors = getIdActors(filmBO.getActors());
+            List<Actor> actors = actorRepository.findAllById(idActors);
 
             if (director != null && !actors.isEmpty()) {
 
-                Film film = transformObjects.filmInToFilm(filmModelController);
+                Film film = filmBOMapper.boToEntity(filmBO);
 
-                try {
-                    filmRepository.save(film);
-                    create = true;
+                Film filmAux = filmRepository.save(film);
+                filmBOReturn = filmBOMapper.entityToBo(filmAux);
 
-                } catch (Exception e) {
-                    logger.error("Failed to create actor: {}", e.getMessage());
-                    throw new RuntimeException("Failed to create actor: ", e);
-                }
             }
+        } catch (DataAccessException e) {
+            logger.error("Failed to create actor", e);
+            throw new RuntimeException("Failed to create actor: " + e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("Failed to create actor: {}", e.getMessage());
+            throw new RuntimeException("Failed to create actor: ", e);
         }
 
-        return create;
+        return filmBOReturn;
     }
 
-    /**
-     * Update film boolean.
-     *
-     * @param id
-     *         the id
-     * @param filmModelController
-     *         the film out
-     * @return the boolean
-     */
-    public boolean updateFilm(Long id, @Valid FilmModelController filmModelController) {
+    @Override
+    public FilmBO updateFilm(Long id, FilmBO filmBO) {
+        FilmBO filmBOReturn = FilmBO.builder().build();
+        try {
+            if (filmRepository.existsById(id)) {
 
-        boolean update = false;
-        if (filmRepository.existsById(id)) {
+                Film filmUpdate = filmBOMapper.boToEntity(filmBO);
 
-            BindingResult result = new BeanPropertyBindingResult(filmModelController, "filmModelController");
-            validator.validate(filmModelController, result);
+                if (filmUpdate.getDirector() != null && !filmUpdate.getActors().isEmpty()) {
 
-            if (result.hasErrors()) {
-                commonOperation.showErrorModel(logger, result);
-                throw new RuntimeException("Invalid actor data: " + result.getAllErrors());
-            } else {
-
-                try {
-                    Film filmUpdate = transformObjects.filmInToFilm(filmModelController);
-                    if (filmUpdate.getDirector() != null && !filmUpdate.getActors().isEmpty()) {
-
-                        filmUpdate.setId(id);
-                        filmRepository.save(filmUpdate);
-                        update = filmRepository.existsById(id);
-                    }
-                } catch (Exception e) {
-
-                    logger.error("Failed to update film: {}", e.getMessage());
-                    throw new RuntimeException("Failed to update film: ", e);
-
+                    filmUpdate.setId(id);
+                    Film film = filmRepository.save(filmUpdate);
+                    filmBOReturn = filmBOMapper.entityToBo(film);
                 }
-            }
 
-        } else {
-            filmNotfound();
-            throw new RuntimeException("Actor not found");
+            }else {
+                filmNotfound();
+            }
+        } catch (DataAccessException e) {
+            logger.error("Failed to update actor", e);
+            throw new RuntimeException("Failed to update actor: " + e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("Failed to update actor: {}", e.getMessage());
+            throw new RuntimeException("Failed to update actor: ", e);
         }
-        return update;
+
+        return filmBOReturn;
     }
 
-    /**
-     * Gets all film.
-     *
-     * @return the all film
-     */
-    public List<FilmModelService> getAllFilm() {
+    @Override
+    public List<FilmBO> getAllFilm() {
+        return List.of();
+    }
+
+    @Override
+    public FilmBO filmOut(Long id) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteFilm(Long id) {
+        return false;
+    }
+
+    @Override
+    public FilmBO getFilmById(Long id) {
+        return null;
+    }
+
+    @Override
+    public boolean existsFilmById(Long id) {
+        return false;
+    }
+/*
+    public boolean updateFilm(Long id, @Valid FilmBO filmBO) {
+
+
+    }
+
+    public List<FilmBO> getAllFilm() {
 
         List<Film> films = filmRepository.findAll();
-        List<FilmModelService> filmModelServices = new ArrayList<>();
+        List<FilmBO> filmBOS = new ArrayList<>();
         for (Film film : films) {
 
-            FilmModelService filmModelService = transformObjects.filmToFilmOut(film);
-            filmModelServices.add(filmModelService);
+            FilmBO filmBO = transformObjects.filmToFilmOut(film);
+            filmBOS.add(filmBO);
 
         }
 
-        return filmModelServices;
+        return filmBOS;
     }
 
-    /**
-     * Get a film show.
-     *
-     * @param id
-     *         the id
-     * @return the film show
-     */
-    public FilmModelService filmOut(Long id) {
+    public FilmBO filmOut(Long id) {
 
         Film film = filmRepository.findById(id).orElse(null);
-        FilmModelService filmModelService = null;
+        FilmBO filmBO = null;
         if (film != null) {
-            filmModelService = transformObjects.filmToFilmOut(film);
+            filmBO = transformObjects.filmToFilmOut(film);
         }
 
-        return filmModelService;
+        return filmBO;
     }
 
-    /**
-     * Delete film boolean.
-     *
-     * @param id
-     *         the id
-     * @return the boolean
-     */
     public boolean deleteFilm(Long id) {
         boolean delete = false;
 
@@ -200,11 +185,6 @@ public class FilmService implements FilmServiceInterface {
         return delete;
     }
 
-    /**
-     * Gets last film.
-     *
-     * @return the last film
-     */
     public Film getLastFilm() {
 
         List<Film> films = filmRepository.findLastFilm();
@@ -212,36 +192,13 @@ public class FilmService implements FilmServiceInterface {
         return filmRepository.findById(idLastFilm).orElse(null);
     }
 
-    /**
-     * Gets film by id.
-     *
-     * @param id
-     *         the id
-     * @return the film by id
-     */
     public Film getFilmById(Long id) {
         return filmRepository.findById(id).orElse(null);
 
-    }
+    }*/
 
-    /**
-     * Exists film by id boolean.
-     *
-     * @param id
-     *         the id
-     * @return the boolean
-     */
-    public boolean existsFilmById(Long id) {
-        return filmRepository.existsById(id);
-    }
-
-    /**
-     * Films list size int.
-     *
-     * @return the int
-     */
-    public int getListSize() {
-        return filmRepository.findAll().size();
+    private List<Long> getIdActors(List<ActorBO> actorBOS) {
+        return actorBOS.stream().map(ActorBO::getId).collect(Collectors.toList());
     }
 
     private void filmNotfound() {
@@ -251,3 +208,4 @@ public class FilmService implements FilmServiceInterface {
     }
 
 }
+

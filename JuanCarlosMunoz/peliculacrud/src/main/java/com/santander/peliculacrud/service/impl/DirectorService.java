@@ -1,19 +1,19 @@
 package com.santander.peliculacrud.service.impl;
 
 import com.santander.peliculacrud.model.api.DirectorRepository;
-import com.santander.peliculacrud.model.input.Director;
+import com.santander.peliculacrud.model.bo.DirectorBO;
+import com.santander.peliculacrud.model.entity.Director;
 
-import com.santander.peliculacrud.model.output.DirectorModelService;
 import com.santander.peliculacrud.service.DirectorServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
-import com.santander.peliculacrud.util.TransformObjects;
-import jakarta.validation.Valid;
+import com.santander.peliculacrud.util.mapper.DirectorBOMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.validation.Validator;
 
 import java.util.List;
@@ -22,13 +22,13 @@ import java.util.List;
  * The type Director service.
  */
 @Service
-public class DirectorService implements DirectorServiceInterface{
+public class DirectorService implements DirectorServiceInterface {
 
     @Autowired
     private DirectorRepository directorRepository;
 
     @Autowired
-    private TransformObjects transformObjects;
+    private DirectorBOMapper directorBOMapper;
 
     @Autowired
     private Validator validator;
@@ -38,69 +38,61 @@ public class DirectorService implements DirectorServiceInterface{
     @Autowired
     private CommonOperation commonOperation;
 
-    /**
-     * Create director.
-     *
-     * @param directorModelService
-     *         the director out
-     */
+    @Override
+    public DirectorBO createDirector(DirectorBO directorBO) {
+        Director director = Director.builder().build();
 
+        director = directorBOMapper.boToEntity(directorBO);
 
-    public Director createDirector(@Valid DirectorModelService directorModelService) {
-        Director directorReturn = Director.builder().build();
+        try {
+            director = directorRepository.save(director);
+            directorBO = directorBOMapper.entityToBo(director);
 
-        BindingResult result = new BeanPropertyBindingResult(directorModelService, "directorModelService");
-        validator.validate(directorModelService, result);
-
-        if (result.hasErrors()) {
-            commonOperation.showErrorModel(logger, result);
-            throw new RuntimeException("Invalid director data: " + result.getAllErrors());
-        } else {
-            Director director = transformObjects.directorOutToDirector(directorModelService);
-            try {
-                directorReturn = directorRepository.save(director);
-            } catch (Exception e) {
-                logger.error("Failed to create director: {}", e.getMessage());
-                throw new RuntimeException("Failed to create director: ", e);
-            }
+        } catch (DataAccessException e) {
+            logger.error("Failed to create director", e);
+            throw new RuntimeException("Failed to create director: " + e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("Failed to create director: {}", e.getMessage());
+            throw new RuntimeException("Failed to create director: ", e);
         }
-        return directorReturn;
+
+        return directorBO;
+
     }
 
+    @Override
+    public List<DirectorBO> getAllDirectors() {
+        List<Director> directors = directorRepository.findAll();
+        return directorBOMapper.listEntitytoListBo(directors);
+    }
 
-    /**
-     * Update director boolean.
-     *
-     * @param id
-     *         the id
-     * @param directorModelService
-     *         the director out
-     * @return the boolean
-     */
-    public boolean updateDirector(Long id, @Valid DirectorModelService directorModelService) {
+    @Override
+    public DirectorBO getDirectorById(long id) {
+        Director director = directorRepository.findById(id).orElse(null);
+        DirectorBO directorBO = DirectorBO.builder().build();
+        if (director != null) {
+            directorBO = directorBOMapper.entityToBo(director);
+        }
+
+        return directorBO;
+    }
+
+    @Override
+    public boolean updateDirector(long id, DirectorBO directorBO) {
         boolean update = false;
         if (directorRepository.existsById(id)) {
 
-            BindingResult result = new BeanPropertyBindingResult(directorModelService, "directorModelService");
-            validator.validate(directorModelService, result);
+            try {
+                Director director = directorBOMapper.boToEntity(directorBO);
+                director.setId(id);
+                directorRepository.save(director);
+                update = directorRepository.existsById(id);
 
-            if (result.hasErrors()) {
-                commonOperation.showErrorModel(logger, result);
-                throw new RuntimeException("Invalid director data: " + result.getAllErrors());
-            } else {
+            } catch (Exception e) {
 
-                try {
-                    Director director = transformObjects.directorOutToDirector(directorModelService);
-                    director.setId(id);
-                    directorRepository.save(director);
-                    update = directorRepository.existsById(id);
+                logger.error("Failed to update director: {}", e.getMessage());
+                throw new RuntimeException("Failed to update director: ", e);
 
-                } catch (Exception e) {
-
-                    logger.error("Failed to update director: {}", e.getMessage());
-                    throw new RuntimeException("Failed to update director: ", e);
-
-                }
             }
 
         } else {
@@ -108,17 +100,11 @@ public class DirectorService implements DirectorServiceInterface{
             throw new RuntimeException("Director not found");
         }
         return update;
-
     }
 
-    /**
-     * Delete director boolean.
-     *
-     * @param id
-     *         the id
-     * @return the boolean
-     */
-    public boolean deleteDirector(Long id) {
+    @Override
+    public boolean deleteDirector(long id) {
+
         boolean delete = false;
         if (directorRepository.existsById(id)) {
             try {
@@ -136,57 +122,6 @@ public class DirectorService implements DirectorServiceInterface{
         }
 
         return delete;
-    }
-
-    /**
-     * Gets all directors.
-     *
-     * @return the all directors
-     */
-    public List<DirectorModelService> getAllDirectors() {
-
-        List<Director> directors = directorRepository.findAll();
-
-        return transformObjects.directorsToDirectorsOut(directors);
-    }
-
-    /**
-     * Gets director by id.
-     *
-     * @param id
-     *         the id
-     * @return the director by id
-     */
-    public DirectorModelService getDirectorById(Long id) {
-
-        Director director = directorRepository.findById(id).orElse(null);
-
-        DirectorModelService directorModelService = null;
-
-        if (director != null) {
-            directorModelService = transformObjects.directorToDirectorOut(director);
-        }
-
-        return directorModelService;
-    }
-
-    /**
-     * Gets last director.
-     *
-     * @return the last director
-     */
-    public Director getLastDirector() {
-        List<Director> directors = directorRepository.findLastDirector();
-        return directors.get(0);
-    }
-
-    /**
-     * Directors list size int.
-     *
-     * @return the int
-     */
-    public int getListSize() {
-        return directorRepository.findAll().size();
     }
 
     private void directorNotfound() {

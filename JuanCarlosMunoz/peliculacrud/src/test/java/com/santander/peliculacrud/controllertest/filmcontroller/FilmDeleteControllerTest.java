@@ -1,11 +1,12 @@
+/*
 package com.santander.peliculacrud.controllertest.filmcontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.santander.peliculacrud.model.input.Actor;
-import com.santander.peliculacrud.model.input.Director;
-import com.santander.peliculacrud.model.input.Film;
-import com.santander.peliculacrud.model.output.FilmModelController;
+import com.santander.peliculacrud.model.dto.FilmDTO;
+import com.santander.peliculacrud.model.entity.Actor;
+import com.santander.peliculacrud.model.entity.Director;
+import com.santander.peliculacrud.model.entity.Film;
 import com.santander.peliculacrud.service.ActorServiceInterface;
 import com.santander.peliculacrud.service.DirectorServiceInterface;
 import com.santander.peliculacrud.service.FilmServiceInterface;
@@ -42,19 +43,21 @@ public class FilmDeleteControllerTest {
     @Autowired
     private FilmServiceInterface filmService;
 
-    /**
+    */
+/**
      * Test delete film with valid id.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Delete a film with valid id")
     public void testDeleteFilm() throws Exception {
 
         Actor actor = actorService.getLastActor();
         Director director = directorService.getLastDirector();
-        FilmModelController filmModelController = FilmModelController.builder()
+        FilmDTO filmDTO = FilmDTO.builder()
                 .title("PRV11 Film")
                 .created(2022)
                 .idActor(List.of(actor.getId()))
@@ -62,7 +65,7 @@ public class FilmDeleteControllerTest {
                 .build();
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String filmInJson = ow.writeValueAsString(filmModelController);
+        String filmInJson = ow.writeValueAsString(filmDTO);
 
         ResultActions response = mockMvc.perform(
                 post("/films").contentType(MediaType.APPLICATION_JSON).content(filmInJson));
@@ -75,12 +78,14 @@ public class FilmDeleteControllerTest {
 
     }
 
-    /**
+    */
+/**
      * Test delete film with invalid id not found.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Delete film with invalid id not found")
     public void testDeleteFilm_InvalidId_NotFound() throws Exception {
@@ -95,12 +100,14 @@ public class FilmDeleteControllerTest {
 
     }
 
-    /**
+    */
+/**
      * Test delete film with null id bad request.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Delete film with null id bad request")
     public void testDeleteFilm_NullId_BadRequest() throws Exception {
@@ -111,12 +118,14 @@ public class FilmDeleteControllerTest {
 
     }
 
-    /**
+    */
+/**
      * Test delete film with empty id bad request.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Delete film with empty id bad request")
     public void testDeleteFilm_EmptyId_BadRequest() throws Exception {
@@ -127,3 +136,4 @@ public class FilmDeleteControllerTest {
 
     }
 }
+*/

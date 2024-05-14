@@ -1,4 +1,4 @@
-package com.santander.peliculacrud.model.input;
+package com.santander.peliculacrud.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,14 +15,14 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.List;
 
 /**
- * The type Film.
+ * The type Series.
  */
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Film {
+public class Series {
 
     @Id
     @GeneratedValue

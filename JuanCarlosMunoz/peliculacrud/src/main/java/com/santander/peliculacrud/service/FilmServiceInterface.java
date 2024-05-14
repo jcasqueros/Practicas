@@ -1,8 +1,6 @@
 package com.santander.peliculacrud.service;
 
-import com.santander.peliculacrud.model.input.Film;
-import com.santander.peliculacrud.model.output.FilmModelController;
-import com.santander.peliculacrud.model.output.FilmModelService;
+import com.santander.peliculacrud.model.bo.FilmBO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,29 +14,29 @@ public interface FilmServiceInterface {
     /**
      * Create film boolean.
      *
-     * @param filmModelController
+     * @param filmBO
      *         the film in
      * @return the boolean
      */
-    boolean createFilm(FilmModelController filmModelController);
+    FilmBO createFilm(FilmBO filmBO);
 
     /**
      * Update film boolean.
      *
      * @param id
      *         the id
-     * @param filmModelController
+     * @param filmBO
      *         the film in
      * @return the boolean
      */
-    boolean updateFilm(Long id, FilmModelController filmModelController);
+    FilmBO updateFilm(Long id, FilmBO filmBO);
 
     /**
      * Gets all film.
      *
      * @return the all film
      */
-    List<FilmModelService> getAllFilm();
+    List<FilmBO> getAllFilm();
 
     /**
      * Film out film out.
@@ -47,7 +45,7 @@ public interface FilmServiceInterface {
      *         the id
      * @return the film out
      */
-    FilmModelService filmOut(Long id);
+    FilmBO filmOut(Long id);
 
     /**
      * Delete film boolean.
@@ -59,27 +57,13 @@ public interface FilmServiceInterface {
     boolean deleteFilm(Long id);
 
     /**
-     * Get las film film.
-     *
-     * @return the film
-     */
-    Film getLastFilm();
-
-    /**
-     * Gets list size.
-     *
-     * @return the list size
-     */
-    int getListSize();
-
-    /**
      * Gets film by id.
      *
      * @param id
      *         the id
      * @return the film by id
      */
-    Film getFilmById(Long id);
+    FilmBO getFilmById(Long id);
 
     /**
      * Exists film by id boolean.

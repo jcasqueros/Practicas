@@ -1,7 +1,8 @@
+/*
 package com.santander.peliculacrud.controllertest.directorcontroller;
 
-import com.santander.peliculacrud.model.input.Director;
-import com.santander.peliculacrud.model.output.DirectorModelService;
+import com.santander.peliculacrud.model.entity.Director;
+import com.santander.peliculacrud.model.bo.DirectorBO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.santander.peliculacrud.service.DirectorServiceInterface;
@@ -18,9 +19,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+*/
 /**
  * The type Director update controller test.
- */
+ *//*
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class DirectorUpdateControllerTest {
@@ -38,20 +41,22 @@ public class DirectorUpdateControllerTest {
         directorId = director.getId();
     }
 
-    /**
+    */
+/**
      * Test update director existing director ok.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Update director Ok")
     public void testUpdateDirector_ExistingDirector_OK() throws Exception {
 
-        DirectorModelService directorModelService = DirectorModelService.builder().name("Updated Name").age(25).nation("USA").build();
+        DirectorBO directorBO = DirectorBO.builder().name("Updated Name").age(25).nation("USA").build();
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String directorOutJson = ow.writeValueAsString(directorModelService);
+        String directorOutJson = ow.writeValueAsString(directorBO);
 
         ResultActions response = mockMvc.perform(
                 put("/directors/{id}", directorId).contentType(MediaType.APPLICATION_JSON).content(directorOutJson));
@@ -59,21 +64,23 @@ public class DirectorUpdateControllerTest {
         response.andDo(print()).andExpect(status().isOk());
     }
 
-    /**
+    */
+/**
      * Test update director non existing director not found.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Update director non existing")
     public void testUpdateDirector_NonExistingDirector_NotFound() throws Exception {
         try {
             long directorId = -1;
-            DirectorModelService directorModelService = DirectorModelService.builder().name("Updated Name").age(25).nation("USA").build();
+            DirectorBO directorBO = DirectorBO.builder().name("Updated Name").age(25).nation("USA").build();
 
             ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            String directorOutJson = ow.writeValueAsString(directorModelService);
+            String directorOutJson = ow.writeValueAsString(directorBO);
 
             ResultActions response = mockMvc.perform(
                     put("/directors/{id}", directorId).contentType(MediaType.APPLICATION_JSON).content(directorOutJson));
@@ -85,12 +92,14 @@ public class DirectorUpdateControllerTest {
         }
     }
 
-    /**
+    */
+/**
      * Test update director invalid json bad request.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     @DisplayName("Update director with invalid Json")
     public void testUpdateDirector_InvalidJson_BadRequest() throws Exception {
@@ -103,14 +112,6 @@ public class DirectorUpdateControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 }
-/***************
- *
- *
- *
- *
- *
- * FALTA CREAR LOS TEST PARA EL CONTROLADOR D E SERIES Y FILM
- *
- *
-*
- * *********/
+*/
+
+

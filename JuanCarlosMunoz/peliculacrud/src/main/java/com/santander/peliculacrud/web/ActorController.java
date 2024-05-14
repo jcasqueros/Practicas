@@ -1,6 +1,7 @@
+/*
 package com.santander.peliculacrud.web;
 
-import com.santander.peliculacrud.model.output.ActorModelController;
+import com.santander.peliculacrud.model.dto.ActorDTO;
 import com.santander.peliculacrud.service.ActorServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
 
@@ -23,9 +24,11 @@ import io.swagger.annotations.ApiResponses;
 
 import java.util.List;
 
+*/
 /**
  * The type Actor controller.
- */
+ *//*
+
 @RestController
 @RequestMapping("/actors")
 public class ActorController {
@@ -37,7 +40,8 @@ public class ActorController {
 
     private static final Logger logger = LoggerFactory.getLogger(ActorController.class);
 
-    /**
+    */
+/**
      * Create actor string.
      *
      * @param actor
@@ -45,14 +49,15 @@ public class ActorController {
      * @param bindingResult
      *         the binding result
      * @return the string
-     */
+     *//*
+
     @ApiOperation(value = "Create a new actor", notes = "Create a new actor with the provided information")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Actor created sucewrwcessfully"),
             @ApiResponse(code = 400, message = "Invalid request")
     })
     @PostMapping
-    public ResponseEntity<String> createActor(@Valid @RequestBody ActorModelController actor, BindingResult bindingResult) {
+    public ResponseEntity<String> createActor(@Valid @RequestBody ActorDTO actor, BindingResult bindingResult) {
 
         String message = "Actor created successfully";
         HttpStatus status = HttpStatus.CREATED;
@@ -71,7 +76,8 @@ public class ActorController {
 
     }
 
-    /**
+    */
+/**
      * Update actor string.
      *
      * @param id
@@ -81,9 +87,10 @@ public class ActorController {
      * @param bindingResult
      *         the binding result
      * @return the string
-     */
+     *//*
+
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateActor(@PathVariable @NotNull Long id, @Valid @RequestBody ActorModelController updatedActor,
+    public ResponseEntity<String> updateActor(@PathVariable @NotNull Long id, @Valid @RequestBody ActorDTO updatedActor,
             BindingResult bindingResult) {
         String message = "Actor not update";
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -101,13 +108,15 @@ public class ActorController {
         return new ResponseEntity<>(message, status);
     }
 
-    /**
+    */
+/**
      * Delete actor string.
      *
      * @param id
      *         the id
      * @return the string
-     */
+     *//*
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteActor(@PathVariable @NotNull Long id) {
         String message = "User not delete";
@@ -120,32 +129,37 @@ public class ActorController {
         return new ResponseEntity<>(message, status);
     }
 
-    /**
+    */
+/**
      * Gets all actors.
      *
      * @return the all actors
-     */
+     *//*
+
     @GetMapping()
-    public List<ActorModelController> getAllActors() {
+    public List<ActorDTO> getAllActors() {
         return actorService.getAllActors();
     }
 
-    /**
+    */
+/**
      * Gets actor by id.
      *
      * @param id
      *         the id
      * @return the actor by id
-     */
+     *//*
+
     @GetMapping("/{id}")
-    public ActorModelController getActorById(@PathVariable @NotNull Long id) {
+    public ActorDTO getActorById(@PathVariable @NotNull Long id) {
 
-        ActorModelController actorModelController = actorService.getActorById(id);
+        ActorDTO actorDTO = actorService.getActorById(id);
 
-        if (actorModelController == null) {
+        if (actorDTO == null) {
             logger.error("Actor not found");
         }
-        return actorModelController;
+        return actorDTO;
 
     }
 }
+*/

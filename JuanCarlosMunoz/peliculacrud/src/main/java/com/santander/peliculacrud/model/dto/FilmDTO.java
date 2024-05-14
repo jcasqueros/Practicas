@@ -1,6 +1,7 @@
-package com.santander.peliculacrud.model.output;
+package com.santander.peliculacrud.model.dto;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -8,18 +9,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 import java.util.List;
 
 /**
- * The type Film show.
+ * The type Film out.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FilmModelService {
+public class FilmDTO {
 
     @NotNull(message = "Title can´t be null")
+    @NotEmpty
     @Pattern(regexp = "[^\\s]+.*", message = "Title cannot be empty or contain only spaces")
     private String title;
 
@@ -28,8 +31,8 @@ public class FilmModelService {
     private int created;
 
     @NotNull(message = "idActor can´t be null")
-    private List<ActorModelController> actors;
+    private List<Long> idActor;
 
     @NotNull(message = "idActor can´t be null")
-    private DirectorModelService director;
+    private Long idDirector;
 }

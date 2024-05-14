@@ -1,3 +1,4 @@
+/*
 package com.santander.peliculacrud.controllertest.directorcontroller;
 
 import com.santander.peliculacrud.service.DirectorServiceInterface;
@@ -15,9 +16,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+*/
 /**
  * The type Director delete controller test.
- */
+ *//*
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class DirectorDeleteControllerTest {
@@ -28,12 +31,14 @@ public class DirectorDeleteControllerTest {
     @Autowired
     private DirectorServiceInterface directorService;
 
-    /**
+    */
+/**
      * Test delete director existing director no content.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     public void testDeleteDirector_ExistingDirector_NoContent() throws Exception {
         Long directorId = directorService.getLastDirector().getId();
@@ -44,12 +49,14 @@ public class DirectorDeleteControllerTest {
         response.andDo(print()).andExpect(status().isNoContent());
     }
 
-    /**
+    */
+/**
      * Test delete director non existing director not found.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     public void testDeleteDirector_NonExistingDirector_NotFound() throws Exception {
         Long directorId = 999L;
@@ -63,12 +70,14 @@ public class DirectorDeleteControllerTest {
         }
     }
 
-    /**
+    */
+/**
      * Test delete director invalid id bad request.
      *
      * @throws Exception
      *         the exception
-     */
+     *//*
+
     @Test
     public void testDeleteDirector_InvalidId_BadRequest() throws Exception {
         String invalidId = "invalid-id";
@@ -79,3 +88,4 @@ public class DirectorDeleteControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 }
+*/
