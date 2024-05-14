@@ -5,10 +5,7 @@ import com.viewnext.films.businesslayer.bo.DirectorBO;
 import com.viewnext.films.businesslayer.exception.NotFoundException;
 import com.viewnext.films.businesslayer.exception.ServiceException;
 import com.viewnext.films.businesslayer.service.DirectorService;
-import com.viewnext.films.persistencelayer.repository.jpa.ActorJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.FilmJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.ProducerJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.SerieJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.*;
 import com.viewnext.films.presentationlayer.dto.DirectorInDTO;
 import com.viewnext.films.presentationlayer.dto.DirectorOutDTO;
 import com.viewnext.films.presentationlayer.dto.DirectorUpdateDTO;
@@ -49,6 +46,8 @@ class DirectorControllerTest {
     @MockBean
     private ActorJPARepository actorJPARepository;
     @MockBean
+    private DirectorJPARepository directorJPARepository;
+    @MockBean
     private FilmJPARepository filmJPARepository;
     @MockBean
     private SerieJPARepository serieJPARepository;
@@ -67,10 +66,10 @@ class DirectorControllerTest {
     @BeforeEach
     void setup() {
 
-        directorInDTO = new DirectorInDTO("John Doe", 30, "American");
-        directorOutDTO = new DirectorOutDTO(1L, "John Doe", 30, "American");
-        directorUpdateDTO = new DirectorUpdateDTO(1L, "Jane Doe", 31, "British");
-        directorBO = new DirectorBO(1L, "John Doe", 30, "American");
+        directorInDTO = new DirectorInDTO("John", 30, "American");
+        directorOutDTO = new DirectorOutDTO(1L, "John", 30, "American");
+        directorUpdateDTO = new DirectorUpdateDTO(1L, "Jane", 31, "British");
+        directorBO = new DirectorBO(1L, "John", 30, "American");
     }
 
     @Test
@@ -81,7 +80,7 @@ class DirectorControllerTest {
 
         ResultActions response = mockMvc.perform(get("/api/v1/Director/getDirector?select=true&id=1"));
 
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("John Doe")));
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("John")));
     }
 
     @Test
@@ -95,7 +94,7 @@ class DirectorControllerTest {
                 post("/api/v1/Director/save?select=true").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(directorInDTO)));
 
-        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("John Doe")));
+        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("John")));
     }
 
     @Test
@@ -238,7 +237,7 @@ class DirectorControllerTest {
 
         ResultActions response = mockMvc.perform(get("/api/v1/Director/getDirector?select=false&id=1"));
 
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("John Doe")));
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("John")));
     }
 
     @Test
@@ -252,7 +251,7 @@ class DirectorControllerTest {
                 post("/api/v1/Director/save?select=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(directorInDTO)));
 
-        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("John Doe")));
+        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("John")));
     }
 
     @Test
@@ -284,7 +283,7 @@ class DirectorControllerTest {
                 put("/api/v1/Director/update?select=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(directorUpdateDTO)));
 
-        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("Jane Doe")));
+        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("Jane")));
     }
 
     @Test
@@ -331,6 +330,77 @@ class DirectorControllerTest {
         ResultActions response = mockMvc.perform(
                 put("/api/v1/Director/update?select=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(directorUpdateDTO)));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Filter directors by name, age, and nationality")
+    void filterDirectors_byNameAgeNationality_thenReturnFilteredDirectors() throws Exception {
+
+        List<DirectorBO> directorBOs = List.of(directorBO);
+        given(directorService.filterDirectors(List.of("John"), List.of(30), List.of("American"), 0, 10, "id",
+                true)).willReturn(directorBOs);
+        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/filterDirectors?names=John&ages=30&nationalities=American&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter directors by name only")
+    void filterDirectors_byNameOnly_thenReturnFilteredDirectors() throws Exception {
+
+        List<DirectorBO> directorBOs = List.of(directorBO);
+        given(directorService.filterDirectors(List.of("John"), null, null, 0, 10, "id", true)).willReturn(directorBOs);
+        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/filterDirectors?names=John&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter directors by age only")
+    void filterDirectors_byAgeOnly_thenReturnFilteredDirectors() throws Exception {
+
+        List<DirectorBO> directorBOs = List.of(directorBO);
+        given(directorService.filterDirectors(null, List.of(30), null, 0, 10, "id", true)).willReturn(directorBOs);
+        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/filterDirectors?ages=30&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter directors by nationality only")
+    void filterDirectors_byNationalityOnly_thenReturnFilteredDirectors() throws Exception {
+
+        List<DirectorBO> directorBOs = List.of(directorBO);
+        given(directorService.filterDirectors(null, null, List.of("American"), 0, 10, "id", true)).willReturn(
+                directorBOs);
+        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/filterDirectors?nationalities=American&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter directors with invalid parameters")
+    void filterDirectors_withInvalidParameters_thenThrowServiceException() throws Exception {
+
+        given(directorService.filterDirectors(anyList(), anyList(), anyList(), anyInt(), anyInt(), anyString(),
+                anyBoolean())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/filterDirectors?names=notfound&ages=1&nationalities=notfound&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
 
         response.andDo(print()).andExpect(status().isNotFound());
     }

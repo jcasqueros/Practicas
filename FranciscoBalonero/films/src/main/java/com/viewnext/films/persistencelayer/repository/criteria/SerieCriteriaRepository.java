@@ -1,5 +1,8 @@
 package com.viewnext.films.persistencelayer.repository.criteria;
 
+import com.viewnext.films.persistencelayer.entity.Actor;
+import com.viewnext.films.persistencelayer.entity.Director;
+import com.viewnext.films.persistencelayer.entity.Producer;
 import com.viewnext.films.persistencelayer.entity.Serie;
 import org.springframework.data.domain.Pageable;
 
@@ -79,4 +82,26 @@ public interface SerieCriteriaRepository {
      *         {@link Long} the ID of the {@link Serie} to be deleted
      */
     void deleteSerie(Long id);
+
+    /**
+     * Filters series based on the provided criteria and returns a paginated list of results.
+     *
+     * @param titles
+     *         a list of serie titles to filter by
+     * @param releaseYears
+     *         a list of release years to filter by
+     * @param directors
+     *         a list of directors to filter by
+     * @param producers
+     *         a list of producers to filter by
+     * @param actors
+     *         a list of actors to filter by
+     * @param pageable
+     *         pagination information, including page number and page size
+     * @return a list of series that match the provided filter criteria, paginated according to the provided pageable
+     *         object
+     */
+    List<Serie> filterSeries(List<String> titles, List<Integer> releaseYears, List<Director> directors,
+            List<Producer> producers, List<Actor> actors, Pageable pageable);
+
 }

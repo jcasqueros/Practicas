@@ -5,10 +5,7 @@ import com.viewnext.films.businesslayer.bo.ProducerBO;
 import com.viewnext.films.businesslayer.exception.NotFoundException;
 import com.viewnext.films.businesslayer.exception.ServiceException;
 import com.viewnext.films.businesslayer.service.ProducerService;
-import com.viewnext.films.persistencelayer.repository.jpa.ActorJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.DirectorJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.FilmJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.SerieJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.*;
 import com.viewnext.films.presentationlayer.dto.ProducerInDTO;
 import com.viewnext.films.presentationlayer.dto.ProducerOutDTO;
 import com.viewnext.films.presentationlayer.dto.ProducerUpdateDTO;
@@ -55,6 +52,8 @@ class ProducerControllerTest {
     @MockBean
     private ActorJPARepository actorJPARepository;
     @MockBean
+    private ProducerJPARepository producerJPARepository;
+    @MockBean
     private EntityManagerFactory entityManagerFactory;
     @MockBean
     private Converter converter;
@@ -68,14 +67,14 @@ class ProducerControllerTest {
     void setup() {
         producerBO = new ProducerBO();
         producerBO.setId(1L);
-        producerBO.setName("Producer 1");
+        producerBO.setName("Producer");
         producerBO.setFoundationYear(2000);
         producerInDTO = new ProducerInDTO();
-        producerInDTO.setName("Producer 1");
+        producerInDTO.setName("Producer");
         producerInDTO.setFoundationYear(200);
         producerOutDTO = new ProducerOutDTO();
         producerOutDTO.setId(1L);
-        producerOutDTO.setName("Producer 1");
+        producerOutDTO.setName("Producer");
         producerOutDTO.setFoundationYear(2000);
         producerUpdateDTO = new ProducerUpdateDTO();
         producerUpdateDTO.setId(1L);
@@ -335,4 +334,61 @@ class ProducerControllerTest {
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Filter producers by name, foundation year, and sort order")
+    void filterProducers_byNameFoundationYearAndSortOrder_thenReturnFilteredProducers() throws Exception {
+
+        List<ProducerBO> producerBOs = List.of(producerBO);
+        given(producerService.filterProducers(List.of("Producer"), List.of(2000), 0, 10, "id", true)).willReturn(
+                producerBOs);
+        given(converter.producerBOToOutDTO(any(ProducerBO.class))).willReturn(producerOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Producer/filterProducers?names=Producer&foundationYears=2000&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter producers by name only")
+    void filterProducers_byNameOnly_thenReturnFilteredProducers() throws Exception {
+
+        List<ProducerBO> producerBOs = List.of(producerBO);
+        given(producerService.filterProducers(List.of("Producer"), null, 0, 10, "id", true)).willReturn(producerBOs);
+        given(converter.producerBOToOutDTO(any(ProducerBO.class))).willReturn(producerOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Producer/filterProducers?names=Producer&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter producers by foundation year only")
+    void filterProducers_byFoundationYearOnly_thenReturnFilteredProducers() throws Exception {
+
+        List<ProducerBO> producerBOs = List.of(producerBO);
+        given(producerService.filterProducers(null, List.of(2000), 0, 10, "id", true)).willReturn(producerBOs);
+        given(converter.producerBOToOutDTO(any(ProducerBO.class))).willReturn(producerOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Producer/filterProducers?foundationYears=2000&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter producers with invalid parameters")
+    void filterProducers_withInvalidParameters_thenThrowServiceException() throws Exception {
+
+        given(producerService.filterProducers(anyList(), anyList(), anyInt(), anyInt(), anyString(),
+                anyBoolean())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Producer/filterProducers?names=notfound&foundationYears=1&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
 }

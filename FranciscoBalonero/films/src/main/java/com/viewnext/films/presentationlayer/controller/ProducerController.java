@@ -44,7 +44,7 @@ public class ProducerController {
             @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select,
             @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
             @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
-            @RequestParam(defaultValue = "name") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "id") @Parameter(description = "Sort by field") String sortBy,
             @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
             throws ServiceException {
         if (select) {
@@ -111,5 +111,21 @@ public class ProducerController {
                     producerService.jpaUpdate(converter.producerUpdateDTOToBO(producerUpdateDTO))), HttpStatus.CREATED);
         }
 
+    }
+
+    @Operation(summary = "Filter Producers")
+    @GetMapping("/filterProducers")
+    public ResponseEntity<List<ProducerOutDTO>> filterProducers(
+            @RequestParam(required = false) @Parameter(description = "List of names to filter by") List<String> names,
+            @RequestParam(required = false) @Parameter(description = "List of foundation years to filter by") List<Integer> foundationYears,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
+            @RequestParam(defaultValue = "id") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
+            throws ServiceException {
+
+        return new ResponseEntity<>(
+                producerService.filterProducers(names, foundationYears, pageNumber, pageSize, sortBy, sortOrder)
+                        .stream().map(converter::producerBOToOutDTO).toList(), HttpStatus.OK);
     }
 }

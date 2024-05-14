@@ -5,10 +5,7 @@ import com.viewnext.films.businesslayer.bo.ActorBO;
 import com.viewnext.films.businesslayer.exception.NotFoundException;
 import com.viewnext.films.businesslayer.exception.ServiceException;
 import com.viewnext.films.businesslayer.service.ActorService;
-import com.viewnext.films.persistencelayer.repository.jpa.DirectorJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.FilmJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.ProducerJPARepository;
-import com.viewnext.films.persistencelayer.repository.jpa.SerieJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.*;
 import com.viewnext.films.presentationlayer.dto.ActorInDTO;
 import com.viewnext.films.presentationlayer.dto.ActorOutDTO;
 import com.viewnext.films.presentationlayer.dto.ActorUpdateDTO;
@@ -53,6 +50,8 @@ class ActorControllerTest {
     @MockBean
     private SerieJPARepository serieJPARepository;
     @MockBean
+    private ActorJPARepository actorJPARepository;
+    @MockBean
     private ProducerJPARepository producerJPARepository;
     @MockBean
     private EntityManagerFactory entityManagerFactory;
@@ -67,10 +66,10 @@ class ActorControllerTest {
     @BeforeEach
     void setup() {
 
-        actorInDTO = new ActorInDTO("John Doe", 30, "American");
-        actorOutDTO = new ActorOutDTO(1L, "John Doe", 30, "American");
-        actorUpdateDTO = new ActorUpdateDTO(1L, "Jane Doe", 31, "British");
-        actorBO = new ActorBO(1L, "John Doe", 30, "American");
+        actorInDTO = new ActorInDTO("John", 30, "American");
+        actorOutDTO = new ActorOutDTO(1L, "John", 30, "American");
+        actorUpdateDTO = new ActorUpdateDTO(1L, "Jane", 31, "British");
+        actorBO = new ActorBO(1L, "John", 30, "American");
     }
 
     @Test
@@ -81,7 +80,7 @@ class ActorControllerTest {
 
         ResultActions response = mockMvc.perform(get("/api/v1/Actor/getActor?select=true&id=1"));
 
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("John Doe")));
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("John")));
     }
 
     @Test
@@ -95,7 +94,7 @@ class ActorControllerTest {
                 post("/api/v1/Actor/save?select=true").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(actorInDTO)));
 
-        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("John Doe")));
+        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("John")));
     }
 
     @Test
@@ -236,7 +235,7 @@ class ActorControllerTest {
 
         ResultActions response = mockMvc.perform(get("/api/v1/Actor/getActor?select=false&id=1"));
 
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("John Doe")));
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("John")));
     }
 
     @Test
@@ -250,7 +249,7 @@ class ActorControllerTest {
                 post("/api/v1/Actor/save?select=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(actorInDTO)));
 
-        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("John Doe")));
+        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("John")));
     }
 
     @Test
@@ -282,7 +281,7 @@ class ActorControllerTest {
                 put("/api/v1/Actor/update?select=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(actorUpdateDTO)));
 
-        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("Jane Doe")));
+        response.andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("Jane")));
     }
 
     @Test
@@ -332,4 +331,75 @@ class ActorControllerTest {
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Filter actors by name, age, and nationality")
+    void filterActors_byNameAgeNationality_thenReturnFilteredActors() throws Exception {
+
+        List<ActorBO> actorBOs = List.of(actorBO);
+        given(actorService.filterActors(List.of("John"), List.of(30), List.of("American"), 0, 10, "id",
+                true)).willReturn(actorBOs);
+        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/filterActors?names=John&ages=30&nationalities=American&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter actors by name only")
+    void filterActors_byNameOnly_thenReturnFilteredActors() throws Exception {
+
+        List<ActorBO> actorBOs = List.of(actorBO);
+        given(actorService.filterActors(List.of("John"), null, null, 0, 10, "id", true)).willReturn(actorBOs);
+        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/filterActors?names=John&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter actors by age only")
+    void filterActors_byAgeOnly_thenReturnFilteredActors() throws Exception {
+
+        List<ActorBO> actorBOs = List.of(actorBO);
+        given(actorService.filterActors(null, List.of(30), null, 0, 10, "id", true)).willReturn(actorBOs);
+        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/filterActors?ages=30&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter actors by nationality only")
+    void filterActors_byNationalityOnly_thenReturnFilteredActors() throws Exception {
+
+        List<ActorBO> actorBOs = List.of(actorBO);
+        given(actorService.filterActors(null, null, List.of("American"), 0, 10, "id", true)).willReturn(actorBOs);
+        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/filterActors?nationalities=American&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter actors with invalid parameters")
+    void filterActors_withInvalidParameters_thenThrowServiceException() throws Exception {
+
+        given(actorService.filterActors(anyList(), anyList(), anyList(), anyInt(), anyInt(), anyString(),
+                anyBoolean())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/filterActors?names=notfound&ages=1&nationalities=notfound&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
 }

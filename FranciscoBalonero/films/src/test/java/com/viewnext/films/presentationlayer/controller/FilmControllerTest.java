@@ -385,4 +385,98 @@ class FilmControllerTest {
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Filter films by title, release year, director, producer, and actor")
+    void filterFilms_byTitleReleaseYearDirectorProducerActor_thenReturnFilteredFilms() throws Exception {
+        List<FilmBO> filmBOs = List.of(filmBO);
+        given(filmService.filterFilms(List.of("Friends"), List.of(2004), List.of("James"), List.of("Paramount"),
+                List.of("Jhon"), 0, 10, "id", true)).willReturn(filmBOs);
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/filterFilms?titles=Friends&releaseYears=2004&directors=James&producers=Paramount&actors=Jhon&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter films by title only")
+    void filterFilms_byTitleOnly_thenReturnFilteredFilms() throws Exception {
+        List<FilmBO> filmBOs = List.of(filmBO);
+        given(filmService.filterFilms(List.of("Friends"), null, null, null, null, 0, 10, "id", true)).willReturn(
+                filmBOs);
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/filterFilms?titles=Friends&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter films by release year only")
+    void filterFilms_byReleaseYearOnly_thenReturnFilteredFilms() throws Exception {
+        List<FilmBO> filmBOs = List.of(filmBO);
+        given(filmService.filterFilms(null, List.of(2004), null, null, null, 0, 10, "id", true)).willReturn(filmBOs);
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/filterFilms?releaseYears=2004&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter films by director only")
+    void filterFilms_byDirectorOnly_thenReturnFilteredFilms() throws Exception {
+        List<FilmBO> filmBOs = List.of(filmBO);
+        given(filmService.filterFilms(null, null, List.of("James"), null, null, 0, 10, "id", true)).willReturn(filmBOs);
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/filterFilms?directors=James&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter films by producer only")
+    void filterFilms_byProducerOnly_thenReturnFilteredFilms() throws Exception {
+        List<FilmBO> filmBOs = List.of(filmBO);
+        given(filmService.filterFilms(null, null, null, List.of("Paramount"), null, 0, 10, "id", true)).willReturn(
+                filmBOs);
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/filterFilms?producers=Paramount&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter films by actor only")
+    void filterFilms_byActorOnly_thenReturnFilteredFilms() throws Exception {
+        List<FilmBO> filmBOs = List.of(filmBO);
+        given(filmService.filterFilms(null, null, null, null, List.of("Jhon"), 0, 10, "id", true)).willReturn(filmBOs);
+        given(converter.filmBOToOutDTO(any(FilmBO.class))).willReturn(filmOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/filterFilms?actors=Jhon&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter films with invalid parameters")
+    void filterFilms_withInvalidParameters_thenThrowServiceException() throws Exception {
+        given(filmService.filterFilms(anyList(), anyList(), anyList(), anyList(), anyList(), anyInt(), anyInt(),
+                anyString(), anyBoolean())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Film/filterFilms?titles=notfound&releaseYears=1&directors=notfound&producers=notfound&actors=notfound&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
 }

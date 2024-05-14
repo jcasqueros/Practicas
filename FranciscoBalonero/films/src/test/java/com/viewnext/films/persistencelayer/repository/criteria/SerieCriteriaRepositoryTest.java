@@ -134,4 +134,120 @@ class SerieCriteriaRepositoryTest {
         assertThat(foundSerie).isEmpty();
 
     }
+
+    @Test
+    @DisplayName("Filter series by title operation")
+    void givenTitle_whenFilterSeriesByTitle_thenReturnFilteredSeries() {
+
+        Serie createdSerie = serieCriteriaRepository.createSerie(serie);
+
+        List<String> titles = new ArrayList<>();
+        titles.add("Friends");
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 series
+        List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(titles, null, null, null, null, pageable);
+
+        assertThat(filteredSeries).isNotNull();
+        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
+    }
+
+    @Test
+    @DisplayName("Filter series by release year operation")
+    void givenReleaseYear_whenFilterSeriesByReleaseYear_thenReturnFilteredSeries() {
+
+        Serie createdSerie = serieCriteriaRepository.createSerie(serie);
+
+        List<Integer> releaseYears = new ArrayList<>();
+        releaseYears.add(2004);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 series
+        List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(null, releaseYears, null, null, null,
+                pageable);
+
+        assertThat(filteredSeries).isNotNull();
+        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
+    }
+
+    @Test
+    @DisplayName("Filter series by director operation")
+    void givenDirector_whenFilterSeriesByDirector_thenReturnFilteredSeries() {
+
+        Serie createdSerie = serieCriteriaRepository.createSerie(serie);
+
+        Director director = createdSerie.getDirector();
+        List<Director> directors = new ArrayList<>();
+        directors.add(director);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 series
+        List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(null, null, directors, null, null, pageable);
+
+        assertThat(filteredSeries).isNotNull();
+        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
+    }
+
+    @Test
+    @DisplayName("Filter series by producer operation")
+    void givenProducer_whenFilterSeriesByProducer_thenReturnFilteredSeries() {
+
+        Serie createdSerie = serieCriteriaRepository.createSerie(serie);
+
+        Producer producer = createdSerie.getProducer();
+        List<Producer> producers = new ArrayList<>();
+        producers.add(producer);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 series
+        List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(null, null, null, producers, null, pageable);
+
+        assertThat(filteredSeries).isNotNull();
+        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
+    }
+
+    @Test
+    @DisplayName("Filter series by actors operation")
+    void givenActor_whenFilterSeriesByActor_thenReturnFilteredSeries() {
+
+        Serie createdSerie = serieCriteriaRepository.createSerie(serie);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 series
+        List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(null, null, null, null,
+                createdSerie.getActors(), pageable);
+
+        assertThat(filteredSeries).isNotNull();
+        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
+    }
+
+    @Test
+    @DisplayName("Filter series by multiple criteria operation")
+    void givenMultipleCriteria_whenFilterSeriesByMultipleCriteria_thenReturnFilteredSeries() {
+
+        Serie createdSerie = serieCriteriaRepository.createSerie(serie);
+
+        List<String> titles = new ArrayList<>();
+        titles.add("Friends");
+
+        List<Integer> releaseYears = new ArrayList<>();
+        releaseYears.add(2004);
+
+        Director director = createdSerie.getDirector();
+        List<Director> directors = new ArrayList<>();
+        directors.add(director);
+
+        Producer producer = createdSerie.getProducer();
+        List<Producer> producers = new ArrayList<>();
+        producers.add(producer);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 series
+        List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(titles, releaseYears, directors, producers,
+                createdSerie.getActors(), pageable);
+
+        assertThat(filteredSeries).isNotNull();
+        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
+    }
 }
+

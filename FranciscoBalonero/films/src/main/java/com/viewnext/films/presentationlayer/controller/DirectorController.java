@@ -44,7 +44,7 @@ public class DirectorController {
             @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select,
             @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
             @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
-            @RequestParam(defaultValue = "name") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "id") @Parameter(description = "Sort by field") String sortBy,
             @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
             throws ServiceException {
         if (select) {
@@ -111,5 +111,22 @@ public class DirectorController {
                     directorService.jpaUpdate(converter.directorUpdateDTOToBO(directorUpdateDTO))), HttpStatus.CREATED);
         }
 
+    }
+
+    @Operation(summary = "Filter Directors")
+    @GetMapping("/filterDirectors")
+    public ResponseEntity<List<DirectorOutDTO>> filterDirectors(
+            @RequestParam(required = false) @Parameter(description = "List of names to filter by") List<String> names,
+            @RequestParam(required = false) @Parameter(description = "List of ages to filter by") List<Integer> ages,
+            @RequestParam(required = false) @Parameter(description = "List of nationalities to filter by") List<String> nationalities,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
+            @RequestParam(defaultValue = "id") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
+            throws ServiceException {
+
+        return new ResponseEntity<>(
+                directorService.filterDirectors(names, ages, nationalities, pageNumber, pageSize, sortBy, sortOrder)
+                        .stream().map(converter::directorBOToOutDTO).toList(), HttpStatus.OK);
     }
 }

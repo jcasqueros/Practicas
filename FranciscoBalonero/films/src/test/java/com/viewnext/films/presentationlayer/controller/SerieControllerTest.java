@@ -385,4 +385,99 @@ class SerieControllerTest {
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Filter series by title, release year, director, producer, and actor")
+    void filterSeries_byTitleReleaseYearDirectorProducerActor_thenReturnFilteredSeries() throws Exception {
+        List<SerieBO> serieBOs = List.of(serieBO);
+        given(serieService.filterSeries(List.of("Friends"), List.of(2004), List.of("James"), List.of("Paramount"),
+                List.of("Jhon"), 0, 10, "id", true)).willReturn(serieBOs);
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/filterSeries?titles=Friends&releaseYears=2004&directors=James&producers=Paramount&actors=Jhon&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter series by title only")
+    void filterSeries_byTitleOnly_thenReturnFilteredSeries() throws Exception {
+        List<SerieBO> serieBOs = List.of(serieBO);
+        given(serieService.filterSeries(List.of("Friends"), null, null, null, null, 0, 10, "id", true)).willReturn(
+                serieBOs);
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/filterSeries?titles=Friends&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter series by release year only")
+    void filterSeries_byReleaseYearOnly_thenReturnFilteredSeries() throws Exception {
+        List<SerieBO> serieBOs = List.of(serieBO);
+        given(serieService.filterSeries(null, List.of(2004), null, null, null, 0, 10, "id", true)).willReturn(serieBOs);
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/filterSeries?releaseYears=2004&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter series by director only")
+    void filterSeries_byDirectorOnly_thenReturnFilteredSeries() throws Exception {
+        List<SerieBO> serieBOs = List.of(serieBO);
+        given(serieService.filterSeries(null, null, List.of("James"), null, null, 0, 10, "id", true)).willReturn(
+                serieBOs);
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/filterSeries?directors=James&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter series by producer only")
+    void filterSeries_byProducerOnly_thenReturnFilteredSeries() throws Exception {
+        List<SerieBO> serieBOs = List.of(serieBO);
+        given(serieService.filterSeries(null, null, null, List.of("Paramount"), null, 0, 10, "id", true)).willReturn(
+                serieBOs);
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/filterSeries?producers=Paramount&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter series by actor only")
+    void filterSeries_byActorOnly_thenReturnFilteredSeries() throws Exception {
+        List<SerieBO> serieBOs = List.of(serieBO);
+        given(serieService.filterSeries(null, null, null, null, List.of("Jhon"), 0, 10, "id", true)).willReturn(
+                serieBOs);
+        given(converter.serieBOToOutDTO(any(SerieBO.class))).willReturn(serieOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/filterSeries?actors=Jhon&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Filter series with invalid parameters")
+    void filterSeries_withInvalidParameters_thenThrowServiceException() throws Exception {
+        given(serieService.filterSeries(anyList(), anyList(), anyList(), anyList(), anyList(), anyInt(), anyInt(),
+                anyString(), anyBoolean())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Serie/filterSeries?titles=notfound&releaseYears=1&directors=notfound&producers=notfound&actors=notfound&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
 }

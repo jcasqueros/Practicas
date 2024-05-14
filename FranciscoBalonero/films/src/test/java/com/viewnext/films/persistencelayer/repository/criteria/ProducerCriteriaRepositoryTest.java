@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.criteria")
 @Sql(scripts = "/no-data.sql")
 class ProducerCriteriaRepositoryTest {
+    
     @Autowired
     ProducerCriteriaRepository producerCriteriaRepository;
     private Producer producer;
@@ -98,4 +100,77 @@ class ProducerCriteriaRepositoryTest {
         assertThat(foundProducer).isEmpty();
 
     }
+
+    @Test
+    @DisplayName("Filter producers by name")
+    void givenName_whenFilterProducers_thenReturnFilteredProducers() {
+        // Arrange
+        Producer createdProducer = producerCriteriaRepository.createProducer(producer);
+        List<String> names = Arrays.asList("Producer 1");
+        List<Integer> foundationYears = null;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(names, foundationYears, pageable);
+
+        // Assert
+        assertThat(filteredProducers).isNotNull();
+        assertThat(filteredProducers.size()).isEqualTo(1);
+        assertThat(filteredProducers.get(0).getName()).isEqualTo("Producer 1");
+    }
+
+    @Test
+    @DisplayName("Filter producers by foundation year")
+    void givenFoundationYear_whenFilterProducers_thenReturnFilteredProducers() {
+        // Arrange
+        Producer createdProducer = producerCriteriaRepository.createProducer(producer);
+        List<String> names = null;
+        List<Integer> foundationYears = Arrays.asList(2000);
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(names, foundationYears, pageable);
+
+        // Assert
+        assertThat(filteredProducers).isNotNull();
+        assertThat(filteredProducers.size()).isEqualTo(1);
+        assertThat(filteredProducers.get(0).getFoundationYear()).isEqualTo(2000);
+    }
+
+    @Test
+    @DisplayName("Filter producers by multiple criteria")
+    void givenMultipleCriteria_whenFilterProducers_thenReturnFilteredProducers() {
+        // Arrange
+        Producer createdProducer = producerCriteriaRepository.createProducer(producer);
+        List<String> names = Arrays.asList("Producer 1");
+        List<Integer> foundationYears = Arrays.asList(2000);
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(names, foundationYears, pageable);
+
+        // Assert
+        assertThat(filteredProducers).isNotNull();
+        assertThat(filteredProducers.size()).isEqualTo(1);
+        assertThat(filteredProducers.get(0).getName()).isEqualTo("Producer 1");
+        assertThat(filteredProducers.get(0).getFoundationYear()).isEqualTo(2000);
+    }
+
+    @Test
+    @DisplayName("Filter producers with no criteria")
+    void givenNoCriteria_whenFilterProducers_thenReturnAllProducers() {
+        // Arrange
+        Producer createdProducer = producerCriteriaRepository.createProducer(producer);
+        List<String> names = null;
+        List<Integer> foundationYears = null;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(names, foundationYears, pageable);
+
+        // Assert
+        assertThat(filteredProducers).isNotNull();
+        assertThat(filteredProducers.size()).isEqualTo(1); // assuming there are 10 producers in the database
+    }
+
 }

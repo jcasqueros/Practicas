@@ -44,7 +44,7 @@ public class FilmController {
             @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select,
             @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
             @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
-            @RequestParam(defaultValue = "title") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "id") @Parameter(description = "Sort by field") String sortBy,
             @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
             throws ServiceException {
         if (select) {
@@ -112,5 +112,24 @@ public class FilmController {
                     HttpStatus.CREATED);
         }
 
+    }
+
+    @Operation(summary = "Filter Films")
+    @GetMapping("/filterFilms")
+    public ResponseEntity<List<FilmOutDTO>> filterFilms(
+            @RequestParam(required = false) @Parameter(description = "List of titles to filter by") List<String> titles,
+            @RequestParam(required = false) @Parameter(description = "List of release years to filter by") List<Integer> releaseYears,
+            @RequestParam(required = false) @Parameter(description = "List of directors to filter by") List<String> directors,
+            @RequestParam(required = false) @Parameter(description = "List of producers to filter by") List<String> producers,
+            @RequestParam(required = false) @Parameter(description = "List of actors to filter by") List<String> actors,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int pageNumber,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int pageSize,
+            @RequestParam(defaultValue = "id") @Parameter(description = "Sort by field") String sortBy,
+            @RequestParam(defaultValue = "true") @Parameter(description = "Sort order (false for ascending, true for descending)") boolean sortOrder)
+            throws ServiceException {
+
+        return new ResponseEntity<>(
+                filmService.filterFilms(titles, releaseYears, directors, producers, actors, pageNumber, pageSize,
+                        sortBy, sortOrder).stream().map(converter::filmBOToOutDTO).toList(), HttpStatus.OK);
     }
 }
