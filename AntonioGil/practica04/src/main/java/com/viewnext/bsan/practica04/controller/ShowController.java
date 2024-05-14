@@ -3,15 +3,8 @@ package com.viewnext.bsan.practica04.controller;
 import com.viewnext.bsan.practica04.bo.ShowBo;
 import com.viewnext.bsan.practica04.dto.ShowReadDto;
 import com.viewnext.bsan.practica04.dto.ShowUpsertDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
-import com.viewnext.bsan.practica04.dto.request.WatchableFilterDto;
-import com.viewnext.bsan.practica04.service.ShowService;
-import com.viewnext.bsan.practica04.util.constants.RestApiPaths;
-import com.viewnext.bsan.practica04.bo.ShowBo;
-import com.viewnext.bsan.practica04.dto.ShowReadDto;
-import com.viewnext.bsan.practica04.dto.ShowUpsertDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
-import com.viewnext.bsan.practica04.dto.request.WatchableFilterDto;
+import com.viewnext.bsan.practica04.util.request.QueryOptions;
+import com.viewnext.bsan.practica04.util.request.WatchableFilter;
 import com.viewnext.bsan.practica04.service.ShowService;
 import com.viewnext.bsan.practica04.util.constants.RestApiPaths;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +29,14 @@ public class ShowController {
     }
 
     @GetMapping("")
-    public List<ShowReadDto> getRoot(@ModelAttribute WatchableFilterDto filter,
-                                     @ModelAttribute QueryOptionsDto queryOptions) {
+    public List<ShowReadDto> getRoot(@ModelAttribute WatchableFilter filter,
+                                     @ModelAttribute QueryOptions queryOptions) {
         return getAll(filter, queryOptions);
     }
 
     @GetMapping("/")
-    public List<ShowReadDto> getAll(@ModelAttribute WatchableFilterDto filter,
-                                    @ModelAttribute QueryOptionsDto queryOptions) {
+    public List<ShowReadDto> getAll(@ModelAttribute WatchableFilter filter,
+                                    @ModelAttribute QueryOptions queryOptions) {
         // TODO: Implement read query
         throw new UnsupportedOperationException("Not yet implemented");
     }

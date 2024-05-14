@@ -9,6 +9,8 @@ import com.viewnext.bsan.practica04.repository.custom.CustomFilmRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,64 +33,39 @@ public class CustomFilmRepositoryImpl implements CustomFilmRepository {
     }
 
     @Override
-    public List<Film> findAll() {
-        CriteriaQuery<Film> query = criteriaBuilder.createQuery(Film.class);
-        Root<Film> films = query.from(Film.class);
+    public List<Film> findAll(Pageable pageable) {
+        // TODO: Re-do this method
+        return List.of();
+    }
 
-        query.select(films);
-
-        return entityManager.createQuery(query).getResultList();
+    @Override
+    public List<Film> findAll(Specification<Film> spec, Pageable pageable) {
+        // TODO: Re-do this method
+        return List.of();
     }
 
     @Override
     public boolean existsById(long id) {
-        CriteriaQuery<Film> query = criteriaBuilder.createQuery(Film.class);
-        Root<Film> films = query.from(Film.class);
-
-        Predicate idMatches = criteriaBuilder.equal(films.get(Film_.id), id);
-        query.select(films).where(idMatches);
-
-        try {
-            entityManager.createQuery(query).getSingleResult();
-            return true;
-        } catch (NoResultException ex) {
-            return false;
-        }
+        // TODO: Re-do this method
+        return false;
     }
 
     @Override
     public Optional<Film> findById(long id) {
-        CriteriaQuery<Film> query = criteriaBuilder.createQuery(Film.class);
-        Root<Film> films = query.from(Film.class);
-
-        Predicate idMatches = criteriaBuilder.equal(films.get(Film_.id), id);
-        query.select(films).where(idMatches);
-
-        try {
-            Film foundEntity = entityManager.createQuery(query).getSingleResult();
-            return Optional.of(foundEntity);
-        } catch (NoResultException ex) {
-            return Optional.empty();
-        }
+        // TODO: Re-do this method
+        return Optional.empty();
     }
 
     @Override
     public Film save(Film film) {
-        entityManager.persist(film);
-        return film;
+        // TODO: Re-do this method
+        return null;
     }
 
     @Override
     public boolean deleteById(long id) {
-        CriteriaDelete<Film> query = criteriaBuilder.createCriteriaDelete(Film.class);
-        Root<Film> films = query.from(Film.class);
-
-        Predicate idMatches = criteriaBuilder.equal(films.get(Film_.id), id);
-        query.where(idMatches);
-
-        int updatedEntityCount = entityManager.createQuery(query).executeUpdate();
-
-        return updatedEntityCount > 0;
+        // TODO: Re-do this method
+        return false;
     }
 
 }

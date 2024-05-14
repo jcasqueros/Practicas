@@ -89,12 +89,22 @@ class ActorRepositoryImplTest {
 
     @DisplayName("JUnit test for get all actors filtered")
     @Test
-    void givenPageableAndAttributesList_whenFindAllActorFilter_thenReturnActorList() {
+    void givenPageableAndAttributesList_whenFindAllActorFilter_thenReturnActorListAcs() {
 
         Page<Actor> savedActors = actorRepository.findAllFilter(PageRequest.of(0, 5, Sort.by("name").ascending()),
                 List.of(), List.of(8), List.of());
 
         assertEquals(5, savedActors.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all actors filtered")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllActorFilter_thenReturnActorListDesc() {
+
+        Page<Actor> savedActors = actorRepository.findAllFilter(PageRequest.of(0, 5, Sort.by("name").descending()),
+                List.of("Tori"), List.of(93), List.of("Italian"));
+
+        assertEquals(1, savedActors.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for delete an actor")

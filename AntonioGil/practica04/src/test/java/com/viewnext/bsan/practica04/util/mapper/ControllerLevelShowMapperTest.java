@@ -1,14 +1,10 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnex.bsan.practica04.bo.ActorBo;
-import com.viewnex.bsan.practica04.bo.DirectorBo;
-import com.viewnex.bsan.practica04.bo.ProductionCompanyBo;
-import com.viewnex.bsan.practica04.bo.ShowBo;
-import com.viewnex.bsan.practica04.dto.*;
 import com.viewnext.bsan.practica04.bo.ActorBo;
 import com.viewnext.bsan.practica04.bo.DirectorBo;
 import com.viewnext.bsan.practica04.bo.ProductionCompanyBo;
 import com.viewnext.bsan.practica04.bo.ShowBo;
+import com.viewnext.bsan.practica04.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ContextConfiguration(classes = {ControllerLevelShowMapperImpl.class})
 class ControllerLevelShowMapperTest {
 
-    private ControllerLevelShowMapper mapper;
+    private final ControllerLevelShowMapper mapper;
 
     @Autowired
     public ControllerLevelShowMapperTest(ControllerLevelShowMapper mapper) {

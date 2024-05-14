@@ -86,12 +86,22 @@ class DirectorRepositoryImplTest {
 
     @DisplayName("JUnit test for get all directors filtered")
     @Test
-    void givenPageableAndAttributesList_whenFindAllDirectorFilter_thenReturnDirectorList() {
+    void givenPageableAndAttributesList_whenFindAllDirectorFilter_thenReturnDirectorListAcs() {
 
         Page<Director> savedDirectors = directorRepository.findAllFilter(
                 PageRequest.of(0, 5, Sort.by("name").ascending()), List.of(), List.of(8), List.of());
 
         assertEquals(5, savedDirectors.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all directors filtered")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllDirectorFilter_thenReturnDirectorListDesc() {
+
+        Page<Director> savedDirectors = directorRepository.findAllFilter(
+                PageRequest.of(0, 1, Sort.by("name").descending()), List.of("Sly"), List.of(), List.of("Japanese"));
+
+        assertEquals(1, savedDirectors.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for delete a director")

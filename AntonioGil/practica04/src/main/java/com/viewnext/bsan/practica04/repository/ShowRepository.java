@@ -2,6 +2,7 @@ package com.viewnext.bsan.practica04.repository;
 
 import com.viewnext.bsan.practica04.entity.Show;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * @author Antonio Gil
  */
 @Repository
-public interface ShowRepository extends JpaRepository<Show, Long> {
+public interface ShowRepository extends JpaRepository<Show, Long>, JpaSpecificationExecutor<Show> {
 
 }

@@ -9,6 +9,8 @@ import com.viewnext.bsan.practica04.repository.custom.CustomShowRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,64 +33,39 @@ public class CustomShowRepositoryImpl implements CustomShowRepository {
     }
 
     @Override
-    public List<Show> findAll() {
-        CriteriaQuery<Show> query = criteriaBuilder.createQuery(Show.class);
-        Root<Show> shows = query.from(Show.class);
+    public List<Show> findAll(Pageable pageable) {
+        // TODO: Re-do this method
+        return List.of();
+    }
 
-        query.select(shows);
-
-        return entityManager.createQuery(query).getResultList();
+    @Override
+    public List<Show> findAll(Specification<Show> spec, Pageable pageable) {
+        // TODO: Re-do this method
+        return List.of();
     }
 
     @Override
     public boolean existsById(long id) {
-        CriteriaQuery<Show> query = criteriaBuilder.createQuery(Show.class);
-        Root<Show> shows = query.from(Show.class);
-
-        Predicate idMatches = criteriaBuilder.equal(shows.get(Show_.id), id);
-        query.select(shows).where(idMatches);
-
-        try {
-            entityManager.createQuery(query).getSingleResult();
-            return true;
-        } catch (NoResultException ex) {
-            return false;
-        }
+        // TODO: Re-do this method
+        return false;
     }
 
     @Override
     public Optional<Show> findById(long id) {
-        CriteriaQuery<Show> query = criteriaBuilder.createQuery(Show.class);
-        Root<Show> shows = query.from(Show.class);
-
-        Predicate idMatches = criteriaBuilder.equal(shows.get(Show_.id), id);
-        query.select(shows).where(idMatches);
-
-        try {
-            Show foundEntity = entityManager.createQuery(query).getSingleResult();
-            return Optional.of(foundEntity);
-        } catch (NoResultException ex) {
-            return Optional.empty();
-        }
+        // TODO: Re-do this method
+        return Optional.empty();
     }
 
     @Override
     public Show save(Show show) {
-        entityManager.persist(show);
-        return show;
+        // TODO: Re-do this method
+        return null;
     }
 
     @Override
     public boolean deleteById(long id) {
-        CriteriaDelete<Show> query = criteriaBuilder.createCriteriaDelete(Show.class);
-        Root<Show> shows = query.from(Show.class);
-
-        Predicate idMatches = criteriaBuilder.equal(shows.get(Show_.id), id);
-        query.where(idMatches);
-
-        int updatedEntityCount = entityManager.createQuery(query).executeUpdate();
-
-        return updatedEntityCount > 0;
+        // TODO: Re-do this method
+        return false;
     }
 
 }

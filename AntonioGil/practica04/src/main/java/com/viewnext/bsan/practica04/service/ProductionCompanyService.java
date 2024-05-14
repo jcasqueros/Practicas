@@ -1,8 +1,8 @@
 package com.viewnext.bsan.practica04.service;
 
 import com.viewnext.bsan.practica04.bo.ProductionCompanyBo;
-import com.viewnext.bsan.practica04.dto.request.ProductionCompanyFilterDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
+import com.viewnext.bsan.practica04.util.request.ProductionCompanyFilter;
+import com.viewnext.bsan.practica04.util.request.QueryOptions;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public interface ProductionCompanyService {
 
-    List<ProductionCompanyBo> getAll(ProductionCompanyFilterDto filter, QueryOptionsDto queryOptions);
+    List<ProductionCompanyBo> getAll(ProductionCompanyFilter filter, QueryOptions queryOptions);
 
     ProductionCompanyBo getById(Optional<Boolean> useCustomRepository);
 

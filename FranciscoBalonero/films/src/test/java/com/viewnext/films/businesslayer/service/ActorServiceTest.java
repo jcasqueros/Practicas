@@ -310,5 +310,67 @@ class ActorServiceImplTest {
         assertThrows(ServiceException.class, () -> actorService.jpaCreate(actorBO));
     }
 
+    @Test
+    @DisplayName("Filter actors: correct case")
+    void givenFilters_whenFilterActors_thenReturnListWithFilteredActorsBO() throws ServiceException {
+
+        List<String> names = List.of("Jhon", "Jhon");
+        List<Integer> ages = List.of(18, 25);
+        List<String> nationalities = List.of("spain", "usa");
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        List<Actor> actors = List.of(actor);
+        BDDMockito.given(actorCriteriaRepository.filterActors(names, ages, nationalities,
+                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending())))).willReturn(actors);
+        BDDMockito.given(converter.actorEntityToBO(actor)).willReturn(actorBO);
+
+        List<ActorBO> result = actorService.filterActors(names, ages, nationalities, pageNumber, pageSize, sortBy,
+                sortOrder);
+
+        assertThat(result).isNotNull().hasSize(1).contains(actorBO);
+    }
+
+    @Test
+    @DisplayName("Filter actors: no actors found")
+    void givenFilters_whenFilterActors_thenThrowNotFoundException() throws ServiceException {
+
+        List<String> names = List.of("Jhon", "Jhon");
+        List<Integer> ages = List.of(18, 25);
+        List<String> nationalities = List.of("spain", "usa");
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        BDDMockito.given(actorCriteriaRepository.filterActors(names, ages, nationalities,
+                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending())))).willReturn(List.of());
+
+        assertThrows(NotFoundException.class,
+                () -> actorService.filterActors(names, ages, nationalities, pageNumber, pageSize, sortBy, sortOrder));
+    }
+
+    @Test
+    @DisplayName("Filter actors: nested runtime exception")
+    void givenFilters_whenFilterActors_thenThrowNestedRuntimeException() throws ServiceException {
+        
+        List<String> names = List.of("Jhon", "Jhon");
+        List<Integer> ages = List.of(18, 25);
+        List<String> nationalities = List.of("spain", "usa");
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        BDDMockito.given(actorCriteriaRepository.filterActors(names, ages, nationalities,
+                        PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> actorService.filterActors(names, ages, nationalities, pageNumber, pageSize, sortBy, sortOrder));
+    }
+
 }
 

@@ -10,6 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
  * @author Antonio Gil
  */
 @TestConfiguration
-@ComponentScan(basePackages = "com.viewnex.bsan.practica04.repository.custom")
+@ComponentScan(basePackages = "com.viewnext.bsan.practica04.repository.custom")
 public class CrudPeliculasAppTestConfig {
 }

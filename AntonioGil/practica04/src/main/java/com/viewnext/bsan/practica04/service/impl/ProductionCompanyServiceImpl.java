@@ -1,20 +1,12 @@
 package com.viewnext.bsan.practica04.service.impl;
 
 import com.viewnext.bsan.practica04.bo.ProductionCompanyBo;
-import com.viewnext.bsan.practica04.dto.request.ProductionCompanyFilterDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
-import com.viewnext.bsan.practica04.entity.ProductionCompany;
-import com.viewnext.bsan.practica04.exception.service.BadInputDataException;
-import com.viewnext.bsan.practica04.exception.service.DuplicateUniqueFieldException;
-import com.viewnext.bsan.practica04.exception.service.MissingRequiredFieldException;
-import com.viewnext.bsan.practica04.exception.service.ResourceNotFoundException;
+import com.viewnext.bsan.practica04.util.request.ProductionCompanyFilter;
+import com.viewnext.bsan.practica04.util.request.QueryOptions;
 import com.viewnext.bsan.practica04.repository.ProductionCompanyRepository;
 import com.viewnext.bsan.practica04.repository.custom.CustomProductionCompanyRepository;
 import com.viewnext.bsan.practica04.service.ProductionCompanyService;
-import com.viewnext.bsan.practica04.util.MessageBuilder;
-import com.viewnext.bsan.practica04.util.constants.Messages;
 import com.viewnext.bsan.practica04.util.mapper.ServiceLevelProductionCompanyMapper;
-import com.viewnext.bsan.practica04.repository.custom.CustomProductionCompanyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -45,7 +37,7 @@ public class ProductionCompanyServiceImpl implements ProductionCompanyService {
     }
 
     @Override
-    public List<ProductionCompanyBo> getAll(ProductionCompanyFilterDto filter, QueryOptionsDto queryOptions) {
+    public List<ProductionCompanyBo> getAll(ProductionCompanyFilter filter, QueryOptions queryOptions) {
         // TODO: Re-do this method
         return List.of();
     }

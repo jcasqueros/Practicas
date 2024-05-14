@@ -202,4 +202,26 @@ public class DirectorServiceImpl implements DirectorService {
             throw new ServiceException("The director could not be created", e);
         }
     }
+
+    @Override
+    public List<DirectorBO> filterDirectors(List<String> names, List<Integer> ages, List<String> nationalities,
+            int pageNumber, int pageSize, String sortBy, boolean sortOrder) throws ServiceException {
+        try {
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca directores que coinciden con los filtros utilizando Criteria API
+            List<Director> directors = directorCriteriaRepository.filterDirectors(names, ages, nationalities, pageable);
+            if (!directors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return directors.stream().map(converter::directorEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error filtering directors", e);
+            throw new ServiceException("The directors could not be filtered", e);
+        }
+    }
 }

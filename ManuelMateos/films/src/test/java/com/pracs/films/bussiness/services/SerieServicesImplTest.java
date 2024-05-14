@@ -7,6 +7,7 @@ import com.pracs.films.bussiness.bo.SerieBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.impl.SerieServiceImpl;
+import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
@@ -54,6 +55,9 @@ class SerieServicesImplTest {
 
     @Mock
     private SerieRepositoryImpl serieRepositoryCriteria;
+
+    @Mock
+    private ConstantMessages constantMessages;
 
     @InjectMocks
     private SerieServiceImpl serieService;

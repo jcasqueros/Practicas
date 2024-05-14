@@ -160,6 +160,28 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
+    public List<ActorBO> filterActors(List<String> names, List<Integer> ages, List<String> nationalities,
+            int pageNumber, int pageSize, String sortBy, boolean sortOrder) throws ServiceException {
+        try {
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca actores que coinciden con los filtros utilizando Criteria API
+            List<Actor> actors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+            if (!actors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return actors.stream().map(converter::actorEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error filtering actors", e);
+            throw new ServiceException("The actors could not be filtered", e);
+        }
+    }
+
+    @Override
     public void jpaDeleteById(Long id) throws ServiceException {
         try {
             // Elimina un actor por ID utilizando JPA
@@ -199,4 +221,5 @@ public class ActorServiceImpl implements ActorService {
             throw new ServiceException("The actor could not be created", e);
         }
     }
+
 }

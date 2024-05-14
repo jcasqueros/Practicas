@@ -45,8 +45,10 @@ public class ProducerController {
      * @throws ServiceException
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<ProducerDtoOut>> findAll(@RequestParam boolean method, @RequestParam int page,
-            @RequestParam int size, @RequestParam String sort) throws ServiceException {
+    public ResponseEntity<List<ProducerDtoOut>> findAll(@RequestParam boolean method,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id", value = "Variable for order the list") String sort)
+            throws ServiceException {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
 
@@ -70,8 +72,9 @@ public class ProducerController {
 
     @GetMapping("/findAllFilter")
     public ResponseEntity<List<ProducerDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
-            @RequestParam(required = false) List<Integer> ages, @RequestParam boolean method, @RequestParam String sort,
-            @RequestParam String order) throws ServiceException {
+            @RequestParam(required = false) List<Integer> ages, @RequestParam boolean method,
+            @RequestParam(defaultValue = "id", value = "Variable for order the list") String sort,
+            @RequestParam(defaultValue = "asc") String order) throws ServiceException {
 
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 

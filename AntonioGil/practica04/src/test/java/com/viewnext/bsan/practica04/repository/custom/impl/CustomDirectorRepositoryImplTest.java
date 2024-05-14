@@ -1,21 +1,22 @@
 package com.viewnext.bsan.practica04.repository.custom.impl;
 
-import com.viewnex.bsan.practica04.config.CrudPeliculasAppTestConfig;
-import com.viewnex.bsan.practica04.entity.Director;
-import com.viewnex.bsan.practica04.sampledata.DirectorSampleData;
+import com.viewnext.bsan.practica04.config.CrudPeliculasAppTestConfig;
 import com.viewnext.bsan.practica04.entity.Director;
-import com.viewnext.bsan.practica04.sampledata.DirectorSampleData;
+import com.viewnext.bsan.practica04.entity.specification.DirectorSpecifications;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static com.viewnext.bsan.practica04.sampledata.DirectorSampleData.SAMPLE_DIRECTORS;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -27,8 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(CrudPeliculasAppTestConfig.class)
 class CustomDirectorRepositoryImplTest {
 
-    private static final List<Director> SAMPLE_DIRECTORS = DirectorSampleData.SAMPLE_DIRECTORS;
-
     private final CustomDirectorRepositoryImpl repository;
     private final TestEntityManager testEntityManager;
 
@@ -39,64 +38,99 @@ class CustomDirectorRepositoryImplTest {
         this.testEntityManager = testEntityManager;
     }
 
-    @DisplayName("[CustomDirectorRepositoryImpl] findAll (should find empty list)")
+    @DisplayName("[CustomDirectorRepositoryImpl] findAll (no filtering)")
     @Test
-    void givenNoDirectors_whenFindAll_thenReturnEmptyList() {
-        final List<Director> foundDirectors = repository.findAll();
-
-        assertTrue(foundDirectors.isEmpty());
-    }
-
-    @DisplayName("[CustomDirectorRepositoryImpl] findAll (should find directors)")
-    @Test
-    void givenDirectors_whenFindAll_thenReturnDirectorList() {
+    void givenDirectorsAndNoFilters_whenFindAll_thenReturnPage() {
+        // Arrange
         SAMPLE_DIRECTORS.forEach(testEntityManager::persist);
 
-        final List<Director> foundDirectors = repository.findAll();
+        final int pageSize = 4;
+        final PageRequest pageRequest = PageRequest.of(0, pageSize);
+        final List<Director> expectedDirectors = List.of(
+                Director.builder().id(1L).name("DIRECTOR1").age(40).nationality("ITA").build(),
+                Director.builder().id(2L).name("DIRECTOR2").age(60).nationality("USA").build(),
+                Director.builder().id(3L).name("DIRECTOR3").age(55).nationality("FRA").build(),
+                Director.builder().id(4L).name("DIRECTOR4").age(35).nationality("ESP").build()
+        );
 
+        // Act
+        final List<Director> foundDirectors = repository.findAll(pageRequest);
+
+        // Assert
         assertFalse(foundDirectors.isEmpty());
-        assertEquals(SAMPLE_DIRECTORS.size(), foundDirectors.size());
-        assertTrue(foundDirectors.containsAll(SAMPLE_DIRECTORS));
+        assertEquals(expectedDirectors.size(), foundDirectors.size());
+        assertTrue(foundDirectors.containsAll(expectedDirectors));
+    }
+
+    @DisplayName("[CustomDirectorRepositoryImpl] findAll (filtering by nationality)")
+    @Test
+    void givenDirectorsAndFilters_whenFindAll_thenReturnPage() {
+        // Arrange
+        SAMPLE_DIRECTORS.forEach(testEntityManager::persist);
+
+        final int pageSize = 4;
+        final PageRequest pageRequest = PageRequest.of(0, pageSize);
+        final List<Director> expectedDirectors = List.of(
+                Director.builder().id(2L).name("DIRECTOR2").age(60).nationality("USA").build()
+        );
+        final Specification<Director> nameContainsSubstring = DirectorSpecifications.nameContains("DIRECTOR2");
+
+        // Act
+        final List<Director> foundDirectors = repository.findAll(nameContainsSubstring, pageRequest);
+
+        // Assert
+        assertFalse(foundDirectors.isEmpty());
+        assertEquals(expectedDirectors.size(), foundDirectors.size());
+        assertTrue(foundDirectors.containsAll(expectedDirectors));
     }
 
     @DisplayName("[CustomDirectorRepositoryImpl] existsById (nonexistent director)")
     @Test
     void givenNonExistentDirectorId_whenExistsById_thenReturnFalse() {
+        // Arrange
         final long id = -1;
 
+        // Act + Assert
         assertFalse(repository.existsById(id));
     }
 
     @DisplayName("[CustomDirectorRepositoryImpl] existsById (existing director)")
     @Test
     void givenDirectorId_whenExistsById_thenReturnTrue() {
+        // Arrange
         SAMPLE_DIRECTORS.forEach(testEntityManager::persist);
 
         final Long id = SAMPLE_DIRECTORS.get(4).getId();
 
+        // Act + Assert
         assertTrue(repository.existsById(id));
     }
 
     @DisplayName("[CustomDirectorRepositoryImpl] findById (nonexistent director)")
     @Test
     void givenNonExistentDirectorId_whenFindById_thenReturnEmpty() {
+        // Arrange
         final long id = -1;
 
+        // Act
         final Optional<Director> foundDirector = repository.findById(id);
 
+        // Assert
         assertTrue(foundDirector.isEmpty());
     }
 
     @DisplayName("[CustomDirectorRepositoryImpl] findById (existing director)")
     @Test
     void givenDirectorId_whenFindById_thenReturnDirectorObject() {
+        // Arrange
         SAMPLE_DIRECTORS.forEach(testEntityManager::persist);
-
         final Director director = SAMPLE_DIRECTORS.get(3);
         final Long id = director.getId();
 
+        // Act
         final Director foundDirector = repository.findById(id).orElseThrow();
 
+        // Assert
         assertEquals(id, foundDirector.getId());
         assertEquals(director.getName(), foundDirector.getName());
         assertEquals(director.getAge(), foundDirector.getAge());
@@ -106,20 +140,24 @@ class CustomDirectorRepositoryImplTest {
     @DisplayName("[CustomDirectorRepositoryImpl] save (invalid data)")
     @Test
     void givenInvalidDirectorData_whenSave_thenThrow() {
+        // Arrange
         final Director invalidDirector = Director.builder().name("DIRECTOR6").age(70).nationality("USA").build();
 
+        // Act + Assert
         assertThrows(RuntimeException.class, () -> repository.save(invalidDirector));
     }
 
     @DisplayName("[CustomDirectorRepositoryImpl] save (valid data)")
     @Test
     void givenDirectorData_whenSave_thenDirectorIsSaved() {
+        // Arrange
         final Director director = Director.builder().id(6L).name("DIRECTOR6").age(70).nationality("USA").build();
 
+        // Act
         repository.save(director);
 
+        // Assert
         final Director foundDirector = testEntityManager.find(Director.class, director.getId());
-
         assertEquals(director.getId(), foundDirector.getId());
         assertEquals(director.getName(), foundDirector.getName());
         assertEquals(director.getAge(), foundDirector.getAge());
@@ -129,6 +167,7 @@ class CustomDirectorRepositoryImplTest {
     @DisplayName("[CustomDirectorRepositoryImpl] deleteById (nonexistent ID)")
     @Test
     void givenNonExistentDirectorId_whenDeleteById_thenNothingHappens() {
+        // Arrange
         SAMPLE_DIRECTORS.forEach(testEntityManager::persist);
         Predicate<Director> directorIsPresent = director ->
                 testEntityManager.find(Director.class, director.getId()) != null;
@@ -137,6 +176,7 @@ class CustomDirectorRepositoryImplTest {
 
         final long id = -1;
 
+        // Act + Assert
         assertFalse(repository.deleteById(id));
         testEntityManager.clear();
 
@@ -146,6 +186,7 @@ class CustomDirectorRepositoryImplTest {
     @DisplayName("[CustomDirectorRepositoryImpl] deleteById (existing ID)")
     @Test
     void givenDirectorId_whenDeleteById_thenDirectorIsRemoved() {
+        // Arrange
         SAMPLE_DIRECTORS.forEach(testEntityManager::persist);
         Predicate<Director> directorIsPresent = director ->
                 testEntityManager.find(Director.class, director.getId()) != null;
@@ -155,6 +196,7 @@ class CustomDirectorRepositoryImplTest {
         final Director director = SAMPLE_DIRECTORS.get(2);
         final Long id = director.getId();
 
+        // Act + Assert
         assertTrue(repository.deleteById(id));
         testEntityManager.clear();
 

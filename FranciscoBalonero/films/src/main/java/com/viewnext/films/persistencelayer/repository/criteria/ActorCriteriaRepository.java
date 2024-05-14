@@ -79,4 +79,19 @@ public interface ActorCriteriaRepository {
      *         {@link Long} the ID of the {@link Actor} to be deleted
      */
     void deleteActor(Long id);
+
+    /**
+     * Filter actors by fields
+     *
+     * @param names
+     *         list of names
+     * @param ages
+     *         list of ages
+     * @param nationalities
+     *         list of nationalities
+     * @param pageable
+     *         {@link Pageable} the pagination and sorting information
+     * @return a {@link List} of all {@link Actor} filters.
+     */
+    List<Actor> filterActors(List<String> names, List<Integer> ages, List<String> nationalities, Pageable pageable);
 }

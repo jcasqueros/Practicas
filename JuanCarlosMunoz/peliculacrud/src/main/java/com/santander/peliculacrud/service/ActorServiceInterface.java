@@ -1,7 +1,6 @@
 package com.santander.peliculacrud.service;
 
-import com.santander.peliculacrud.model.input.Actor;
-import com.santander.peliculacrud.model.output.ActorModelController;
+import com.santander.peliculacrud.model.bo.ActorBO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,18 +14,18 @@ public interface ActorServiceInterface {
     /**
      * Create actor.
      *
-     * @param actorModelController
+     * @param actorBO
      *         the actor out
      * @return the actor
      */
-    Actor createActor(ActorModelController actorModelController);
+    ActorBO createActor(ActorBO actorBO);
 
     /**
      * Gets all actors.
      *
      * @return the all actors
      */
-    List<ActorModelController> getAllActors();
+    List<ActorBO> getAllActors();
 
     /**
      * Gets actor by id.
@@ -35,18 +34,18 @@ public interface ActorServiceInterface {
      *         the id
      * @return the actor by id
      */
-    ActorModelController getActorById(Long id);
+    ActorBO getActorById(long id);
 
     /**
      * Update actor boolean.
      *
      * @param id
      *         the id
-     * @param actorModelController
-     *         the actor out
+     * @param actorBO
+     *         the actor outº
      * @return the boolean
      */
-    boolean updateActor(Long id, ActorModelController actorModelController);
+    boolean updateActor(long id, ActorBO actorBO);
 
     /**
      * Delete actor boolean.
@@ -55,19 +54,6 @@ public interface ActorServiceInterface {
      *         the id
      * @return the boolean
      */
-    boolean deleteActor(Long id);
+    boolean deleteActor(long id);
 
-    /**
-     * Gets last user.
-     *
-     * @return the last user
-     */
-    Actor getLastActor();
-
-    /**
-     * Gets list size.
-     *
-     * @return the list size
-     */
-    int getListSize();
 }

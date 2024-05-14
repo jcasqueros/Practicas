@@ -127,12 +127,23 @@ class filmRepositoryImplTest {
 
     @DisplayName("JUnit test for get all films filtered")
     @Test
-    void givenPageableAndAttributesList_whenFindAllSerieFilter_thenReturnSerieList() {
+    void givenPageableAndAttributesList_whenFindAllSerieFilter_thenReturnSerieListAsc() {
 
         Page<Film> savedFilms = filmRepository.findAllFilter(PageRequest.of(0, 5, Sort.by("title").ascending()),
                 List.of(), List.of(2020), List.of(), List.of(), List.of());
 
         assertEquals(5, savedFilms.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all films filtered")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllSerieFilter_thenReturnSerieListDesc() {
+
+        Page<Film> savedFilms = filmRepository.findAllFilter(PageRequest.of(0, 5, Sort.by("title").descending()),
+                List.of("est risus auctor sed tristique in tempus sit amet sem"), List.of(), List.of(), List.of(),
+                List.of());
+
+        assertEquals(1, savedFilms.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for delete a film")

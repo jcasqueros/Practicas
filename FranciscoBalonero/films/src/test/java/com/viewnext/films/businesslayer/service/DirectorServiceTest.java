@@ -313,5 +313,68 @@ class DirectorServiceImplTest {
         assertThrows(ServiceException.class, () -> directorService.jpaCreate(directorBO));
     }
 
+    @Test
+    @DisplayName("Filter directors: correct case")
+    void givenFilters_whenFilterDirectors_thenReturnListWithFilteredDirectorsBO() throws ServiceException {
+
+        List<String> names = List.of("Jhon", "Jhon");
+        List<Integer> ages = List.of(18, 25);
+        List<String> nationalities = List.of("spain", "usa");
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        List<Director> directors = List.of(director);
+        BDDMockito.given(directorCriteriaRepository.filterDirectors(names, ages, nationalities,
+                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending())))).willReturn(directors);
+        BDDMockito.given(converter.directorEntityToBO(director)).willReturn(directorBO);
+
+        List<DirectorBO> result = directorService.filterDirectors(names, ages, nationalities, pageNumber, pageSize,
+                sortBy, sortOrder);
+
+        assertThat(result).isNotNull().hasSize(1).contains(directorBO);
+    }
+
+    @Test
+    @DisplayName("Filter directors: no directors found")
+    void givenFilters_whenFilterDirectors_thenThrowNotFoundException() throws ServiceException {
+
+        List<String> names = List.of("Jhon", "Jhon");
+        List<Integer> ages = List.of(18, 25);
+        List<String> nationalities = List.of("spain", "usa");
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        BDDMockito.given(directorCriteriaRepository.filterDirectors(names, ages, nationalities,
+                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending())))).willReturn(List.of());
+
+        assertThrows(NotFoundException.class,
+                () -> directorService.filterDirectors(names, ages, nationalities, pageNumber, pageSize, sortBy,
+                        sortOrder));
+    }
+
+    @Test
+    @DisplayName("Filter directors: nested runtime exception")
+    void givenFilters_whenFilterDirectors_thenThrowNestedRuntimeException() throws ServiceException {
+
+        List<String> names = List.of("Jhon", "Jhon");
+        List<Integer> ages = List.of(18, 25);
+        List<String> nationalities = List.of("spain", "usa");
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        BDDMockito.given(directorCriteriaRepository.filterDirectors(names, ages, nationalities,
+                        PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> directorService.filterDirectors(names, ages, nationalities, pageNumber, pageSize, sortBy,
+                        sortOrder));
+    }
 }
 

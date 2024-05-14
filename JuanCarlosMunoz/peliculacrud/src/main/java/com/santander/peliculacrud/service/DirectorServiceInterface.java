@@ -1,7 +1,7 @@
 package com.santander.peliculacrud.service;
 
-import com.santander.peliculacrud.model.input.Director;
-import com.santander.peliculacrud.model.output.DirectorModelService;
+
+import com.santander.peliculacrud.model.bo.DirectorBO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,21 +11,22 @@ import java.util.List;
  */
 @Service
 public interface DirectorServiceInterface {
+
     /**
      * Create director.
      *
-     * @param directorModelService
+     * @param directorBO
      *         the director out
      * @return the director
      */
-    Director createDirector(DirectorModelService directorModelService);
+    DirectorBO createDirector(DirectorBO directorBO);
 
     /**
      * Gets all directors.
      *
      * @return the all directors
      */
-    List<DirectorModelService> getAllDirectors();
+    List<DirectorBO> getAllDirectors();
 
     /**
      * Gets director by id.
@@ -34,18 +35,18 @@ public interface DirectorServiceInterface {
      *         the id
      * @return the director by id
      */
-    DirectorModelService getDirectorById(Long id);
+    DirectorBO getDirectorById(long id);
 
     /**
      * Update director boolean.
      *
      * @param id
      *         the id
-     * @param directorModelService
-     *         the director out
+     * @param directorBO
+     *         the director outº
      * @return the boolean
      */
-    boolean updateDirector(Long id, DirectorModelService directorModelService);
+    boolean updateDirector(long id, DirectorBO directorBO);
 
     /**
      * Delete director boolean.
@@ -54,19 +55,7 @@ public interface DirectorServiceInterface {
      *         the id
      * @return the boolean
      */
-    boolean deleteDirector(Long id);
+    boolean deleteDirector(long id);
 
-    /**
-     * Gets las director.
-     *
-     * @return the las director
-     */
-    Director getLastDirector();
 
-    /**
-     * Gets list size.
-     *
-     * @return the list size
-     */
-    int getListSize();
 }
