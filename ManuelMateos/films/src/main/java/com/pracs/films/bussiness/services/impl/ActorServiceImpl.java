@@ -4,6 +4,7 @@ import com.pracs.films.bussiness.bo.ActorBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.ActorService;
+import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
@@ -29,6 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ActorServiceImpl implements ActorService {
 
+    private final ConstantMessages constantMessages;
+
     private final ModelToBoConverter modelToBoConverter;
 
     private final BoToModelConverter boToModelConverter;
@@ -36,10 +39,6 @@ public class ActorServiceImpl implements ActorService {
     private final ActorRepository actorRepository;
 
     private final ActorRepositoryImpl actorRepositoryCriteria;
-
-    private static final String errorPerson = "Person not found";
-
-    private static final String errorService = "Error in service layer";
 
     @Override
     public ActorBO save(ActorBO actorBO) throws ServiceException {
@@ -53,7 +52,7 @@ public class ActorServiceImpl implements ActorService {
             // Conversión de model a bo del resultado de crear un actor.
             return modelToBoConverter.actorModelToBo(actorRepository.save(boToModelConverter.actorBoToModel(actorBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorPerson());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -63,7 +62,7 @@ public class ActorServiceImpl implements ActorService {
         try {
             // Búsqueda de un actor con el id introducido para comprobar que existe
             ActorBO savedActorBO = modelToBoConverter.actorModelToBo(actorRepository.findById(actorBO.getId())
-                    .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
 
             //Actualización con los campos introducidos
             savedActorBO.setName(actorBO.getName());
@@ -74,7 +73,7 @@ public class ActorServiceImpl implements ActorService {
             return modelToBoConverter.actorModelToBo(
                     actorRepository.save(boToModelConverter.actorBoToModel(savedActorBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -83,10 +82,10 @@ public class ActorServiceImpl implements ActorService {
     public ActorBO findById(long id) throws ServiceException {
         try {
             // Conversión de model a bo del resultado de buscar un actor por id.
-            return modelToBoConverter.actorModelToBo(
-                    actorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+            return modelToBoConverter.actorModelToBo(actorRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -98,14 +97,14 @@ public class ActorServiceImpl implements ActorService {
             Page<Actor> actorPage = actorRepository.findAll(pageable);
 
             if (actorPage.isEmpty()) {
-                throw new EmptyException("No actors");
+                throw new EmptyException(constantMessages.noActors());
             }
 
             List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
 
             return new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -116,12 +115,12 @@ public class ActorServiceImpl implements ActorService {
 
             //Comprobar si el actor no existe
             if (!actorRepository.existsById(id)) {
-                throw new EntityNotFoundException(errorPerson);
+                throw new EntityNotFoundException(constantMessages.errorPerson());
             }
 
             actorRepository.deleteById(id);
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -138,7 +137,7 @@ public class ActorServiceImpl implements ActorService {
             return modelToBoConverter.actorModelToBo(
                     actorRepositoryCriteria.saveActor(boToModelConverter.actorBoToModel(actorBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -149,7 +148,7 @@ public class ActorServiceImpl implements ActorService {
             // Búsqueda de un actor con el id introducido para comprobar que existe
             ActorBO savedActorBO = modelToBoConverter.actorModelToBo(
                     actorRepositoryCriteria.findActorById(actorBO.getId())
-                            .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+                            .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
             //Actualización con los campos introducidos
             savedActorBO.setName(actorBO.getName());
             savedActorBO.setAge(actorBO.getAge());
@@ -159,7 +158,7 @@ public class ActorServiceImpl implements ActorService {
             return modelToBoConverter.actorModelToBo(
                     actorRepositoryCriteria.updateActor(boToModelConverter.actorBoToModel(savedActorBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -169,9 +168,9 @@ public class ActorServiceImpl implements ActorService {
         try {
             // Conversión de model a bo del resultado de buscar un actor por id.
             return modelToBoConverter.actorModelToBo(actorRepositoryCriteria.findActorById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(errorPerson)));
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -183,14 +182,14 @@ public class ActorServiceImpl implements ActorService {
             Page<Actor> actorPage = actorRepositoryCriteria.findAllActors(pageable);
 
             if (actorPage.isEmpty()) {
-                throw new EmptyException("No actors");
+                throw new EmptyException(constantMessages.noActors());
             }
 
             List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
 
             return new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -203,14 +202,14 @@ public class ActorServiceImpl implements ActorService {
             Page<Actor> actorPage = actorRepositoryCriteria.findAllFilter(pageable, names, ages, nationalities);
 
             if (actorPage.isEmpty()) {
-                throw new EmptyException("No actors");
+                throw new EmptyException(constantMessages.noActors());
             }
 
             List<ActorBO> actorBOList = actorPage.stream().map(modelToBoConverter::actorModelToBo).toList();
 
             return new PageImpl<>(actorBOList, actorPage.getPageable(), actorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -221,11 +220,11 @@ public class ActorServiceImpl implements ActorService {
             //Comprobar si existe el actor con el id pasado
             if (actorRepositoryCriteria.findActorById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(errorPerson);
+                throw new EntityNotFoundException(constantMessages.errorPerson());
             }
             actorRepositoryCriteria.deleteActorById(actorRepositoryCriteria.findActorById(id).get());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }

@@ -12,7 +12,10 @@ import com.viewnext.films.persistencelayer.entity.Director;
 import com.viewnext.films.persistencelayer.entity.Film;
 import com.viewnext.films.persistencelayer.entity.Producer;
 import com.viewnext.films.persistencelayer.repository.criteria.FilmCriteriaRepository;
+import com.viewnext.films.persistencelayer.repository.jpa.ActorJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.DirectorJPARepository;
 import com.viewnext.films.persistencelayer.repository.jpa.FilmJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.ProducerJPARepository;
 import com.viewnext.films.util.Converter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +36,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,28 +52,38 @@ class FilmServiceImplTest {
 
     @Mock
     private Converter converter;
-
+    @Mock
+    private ActorJPARepository actorJPARepository;
+    @Mock
+    private DirectorJPARepository directorJPARepository;
+    @Mock
+    private ProducerJPARepository producerJPARepository;
     @InjectMocks
     private FilmServiceImpl filmService;
-
     private Film film;
     private FilmBO filmBO;
+    private DirectorBO directorBO;
+    private ActorBO actorBO;
+    private ProducerBO producerBO;
+    private Producer producer;
+    private Actor actor;
+    private Director director;
 
     @BeforeEach
     void setup() {
-        Actor actor = new Actor();
+        actor = new Actor();
         actor.setId(1L);
         actor.setAge(18);
         actor.setName("Jhon");
         actor.setNationality("spain");
 
-        Director director = new Director();
+        director = new Director();
         director.setId(2L);
         director.setAge(18);
         director.setName("James");
         director.setNationality("france");
 
-        Producer producer = new Producer();
+        producer = new Producer();
         producer.setId(1L);
         producer.setName("Paramount");
         producer.setFoundationYear(2003);
@@ -358,6 +372,84 @@ class FilmServiceImplTest {
         BDDMockito.given(converter.filmBOToEntity(filmBO)).willReturn(film);
 
         assertThrows(ServiceException.class, () -> filmService.jpaCreate(filmBO));
+    }
+
+    @Test
+    @DisplayName("Filter films: correct case")
+    void givenFilters_whenFilterFilms_thenReturnListWithFilteredFilmsBO() throws ServiceException {
+
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "title";
+        boolean sortOrder = true;
+
+        List<Film> films = List.of(film);
+        BDDMockito.given(actorJPARepository.findByName(anyString())).willReturn(List.of(actor));
+        BDDMockito.given(directorJPARepository.findByName(anyString())).willReturn(List.of(director));
+        BDDMockito.given(producerJPARepository.findByName(anyString())).willReturn(List.of(producer));
+
+        BDDMockito.given(
+                        filmCriteriaRepository.filterFilms(List.of(filmBO.getTitle()), List.of(filmBO.getReleaseYear()),
+                                List.of(director), List.of(producer), List.of(actor),
+                                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willReturn(films);
+        BDDMockito.given(converter.filmEntityToBO(film)).willReturn(filmBO);
+
+        List<FilmBO> result = filmService.filterFilms(List.of(filmBO.getTitle()), List.of(filmBO.getReleaseYear()),
+                List.of(director.getName()), List.of(producer.getName()), List.of(actor.getName()), pageNumber,
+                pageSize, sortBy, sortOrder);
+
+        assertThat(result).isNotNull().hasSize(1).contains(filmBO);
+    }
+
+    @Test
+    @DisplayName("Filter films: no films found")
+    void givenFilters_whenFilterFilms_thenThrowNotFoundException() throws ServiceException {
+
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "title";
+        boolean sortOrder = true;
+
+        BDDMockito.given(actorJPARepository.findByName(anyString())).willReturn(List.of(actor));
+        BDDMockito.given(directorJPARepository.findByName(anyString())).willReturn(List.of(director));
+        BDDMockito.given(producerJPARepository.findByName(anyString())).willReturn(List.of(producer));
+
+        BDDMockito.given(
+                        filmCriteriaRepository.filterFilms(List.of(filmBO.getTitle()), List.of(filmBO.getReleaseYear()),
+                                List.of(director), List.of(producer), List.of(actor),
+                                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willReturn(List.of());
+
+        assertThrows(NotFoundException.class,
+                () -> filmService.filterFilms(List.of(filmBO.getTitle()), List.of(filmBO.getReleaseYear()),
+                        List.of(director.getName()), List.of(producer.getName()), List.of(actor.getName()), pageNumber,
+                        pageSize, sortBy, sortOrder));
+    }
+
+    @Test
+    @DisplayName("Filter films: nested runtime exception")
+    void givenFilters_whenFilterFilms_thenThrowNestedRuntimeException() throws ServiceException {
+
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "title";
+        boolean sortOrder = true;
+
+        BDDMockito.given(actorJPARepository.findByName(anyString())).willReturn(List.of(actor));
+        BDDMockito.given(directorJPARepository.findByName(anyString())).willReturn(List.of(director));
+        BDDMockito.given(producerJPARepository.findByName(anyString())).willReturn(List.of(producer));
+
+        BDDMockito.given(
+                        filmCriteriaRepository.filterFilms(List.of(filmBO.getTitle()), List.of(filmBO.getReleaseYear()),
+                                List.of(director), List.of(producer), List.of(actor),
+                                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> filmService.filterFilms(List.of(filmBO.getTitle()), List.of(filmBO.getReleaseYear()),
+                        List.of(director.getName()), List.of(producer.getName()), List.of(actor.getName()), pageNumber,
+                        pageSize, sortBy, sortOrder));
     }
 
 }

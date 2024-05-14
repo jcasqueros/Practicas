@@ -4,6 +4,7 @@ import com.pracs.films.bussiness.bo.SerieBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.SerieService;
+import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
@@ -36,6 +37,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SerieServiceImpl implements SerieService {
 
+    private final ConstantMessages constantMessages;
+
     private final ModelToBoConverter modelToBoConverter;
 
     private final BoToModelConverter boToModelConverter;
@@ -50,10 +53,6 @@ public class SerieServiceImpl implements SerieService {
 
     private final SerieRepositoryImpl serieRepositoryCriteria;
 
-    private static final String errorProduction = "Production not found";
-
-    private static final String errorService = "Error in service layer";
-
     @Override
     public SerieBO save(SerieBO serieBO) throws ServiceException {
         try {
@@ -65,7 +64,7 @@ public class SerieServiceImpl implements SerieService {
             // Conversión de model a bo del resultado de crear un serie.
             return modelToBoConverter.serieModelToBo(serieRepository.save(boToModelConverter.serieBoToModel(serieBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -75,7 +74,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             // Búsqueda de un serie con el id introducido para comprobar que existe
             SerieBO savedSerieBO = modelToBoConverter.serieModelToBo(serieRepository.findById(serieBO.getId())
-                    .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProduction())));
 
             //Actualización con los campos introducidos
             savedSerieBO.setTitle(serieBO.getTitle());
@@ -88,7 +87,7 @@ public class SerieServiceImpl implements SerieService {
             return modelToBoConverter.serieModelToBo(
                     serieRepository.save(boToModelConverter.serieBoToModel(savedSerieBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -97,8 +96,8 @@ public class SerieServiceImpl implements SerieService {
     public SerieBO findById(long id) throws ServiceException {
         try {
             //Comprobar si existe ya un serie registrado con el mismo id.
-            return modelToBoConverter.serieModelToBo(
-                    serieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+            return modelToBoConverter.serieModelToBo(serieRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProduction())));
         } catch (NestedRuntimeException e) {
             log.error("Error en la capa de servicio");
             throw new ServiceException(e.getLocalizedMessage());
@@ -117,12 +116,9 @@ public class SerieServiceImpl implements SerieService {
 
             List<SerieBO> serieBOList = seriePage.stream().map(modelToBoConverter::serieModelToBo).toList();
 
-            Page<SerieBO> directorBOPage = new PageImpl<>(serieBOList, seriePage.getPageable(),
-                    seriePage.getTotalPages());
-
-            return directorBOPage;
+            return new PageImpl<>(serieBOList, seriePage.getPageable(), seriePage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -133,12 +129,12 @@ public class SerieServiceImpl implements SerieService {
             //Comprobar si el serie no existe
             if (!serieRepository.existsById(id)) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(errorProduction);
+                throw new EntityNotFoundException(constantMessages.errorProduction());
             }
 
             serieRepository.deleteById(id);
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -155,7 +151,7 @@ public class SerieServiceImpl implements SerieService {
             return modelToBoConverter.serieModelToBo(
                     serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -166,7 +162,7 @@ public class SerieServiceImpl implements SerieService {
             // Búsqueda de un serie con el id introducido para comprobar que existe
             SerieBO savedSerieBO = modelToBoConverter.serieModelToBo(
                     serieRepositoryCriteria.findSerieById(serieBO.getId())
-                            .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+                            .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProduction())));
             //Actualización con los campos introducidos
             savedSerieBO.setTitle(serieBO.getTitle());
             savedSerieBO.setDebut(serieBO.getDebut());
@@ -178,7 +174,7 @@ public class SerieServiceImpl implements SerieService {
             return modelToBoConverter.serieModelToBo(
                     serieRepositoryCriteria.updateSerie(boToModelConverter.serieBoToModel(savedSerieBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -188,7 +184,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             // Conversión de model a bo del resultado de buscar un serie por id.
             return modelToBoConverter.serieModelToBo(serieRepositoryCriteria.findSerieById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProduction())));
         } catch (NestedRuntimeException e) {
             log.error("Error en la capa de servicio");
             throw new ServiceException(e.getLocalizedMessage());
@@ -207,12 +203,9 @@ public class SerieServiceImpl implements SerieService {
 
             List<SerieBO> serieBOList = seriePage.stream().map(modelToBoConverter::serieModelToBo).toList();
 
-            Page<SerieBO> directorBOPage = new PageImpl<>(serieBOList, seriePage.getPageable(),
-                    seriePage.getTotalPages());
-
-            return directorBOPage;
+            return new PageImpl<>(serieBOList, seriePage.getPageable(), seriePage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -249,7 +242,7 @@ public class SerieServiceImpl implements SerieService {
 
             return new PageImpl<>(serieBOList, seriePage.getPageable(), seriePage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -260,12 +253,12 @@ public class SerieServiceImpl implements SerieService {
             //Comprobar si existe el serie con el id pasado
             if (serieRepositoryCriteria.findSerieById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(errorProduction);
+                throw new EntityNotFoundException(constantMessages.errorProduction());
             }
 
             serieRepositoryCriteria.deleteSerieById((serieRepositoryCriteria.findSerieById(id)).get());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }

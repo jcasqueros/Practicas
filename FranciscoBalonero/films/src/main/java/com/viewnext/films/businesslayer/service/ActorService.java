@@ -80,7 +80,7 @@ public interface ActorService {
      * @param sortBy
      *         the property to sort by
      * @param sortOrder
-     *         true for ascending order, false for descending order
+     *         false for ascending order, true for descending order
      * @return A {@link List} of all {@link ActorBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
@@ -141,7 +141,7 @@ public interface ActorService {
      * @param sortBy
      *         the property to sort by
      * @param sortOrder
-     *         true for ascending order, false for descending order
+     *         false for ascending order, true for descending order
      * @return A {@link List} of all {@link ActorBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
@@ -179,4 +179,28 @@ public interface ActorService {
      *         If an error occurs during the operation.
      */
     ActorBO jpaCreate(ActorBO actorBO) throws ServiceException;
+
+    /**
+     * Filters actors based on the provided filters and pagination.
+     *
+     * @param names
+     *         a list of names to filter by
+     * @param ages
+     *         a list of ages to filter by
+     * @param nationalities
+     *         a list of nationalities to filter by
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         false for ascending order, true for descending order
+     * @return a list of ActorBO objects that match the filters and pagination
+     * @throws NotFoundException
+     *         if no actors are found that match the filters
+     */
+    List<ActorBO> filterActors(List<String> names, List<Integer> ages, List<String> nationalities, int pageNumber,
+            int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
 }

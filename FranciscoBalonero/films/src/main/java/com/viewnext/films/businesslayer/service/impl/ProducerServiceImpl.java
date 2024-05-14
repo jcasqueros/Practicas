@@ -202,4 +202,26 @@ public class ProducerServiceImpl implements ProducerService {
             throw new ServiceException("The producer could not be created", e);
         }
     }
+
+    @Override
+    public List<ProducerBO> filterProducers(List<String> names, List<Integer> foundationYears, int pageNumber,
+            int pageSize, String sortBy, boolean sortOrder) throws ServiceException {
+        try {
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            // Busca produceres que coinciden con los filtros utilizando Criteria API
+            List<Producer> producers = producerCriteriaRepository.filterProducers(names, foundationYears, pageable);
+            if (!producers.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return producers.stream().map(converter::producerEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error filtering producers", e);
+            throw new ServiceException("The producers could not be filtered", e);
+        }
+    }
 }

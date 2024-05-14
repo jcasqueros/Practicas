@@ -12,6 +12,9 @@ import com.viewnext.films.persistencelayer.entity.Director;
 import com.viewnext.films.persistencelayer.entity.Producer;
 import com.viewnext.films.persistencelayer.entity.Serie;
 import com.viewnext.films.persistencelayer.repository.criteria.SerieCriteriaRepository;
+import com.viewnext.films.persistencelayer.repository.jpa.ActorJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.DirectorJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.ProducerJPARepository;
 import com.viewnext.films.persistencelayer.repository.jpa.SerieJPARepository;
 import com.viewnext.films.util.Converter;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +36,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,28 +52,39 @@ class SerieServiceImplTest {
 
     @Mock
     private Converter converter;
-
+    @Mock
+    private ActorJPARepository actorJPARepository;
+    @Mock
+    private DirectorJPARepository directorJPARepository;
+    @Mock
+    private ProducerJPARepository producerJPARepository;
     @InjectMocks
     private SerieServiceImpl serieService;
 
     private Serie serie;
     private SerieBO serieBO;
+    private DirectorBO directorBO;
+    private ActorBO actorBO;
+    private ProducerBO producerBO;
+    private Producer producer;
+    private Actor actor;
+    private Director director;
 
     @BeforeEach
     void setup() {
-        Actor actor = new Actor();
+        actor = new Actor();
         actor.setId(1L);
         actor.setAge(18);
         actor.setName("Jhon");
         actor.setNationality("spain");
 
-        Director director = new Director();
+        director = new Director();
         director.setId(2L);
         director.setAge(18);
         director.setName("James");
         director.setNationality("france");
 
-        Producer producer = new Producer();
+        producer = new Producer();
         producer.setId(1L);
         producer.setName("Paramount");
         producer.setFoundationYear(2003);
@@ -84,19 +99,19 @@ class SerieServiceImplTest {
         actors.add(actor);
         serie.setActors(actors);
 
-        ActorBO actorBO = new ActorBO();
+        actorBO = new ActorBO();
         actorBO.setId(1L);
         actorBO.setAge(18);
         actorBO.setName("Jhon");
         actorBO.setNationality("spain");
 
-        DirectorBO directorBO = new DirectorBO();
+        directorBO = new DirectorBO();
         directorBO.setId(2L);
         directorBO.setAge(18);
         directorBO.setName("James");
         directorBO.setNationality("france");
 
-        ProducerBO producerBO = new ProducerBO();
+        producerBO = new ProducerBO();
         producerBO.setId(1L);
         producerBO.setName("Paramount");
         producerBO.setFoundationYear(2003);
@@ -360,6 +375,84 @@ class SerieServiceImplTest {
         BDDMockito.given(converter.serieBOToEntity(serieBO)).willReturn(serie);
 
         assertThrows(ServiceException.class, () -> serieService.jpaCreate(serieBO));
+    }
+
+    @Test
+    @DisplayName("Filter series: correct case")
+    void givenFilters_whenFilterSeries_thenReturnListWithFilteredSeriesBO() throws ServiceException {
+
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "title";
+        boolean sortOrder = true;
+
+        List<Serie> series = List.of(serie);
+        BDDMockito.given(actorJPARepository.findByName(anyString())).willReturn(List.of(actor));
+        BDDMockito.given(directorJPARepository.findByName(anyString())).willReturn(List.of(director));
+        BDDMockito.given(producerJPARepository.findByName(anyString())).willReturn(List.of(producer));
+
+        BDDMockito.given(
+                        serieCriteriaRepository.filterSeries(List.of(serieBO.getTitle()), List.of(serieBO.getReleaseYear()),
+                                List.of(director), List.of(producer), List.of(actor),
+                                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willReturn(series);
+        BDDMockito.given(converter.serieEntityToBO(serie)).willReturn(serieBO);
+
+        List<SerieBO> result = serieService.filterSeries(List.of(serieBO.getTitle()), List.of(serieBO.getReleaseYear()),
+                List.of(director.getName()), List.of(producer.getName()), List.of(actor.getName()), pageNumber,
+                pageSize, sortBy, sortOrder);
+
+        assertThat(result).isNotNull().hasSize(1).contains(serieBO);
+    }
+
+    @Test
+    @DisplayName("Filter series: no series found")
+    void givenFilters_whenFilterSeries_thenThrowNotFoundException() throws ServiceException {
+
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "title";
+        boolean sortOrder = true;
+
+        BDDMockito.given(actorJPARepository.findByName(anyString())).willReturn(List.of(actor));
+        BDDMockito.given(directorJPARepository.findByName(anyString())).willReturn(List.of(director));
+        BDDMockito.given(producerJPARepository.findByName(anyString())).willReturn(List.of(producer));
+
+        BDDMockito.given(
+                        serieCriteriaRepository.filterSeries(List.of(serieBO.getTitle()), List.of(serieBO.getReleaseYear()),
+                                List.of(director), List.of(producer), List.of(actor),
+                                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willReturn(List.of());
+
+        assertThrows(NotFoundException.class,
+                () -> serieService.filterSeries(List.of(serieBO.getTitle()), List.of(serieBO.getReleaseYear()),
+                        List.of(director.getName()), List.of(producer.getName()), List.of(actor.getName()), pageNumber,
+                        pageSize, sortBy, sortOrder));
+    }
+
+    @Test
+    @DisplayName("Filter series: nested runtime exception")
+    void givenFilters_whenFilterSeries_thenThrowNestedRuntimeException() throws ServiceException {
+
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "title";
+        boolean sortOrder = true;
+
+        BDDMockito.given(actorJPARepository.findByName(anyString())).willReturn(List.of(actor));
+        BDDMockito.given(directorJPARepository.findByName(anyString())).willReturn(List.of(director));
+        BDDMockito.given(producerJPARepository.findByName(anyString())).willReturn(List.of(producer));
+
+        BDDMockito.given(
+                        serieCriteriaRepository.filterSeries(List.of(serieBO.getTitle()), List.of(serieBO.getReleaseYear()),
+                                List.of(director), List.of(producer), List.of(actor),
+                                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> serieService.filterSeries(List.of(serieBO.getTitle()), List.of(serieBO.getReleaseYear()),
+                        List.of(director.getName()), List.of(producer.getName()), List.of(actor.getName()), pageNumber,
+                        pageSize, sortBy, sortOrder));
     }
 
 }

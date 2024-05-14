@@ -4,6 +4,7 @@ import com.pracs.films.bussiness.bo.ProducerBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.ProducerService;
+import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
@@ -29,6 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProducerServiceImpl implements ProducerService {
 
+    private final ConstantMessages constantMessages;
+
     private final ModelToBoConverter modelToBoConverter;
 
     private final BoToModelConverter boToModelConverter;
@@ -36,10 +39,6 @@ public class ProducerServiceImpl implements ProducerService {
     private final ProducerRepository producerRepository;
 
     private final ProducerRepositoryImpl producerRepositoryCriteria;
-
-    private static final String errorProducer = "Producer not found";
-
-    private static final String errorService = "Error in service layer";
 
     @Override
     public ProducerBO save(ProducerBO producerBO) throws ServiceException {
@@ -53,7 +52,7 @@ public class ProducerServiceImpl implements ProducerService {
             return modelToBoConverter.producerModelToBo(
                     producerRepository.save(boToModelConverter.producerBoToModel(producerBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -64,7 +63,7 @@ public class ProducerServiceImpl implements ProducerService {
             // Búsqueda de un productor con el id introducido para comprobar que existe
             ProducerBO savedproducerBO = modelToBoConverter.producerModelToBo(
                     producerRepository.findById(producerBO.getId())
-                            .orElseThrow(() -> new EntityNotFoundException(errorProducer)));
+                            .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProducer())));
 
             //Actualización con los campos introducidos
             savedproducerBO.setName(producerBO.getName());
@@ -74,7 +73,7 @@ public class ProducerServiceImpl implements ProducerService {
             return modelToBoConverter.producerModelToBo(
                     producerRepository.save(boToModelConverter.producerBoToModel(savedproducerBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -83,8 +82,8 @@ public class ProducerServiceImpl implements ProducerService {
     public ProducerBO findById(long id) throws ServiceException {
         try {
             //Comprobar si existe ya un productor registrado con el mismo id.
-            return modelToBoConverter.producerModelToBo(
-                    producerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorProducer)));
+            return modelToBoConverter.producerModelToBo(producerRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProducer())));
         } catch (NestedRuntimeException e) {
             log.error("Error en la capa de servicio");
             throw new ServiceException(e.getLocalizedMessage());
@@ -98,17 +97,14 @@ public class ProducerServiceImpl implements ProducerService {
             Page<Producer> filmPage = producerRepository.findAll(pageable);
 
             if (filmPage.isEmpty()) {
-                throw new EmptyException("No producers");
+                throw new EmptyException(constantMessages.noProducers());
             }
 
             List<ProducerBO> prodoucerBOList = filmPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
-            Page<ProducerBO> producerBOPage = new PageImpl<>(prodoucerBOList, filmPage.getPageable(),
-                    filmPage.getTotalPages());
-
-            return producerBOPage;
+            return new PageImpl<>(prodoucerBOList, filmPage.getPageable(), filmPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -119,12 +115,12 @@ public class ProducerServiceImpl implements ProducerService {
             //Comprobar si el productor no existe
             if (!producerRepository.existsById(id)) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(errorProducer);
+                throw new EntityNotFoundException(constantMessages.errorProducer());
             }
 
             producerRepository.deleteById(id);
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -141,7 +137,7 @@ public class ProducerServiceImpl implements ProducerService {
             return modelToBoConverter.producerModelToBo(
                     producerRepositoryCriteria.saveProducer(boToModelConverter.producerBoToModel(producerBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -152,7 +148,7 @@ public class ProducerServiceImpl implements ProducerService {
             // Búsqueda de un productor con el id introducido para comprobar que existe
             ProducerBO savedproducerBO = modelToBoConverter.producerModelToBo(
                     producerRepositoryCriteria.findProducerById(producerBO.getId())
-                            .orElseThrow(() -> new EntityNotFoundException(errorProducer)));
+                            .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProducer())));
 
             //Actualización con los campos introducidos
             savedproducerBO.setName(producerBO.getName());
@@ -162,7 +158,7 @@ public class ProducerServiceImpl implements ProducerService {
             return modelToBoConverter.producerModelToBo(
                     producerRepositoryCriteria.updateProducer(boToModelConverter.producerBoToModel(savedproducerBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -172,7 +168,7 @@ public class ProducerServiceImpl implements ProducerService {
         try {
             // Conversión de model a bo del resultado de buscar un productor por id.
             return modelToBoConverter.producerModelToBo(producerRepositoryCriteria.findProducerById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(errorProducer)));
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProducer())));
         } catch (NestedRuntimeException e) {
             log.error("Error en la capa de servicio");
             throw new ServiceException(e.getLocalizedMessage());
@@ -186,17 +182,14 @@ public class ProducerServiceImpl implements ProducerService {
             Page<Producer> filmPage = producerRepositoryCriteria.findAllProducer(pageable);
 
             if (filmPage.isEmpty()) {
-                throw new EmptyException("No producers");
+                throw new EmptyException(constantMessages.noProducers());
             }
 
             List<ProducerBO> prodoucerBOList = filmPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
-            Page<ProducerBO> producerBOPage = new PageImpl<>(prodoucerBOList, filmPage.getPageable(),
-                    filmPage.getTotalPages());
-
-            return producerBOPage;
+            return new PageImpl<>(prodoucerBOList, filmPage.getPageable(), filmPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -209,14 +202,14 @@ public class ProducerServiceImpl implements ProducerService {
             Page<Producer> producerPage = producerRepositoryCriteria.findAllFilter(pageable, names, ages);
 
             if (producerPage.isEmpty()) {
-                throw new EmptyException("No producers");
+                throw new EmptyException(constantMessages.noProducers());
             }
 
             List<ProducerBO> producerBOList = producerPage.stream().map(modelToBoConverter::producerModelToBo).toList();
 
             return new PageImpl<>(producerBOList, producerPage.getPageable(), producerPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -227,12 +220,12 @@ public class ProducerServiceImpl implements ProducerService {
             //Comprobar si existe el productor con el id pasado
             if (producerRepositoryCriteria.findProducerById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(errorProducer);
+                throw new EntityNotFoundException(constantMessages.errorProducer());
             }
 
             producerRepositoryCriteria.deleteProducerById(producerRepositoryCriteria.findProducerById(id).get());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }

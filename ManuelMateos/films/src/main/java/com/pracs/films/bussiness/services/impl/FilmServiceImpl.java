@@ -4,6 +4,7 @@ import com.pracs.films.bussiness.bo.FilmBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.FilmService;
+import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
@@ -36,6 +37,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
 
+    private final ConstantMessages constantMessages;
+
     private final ModelToBoConverter modelToBoConverter;
 
     private final BoToModelConverter boToModelConverter;
@@ -50,10 +53,6 @@ public class FilmServiceImpl implements FilmService {
 
     private final FilmRepositoryImpl filmRepositoryCriteria;
 
-    private static final String errorProduction = "Production not found";
-
-    private static final String errorService = "Error in service layer";
-
     @Override
     public FilmBO save(FilmBO filmBO) throws ServiceException {
         try {
@@ -65,7 +64,7 @@ public class FilmServiceImpl implements FilmService {
             // Conversión de model a bo del resultado de crear un pelicula.
             return modelToBoConverter.filmModelToBo(filmRepository.save(boToModelConverter.filmBoToModel(filmBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -75,7 +74,7 @@ public class FilmServiceImpl implements FilmService {
         try {
             // Búsqueda de un pelicula con el id introducido para comprobar que existe
             FilmBO savedfilmBO = modelToBoConverter.filmModelToBo(filmRepository.findById(filmBO.getId())
-                    .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProduction())));
 
             //Actualización con los campos introducidos
             savedfilmBO.setTitle(filmBO.getTitle());
@@ -87,7 +86,7 @@ public class FilmServiceImpl implements FilmService {
             // Conversion de model a bo del resultado de guardar un pelicula
             return modelToBoConverter.filmModelToBo(filmRepository.save(boToModelConverter.filmBoToModel(savedfilmBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -96,8 +95,8 @@ public class FilmServiceImpl implements FilmService {
     public FilmBO findById(long id) throws ServiceException {
         try {
             //Comprobar si existe ya un pelicula registrado con el mismo id.
-            return modelToBoConverter.filmModelToBo(
-                    filmRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+            return modelToBoConverter.filmModelToBo(filmRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProduction())));
         } catch (NestedRuntimeException e) {
             log.error("Error en la capa de servicio");
             throw new ServiceException(e.getLocalizedMessage());
@@ -111,16 +110,14 @@ public class FilmServiceImpl implements FilmService {
             Page<Film> filmPage = filmRepository.findAll(pageable);
 
             if (filmPage.isEmpty()) {
-                throw new EmptyException("No films");
+                throw new EmptyException(constantMessages.noFilms());
             }
 
             List<FilmBO> filmBOList = filmPage.stream().map(modelToBoConverter::filmModelToBo).toList();
 
-            Page<FilmBO> filmBOPage = new PageImpl<>(filmBOList, filmPage.getPageable(), filmPage.getTotalPages());
-
-            return filmBOPage;
+            return new PageImpl<>(filmBOList, filmPage.getPageable(), filmPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -131,12 +128,12 @@ public class FilmServiceImpl implements FilmService {
             //Comprobar si el pelicula no existe
             if (!filmRepository.existsById(id)) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(errorProduction);
+                throw new EntityNotFoundException(constantMessages.errorProduction());
             }
 
             filmRepository.deleteById(id);
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -153,7 +150,7 @@ public class FilmServiceImpl implements FilmService {
             return modelToBoConverter.filmModelToBo(
                     filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -163,7 +160,7 @@ public class FilmServiceImpl implements FilmService {
         try {
             // Búsqueda de un pelicula con el id introducido para comprobar que existe
             FilmBO savedfilmBO = modelToBoConverter.filmModelToBo(filmRepositoryCriteria.findFilmById(filmBO.getId())
-                    .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProduction())));
 
             //Actualización con los campos introducidos
             savedfilmBO.setTitle(filmBO.getTitle());
@@ -176,7 +173,7 @@ public class FilmServiceImpl implements FilmService {
             return modelToBoConverter.filmModelToBo(
                     filmRepositoryCriteria.updateFilm(boToModelConverter.filmBoToModel(savedfilmBO)));
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -186,7 +183,7 @@ public class FilmServiceImpl implements FilmService {
         try {
             // Conversión de model a bo del resultado de buscar un pelicula por id.
             return modelToBoConverter.filmModelToBo(filmRepositoryCriteria.findFilmById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(errorProduction)));
+                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorProduction())));
         } catch (NestedRuntimeException e) {
             log.error("Error en la capa de servicio");
             throw new ServiceException(e.getLocalizedMessage());
@@ -200,16 +197,14 @@ public class FilmServiceImpl implements FilmService {
             Page<Film> filmPage = filmRepositoryCriteria.findAllFilm(pageable);
 
             if (filmPage.isEmpty()) {
-                throw new EmptyException("No films");
+                throw new EmptyException(constantMessages.noFilms());
             }
 
             List<FilmBO> filmBOList = filmPage.stream().map(modelToBoConverter::filmModelToBo).toList();
 
-            Page<FilmBO> filmBOPage = new PageImpl<>(filmBOList, filmPage.getPageable(), filmPage.getTotalPages());
-
-            return filmBOPage;
+            return new PageImpl<>(filmBOList, filmPage.getPageable(), filmPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -239,14 +234,14 @@ public class FilmServiceImpl implements FilmService {
                     producerList, actorList);
 
             if (filmPage.isEmpty()) {
-                throw new EmptyException("No films");
+                throw new EmptyException(constantMessages.noFilms());
             }
 
             List<FilmBO> filmsBOList = filmPage.stream().map(modelToBoConverter::filmModelToBo).toList();
 
             return new PageImpl<>(filmsBOList, filmPage.getPageable(), filmPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -257,12 +252,12 @@ public class FilmServiceImpl implements FilmService {
             //Comprobar si existe el pelicula con el id pasado
             if (filmRepositoryCriteria.findFilmById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(errorProduction);
+                throw new EntityNotFoundException(constantMessages.errorProduction());
             }
 
             filmRepositoryCriteria.deleteFilmById(filmRepositoryCriteria.findFilmById(id).get());
         } catch (NestedRuntimeException e) {
-            log.error(errorService);
+            log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
         }
     }

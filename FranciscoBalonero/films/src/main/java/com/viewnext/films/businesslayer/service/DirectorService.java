@@ -10,8 +10,7 @@ import java.util.List;
  * Service interface containing methods for managing directors.
  *
  * <p>This interface declares methods for retrieving, creating, updating, and deleting directors using both Criteria
- * and
- * JPA.</p>
+ * and JPA.</p>
  *
  * <p>Example usage:</p>
  * <pre>
@@ -81,7 +80,7 @@ public interface DirectorService {
      * @param sortBy
      *         the property to sort by
      * @param sortOrder
-     *         true for ascending order, false for descending order
+     *         false for ascending order, true for descending order
      * @return A {@link List} of all {@link DirectorBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
@@ -142,7 +141,7 @@ public interface DirectorService {
      * @param sortBy
      *         the property to sort by
      * @param sortOrder
-     *         true for ascending order, false for descending order
+     *         false for ascending order, true for descending order
      * @return A {@link List} of all {@link DirectorBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
@@ -180,4 +179,28 @@ public interface DirectorService {
      *         If an error occurs during the operation.
      */
     DirectorBO jpaCreate(DirectorBO directorBO) throws ServiceException;
+
+    /**
+     * Filters directors based on the provided filters and pagination.
+     *
+     * @param names
+     *         a list of names to filter by
+     * @param ages
+     *         a list of ages to filter by
+     * @param nationalities
+     *         a list of nationalities to filter by
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of items per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         false for ascending order, true for descending order
+     * @return a list of DirectorBO objects that match the filters and pagination
+     * @throws NotFoundException
+     *         if no directors are found that match the filters
+     */
+    List<DirectorBO> filterDirectors(List<String> names, List<Integer> ages, List<String> nationalities, int pageNumber,
+            int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
 }
