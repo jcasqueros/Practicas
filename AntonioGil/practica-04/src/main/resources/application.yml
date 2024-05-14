@@ -1,0 +1,12 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: bsan-practica04
+  profiles:
+    active:
+      - dev
+logging:
+  level:
+    root: INFO

@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: vn-practica04-dev
+  datasource:
+    url: jdbc:h2:file:./data/h2/db/bsan-practica04
+    username: practica04
+    password: 123
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
