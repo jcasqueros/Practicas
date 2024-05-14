@@ -1,8 +1,12 @@
 package com.pracs.films.configuration;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Getter
+@Data
+@RequiredArgsConstructor
+@Component
 public class ConstantMessages {
 
     private static final String NOACTORS = "No actors";

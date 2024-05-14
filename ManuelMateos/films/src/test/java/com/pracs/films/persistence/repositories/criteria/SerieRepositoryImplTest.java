@@ -127,12 +127,23 @@ class SerieRepositoryImplTest {
 
     @DisplayName("JUnit test for get all series filtered")
     @Test
-    void givenPageableAndAttributesList_whenFindAllSerieFilter_thenReturnSerieList() {
+    void givenPageableAndAttributesList_whenFindAllSerieFilter_thenReturnSerieListAsc() {
 
         Page<Serie> savedSeries = serieRepository.findAllFilter(PageRequest.of(0, 5, Sort.by("title").ascending()),
                 List.of(), List.of(2020), List.of(), List.of(), List.of());
 
         assertEquals(5, savedSeries.getNumberOfElements());
+    }
+
+    @DisplayName("JUnit test for get all series filtered")
+    @Test
+    void givenPageableAndAttributesList_whenFindAllSerieFilter_thenReturnSerieListDesc() {
+
+        Page<Serie> savedSeries = serieRepository.findAllFilter(PageRequest.of(0, 5, Sort.by("title").descending()),
+                List.of("mi sit amet lobortis sapien sapien non mi integer ac"), List.of(), List.of(), List.of(),
+                List.of());
+
+        assertEquals(1, savedSeries.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for delete a serie")
