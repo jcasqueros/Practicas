@@ -102,8 +102,9 @@ public class ActorController {
             }
         }
         try {
-            return new ResponseEntity<>(actorService.findAllFIlter(pageable, names, ages, nationalities).stream()
-                    .map(boToDtoConverter::actorBoToDtoOut).toList(), HttpStatus.OK);
+            return new ResponseEntity<>(
+                    actorService.findAll(pageable).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                    HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }
