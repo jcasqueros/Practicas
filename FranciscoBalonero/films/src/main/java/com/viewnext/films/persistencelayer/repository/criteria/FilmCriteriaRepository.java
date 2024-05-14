@@ -1,6 +1,9 @@
 package com.viewnext.films.persistencelayer.repository.criteria;
 
+import com.viewnext.films.persistencelayer.entity.Actor;
+import com.viewnext.films.persistencelayer.entity.Director;
 import com.viewnext.films.persistencelayer.entity.Film;
+import com.viewnext.films.persistencelayer.entity.Producer;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -78,4 +81,25 @@ public interface FilmCriteriaRepository {
      *         {@link Long} the ID of the {@link Film} to be deleted
      */
     void deleteFilm(Long id);
+
+    /**
+     * Filters films based on the provided criteria and returns a paginated list of results.
+     *
+     * @param titles
+     *         a list of film titles to filter by
+     * @param releaseYears
+     *         a list of release years to filter by
+     * @param directors
+     *         a list of directors to filter by
+     * @param producers
+     *         a list of producers to filter by
+     * @param actors
+     *         a list of actors to filter by
+     * @param pageable
+     *         pagination information, including page number and page size
+     * @return a list of films that match the provided filter criteria, paginated according to the provided pageable
+     *         object
+     */
+    List<Film> filterFilms(List<String> titles, List<Integer> releaseYears, List<Director> directors,
+            List<Producer> producers, List<Actor> actors, Pageable pageable);
 }

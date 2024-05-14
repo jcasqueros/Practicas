@@ -1,7 +1,5 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnex.bsan.practica04.bo.ProductionCompanyBo;
-import com.viewnex.bsan.practica04.entity.ProductionCompany;
 import com.viewnext.bsan.practica04.bo.ProductionCompanyBo;
 import com.viewnext.bsan.practica04.entity.ProductionCompany;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ContextConfiguration(classes = {ServiceLevelProductionCompanyMapperImpl.class})
 class ServiceLevelProductionCompanyMapperTest {
 
-    private ServiceLevelProductionCompanyMapper mapper;
+    private final ServiceLevelProductionCompanyMapper mapper;
 
     @Autowired
     public ServiceLevelProductionCompanyMapperTest(ServiceLevelProductionCompanyMapper mapper) {

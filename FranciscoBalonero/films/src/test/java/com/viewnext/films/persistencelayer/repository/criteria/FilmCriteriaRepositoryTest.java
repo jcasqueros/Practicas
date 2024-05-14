@@ -134,4 +134,118 @@ class FilmCriteriaRepositoryTest {
         assertThat(foundFilm).isEmpty();
 
     }
+
+    @Test
+    @DisplayName("Filter films by title operation")
+    void givenTitle_whenFilterFilmsByTitle_thenReturnFilteredFilms() {
+
+        Film createdFilm = filmCriteriaRepository.createFilm(film);
+
+        List<String> titles = new ArrayList<>();
+        titles.add("Friends");
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 films
+        List<Film> filteredFilms = filmCriteriaRepository.filterFilms(titles, null, null, null, null, pageable);
+
+        assertThat(filteredFilms).isNotNull();
+        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
+    }
+
+    @Test
+    @DisplayName("Filter films by release year operation")
+    void givenReleaseYear_whenFilterFilmsByReleaseYear_thenReturnFilteredFilms() {
+
+        Film createdFilm = filmCriteriaRepository.createFilm(film);
+
+        List<Integer> releaseYears = new ArrayList<>();
+        releaseYears.add(2004);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 films
+        List<Film> filteredFilms = filmCriteriaRepository.filterFilms(null, releaseYears, null, null, null, pageable);
+
+        assertThat(filteredFilms).isNotNull();
+        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
+    }
+
+    @Test
+    @DisplayName("Filter films by director operation")
+    void givenDirector_whenFilterFilmsByDirector_thenReturnFilteredFilms() {
+
+        Film createdFilm = filmCriteriaRepository.createFilm(film);
+
+        Director director = createdFilm.getDirector();
+        List<Director> directors = new ArrayList<>();
+        directors.add(director);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 films
+        List<Film> filteredFilms = filmCriteriaRepository.filterFilms(null, null, directors, null, null, pageable);
+
+        assertThat(filteredFilms).isNotNull();
+        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
+    }
+
+    @Test
+    @DisplayName("Filter films by producer operation")
+    void givenProducer_whenFilterFilmsByProducer_thenReturnFilteredFilms() {
+
+        Film createdFilm = filmCriteriaRepository.createFilm(film);
+
+        Producer producer = createdFilm.getProducer();
+        List<Producer> producers = new ArrayList<>();
+        producers.add(producer);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 films
+        List<Film> filteredFilms = filmCriteriaRepository.filterFilms(null, null, null, producers, null, pageable);
+
+        assertThat(filteredFilms).isNotNull();
+        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
+    }
+
+    @Test
+    @DisplayName("Filter films by actors operation")
+    void givenActor_whenFilterFilmsByActor_thenReturnFilteredFilms() {
+
+        Film createdFilm = filmCriteriaRepository.createFilm(film);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 films
+        List<Film> filteredFilms = filmCriteriaRepository.filterFilms(null, null, null, null, createdFilm.getActors(),
+                pageable);
+
+        assertThat(filteredFilms).isNotNull();
+        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
+    }
+
+    @Test
+    @DisplayName("Filter films by multiple criteria operation")
+    void givenMultipleCriteria_whenFilterFilmsByMultipleCriteria_thenReturnFilteredFilms() {
+
+        Film createdFilm = filmCriteriaRepository.createFilm(film);
+
+        List<String> titles = new ArrayList<>();
+        titles.add("Friends");
+
+        List<Integer> releaseYears = new ArrayList<>();
+        releaseYears.add(2004);
+
+        Director director = createdFilm.getDirector();
+        List<Director> directors = new ArrayList<>();
+        directors.add(director);
+
+        Producer producer = createdFilm.getProducer();
+        List<Producer> producers = new ArrayList<>();
+        producers.add(producer);
+
+        Pageable pageable = PageRequest.of(0, 10); // retrieve the first 10 films
+        List<Film> filteredFilms = filmCriteriaRepository.filterFilms(titles, releaseYears, directors, producers,
+                createdFilm.getActors(), pageable);
+
+        assertThat(filteredFilms).isNotNull();
+        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
+    }
 }

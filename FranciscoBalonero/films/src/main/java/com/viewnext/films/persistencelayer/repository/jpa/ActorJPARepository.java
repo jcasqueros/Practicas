@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Interface for performing CRUD operations on {@link com.viewnext.films.persistencelayer.entity.Actor}.
  *
@@ -25,6 +27,8 @@ public interface ActorJPARepository extends JpaRepository<Actor, Long> {
      *         the pagination and sorting information
      * @return a page of actors matching the pagination and sorting criteria
      */
-    
+
     Page<Actor> findAll(Pageable pageable);
+
+    List<Actor> findByName(String name);
 }

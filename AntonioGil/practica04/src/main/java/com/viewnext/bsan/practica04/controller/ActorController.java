@@ -2,8 +2,8 @@ package com.viewnext.bsan.practica04.controller;
 
 import com.viewnext.bsan.practica04.dto.ActorReadDto;
 import com.viewnext.bsan.practica04.dto.ActorUpsertDto;
-import com.viewnext.bsan.practica04.dto.request.PersonFilterDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
+import com.viewnext.bsan.practica04.util.request.PersonFilter;
+import com.viewnext.bsan.practica04.util.request.QueryOptions;
 import com.viewnext.bsan.practica04.service.ActorService;
 import com.viewnext.bsan.practica04.util.constants.RestApiPaths;
 import org.springframework.http.ResponseEntity;
@@ -28,15 +28,13 @@ public class ActorController {
     }
 
     @GetMapping("")
-    public List<ActorReadDto> getRoot(@ModelAttribute PersonFilterDto filter,
-                                      @ModelAttribute QueryOptionsDto queryOptions) {
+    public List<ActorReadDto> getRoot(@ModelAttribute PersonFilter filter, @ModelAttribute QueryOptions queryOptions) {
         // TODO: Implement read query with options
         return getAll(filter, queryOptions);
     }
 
     @GetMapping("/")
-    public List<ActorReadDto> getAll(@ModelAttribute PersonFilterDto filter,
-                                     @ModelAttribute QueryOptionsDto queryOptions) {
+    public List<ActorReadDto> getAll(@ModelAttribute PersonFilter filter, @ModelAttribute QueryOptions queryOptions) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

@@ -79,4 +79,17 @@ public interface ProducerCriteriaRepository {
      *         {@link Long} the ID of the {@link Producer} to be deleted
      */
     void deleteProducer(Long id);
+
+    /**
+     * Filter Producer by fields
+     *
+     * @param names
+     *         list of names
+     * @param foundationYears
+     *         list of foundation years
+     * @param pageable
+     *         {@link Pageable} the pagination and sorting information
+     * @return a {@link List} of all {@link Producer} filters.
+     */
+    List<Producer> filterProducers(List<String> names, List<Integer> foundationYears, Pageable pageable);
 }

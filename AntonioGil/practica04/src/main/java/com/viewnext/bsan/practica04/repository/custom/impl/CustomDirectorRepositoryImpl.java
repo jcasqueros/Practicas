@@ -9,6 +9,8 @@ import com.viewnext.bsan.practica04.repository.custom.CustomDirectorRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,63 +33,39 @@ public class CustomDirectorRepositoryImpl implements CustomDirectorRepository {
     }
 
     @Override
-    public List<Director> findAll() {
-        CriteriaQuery<Director> query = criteriaBuilder.createQuery(Director.class);
-        Root<Director> directors = query.from(Director.class);
+    public List<Director> findAll(Pageable pageable) {
+        // TODO: Re-do this method
+        return List.of();
+    }
 
-        query.select(directors);
-
-        return entityManager.createQuery(query).getResultList();
+    @Override
+    public List<Director> findAll(Specification<Director> spec, Pageable pageable) {
+        // TODO: Re-do this method
+        return List.of();
     }
 
     @Override
     public boolean existsById(long id) {
-        CriteriaQuery<Director> query = criteriaBuilder.createQuery(Director.class);
-        Root<Director> directors = query.from(Director.class);
-
-        Predicate idMatches = criteriaBuilder.equal(directors.get(Director_.id), id);
-        query.select(directors).where(idMatches);
-
-        try {
-            entityManager.createQuery(query).getSingleResult();
-            return true;
-        } catch (NoResultException ex) {
-            return false;
-        }
+        // TODO: Re-do this method
+        return false;
     }
 
     @Override
     public Optional<Director> findById(long id) {
-        CriteriaQuery<Director> query = criteriaBuilder.createQuery(Director.class);
-        Root<Director> directors = query.from(Director.class);
-
-        Predicate idMatches = criteriaBuilder.equal(directors.get(Director_.id), id);
-        query.select(directors).where(idMatches);
-
-        try {
-            Director foundEntity = entityManager.createQuery(query).getSingleResult();
-            return Optional.of(foundEntity);
-        } catch (NoResultException ex) {
-            return Optional.empty();
-        }
+        // TODO: Re-do this method
+        return Optional.empty();
     }
 
     @Override
     public Director save(Director director) {
-        entityManager.persist(director);
-        return director;
+        // TODO: Re-do this method
+        return null;
     }
 
     @Override
     public boolean deleteById(long id) {
-        CriteriaDelete<Director> query = criteriaBuilder.createCriteriaDelete(Director.class);
-        Root<Director> directors = query.from(Director.class);
-
-        Predicate idMatches = criteriaBuilder.equal(directors.get(Director_.id), id);
-        query.where(idMatches);
-
-        int updatedEntityCount = entityManager.createQuery(query).executeUpdate();
-
-        return updatedEntityCount > 0;
+        // TODO: Re-do this method
+        return false;
     }
+
 }

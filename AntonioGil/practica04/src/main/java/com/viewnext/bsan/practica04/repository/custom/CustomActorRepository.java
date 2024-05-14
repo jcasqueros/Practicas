@@ -1,6 +1,8 @@
 package com.viewnext.bsan.practica04.repository.custom;
 
 import com.viewnext.bsan.practica04.entity.Actor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,43 +15,16 @@ import java.util.Optional;
  */
 public interface CustomActorRepository {
 
-    /**
-     * Finds all actors registered in the system.
-     *
-     * @return A list containing all the actors registered in the system
-     */
-    List<Actor> findAll();
+    List<Actor> findAll(Pageable pageable);
 
-    /**
-     * Checks whether an actor with the given ID exists in the system.
-     *
-     * @param id The ID for the actor
-     * @return True if an actor with the given ID exists, false otherwise
-     */
+    List<Actor> findAll(Specification<Actor> spec, Pageable pageable);
+
     boolean existsById(long id);
 
-    /**
-     * Finds the actor with the given ID, if it exists.
-     *
-     * @param id The ID for the actor
-     * @return An {@code Optional} containing the found actor, or an empty {@code Optional} if it wasn't found
-     */
     Optional<Actor> findById(long id);
 
-    /**
-     * Saves the given actor to the system.
-     *
-     * @param actor The actor that shall be saved
-     * @return The actor as it was saved
-     */
     Actor save(Actor actor);
 
-    /**
-     * Deletes the actor with the given ID.
-     *
-     * @param id The ID for the actor that shall be deleted
-     * @return True if an actor was deleted, false otherwise
-     */
     boolean deleteById(long id);
 
 }

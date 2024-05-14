@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,4 +103,101 @@ class ActorCriteriaRepositoryTest {
         assertThat(foundActor).isEmpty();
 
     }
+
+    @Test
+    @DisplayName("Filter actors by name")
+    void givenName_whenFilterActors_thenReturnFilteredActors() {
+        // Arrange
+        Actor createdActor = actorCriteriaRepository.createActor(actor);
+        List<String> names = Arrays.asList("Jhon");
+        List<Integer> ages = null;
+        List<String> nationalities = null;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+
+        // Assert
+        assertThat(filteredActors).isNotNull();
+        assertThat(filteredActors.size()).isEqualTo(1);
+        assertThat(filteredActors.get(0).getName()).isEqualTo("Jhon");
+    }
+
+    @Test
+    @DisplayName("Filter actors by age")
+    void givenAge_whenFilterActors_thenReturnFilteredActors() {
+        // Arrange
+        Actor createdActor = actorCriteriaRepository.createActor(actor);
+        List<String> names = null;
+        List<Integer> ages = Arrays.asList(18);
+        List<String> nationalities = null;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+
+        // Assert
+        assertThat(filteredActors).isNotNull();
+        assertThat(filteredActors.size()).isEqualTo(1);
+        assertThat(filteredActors.get(0).getAge()).isEqualTo(18);
+    }
+
+    @Test
+    @DisplayName("Filter actors by nationality")
+    void givenNationality_whenFilterActors_thenReturnFilteredActors() {
+        // Arrange
+        Actor createdActor = actorCriteriaRepository.createActor(actor);
+        List<String> names = null;
+        List<Integer> ages = null;
+        List<String> nationalities = Arrays.asList("spain");
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+
+        // Assert
+        assertThat(filteredActors).isNotNull();
+        assertThat(filteredActors.size()).isEqualTo(1);
+        assertThat(filteredActors.get(0).getNationality()).isEqualTo("spain");
+    }
+
+    @Test
+    @DisplayName("Filter actors by multiple criteria")
+    void givenMultipleCriteria_whenFilterActors_thenReturnFilteredActors() {
+        // Arrange
+        Actor createdActor = actorCriteriaRepository.createActor(actor);
+        List<String> names = Arrays.asList("Jhon");
+        List<Integer> ages = Arrays.asList(18);
+        List<String> nationalities = Arrays.asList("spain");
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+
+        // Assert
+        assertThat(filteredActors).isNotNull();
+        assertThat(filteredActors.size()).isEqualTo(1);
+        assertThat(filteredActors.get(0).getName()).isEqualTo("Jhon");
+        assertThat(filteredActors.get(0).getAge()).isEqualTo(18);
+        assertThat(filteredActors.get(0).getNationality()).isEqualTo("spain");
+    }
+
+    @Test
+    @DisplayName("Filter actors with no criteria")
+    void givenNoCriteria_whenFilterActors_thenReturnAllActors() {
+        // Arrange
+        Actor createdActor = actorCriteriaRepository.createActor(actor);
+        List<String> names = null;
+        List<Integer> ages = null;
+        List<String> nationalities = null;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Act
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+
+        // Assert
+        assertThat(filteredActors).isNotNull();
+        assertThat(filteredActors.size()).isEqualTo(1); // assuming there are 10 actors in the database
+    }
+
 }

@@ -1,7 +1,5 @@
 package com.viewnext.bsan.practica04.repository;
 
-import com.viewnex.bsan.practica04.entity.ProductionCompany;
-import com.viewnex.bsan.practica04.sampledata.ProductionCompanySampleData;
 import com.viewnext.bsan.practica04.entity.ProductionCompany;
 import com.viewnext.bsan.practica04.sampledata.ProductionCompanySampleData;
 import org.junit.jupiter.api.DisplayName;

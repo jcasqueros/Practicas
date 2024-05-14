@@ -2,8 +2,8 @@ package com.viewnext.bsan.practica04.controller;
 
 import com.viewnext.bsan.practica04.dto.FilmReadDto;
 import com.viewnext.bsan.practica04.dto.FilmUpsertDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
-import com.viewnext.bsan.practica04.dto.request.WatchableFilterDto;
+import com.viewnext.bsan.practica04.util.request.QueryOptions;
+import com.viewnext.bsan.practica04.util.request.WatchableFilter;
 import com.viewnext.bsan.practica04.service.FilmService;
 import com.viewnext.bsan.practica04.util.constants.RestApiPaths;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +28,14 @@ public class FilmController {
     }
 
     @GetMapping("")
-    public List<FilmReadDto> getRoot(@ModelAttribute WatchableFilterDto filter,
-                                     @ModelAttribute QueryOptionsDto queryOptions) {
+    public List<FilmReadDto> getRoot(@ModelAttribute WatchableFilter filter,
+                                     @ModelAttribute QueryOptions queryOptions) {
         return getAll(filter, queryOptions);
     }
 
     @GetMapping("/")
-    public List<FilmReadDto> getAll(@ModelAttribute WatchableFilterDto filter,
-                                    @ModelAttribute QueryOptionsDto queryOptions) {
+    public List<FilmReadDto> getAll(@ModelAttribute WatchableFilter filter,
+                                    @ModelAttribute QueryOptions queryOptions) {
         // TODO: Implement read query
         throw new UnsupportedOperationException("Not yet implemented");
     }

@@ -311,5 +311,64 @@ class ProducerServiceImplTest {
         assertThrows(ServiceException.class, () -> producerService.jpaCreate(producerBO));
     }
 
+    @Test
+    @DisplayName("Filter producers: correct case")
+    void givenFilters_whenFilterProducers_thenReturnListWithFilteredProducersBO() throws ServiceException {
+
+        List<String> names = List.of("Producer 1", "PRV16");
+        List<Integer> foundationYears = List.of(2000, 2010);
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        List<Producer> producers = List.of(producer);
+        BDDMockito.given(producerCriteriaRepository.filterProducers(names, foundationYears,
+                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending())))).willReturn(producers);
+        BDDMockito.given(converter.producerEntityToBO(producer)).willReturn(producerBO);
+
+        List<ProducerBO> result = producerService.filterProducers(names, foundationYears, pageNumber, pageSize, sortBy,
+                sortOrder);
+
+        assertThat(result).isNotNull().hasSize(1).contains(producerBO);
+    }
+
+    @Test
+    @DisplayName("Filter producers: no producers found")
+    void givenFilters_whenFilterProducers_thenThrowNotFoundException() throws ServiceException {
+
+        List<String> names = List.of("Producer 1", "PRV18");
+        List<Integer> foundationYears = List.of(2000, 2010);
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        BDDMockito.given(producerCriteriaRepository.filterProducers(names, foundationYears,
+                PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending())))).willReturn(List.of());
+
+        assertThrows(NotFoundException.class,
+                () -> producerService.filterProducers(names, foundationYears, pageNumber, pageSize, sortBy, sortOrder));
+    }
+
+    @Test
+    @DisplayName("Filter producers: nested runtime exception")
+    void givenFilters_whenFilterProducers_thenThrowNestedRuntimeException() throws ServiceException {
+
+        List<String> names = List.of("Producer 1", "PRV20");
+        List<Integer> foundationYears = List.of(2000, 2010);
+        int pageNumber = 0;
+        int pageSize = 10;
+        String sortBy = "name";
+        boolean sortOrder = true;
+
+        BDDMockito.given(producerCriteriaRepository.filterProducers(names, foundationYears,
+                        PageRequest.of(pageNumber, pageSize).withSort((Sort.by(sortBy).descending()))))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> producerService.filterProducers(names, foundationYears, pageNumber, pageSize, sortBy, sortOrder));
+    }
+
 }
 

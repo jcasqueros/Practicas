@@ -1,9 +1,8 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnex.bsan.practica04.bo.ProductionCompanyBo;
-import com.viewnex.bsan.practica04.dto.ProductionCompanyReadDto;
-import com.viewnex.bsan.practica04.dto.ProductionCompanyUpsertDto;
 import com.viewnext.bsan.practica04.bo.ProductionCompanyBo;
+import com.viewnext.bsan.practica04.dto.ProductionCompanyReadDto;
+import com.viewnext.bsan.practica04.dto.ProductionCompanyUpsertDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ContextConfiguration(classes = {ControllerLevelProductionCompanyMapperImpl.class})
 class ControllerLevelProductionCompanyMapperTest {
 
-    private ControllerLevelProductionCompanyMapper mapper;
+    private final ControllerLevelProductionCompanyMapper mapper;
 
     @Autowired
     public ControllerLevelProductionCompanyMapperTest(ControllerLevelProductionCompanyMapper mapper) {

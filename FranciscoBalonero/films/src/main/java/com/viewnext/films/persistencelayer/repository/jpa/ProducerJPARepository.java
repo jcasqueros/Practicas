@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Interface for performing CRUD operations on {@link com.viewnext.films.persistencelayer.entity.Producer}.
  *
@@ -28,4 +30,6 @@ public interface ProducerJPARepository extends JpaRepository<Producer, Long> {
      */
 
     Page<Producer> findAll(Pageable pageable);
+
+    List<Producer> findByName(String name);
 }

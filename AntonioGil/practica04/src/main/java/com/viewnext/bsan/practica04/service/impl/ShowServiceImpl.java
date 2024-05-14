@@ -1,20 +1,12 @@
 package com.viewnext.bsan.practica04.service.impl;
 
 import com.viewnext.bsan.practica04.bo.ShowBo;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
-import com.viewnext.bsan.practica04.dto.request.WatchableFilterDto;
-import com.viewnext.bsan.practica04.entity.Show;
-import com.viewnext.bsan.practica04.exception.service.BadInputDataException;
-import com.viewnext.bsan.practica04.exception.service.DuplicateUniqueFieldException;
-import com.viewnext.bsan.practica04.exception.service.MissingRequiredFieldException;
-import com.viewnext.bsan.practica04.exception.service.ResourceNotFoundException;
+import com.viewnext.bsan.practica04.util.request.QueryOptions;
+import com.viewnext.bsan.practica04.util.request.WatchableFilter;
 import com.viewnext.bsan.practica04.repository.ShowRepository;
 import com.viewnext.bsan.practica04.repository.custom.CustomShowRepository;
 import com.viewnext.bsan.practica04.service.ShowService;
-import com.viewnext.bsan.practica04.util.MessageBuilder;
-import com.viewnext.bsan.practica04.util.constants.Messages;
 import com.viewnext.bsan.practica04.util.mapper.ServiceLevelShowMapper;
-import com.viewnext.bsan.practica04.repository.custom.CustomShowRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -45,7 +37,7 @@ public class ShowServiceImpl implements ShowService {
 
 
     @Override
-    public List<ShowBo> getAll(WatchableFilterDto filter, QueryOptionsDto queryOptions) {
+    public List<ShowBo> getAll(WatchableFilter filter, QueryOptions queryOptions) {
         // TODO: Re-do this method
         return List.of();
     }

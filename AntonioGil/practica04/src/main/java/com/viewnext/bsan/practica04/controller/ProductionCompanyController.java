@@ -2,14 +2,8 @@ package com.viewnext.bsan.practica04.controller;
 
 import com.viewnext.bsan.practica04.dto.ProductionCompanyReadDto;
 import com.viewnext.bsan.practica04.dto.ProductionCompanyUpsertDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
-import com.viewnext.bsan.practica04.dto.request.ProductionCompanyFilterDto;
-import com.viewnext.bsan.practica04.service.ProductionCompanyService;
-import com.viewnext.bsan.practica04.util.constants.RestApiPaths;
-import com.viewnext.bsan.practica04.dto.ProductionCompanyReadDto;
-import com.viewnext.bsan.practica04.dto.ProductionCompanyUpsertDto;
-import com.viewnext.bsan.practica04.dto.request.ProductionCompanyFilterDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
+import com.viewnext.bsan.practica04.util.request.QueryOptions;
+import com.viewnext.bsan.practica04.util.request.ProductionCompanyFilter;
 import com.viewnext.bsan.practica04.service.ProductionCompanyService;
 import com.viewnext.bsan.practica04.util.constants.RestApiPaths;
 import org.springframework.http.ResponseEntity;
@@ -34,14 +28,14 @@ public class ProductionCompanyController {
     }
 
     @GetMapping("")
-    public List<ProductionCompanyReadDto> getRoot(@ModelAttribute ProductionCompanyFilterDto filter,
-                                                  @ModelAttribute QueryOptionsDto queryOptions) {
+    public List<ProductionCompanyReadDto> getRoot(@ModelAttribute ProductionCompanyFilter filter,
+                                                  @ModelAttribute QueryOptions queryOptions) {
         return getAll(filter, queryOptions);
     }
 
     @GetMapping("/")
-    public List<ProductionCompanyReadDto> getAll(@ModelAttribute ProductionCompanyFilterDto filter,
-                                                 @ModelAttribute QueryOptionsDto queryOptions) {
+    public List<ProductionCompanyReadDto> getAll(@ModelAttribute ProductionCompanyFilter filter,
+                                                 @ModelAttribute QueryOptions queryOptions) {
         // TODO: Implement read query
         throw new UnsupportedOperationException("Not yet implemented");
     }

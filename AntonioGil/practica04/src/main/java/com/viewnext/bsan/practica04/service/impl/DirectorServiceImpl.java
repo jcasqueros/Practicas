@@ -1,20 +1,12 @@
 package com.viewnext.bsan.practica04.service.impl;
 
 import com.viewnext.bsan.practica04.bo.DirectorBo;
-import com.viewnext.bsan.practica04.dto.request.PersonFilterDto;
-import com.viewnext.bsan.practica04.dto.request.QueryOptionsDto;
-import com.viewnext.bsan.practica04.entity.Director;
-import com.viewnext.bsan.practica04.exception.service.BadInputDataException;
-import com.viewnext.bsan.practica04.exception.service.DuplicateUniqueFieldException;
-import com.viewnext.bsan.practica04.exception.service.MissingRequiredFieldException;
-import com.viewnext.bsan.practica04.exception.service.ResourceNotFoundException;
+import com.viewnext.bsan.practica04.util.request.PersonFilter;
+import com.viewnext.bsan.practica04.util.request.QueryOptions;
 import com.viewnext.bsan.practica04.repository.DirectorRepository;
 import com.viewnext.bsan.practica04.repository.custom.CustomDirectorRepository;
 import com.viewnext.bsan.practica04.service.DirectorService;
-import com.viewnext.bsan.practica04.util.MessageBuilder;
-import com.viewnext.bsan.practica04.util.constants.Messages;
 import com.viewnext.bsan.practica04.util.mapper.ServiceLevelDirectorMapper;
-import com.viewnext.bsan.practica04.repository.custom.CustomDirectorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -44,7 +36,7 @@ public class DirectorServiceImpl implements DirectorService {
     }
 
     @Override
-    public List<DirectorBo> getAll(PersonFilterDto filter, QueryOptionsDto queryOptions) {
+    public List<DirectorBo> getAll(PersonFilter filter, QueryOptions queryOptions) {
         // TODO: Re-do this method
         return List.of();
     }

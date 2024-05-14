@@ -1,13 +1,5 @@
 package com.viewnext.bsan.practica04.repository;
 
-import com.viewnex.bsan.practica04.entity.Actor;
-import com.viewnex.bsan.practica04.entity.Director;
-import com.viewnex.bsan.practica04.entity.ProductionCompany;
-import com.viewnex.bsan.practica04.entity.Show;
-import com.viewnex.bsan.practica04.sampledata.ActorSampleData;
-import com.viewnex.bsan.practica04.sampledata.DirectorSampleData;
-import com.viewnex.bsan.practica04.sampledata.ProductionCompanySampleData;
-import com.viewnex.bsan.practica04.sampledata.ShowSampleData;
 import com.viewnext.bsan.practica04.entity.Actor;
 import com.viewnext.bsan.practica04.entity.Director;
 import com.viewnext.bsan.practica04.entity.ProductionCompany;

@@ -9,6 +9,8 @@ import com.viewnext.bsan.practica04.repository.custom.CustomProductionCompanyRep
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,64 +33,39 @@ public class CustomProductionCompanyRepositoryImpl implements CustomProductionCo
     }
 
     @Override
-    public List<ProductionCompany> findAll() {
-        CriteriaQuery<ProductionCompany> query = criteriaBuilder.createQuery(ProductionCompany.class);
-        Root<ProductionCompany> companies = query.from(ProductionCompany.class);
+    public List<ProductionCompany> findAll(Pageable pageable) {
+        // TODO: Re-do this method
+        return List.of();
+    }
 
-        query.select(companies);
-
-        return entityManager.createQuery(query).getResultList();
+    @Override
+    public List<ProductionCompany> findAll(Specification<ProductionCompany> spec, Pageable pageable) {
+        // TODO: Re-do this method
+        return List.of();
     }
 
     @Override
     public boolean existsById(long id) {
-        CriteriaQuery<ProductionCompany> query = criteriaBuilder.createQuery(ProductionCompany.class);
-        Root<ProductionCompany> companies = query.from(ProductionCompany.class);
-
-        Predicate idMatches = criteriaBuilder.equal(companies.get(ProductionCompany_.id), id);
-        query.select(companies).where(idMatches);
-
-        try {
-            entityManager.createQuery(query).getSingleResult();
-            return true;
-        } catch (NoResultException ex) {
-            return false;
-        }
+        // TODO: Re-do this method
+        return false;
     }
 
     @Override
     public Optional<ProductionCompany> findById(long id) {
-        CriteriaQuery<ProductionCompany> query = criteriaBuilder.createQuery(ProductionCompany.class);
-        Root<ProductionCompany> companies = query.from(ProductionCompany.class);
-
-        Predicate idMatches = criteriaBuilder.equal(companies.get(ProductionCompany_.id), id);
-        query.select(companies).where(idMatches);
-
-        try {
-            ProductionCompany foundEntity = entityManager.createQuery(query).getSingleResult();
-            return Optional.of(foundEntity);
-        } catch (NoResultException ex) {
-            return Optional.empty();
-        }
+        // TODO: Re-do this method
+        return Optional.empty();
     }
 
     @Override
     public ProductionCompany save(ProductionCompany company) {
-        entityManager.persist(company);
-        return company;
+        // TODO: Re-do this method
+        return null;
     }
 
     @Override
     public boolean deleteById(long id) {
-        CriteriaDelete<ProductionCompany> query = criteriaBuilder.createCriteriaDelete(ProductionCompany.class);
-        Root<ProductionCompany> companies = query.from(ProductionCompany.class);
-
-        Predicate idMatches = criteriaBuilder.equal(companies.get(ProductionCompany_.id), id);
-        query.where(idMatches);
-
-        int updatedEntityCount = entityManager.createQuery(query).executeUpdate();
-
-        return updatedEntityCount > 0;
+        // TODO: Re-do this method
+        return false;
     }
 
 }

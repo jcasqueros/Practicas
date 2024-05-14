@@ -1,7 +1,5 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnex.bsan.practica04.bo.ActorBo;
-import com.viewnex.bsan.practica04.entity.Actor;
 import com.viewnext.bsan.practica04.bo.ActorBo;
 import com.viewnext.bsan.practica04.entity.Actor;
 import org.junit.jupiter.api.DisplayName;

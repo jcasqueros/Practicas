@@ -79,4 +79,7 @@ public interface DirectorCriteriaRepository {
      *         {@link Long} the ID of the {@link Director} to be deleted
      */
     void deleteDirector(Long id);
+
+    List<Director> filterDirectors(List<String> names, List<Integer> ages, List<String> nationalities,
+            Pageable pageable);
 }

@@ -4,9 +4,15 @@ import com.viewnext.films.businesslayer.bo.FilmBO;
 import com.viewnext.films.businesslayer.exception.NotFoundException;
 import com.viewnext.films.businesslayer.exception.ServiceException;
 import com.viewnext.films.businesslayer.service.FilmService;
+import com.viewnext.films.persistencelayer.entity.Actor;
+import com.viewnext.films.persistencelayer.entity.Director;
 import com.viewnext.films.persistencelayer.entity.Film;
+import com.viewnext.films.persistencelayer.entity.Producer;
 import com.viewnext.films.persistencelayer.repository.criteria.FilmCriteriaRepository;
+import com.viewnext.films.persistencelayer.repository.jpa.ActorJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.DirectorJPARepository;
 import com.viewnext.films.persistencelayer.repository.jpa.FilmJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.ProducerJPARepository;
 import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +56,18 @@ public class FilmServiceImpl implements FilmService {
      * The converter for converting between entity and business objects.
      */
     private final Converter converter;
+    /**
+     * The Actor JPA repository.
+     */
+    private final ActorJPARepository actorJPARepository;
+    /**
+     * The Director JPA repository.
+     */
+    private final DirectorJPARepository directorJPARepository;
+    /**
+     * The Producer JPA repository.
+     */
+    private final ProducerJPARepository producerJPARepository;
 
     // Métodos para interactuar con la capa de persistencia utilizando Criteria API
     @Override
@@ -198,4 +217,43 @@ public class FilmServiceImpl implements FilmService {
             throw new ServiceException("The film could not be created", e);
         }
     }
+
+    @Override
+    public List<FilmBO> filterFilms(List<String> titles, List<Integer> releaseYears, List<String> directors,
+            List<String> producers, List<String> actors, int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException {
+        try {
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            List<Director> foundDirectors = new ArrayList<>();
+            List<Actor> foundActors = new ArrayList<>();
+            List<Producer> foundProducers = new ArrayList<>();
+
+            if (directors != null && !directors.isEmpty()) {
+                directors.forEach(s -> foundDirectors.addAll(directorJPARepository.findByName(s)));
+            }
+            if (producers != null && !producers.isEmpty()) {
+                producers.forEach(s -> foundProducers.addAll(producerJPARepository.findByName(s)));
+            }
+            if (actors != null && !actors.isEmpty()) {
+                actors.forEach(s -> foundActors.addAll(actorJPARepository.findByName(s)));
+            }
+            // Busca películas que coinciden con los filtros utilizando Criteria API
+            List<Film> films = filmCriteriaRepository.filterFilms(titles, releaseYears, foundDirectors, foundProducers,
+                    foundActors, pageable);
+
+            if (!films.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return films.stream().map(converter::filmEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error filtering films", e);
+            throw new ServiceException("The films could not be filtered", e);
+        }
+    }
+
 }

@@ -5,14 +5,12 @@ import com.viewnext.films.persistencelayer.repository.criteria.ProducerCriteriaR
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,5 +107,37 @@ public class ProducerCriteriaRepositoryImpl implements ProducerCriteriaRepositor
         if (producer != null) {
             entityManager.remove(producer);
         }
+    }
+
+    @Override
+    public List<Producer> filterProducers(List<String> names, List<Integer> foundationYears, Pageable pageable) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Producer> criteriaQuery = criteriaBuilder.createQuery(Producer.class);
+        Root<Producer> root = criteriaQuery.from(Producer.class);
+
+        // Agrega condiciones de filtrado
+        List<Predicate> predicates = new ArrayList<>();
+        if (names != null && !names.isEmpty()) {
+            predicates.add(root.get("name").in(names));
+        }
+        if (foundationYears != null && !foundationYears.isEmpty()) {
+            predicates.add(root.get("foundationYear").in(foundationYears));
+        }
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        // Agrega ordenación
+        if (pageable.getSort().isSorted()) {
+            List<Order> orders = pageable.getSort().stream().map(order -> order.isAscending()
+                    ? criteriaBuilder.asc(root.get(order.getProperty()))
+                    : criteriaBuilder.desc(root.get(order.getProperty()))).toList();
+            criteriaQuery.orderBy(orders);
+        }
+
+        // Agrega paginación
+        TypedQuery<Producer> query = entityManager.createQuery(criteriaQuery);
+        query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        query.setMaxResults(pageable.getPageSize());
+
+        return query.getResultList();
     }
 }

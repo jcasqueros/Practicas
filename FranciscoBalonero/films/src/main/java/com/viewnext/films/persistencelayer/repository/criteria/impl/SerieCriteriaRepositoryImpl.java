@@ -1,18 +1,19 @@
 package com.viewnext.films.persistencelayer.repository.criteria.impl;
 
+import com.viewnext.films.persistencelayer.entity.Actor;
+import com.viewnext.films.persistencelayer.entity.Director;
+import com.viewnext.films.persistencelayer.entity.Producer;
 import com.viewnext.films.persistencelayer.entity.Serie;
 import com.viewnext.films.persistencelayer.repository.criteria.SerieCriteriaRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,5 +110,47 @@ public class SerieCriteriaRepositoryImpl implements SerieCriteriaRepository {
         if (serie != null) {
             entityManager.remove(serie);
         }
+    }
+
+    @Override
+    public List<Serie> filterSeries(List<String> titles, List<Integer> releaseYears, List<Director> directors,
+            List<Producer> producers, List<Actor> actors, Pageable pageable) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Serie> criteriaQuery = criteriaBuilder.createQuery(Serie.class);
+        Root<Serie> root = criteriaQuery.from(Serie.class);
+
+        // Agrega condiciones de filtrado
+        List<Predicate> predicates = new ArrayList<>();
+        if (titles != null && !titles.isEmpty()) {
+            predicates.add(root.get("title").in(titles));
+        }
+        if (releaseYears != null && !releaseYears.isEmpty()) {
+            predicates.add(root.get("releaseYear").in(releaseYears));
+        }
+        if (directors != null && !directors.isEmpty()) {
+            predicates.add(root.get("director").in(directors));
+        }
+        if (producers != null && !producers.isEmpty()) {
+            predicates.add(root.get("producer").in(producers));
+        }
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+        if (actors != null && !actors.isEmpty()) {
+            Join<Serie, Actor> actorJoin = root.join("actors", JoinType.INNER);
+            predicates.add(actorJoin.in(actors));
+        }
+        // Agrega ordenación
+        if (pageable.getSort().isSorted()) {
+            List<Order> orders = pageable.getSort().stream().map(order -> order.isAscending()
+                    ? criteriaBuilder.asc(root.get(order.getProperty()))
+                    : criteriaBuilder.desc(root.get(order.getProperty()))).toList();
+            criteriaQuery.orderBy(orders);
+        }
+
+        // Agrega paginación
+        TypedQuery<Serie> query = entityManager.createQuery(criteriaQuery);
+        query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        query.setMaxResults(pageable.getPageSize());
+
+        return query.getResultList();
     }
 }

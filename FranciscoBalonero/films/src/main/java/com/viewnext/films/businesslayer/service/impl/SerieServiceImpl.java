@@ -4,8 +4,14 @@ import com.viewnext.films.businesslayer.bo.SerieBO;
 import com.viewnext.films.businesslayer.exception.NotFoundException;
 import com.viewnext.films.businesslayer.exception.ServiceException;
 import com.viewnext.films.businesslayer.service.SerieService;
+import com.viewnext.films.persistencelayer.entity.Actor;
+import com.viewnext.films.persistencelayer.entity.Director;
+import com.viewnext.films.persistencelayer.entity.Producer;
 import com.viewnext.films.persistencelayer.entity.Serie;
 import com.viewnext.films.persistencelayer.repository.criteria.SerieCriteriaRepository;
+import com.viewnext.films.persistencelayer.repository.jpa.ActorJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.DirectorJPARepository;
+import com.viewnext.films.persistencelayer.repository.jpa.ProducerJPARepository;
 import com.viewnext.films.persistencelayer.repository.jpa.SerieJPARepository;
 import com.viewnext.films.util.Converter;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +56,9 @@ public class SerieServiceImpl implements SerieService {
      * The converter for converting between entity and business objects.
      */
     private final Converter converter;
+    private final ActorJPARepository actorJPARepository;
+    private final DirectorJPARepository directorJPARepository;
+    private final ProducerJPARepository producerJPARepository;
 
     // Métodos para interactuar con la capa de persistencia utilizando Criteria API
     @Override
@@ -197,6 +207,44 @@ public class SerieServiceImpl implements SerieService {
             // Maneja excepciones y registra un error en el log
             log.error("Error creating serie: {}", serieBO, e);
             throw new ServiceException("The serie could not be created", e);
+        }
+    }
+
+    @Override
+    public List<SerieBO> filterSeries(List<String> titles, List<Integer> releaseYears, List<String> directors,
+            List<String> producers, List<String> actors, int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException {
+        try {
+            // Crea un objeto Pageable con la información de paginación y ordenación
+            Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNumber)
+                    .withSort((sortOrder ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending()));
+            List<Director> foundDirectors = new ArrayList<>();
+            List<Actor> foundActors = new ArrayList<>();
+            List<Producer> foundProducers = new ArrayList<>();
+
+            if (directors != null && !directors.isEmpty()) {
+                directors.forEach(s -> foundDirectors.addAll(directorJPARepository.findByName(s)));
+            }
+            if (producers != null && !producers.isEmpty()) {
+                producers.forEach(s -> foundProducers.addAll(producerJPARepository.findByName(s)));
+            }
+            if (actors != null && !actors.isEmpty()) {
+                actors.forEach(s -> foundActors.addAll(actorJPARepository.findByName(s)));
+            }
+            // Busca películas que coinciden con los filtros utilizando Criteria API
+            List<Serie> series = serieCriteriaRepository.filterSeries(titles, releaseYears, foundDirectors,
+                    foundProducers, foundActors, pageable);
+
+            if (!series.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return series.stream().map(converter::serieEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error filtering series", e);
+            throw new ServiceException("The series could not be filtered", e);
         }
     }
 }

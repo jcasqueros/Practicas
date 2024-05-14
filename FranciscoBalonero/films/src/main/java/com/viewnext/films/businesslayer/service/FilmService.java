@@ -80,7 +80,7 @@ public interface FilmService {
      * @param sortBy
      *         the property to sort by
      * @param sortOrder
-     *         true for ascending order, false for descending order
+     *         false for ascending order, true for descending order
      * @return A {@link List} of all {@link FilmBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
@@ -140,7 +140,7 @@ public interface FilmService {
      * @param sortBy
      *         the property to sort by
      * @param sortOrder
-     *         true for ascending order, false for descending order
+     *         false for ascending order, true for descending order
      * @return A {@link List} of all {@link FilmBO} matching the pagination and sorting criteria.
      * @throws ServiceException
      *         If an error occurs during the operation.
@@ -178,4 +178,35 @@ public interface FilmService {
      *         If an error occurs during the operation.
      */
     FilmBO jpaCreate(FilmBO filmBO) throws ServiceException;
+
+    /**
+     * Filters films based on the provided criteria and returns a paginated list of results.
+     *
+     * @param titles
+     *         a list of film titles to filter by
+     * @param releaseYears
+     *         a list of release years to filter by
+     * @param directors
+     *         a list of directors to filter by
+     * @param producers
+     *         a list of producers to filter by
+     * @param actors
+     *         a list of actors to filter by
+     * @param pageNumber
+     *         the page number to retrieve
+     * @param pageSize
+     *         the number of results per page
+     * @param sortBy
+     *         the property to sort by
+     * @param sortOrder
+     *         whether to sort in ascending (true) or descending (false) order
+     * @return a list of film business objects that match the provided filter criteria, paginated according to the
+     *         provided page number and page size
+     * @throws ServiceException
+     *         if an error occurs while filtering films
+     */
+    List<FilmBO> filterFilms(List<String> titles, List<Integer> releaseYears, List<String> directors,
+            List<String> producers, List<String> actors, int pageNumber, int pageSize, String sortBy, boolean sortOrder)
+            throws ServiceException;
+
 }

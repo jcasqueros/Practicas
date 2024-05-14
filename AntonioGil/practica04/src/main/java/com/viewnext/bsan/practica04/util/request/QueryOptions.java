@@ -1,4 +1,4 @@
-package com.viewnext.bsan.practica04.dto.request;
+package com.viewnext.bsan.practica04.util.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.BindParam;
 import java.util.Optional;
 
 /**
- * The {@code QueryOptionsDto} class is a DTO (data transfer object) class that contains generic options for read
- * queries, such as pagination or sorting.
+ * The {@code QueryOptions} class contains generic options for read queries, such as pagination or sorting. These
+ * objects are meant to be passed as parameters to controllers and services.
  *
  * @author Antonio Gil
  */
@@ -19,7 +19,7 @@ import java.util.Optional;
 @Setter
 @AllArgsConstructor
 @ToString
-public class QueryOptionsDto {
+public class QueryOptions {
 
     @BindParam("use_custom_repository")
     Optional<Boolean> useCustomRepository;
