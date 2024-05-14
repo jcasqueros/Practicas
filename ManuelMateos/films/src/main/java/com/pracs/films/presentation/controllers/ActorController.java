@@ -45,8 +45,10 @@ public class ActorController {
      * @throws ServiceException
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<ActorDtoOut>> findAll(@RequestParam boolean method, @RequestParam int page,
-            @RequestParam int size, @RequestParam String sort) throws ServiceException {
+    public ResponseEntity<List<ActorDtoOut>> findAll(@RequestParam boolean method,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id", name = "Variable to order the list") String sort)
+            throws ServiceException {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
 
         if (method) {
@@ -83,7 +85,8 @@ public class ActorController {
     public ResponseEntity<List<ActorDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
             @RequestParam(required = false) List<Integer> ages,
             @RequestParam(required = false) List<String> nationalities, @RequestParam boolean method,
-            @RequestParam String sort, @RequestParam String order) throws ServiceException {
+            @RequestParam(defaultValue = "id", name = "Variable to order the list") String sort,
+            @RequestParam(defaultValue = "asc") String order) throws ServiceException {
 
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
@@ -99,9 +102,8 @@ public class ActorController {
             }
         }
         try {
-            return new ResponseEntity<>(
-                    actorService.findAll(pageable).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(actorService.findAllFIlter(pageable, names, ages, nationalities).stream()
+                    .map(boToDtoConverter::actorBoToDtoOut).toList(), HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }

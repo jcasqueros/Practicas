@@ -45,8 +45,10 @@ public class SerieController {
      * @throws ServiceException
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<SerieDtoOut>> findAll(@RequestParam boolean method, @RequestParam int page,
-            @RequestParam int size, @RequestParam String sort) throws ServiceException {
+    public ResponseEntity<List<SerieDtoOut>> findAll(@RequestParam boolean method,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id", value = "Variable for order the list") String sort)
+            throws ServiceException {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
 
@@ -86,8 +88,9 @@ public class SerieController {
     public ResponseEntity<List<SerieDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
             @RequestParam(required = false) List<Integer> ages, @RequestParam(required = false) List<String> directors,
             @RequestParam(required = false) List<String> producers, @RequestParam(required = false) List<String> actors,
-            @RequestParam boolean method, @RequestParam String sort, @RequestParam String order)
-            throws ServiceException {
+            @RequestParam boolean method,
+            @RequestParam(defaultValue = "id", value = "Variable for order the list") String sort,
+            @RequestParam(defaultValue = "asc") String order) throws ServiceException {
 
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
