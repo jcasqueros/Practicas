@@ -3,6 +3,9 @@ package com.example.demo.presentation.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,14 +41,18 @@ public class ActorController {
 	DtoToBo dtoToBo;
 
 	@GetMapping("/getAll")
-	public ResponseEntity<List<ActorDto>> getAll(@RequestParam boolean metodo) {
-		List<ActorDto> actores;
+	public ResponseEntity<List<ActorDto>> getAll(@RequestParam boolean metodo, @RequestParam int pagina,
+			@RequestParam int tamano, @RequestParam String sort) {
+		Pageable pageable = PageRequest.of(pagina, tamano, Sort.by(sort).ascending());
+
+
 		if (metodo) {
-			actores = actorService.getAll().stream().map(actor -> boToDto.boToActorDto(actor)).toList();
+			return new ResponseEntity<>(actorService.getAll(pageable).stream().map(boToDto::boToActorDto).toList(),
+					HttpStatus.OK);
 		} else {
-			actores = actorService.getAllCriteria().stream().map(actor -> boToDto.boToActorDto(actor)).toList();
+			return new ResponseEntity<>(
+					actorService.getAllCriteria(pageable).stream().map(boToDto::boToActorDto).toList(), HttpStatus.OK);
 		}
-		return ResponseEntity.ok(actores);
 	}
 
 	@GetMapping("getById/{id}")

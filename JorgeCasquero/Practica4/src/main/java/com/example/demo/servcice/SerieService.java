@@ -1,15 +1,16 @@
 package com.example.demo.servcice;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.example.demo.servcice.bo.SerieBo;
 import com.example.demo.servcice.exception.AlreadyExistsExeption;
 import com.example.demo.servcice.exception.NotFoundException;
 
 public interface SerieService {
-	List<SerieBo> getAll();
+	Page<SerieBo> getAll(Pageable pageable);
 
-	List<SerieBo> getAllCriteria();
+	Page<SerieBo> getAllCriteria(Pageable pageable);
 
 	SerieBo getById(long id) throws NotFoundException;
 
