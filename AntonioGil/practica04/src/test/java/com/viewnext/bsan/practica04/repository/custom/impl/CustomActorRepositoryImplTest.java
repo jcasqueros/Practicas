@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +61,7 @@ class CustomActorRepositoryImplTest {
         assertTrue(foundActors.containsAll(expectedActors));
     }
 
-    @DisplayName("[CustomActorRepositoryImpl] findAll (filtering by nationality)")
+    @DisplayName("[CustomActorRepositoryImpl] findAll (filtering by nationality and age)")
     @Test
     void givenActorsAndFilters_whenFindAll_thenReturnPage() {
         // Arrange
@@ -69,13 +70,14 @@ class CustomActorRepositoryImplTest {
         final int pageSize = 4;
         final PageRequest pageRequest = PageRequest.of(0, pageSize);
         final List<Actor> expectedActors = List.of(
-                Actor.builder().id(1L).name("ACTOR1").age(30).nationality("USA").build(),
                 Actor.builder().id(4L).name("ACTOR4").age(25).nationality("USA").build()
         );
+        final Specification<Actor> matchesNationalityAndAge =
+                Specification.allOf(ActorSpecifications.nationalityIsEqualToIgnoreCase("USA"),
+                        ActorSpecifications.ageIsEqualTo(25));
 
         // Act
-        final List<Actor> foundActors = repository.findAll(ActorSpecifications.nationalityIsEqualToIgnoreCase("USA"),
-                pageRequest);
+        final List<Actor> foundActors = repository.findAll(matchesNationalityAndAge, pageRequest);
 
         // Assert
         assertFalse(foundActors.isEmpty());
