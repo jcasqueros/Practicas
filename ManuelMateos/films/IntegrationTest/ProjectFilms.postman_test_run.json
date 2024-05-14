@@ -1,22 +1,22 @@
 {
-	"id": "7bbd2e94-830c-438e-aa57-b761e08f7f69",
+	"id": "2b440885-afe5-4883-b3e9-ad3312c13fd2",
 	"name": "ProjectFilms",
-	"timestamp": "2024-05-08T15:31:42.195Z",
+	"timestamp": "2024-05-14T10:45:57.100Z",
 	"collection_id": "32686838-71894bb7-5b11-465b-976f-b851a4aec652",
 	"folder_id": 0,
 	"environment_id": "0",
-	"totalPass": 90,
+	"totalPass": 95,
 	"delay": 0,
 	"persist": true,
 	"status": "finished",
-	"startedAt": "2024-05-08T15:31:24.837Z",
+	"startedAt": "2024-05-14T10:45:47.657Z",
 	"totalFail": 0,
 	"results": [
 		{
 			"id": "c5312a89-8c76-4e8b-8eb2-9f8931066574",
 			"name": "Create Actor JPA",
 			"url": "http://localhost:8080/actors/save?method=false",
-			"time": 1523,
+			"time": 264,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -31,7 +31,7 @@
 				}
 			},
 			"times": [
-				1523
+				264
 			],
 			"allTests": [
 				{
@@ -43,7 +43,7 @@
 			"id": "f098a238-e4eb-4600-88dc-84469797eb25",
 			"name": "Create Actor JPA Error",
 			"url": "http://localhost:8080/actors/save?method=false",
-			"time": 87,
+			"time": 78,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -58,7 +58,7 @@
 				}
 			},
 			"times": [
-				87
+				78
 			],
 			"allTests": [
 				{
@@ -70,7 +70,7 @@
 			"id": "828f95a8-3483-4d4a-9f52-d2bb16dd3183",
 			"name": "Update Actor JPA",
 			"url": "http://localhost:8080/actors/update?method=false",
-			"time": 94,
+			"time": 49,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -85,7 +85,7 @@
 				}
 			},
 			"times": [
-				94
+				49
 			],
 			"allTests": [
 				{
@@ -97,7 +97,7 @@
 			"id": "a0b2dbb9-7bfd-4c41-87ee-8d737426f85b",
 			"name": "Update Actor JPA Error",
 			"url": "http://localhost:8080/actors/update?method=false",
-			"time": 9,
+			"time": 7,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -112,7 +112,7 @@
 				}
 			},
 			"times": [
-				9
+				7
 			],
 			"allTests": [
 				{
@@ -124,7 +124,7 @@
 			"id": "4ee18104-1e52-4e9b-966c-f99f8c911213",
 			"name": "Create Actor Criteria",
 			"url": "http://localhost:8080/actors/save?method=true",
-			"time": 71,
+			"time": 29,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -139,7 +139,7 @@
 				}
 			},
 			"times": [
-				71
+				29
 			],
 			"allTests": [
 				{
@@ -151,7 +151,7 @@
 			"id": "c273145d-49c6-45cf-89bf-c7c4d8e5cfe0",
 			"name": "Create Actor Criteria Error",
 			"url": "http://localhost:8080/actors/save?method=true",
-			"time": 10,
+			"time": 8,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -166,7 +166,7 @@
 				}
 			},
 			"times": [
-				10
+				8
 			],
 			"allTests": [
 				{
@@ -178,7 +178,7 @@
 			"id": "1b5be8ce-ee1f-491f-9f59-b8c058fd72cd",
 			"name": "Update Actor Criteria",
 			"url": "http://localhost:8080/actors/update?method=true",
-			"time": 24,
+			"time": 17,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -193,7 +193,7 @@
 				}
 			},
 			"times": [
-				24
+				17
 			],
 			"allTests": [
 				{
@@ -205,7 +205,7 @@
 			"id": "bcbbd012-5947-4aea-941b-cc51db8afc1d",
 			"name": "Update Actor Criteria Error",
 			"url": "http://localhost:8080/actors/update?method=true",
-			"time": 8,
+			"time": 6,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -220,7 +220,7 @@
 				}
 			},
 			"times": [
-				8
+				6
 			],
 			"allTests": [
 				{
@@ -232,7 +232,7 @@
 			"id": "374e7664-929c-4a66-81a8-d89a2801bf28",
 			"name": "Create Director JPA",
 			"url": "http://localhost:8080/directors/save?method=false",
-			"time": 41,
+			"time": 29,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -247,7 +247,7 @@
 				}
 			},
 			"times": [
-				41
+				29
 			],
 			"allTests": [
 				{
@@ -286,330 +286,6 @@
 			"id": "8ca134d4-3224-4a41-9e8f-d844ab8a458b",
 			"name": "Update Director JPA",
 			"url": "http://localhost:8080/directors/update?method=false",
-			"time": 20,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Successful PUT request": true
-			},
-			"testPassFailCounts": {
-				"Successful PUT request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				20
-			],
-			"allTests": [
-				{
-					"Successful PUT request": true
-				}
-			]
-		},
-		{
-			"id": "7b9e65e1-8d6d-4d5f-90c5-d48919fdb28e",
-			"name": "Update Director JPA Error",
-			"url": "http://localhost:8080/directors/update?method=false",
-			"time": 9,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"Error PUT request": true
-			},
-			"testPassFailCounts": {
-				"Error PUT request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				9
-			],
-			"allTests": [
-				{
-					"Error PUT request": true
-				}
-			]
-		},
-		{
-			"id": "b5233dd6-e4fd-418f-a50b-0a6beba8ef5d",
-			"name": "Create Director Criteria",
-			"url": "http://localhost:8080/directors/save?method=true",
-			"time": 19,
-			"responseCode": {
-				"code": 201,
-				"name": "Created"
-			},
-			"tests": {
-				"Successful POST request": true
-			},
-			"testPassFailCounts": {
-				"Successful POST request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				19
-			],
-			"allTests": [
-				{
-					"Successful POST request": true
-				}
-			]
-		},
-		{
-			"id": "334e313b-9b7b-4a7b-ab21-293a3a8dc42e",
-			"name": "Create Director Criteria Error",
-			"url": "http://localhost:8080/directors/save?method=true",
-			"time": 8,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"Error POST request": true
-			},
-			"testPassFailCounts": {
-				"Error POST request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				8
-			],
-			"allTests": [
-				{
-					"Error POST request": true
-				}
-			]
-		},
-		{
-			"id": "50126948-24a6-4b22-afd9-92d404c79fb5",
-			"name": "Update Director Criteria",
-			"url": "http://localhost:8080/directors/update?method=true",
-			"time": 20,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Successful PUT request": true
-			},
-			"testPassFailCounts": {
-				"Successful PUT request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				20
-			],
-			"allTests": [
-				{
-					"Successful PUT request": true
-				}
-			]
-		},
-		{
-			"id": "ddbb4049-c17a-4dff-90ed-b808fe5038ab",
-			"name": "Update Director Criteria Error",
-			"url": "http://localhost:8080/directors/update?method=true",
-			"time": 7,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"Error PUT request": true
-			},
-			"testPassFailCounts": {
-				"Error PUT request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"Error PUT request": true
-				}
-			]
-		},
-		{
-			"id": "8caf9c1b-b8a0-40f6-9736-076c6a1f31c2",
-			"name": "Create Producer JPA",
-			"url": "http://localhost:8080/producers/save?method=false",
-			"time": 36,
-			"responseCode": {
-				"code": 201,
-				"name": "Created"
-			},
-			"tests": {
-				"Successful POST request": true
-			},
-			"testPassFailCounts": {
-				"Successful POST request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				36
-			],
-			"allTests": [
-				{
-					"Successful POST request": true
-				}
-			]
-		},
-		{
-			"id": "ccd1572a-d45f-4076-a127-a096a3486a97",
-			"name": "Create Producer JPA Error",
-			"url": "http://localhost:8080/producers/save?method=false",
-			"time": 9,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"Error POST request": true
-			},
-			"testPassFailCounts": {
-				"Error POST request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				9
-			],
-			"allTests": [
-				{
-					"Error POST request": true
-				}
-			]
-		},
-		{
-			"id": "2317fd91-8023-4dcd-b690-4a0ce9b7dc02",
-			"name": "Update Producer JPA",
-			"url": "http://localhost:8080/producers/update?method=false",
-			"time": 22,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Successful PUT request": true
-			},
-			"testPassFailCounts": {
-				"Successful PUT request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				22
-			],
-			"allTests": [
-				{
-					"Successful PUT request": true
-				}
-			]
-		},
-		{
-			"id": "bc9bddbf-c19d-45a8-a338-e44370cec5c8",
-			"name": "Update Producer JPA Error",
-			"url": "http://localhost:8080/producers/update?method=false",
-			"time": 7,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"Error PUT request": true
-			},
-			"testPassFailCounts": {
-				"Error PUT request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"Error PUT request": true
-				}
-			]
-		},
-		{
-			"id": "12df2749-a807-46ac-bbc1-8241ec492037",
-			"name": "Create Producer Criteria",
-			"url": "http://localhost:8080/producers/save?method=true",
-			"time": 15,
-			"responseCode": {
-				"code": 201,
-				"name": "Created"
-			},
-			"tests": {
-				"Successful POST request": true
-			},
-			"testPassFailCounts": {
-				"Successful POST request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				15
-			],
-			"allTests": [
-				{
-					"Successful POST request": true
-				}
-			]
-		},
-		{
-			"id": "73119562-eb16-4e70-b994-99cff59706b5",
-			"name": "Create Producer Criteria Error",
-			"url": "http://localhost:8080/producers/save?method=true",
-			"time": 7,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"Error POST request": true
-			},
-			"testPassFailCounts": {
-				"Error POST request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"Error POST request": true
-				}
-			]
-		},
-		{
-			"id": "48597c10-64e3-4d31-9f5b-bbe66993ddc6",
-			"name": "Update Producer Criteria",
-			"url": "http://localhost:8080/producers/update?method=true",
 			"time": 14,
 			"responseCode": {
 				"code": 200,
@@ -634,10 +310,10 @@
 			]
 		},
 		{
-			"id": "c2543838-c3da-494e-851b-e68d7090d05d",
-			"name": "Update Producer Criteria Error",
-			"url": "http://localhost:8080/producers/update?method=true",
-			"time": 7,
+			"id": "7b9e65e1-8d6d-4d5f-90c5-d48919fdb28e",
+			"name": "Update Director JPA Error",
+			"url": "http://localhost:8080/directors/update?method=false",
+			"time": 10,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -652,7 +328,331 @@
 				}
 			},
 			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Error PUT request": true
+				}
+			]
+		},
+		{
+			"id": "b5233dd6-e4fd-418f-a50b-0a6beba8ef5d",
+			"name": "Create Director Criteria",
+			"url": "http://localhost:8080/directors/save?method=true",
+			"time": 17,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Successful POST request": true
+			},
+			"testPassFailCounts": {
+				"Successful POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"Successful POST request": true
+				}
+			]
+		},
+		{
+			"id": "334e313b-9b7b-4a7b-ab21-293a3a8dc42e",
+			"name": "Create Director Criteria Error",
+			"url": "http://localhost:8080/directors/save?method=true",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Error POST request": true
+			},
+			"testPassFailCounts": {
+				"Error POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Error POST request": true
+				}
+			]
+		},
+		{
+			"id": "50126948-24a6-4b22-afd9-92d404c79fb5",
+			"name": "Update Director Criteria",
+			"url": "http://localhost:8080/directors/update?method=true",
+			"time": 15,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Successful PUT request": true
+			},
+			"testPassFailCounts": {
+				"Successful PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"Successful PUT request": true
+				}
+			]
+		},
+		{
+			"id": "ddbb4049-c17a-4dff-90ed-b808fe5038ab",
+			"name": "Update Director Criteria Error",
+			"url": "http://localhost:8080/directors/update?method=true",
+			"time": 9,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Error PUT request": true
+			},
+			"testPassFailCounts": {
+				"Error PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Error PUT request": true
+				}
+			]
+		},
+		{
+			"id": "8caf9c1b-b8a0-40f6-9736-076c6a1f31c2",
+			"name": "Create Producer JPA",
+			"url": "http://localhost:8080/producers/save?method=false",
+			"time": 29,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Successful POST request": true
+			},
+			"testPassFailCounts": {
+				"Successful POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				29
+			],
+			"allTests": [
+				{
+					"Successful POST request": true
+				}
+			]
+		},
+		{
+			"id": "ccd1572a-d45f-4076-a127-a096a3486a97",
+			"name": "Create Producer JPA Error",
+			"url": "http://localhost:8080/producers/save?method=false",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Error POST request": true
+			},
+			"testPassFailCounts": {
+				"Error POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
 				7
+			],
+			"allTests": [
+				{
+					"Error POST request": true
+				}
+			]
+		},
+		{
+			"id": "2317fd91-8023-4dcd-b690-4a0ce9b7dc02",
+			"name": "Update Producer JPA",
+			"url": "http://localhost:8080/producers/update?method=false",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Successful PUT request": true
+			},
+			"testPassFailCounts": {
+				"Successful PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"Successful PUT request": true
+				}
+			]
+		},
+		{
+			"id": "bc9bddbf-c19d-45a8-a338-e44370cec5c8",
+			"name": "Update Producer JPA Error",
+			"url": "http://localhost:8080/producers/update?method=false",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Error PUT request": true
+			},
+			"testPassFailCounts": {
+				"Error PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Error PUT request": true
+				}
+			]
+		},
+		{
+			"id": "12df2749-a807-46ac-bbc1-8241ec492037",
+			"name": "Create Producer Criteria",
+			"url": "http://localhost:8080/producers/save?method=true",
+			"time": 14,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Successful POST request": true
+			},
+			"testPassFailCounts": {
+				"Successful POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"Successful POST request": true
+				}
+			]
+		},
+		{
+			"id": "73119562-eb16-4e70-b994-99cff59706b5",
+			"name": "Create Producer Criteria Error",
+			"url": "http://localhost:8080/producers/save?method=true",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Error POST request": true
+			},
+			"testPassFailCounts": {
+				"Error POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Error POST request": true
+				}
+			]
+		},
+		{
+			"id": "48597c10-64e3-4d31-9f5b-bbe66993ddc6",
+			"name": "Update Producer Criteria",
+			"url": "http://localhost:8080/producers/update?method=true",
+			"time": 12,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Successful PUT request": true
+			},
+			"testPassFailCounts": {
+				"Successful PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"Successful PUT request": true
+				}
+			]
+		},
+		{
+			"id": "c2543838-c3da-494e-851b-e68d7090d05d",
+			"name": "Update Producer Criteria Error",
+			"url": "http://localhost:8080/producers/update?method=true",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Error PUT request": true
+			},
+			"testPassFailCounts": {
+				"Error PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
 			],
 			"allTests": [
 				{
@@ -664,7 +664,7 @@
 			"id": "2cdf2a4a-3a66-4c20-95b8-fa03b15b40b2",
 			"name": "Create Serie JPA",
 			"url": "http://localhost:8080/series/save?method=false",
-			"time": 106,
+			"time": 66,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -679,7 +679,7 @@
 				}
 			},
 			"times": [
-				106
+				66
 			],
 			"allTests": [
 				{
@@ -691,7 +691,7 @@
 			"id": "3bbe8db9-63ca-4e6d-b81e-a458c9d46274",
 			"name": "Create Serie JPA Error",
 			"url": "http://localhost:8080/series/save?method=false",
-			"time": 9,
+			"time": 7,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -706,7 +706,7 @@
 				}
 			},
 			"times": [
-				9
+				7
 			],
 			"allTests": [
 				{
@@ -718,7 +718,7 @@
 			"id": "9188bd7c-94a2-46d3-8cf6-04d8155cf3a8",
 			"name": "Update Serie JPA",
 			"url": "http://localhost:8080/series/update?method=false",
-			"time": 105,
+			"time": 45,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -733,7 +733,7 @@
 				}
 			},
 			"times": [
-				105
+				45
 			],
 			"allTests": [
 				{
@@ -745,7 +745,7 @@
 			"id": "7b2f3fad-898c-4564-86a5-7e56097ed785",
 			"name": "Update Serie JPA Error",
 			"url": "http://localhost:8080/series/update?method=false",
-			"time": 9,
+			"time": 10,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -760,7 +760,7 @@
 				}
 			},
 			"times": [
-				9
+				10
 			],
 			"allTests": [
 				{
@@ -772,7 +772,7 @@
 			"id": "d7edb65a-ecad-490e-95dc-a7fc75168433",
 			"name": "Create Serie Criteria",
 			"url": "http://localhost:8080/series/save?method=true",
-			"time": 48,
+			"time": 19,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -787,7 +787,7 @@
 				}
 			},
 			"times": [
-				48
+				19
 			],
 			"allTests": [
 				{
@@ -799,7 +799,7 @@
 			"id": "e9aa3f85-31a4-4c8e-9a6d-5e86f7ade19c",
 			"name": "Create Serie Criteria Error",
 			"url": "http://localhost:8080/series/save?method=true",
-			"time": 8,
+			"time": 16,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -814,7 +814,7 @@
 				}
 			},
 			"times": [
-				8
+				16
 			],
 			"allTests": [
 				{
@@ -826,114 +826,6 @@
 			"id": "626632db-dea1-4714-b746-dcca051e5abf",
 			"name": "update Serie Criteria",
 			"url": "http://localhost:8080/series/update?method=true",
-			"time": 39,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Successful PUT request": true
-			},
-			"testPassFailCounts": {
-				"Successful PUT request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				39
-			],
-			"allTests": [
-				{
-					"Successful PUT request": true
-				}
-			]
-		},
-		{
-			"id": "4bd05040-9ec4-4a50-9b4f-7edf011dcc26",
-			"name": "update Serie Criteria Error",
-			"url": "http://localhost:8080/series/update?method=true",
-			"time": 13,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"Error PUT request": true
-			},
-			"testPassFailCounts": {
-				"Error PUT request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				13
-			],
-			"allTests": [
-				{
-					"Error PUT request": true
-				}
-			]
-		},
-		{
-			"id": "2de35b62-9bd4-4557-b573-a82fcb2e4e90",
-			"name": "Create Film JPA",
-			"url": "http://localhost:8080/films/save?method=false",
-			"time": 71,
-			"responseCode": {
-				"code": 201,
-				"name": "Created"
-			},
-			"tests": {
-				"Successful POST request": true
-			},
-			"testPassFailCounts": {
-				"Successful POST request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				71
-			],
-			"allTests": [
-				{
-					"Successful POST request": true
-				}
-			]
-		},
-		{
-			"id": "d91f43b7-4982-4df3-8d9d-a9fbc829d552",
-			"name": "Create Film JPA Error",
-			"url": "http://localhost:8080/films/save?method=false",
-			"time": 8,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"Error POST request": true
-			},
-			"testPassFailCounts": {
-				"Error POST request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				8
-			],
-			"allTests": [
-				{
-					"Error POST request": true
-				}
-			]
-		},
-		{
-			"id": "fc4d60a0-c605-4025-bdcb-999be37e6bf9",
-			"name": "Update Film JPA",
-			"url": "http://localhost:8080/films/update?method=false",
 			"time": 46,
 			"responseCode": {
 				"code": 200,
@@ -958,10 +850,10 @@
 			]
 		},
 		{
-			"id": "b6c1cd89-7165-4950-83d5-9821f029cd6d",
-			"name": "Update Film JPA Error",
-			"url": "http://localhost:8080/films/update?method=false",
-			"time": 9,
+			"id": "4bd05040-9ec4-4a50-9b4f-7edf011dcc26",
+			"name": "update Serie Criteria Error",
+			"url": "http://localhost:8080/series/update?method=true",
+			"time": 10,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -976,7 +868,7 @@
 				}
 			},
 			"times": [
-				9
+				10
 			],
 			"allTests": [
 				{
@@ -985,10 +877,10 @@
 			]
 		},
 		{
-			"id": "2caaaa2d-9719-41a1-93c3-cf74ac5c5785",
-			"name": "Create Film Criteria",
-			"url": "http://localhost:8080/films/save?method=true",
-			"time": 27,
+			"id": "2de35b62-9bd4-4557-b573-a82fcb2e4e90",
+			"name": "Create Film JPA",
+			"url": "http://localhost:8080/films/save?method=false",
+			"time": 35,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -1003,7 +895,7 @@
 				}
 			},
 			"times": [
-				27
+				35
 			],
 			"allTests": [
 				{
@@ -1012,10 +904,10 @@
 			]
 		},
 		{
-			"id": "f807b6e3-0859-41e6-b161-56b59187357f",
-			"name": "Create Film Criteria Error",
-			"url": "http://localhost:8080/films/save?method=true",
-			"time": 7,
+			"id": "d91f43b7-4982-4df3-8d9d-a9fbc829d552",
+			"name": "Create Film JPA Error",
+			"url": "http://localhost:8080/films/save?method=false",
+			"time": 9,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -1030,7 +922,7 @@
 				}
 			},
 			"times": [
-				7
+				9
 			],
 			"allTests": [
 				{
@@ -1039,10 +931,10 @@
 			]
 		},
 		{
-			"id": "ab1b0056-bce9-4552-98f2-81936969d851",
-			"name": "Update Film Criteria",
-			"url": "http://localhost:8080/films/update?method=true",
-			"time": 25,
+			"id": "fc4d60a0-c605-4025-bdcb-999be37e6bf9",
+			"name": "Update Film JPA",
+			"url": "http://localhost:8080/films/update?method=false",
+			"time": 23,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1057,7 +949,7 @@
 				}
 			},
 			"times": [
-				25
+				23
 			],
 			"allTests": [
 				{
@@ -1066,10 +958,10 @@
 			]
 		},
 		{
-			"id": "2bf06d12-a3cd-4294-9de8-201a36e0ae66",
-			"name": "Update Film Criteria Error",
-			"url": "http://localhost:8080/films/update?method=true",
-			"time": 11,
+			"id": "b6c1cd89-7165-4950-83d5-9821f029cd6d",
+			"name": "Update Film JPA Error",
+			"url": "http://localhost:8080/films/update?method=false",
+			"time": 8,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -1084,7 +976,115 @@
 				}
 			},
 			"times": [
-				11
+				8
+			],
+			"allTests": [
+				{
+					"Error PUT request": true
+				}
+			]
+		},
+		{
+			"id": "2caaaa2d-9719-41a1-93c3-cf74ac5c5785",
+			"name": "Create Film Criteria",
+			"url": "http://localhost:8080/films/save?method=true",
+			"time": 17,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Successful POST request": true
+			},
+			"testPassFailCounts": {
+				"Successful POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"Successful POST request": true
+				}
+			]
+		},
+		{
+			"id": "f807b6e3-0859-41e6-b161-56b59187357f",
+			"name": "Create Film Criteria Error",
+			"url": "http://localhost:8080/films/save?method=true",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Error POST request": true
+			},
+			"testPassFailCounts": {
+				"Error POST request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Error POST request": true
+				}
+			]
+		},
+		{
+			"id": "ab1b0056-bce9-4552-98f2-81936969d851",
+			"name": "Update Film Criteria",
+			"url": "http://localhost:8080/films/update?method=true",
+			"time": 19,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Successful PUT request": true
+			},
+			"testPassFailCounts": {
+				"Successful PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"Successful PUT request": true
+				}
+			]
+		},
+		{
+			"id": "2bf06d12-a3cd-4294-9de8-201a36e0ae66",
+			"name": "Update Film Criteria Error",
+			"url": "http://localhost:8080/films/update?method=true",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Error PUT request": true
+			},
+			"testPassFailCounts": {
+				"Error PUT request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
 			],
 			"allTests": [
 				{
@@ -1095,8 +1095,8 @@
 		{
 			"id": "c94b8022-00af-4100-bc67-ce9bb41c4a99",
 			"name": "Get All Actors JPA",
-			"url": "http://localhost:8080/actors/findAll?method=false",
-			"time": 174,
+			"url": "http://localhost:8080/actors/findAll?method=false&page=5&size=10&sort=name",
+			"time": 18,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1111,7 +1111,7 @@
 				}
 			},
 			"times": [
-				174
+				18
 			],
 			"allTests": [
 				{
@@ -1123,7 +1123,7 @@
 			"id": "12287cd2-379a-4ad1-9f72-ba8c899e307a",
 			"name": "Get An Actor JPA",
 			"url": "http://localhost:8080/actors/findById/600?method=false",
-			"time": 51,
+			"time": 9,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1138,7 +1138,7 @@
 				}
 			},
 			"times": [
-				51
+				9
 			],
 			"allTests": [
 				{
@@ -1150,7 +1150,7 @@
 			"id": "44200d07-6975-4357-9a14-5b1ca3becbdd",
 			"name": "Get An Actor JPA Error",
 			"url": "http://localhost:8080/actors/findById/2000?method=false",
-			"time": 17,
+			"time": 9,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -1165,7 +1165,7 @@
 				}
 			},
 			"times": [
-				17
+				9
 			],
 			"allTests": [
 				{
@@ -1176,8 +1176,8 @@
 		{
 			"id": "2f0d9df3-0f08-499e-94fa-99d6d2707a49",
 			"name": "Get All Actors Criteria",
-			"url": "http://localhost:8080/actors/findAll?method=true",
-			"time": 72,
+			"url": "http://localhost:8080/actors/findAll?method=true&page=0&size=10&sort=name",
+			"time": 12,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1192,7 +1192,34 @@
 				}
 			},
 			"times": [
-				72
+				12
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "9780b877-499b-4048-abb6-0a1393dbb811",
+			"name": "Get All Actors Criteria Filter",
+			"url": "http://localhost:8080/actors/findAllFilter?ages=8&method=true&Variable%20to%20order%20the%20list=id&order=asc",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
 			],
 			"allTests": [
 				{
@@ -1204,7 +1231,7 @@
 			"id": "b0094d9d-7c76-41a0-9431-81c0efe922fd",
 			"name": "Get An Actor Criteria",
 			"url": "http://localhost:8080/actors/findById/600?method=true",
-			"time": 15,
+			"time": 9,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1219,7 +1246,7 @@
 				}
 			},
 			"times": [
-				15
+				9
 			],
 			"allTests": [
 				{
@@ -1257,8 +1284,8 @@
 		{
 			"id": "e5690230-75c0-4415-9c29-6109dd89f581",
 			"name": "Get All Directors JPA",
-			"url": "http://localhost:8080/directors/findAll?method=false",
-			"time": 132,
+			"url": "http://localhost:8080/directors/findAll?method=false&page=5&size=10&sort=name",
+			"time": 15,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1273,7 +1300,7 @@
 				}
 			},
 			"times": [
-				132
+				15
 			],
 			"allTests": [
 				{
@@ -1285,7 +1312,7 @@
 			"id": "f924e1a7-5e65-46ee-863a-560435a40e4a",
 			"name": "Get A Director JPA",
 			"url": "http://localhost:8080/directors/findById/100?method=false",
-			"time": 10,
+			"time": 11,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1300,7 +1327,7 @@
 				}
 			},
 			"times": [
-				10
+				11
 			],
 			"allTests": [
 				{
@@ -1312,87 +1339,6 @@
 			"id": "81893535-d52e-4d7b-893c-d6f45c1857b1",
 			"name": "Get A Director JPA Error",
 			"url": "http://localhost:8080/directors/findById/2000?method=false",
-			"time": 10,
-			"responseCode": {
-				"code": 404,
-				"name": "Not Found"
-			},
-			"tests": {
-				"Get Error Method": true
-			},
-			"testPassFailCounts": {
-				"Get Error Method": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				10
-			],
-			"allTests": [
-				{
-					"Get Error Method": true
-				}
-			]
-		},
-		{
-			"id": "8977b899-c144-4171-a33e-b5db7e82c83b",
-			"name": "Get All Directors Criteria",
-			"url": "http://localhost:8080/directors/findAll?method=true",
-			"time": 35,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Status code is 200": true
-			},
-			"testPassFailCounts": {
-				"Status code is 200": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				35
-			],
-			"allTests": [
-				{
-					"Status code is 200": true
-				}
-			]
-		},
-		{
-			"id": "df78d062-cd8f-4c27-9d59-fc9263cf3252",
-			"name": "Get A Director Criteria",
-			"url": "http://localhost:8080/directors/findById/100?method=true",
-			"time": 40,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Status code is 200": true
-			},
-			"testPassFailCounts": {
-				"Status code is 200": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				40
-			],
-			"allTests": [
-				{
-					"Status code is 200": true
-				}
-			]
-		},
-		{
-			"id": "6237d2b1-8bc0-40da-90fc-2b18cddda12b",
-			"name": "Get A Director Criteria Error",
-			"url": "http://localhost:8080/directors/findById/2000?method=true",
 			"time": 7,
 			"responseCode": {
 				"code": 404,
@@ -1417,10 +1363,10 @@
 			]
 		},
 		{
-			"id": "03aa4674-508c-4085-a5ad-61d2cc8cb851",
-			"name": "Get All Producers JPA",
-			"url": "http://localhost:8080/producers/findAll?method=false",
-			"time": 255,
+			"id": "8977b899-c144-4171-a33e-b5db7e82c83b",
+			"name": "Get All Directors Criteria",
+			"url": "http://localhost:8080/directors/findAll?method=true&page=0&size=10&sort=name",
+			"time": 11,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1435,7 +1381,7 @@
 				}
 			},
 			"times": [
-				255
+				11
 			],
 			"allTests": [
 				{
@@ -1444,10 +1390,10 @@
 			]
 		},
 		{
-			"id": "9e8ea68a-3a58-4f2a-8b51-78101f9a4661",
-			"name": "Get A Producer JPA",
-			"url": "http://localhost:8080/producers/findById/100?method=false",
-			"time": 9,
+			"id": "9f3a3d7e-24b6-4eba-84fb-d7ddd8b94af4",
+			"name": "Get All Directors Criteria Filter",
+			"url": "http://localhost:8080/directors/findAllFilter?ages=20&method=true&Variable%20for%20order%20the%20list=id&order=asc",
+			"time": 12,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1462,7 +1408,7 @@
 				}
 			},
 			"times": [
-				9
+				12
 			],
 			"allTests": [
 				{
@@ -1471,10 +1417,37 @@
 			]
 		},
 		{
-			"id": "e7372fae-ea6a-44c9-81b2-ee45fcd3a5f0",
-			"name": "Get A Producer JPA Error",
-			"url": "http://localhost:8080/producers/findById/2000?method=false",
-			"time": 14,
+			"id": "df78d062-cd8f-4c27-9d59-fc9263cf3252",
+			"name": "Get A Director Criteria",
+			"url": "http://localhost:8080/directors/findById/100?method=true",
+			"time": 12,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "6237d2b1-8bc0-40da-90fc-2b18cddda12b",
+			"name": "Get A Director Criteria Error",
+			"url": "http://localhost:8080/directors/findById/2000?method=true",
+			"time": 8,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -1489,7 +1462,7 @@
 				}
 			},
 			"times": [
-				14
+				8
 			],
 			"allTests": [
 				{
@@ -1498,10 +1471,10 @@
 			]
 		},
 		{
-			"id": "3a9be7f0-e5ea-48db-a0b2-72293c9ad109",
-			"name": "Get All Producers Criteria",
-			"url": "http://localhost:8080/producers/findAll?method=true",
-			"time": 115,
+			"id": "03aa4674-508c-4085-a5ad-61d2cc8cb851",
+			"name": "Get All Producers JPA",
+			"url": "http://localhost:8080/producers/findAll?method=false&page=5&size=10&sort=name",
+			"time": 12,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1516,7 +1489,115 @@
 				}
 			},
 			"times": [
-				115
+				12
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "9e8ea68a-3a58-4f2a-8b51-78101f9a4661",
+			"name": "Get A Producer JPA",
+			"url": "http://localhost:8080/producers/findById/100?method=false",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "e7372fae-ea6a-44c9-81b2-ee45fcd3a5f0",
+			"name": "Get A Producer JPA Error",
+			"url": "http://localhost:8080/producers/findById/2000?method=false",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Get Error Method": true
+			},
+			"testPassFailCounts": {
+				"Get Error Method": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"Get Error Method": true
+				}
+			]
+		},
+		{
+			"id": "3a9be7f0-e5ea-48db-a0b2-72293c9ad109",
+			"name": "Get All Producers Criteria",
+			"url": "http://localhost:8080/producers/findAll?method=true&page=0&size=10&sort=name",
+			"time": 11,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "b8c49939-fa00-42e3-b83f-026d637bfd3d",
+			"name": "Get All Producers Criteria Filter",
+			"url": "http://localhost:8080/producers/findAllFilter?ages=2000&method=true&Variable%20for%20order%20the%20list=id&order=asc",
+			"time": 10,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
 			],
 			"allTests": [
 				{
@@ -1528,7 +1609,7 @@
 			"id": "ff5b6d75-2208-40dc-97a8-21f2e1c3cc5a",
 			"name": "Get A Producer Criteria",
 			"url": "http://localhost:8080/producers/findById/100?method=true",
-			"time": 27,
+			"time": 10,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1543,7 +1624,7 @@
 				}
 			},
 			"times": [
-				27
+				10
 			],
 			"allTests": [
 				{
@@ -1581,8 +1662,8 @@
 		{
 			"id": "816c8bf7-a49d-46bd-8a52-ec9a394e1439",
 			"name": "Get All Series JPA",
-			"url": "http://localhost:8080/series/findAll?method=false",
-			"time": 2677,
+			"url": "http://localhost:8080/series/findAll?method=false&page=5&size=10&sort=title",
+			"time": 57,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1597,7 +1678,7 @@
 				}
 			},
 			"times": [
-				2677
+				57
 			],
 			"allTests": [
 				{
@@ -1636,7 +1717,7 @@
 			"id": "71ee2e0a-431c-43f4-b524-df30629be674",
 			"name": "Get A Serie JPA Error",
 			"url": "http://localhost:8080/series/findById/2000?method=false",
-			"time": 6,
+			"time": 7,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -1651,7 +1732,7 @@
 				}
 			},
 			"times": [
-				6
+				7
 			],
 			"allTests": [
 				{
@@ -1662,8 +1743,8 @@
 		{
 			"id": "8feb6c7d-94bc-4942-ab2f-72c3ccaaa367",
 			"name": "Get All Series Criteria",
-			"url": "http://localhost:8080/series/findAll?method=true",
-			"time": 1023,
+			"url": "http://localhost:8080/series/findAll?method=true&page=0&size=10&sort=title",
+			"time": 49,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1678,7 +1759,34 @@
 				}
 			},
 			"times": [
-				1023
+				49
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "b1426401-230d-47b1-b827-23dc27859428",
+			"name": "Get All Series Criteria Filter",
+			"url": "http://localhost:8080/series/findAllFilter?ages=2000&method=true&Variable%20for%20order%20the%20list=id&order=asc",
+			"time": 26,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				26
 			],
 			"allTests": [
 				{
@@ -1690,6 +1798,141 @@
 			"id": "5bb09093-cb3d-4557-9965-cb26c29b702d",
 			"name": "Get A Series Criteria",
 			"url": "http://localhost:8080/series/findById/600?method=true",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "de19dbb3-37b5-44e5-8522-89e952c378bc",
+			"name": "Get A Series Criteria Error",
+			"url": "http://localhost:8080/series/findById/2000?method=true",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Get Error Method": true
+			},
+			"testPassFailCounts": {
+				"Get Error Method": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Get Error Method": true
+				}
+			]
+		},
+		{
+			"id": "a9738263-dc15-4410-9640-11a1ab302c75",
+			"name": "Get All Films JPA",
+			"url": "http://localhost:8080/films/findAll?method=false&page=5&size=10&sort=title",
+			"time": 39,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				39
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "dc21544f-68e4-4142-9248-7526d16f9aef",
+			"name": "Get A Film JPA",
+			"url": "http://localhost:8080/films/findById/3?method=false",
+			"time": 15,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"Status code is 200": true
+				}
+			]
+		},
+		{
+			"id": "af5a1f5e-1764-4a19-9f67-621d44ce291d",
+			"name": "Get A Film JPA Error",
+			"url": "http://localhost:8080/films/findById/2000?method=false",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Get Error Method": true
+			},
+			"testPassFailCounts": {
+				"Get Error Method": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"Get Error Method": true
+				}
+			]
+		},
+		{
+			"id": "e88bff30-3c2e-451e-975c-054070c72943",
+			"name": "Get All Films Criteria",
+			"url": "http://localhost:8080/films/findAll?method=true&page=0&size=10&sort=title",
 			"time": 52,
 			"responseCode": {
 				"code": 200,
@@ -1714,37 +1957,10 @@
 			]
 		},
 		{
-			"id": "de19dbb3-37b5-44e5-8522-89e952c378bc",
-			"name": "Get A Series Criteria Error",
-			"url": "http://localhost:8080/series/findById/2000?method=true",
-			"time": 14,
-			"responseCode": {
-				"code": 404,
-				"name": "Not Found"
-			},
-			"tests": {
-				"Get Error Method": true
-			},
-			"testPassFailCounts": {
-				"Get Error Method": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				14
-			],
-			"allTests": [
-				{
-					"Get Error Method": true
-				}
-			]
-		},
-		{
-			"id": "a9738263-dc15-4410-9640-11a1ab302c75",
-			"name": "Get All Films JPA",
-			"url": "http://localhost:8080/films/findAll?method=false",
-			"time": 738,
+			"id": "cd6f18d8-b29c-419c-89dd-c8320c1ba270",
+			"name": "Get All Films Criteria Filter",
+			"url": "http://localhost:8080/films/findAllFilter?ages=2020&method=true&Variable%20for%20order%20the%20list=id&order=asc",
+			"time": 34,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1759,88 +1975,7 @@
 				}
 			},
 			"times": [
-				738
-			],
-			"allTests": [
-				{
-					"Status code is 200": true
-				}
-			]
-		},
-		{
-			"id": "dc21544f-68e4-4142-9248-7526d16f9aef",
-			"name": "Get A Film JPA",
-			"url": "http://localhost:8080/films/findById/3?method=false",
-			"time": 19,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Status code is 200": true
-			},
-			"testPassFailCounts": {
-				"Status code is 200": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				19
-			],
-			"allTests": [
-				{
-					"Status code is 200": true
-				}
-			]
-		},
-		{
-			"id": "af5a1f5e-1764-4a19-9f67-621d44ce291d",
-			"name": "Get A Film JPA Error",
-			"url": "http://localhost:8080/films/findById/2000?method=false",
-			"time": 6,
-			"responseCode": {
-				"code": 404,
-				"name": "Not Found"
-			},
-			"tests": {
-				"Get Error Method": true
-			},
-			"testPassFailCounts": {
-				"Get Error Method": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"Get Error Method": true
-				}
-			]
-		},
-		{
-			"id": "e88bff30-3c2e-451e-975c-054070c72943",
-			"name": "Get All Films Criteria",
-			"url": "http://localhost:8080/films/findAll?method=true",
-			"time": 414,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Status code is 200": true
-			},
-			"testPassFailCounts": {
-				"Status code is 200": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				414
+				34
 			],
 			"allTests": [
 				{
@@ -1879,7 +2014,7 @@
 			"id": "60899abc-3133-4087-9e63-304fa35af951",
 			"name": "Get A Films Criteria Error",
 			"url": "http://localhost:8080/films/findById/2000?method=true",
-			"time": 20,
+			"time": 8,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -1894,7 +2029,7 @@
 				}
 			},
 			"times": [
-				20
+				8
 			],
 			"allTests": [
 				{
@@ -1906,7 +2041,7 @@
 			"id": "9d7dff2e-5c03-460d-8edf-0d7c296de2a6",
 			"name": "Delete An Actor JPA",
 			"url": "http://localhost:8080/actors/deleteById?method=false&id=500",
-			"time": 33,
+			"time": 27,
 			"responseCode": {
 				"code": 204,
 				"name": "No Content"
@@ -1921,7 +2056,7 @@
 				}
 			},
 			"times": [
-				33
+				27
 			],
 			"allTests": [
 				{
@@ -1933,7 +2068,7 @@
 			"id": "2371ec69-9286-4bd7-8e24-40725ef411fa",
 			"name": "Delete An Actor JPA Error",
 			"url": "http://localhost:8080/actors/deleteById?method=false&id=2000",
-			"time": 23,
+			"time": 10,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -1948,7 +2083,7 @@
 				}
 			},
 			"times": [
-				23
+				10
 			],
 			"allTests": [
 				{
@@ -1960,7 +2095,7 @@
 			"id": "26ba3b44-6a2d-4cf8-b467-7f509d1e5e94",
 			"name": "Delete An Actor Criteria",
 			"url": "http://localhost:8080/actors/deleteById?method=true&id=501",
-			"time": 13,
+			"time": 11,
 			"responseCode": {
 				"code": 204,
 				"name": "No Content"
@@ -1975,7 +2110,7 @@
 				}
 			},
 			"times": [
-				13
+				11
 			],
 			"allTests": [
 				{
@@ -2014,7 +2149,7 @@
 			"id": "350d5eab-b07a-46bf-89ad-16363a5e0f3b",
 			"name": "Delete A Director JPA",
 			"url": "http://localhost:8080/directors/deleteById?method=false&id=1",
-			"time": 13,
+			"time": 15,
 			"responseCode": {
 				"code": 204,
 				"name": "No Content"
@@ -2029,7 +2164,7 @@
 				}
 			},
 			"times": [
-				13
+				15
 			],
 			"allTests": [
 				{
@@ -2041,60 +2176,6 @@
 			"id": "2656cb9e-5c57-48c6-8e8d-46d1f80b9eeb",
 			"name": "Delete A Director JPA Error",
 			"url": "http://localhost:8080/directors/deleteById?method=false&id=2000",
-			"time": 6,
-			"responseCode": {
-				"code": 404,
-				"name": "Not Found"
-			},
-			"tests": {
-				"Error DELETE request": true
-			},
-			"testPassFailCounts": {
-				"Error DELETE request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"Error DELETE request": true
-				}
-			]
-		},
-		{
-			"id": "19b6cbf7-3d3e-47db-bc9a-fe4e0f26fcda",
-			"name": "Delete A Director Criteria",
-			"url": "http://localhost:8080/directors/deleteById?method=true&id=2",
-			"time": 13,
-			"responseCode": {
-				"code": 204,
-				"name": "No Content"
-			},
-			"tests": {
-				"Successful DELETE request": true
-			},
-			"testPassFailCounts": {
-				"Successful DELETE request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				13
-			],
-			"allTests": [
-				{
-					"Successful DELETE request": true
-				}
-			]
-		},
-		{
-			"id": "af672b53-8184-4423-b971-1ffed4557951",
-			"name": "Delete A Director Criteria Error",
-			"url": "http://localhost:8080/directors/deleteById?method=true&id=2000",
 			"time": 8,
 			"responseCode": {
 				"code": 404,
@@ -2119,10 +2200,10 @@
 			]
 		},
 		{
-			"id": "86d02eff-14cc-480f-b111-362007b3f74e",
-			"name": "Delete A Producer JPA",
-			"url": "http://localhost:8080/producers/deleteById?method=false&id=1",
-			"time": 9,
+			"id": "19b6cbf7-3d3e-47db-bc9a-fe4e0f26fcda",
+			"name": "Delete A Director Criteria",
+			"url": "http://localhost:8080/directors/deleteById?method=true&id=2",
+			"time": 21,
 			"responseCode": {
 				"code": 204,
 				"name": "No Content"
@@ -2137,7 +2218,61 @@
 				}
 			},
 			"times": [
+				21
+			],
+			"allTests": [
+				{
+					"Successful DELETE request": true
+				}
+			]
+		},
+		{
+			"id": "af672b53-8184-4423-b971-1ffed4557951",
+			"name": "Delete A Director Criteria Error",
+			"url": "http://localhost:8080/directors/deleteById?method=true&id=2000",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Error DELETE request": true
+			},
+			"testPassFailCounts": {
+				"Error DELETE request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
 				9
+			],
+			"allTests": [
+				{
+					"Error DELETE request": true
+				}
+			]
+		},
+		{
+			"id": "86d02eff-14cc-480f-b111-362007b3f74e",
+			"name": "Delete A Producer JPA",
+			"url": "http://localhost:8080/producers/deleteById?method=false&id=1",
+			"time": 10,
+			"responseCode": {
+				"code": 204,
+				"name": "No Content"
+			},
+			"tests": {
+				"Successful DELETE request": true
+			},
+			"testPassFailCounts": {
+				"Successful DELETE request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
 			],
 			"allTests": [
 				{
@@ -2149,7 +2284,7 @@
 			"id": "d3e0722b-6114-45da-a9c3-73c3bbe16b9d",
 			"name": "Delete A Producer JPA Error",
 			"url": "http://localhost:8080/producers/deleteById?method=false&id=2000",
-			"time": 6,
+			"time": 7,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -2164,7 +2299,7 @@
 				}
 			},
 			"times": [
-				6
+				7
 			],
 			"allTests": [
 				{
@@ -2176,7 +2311,7 @@
 			"id": "a3b7e5ae-c7aa-4361-b241-142aae057109",
 			"name": "Delete A Producer Criteria",
 			"url": "http://localhost:8080/producers/deleteById?method=true&id=2",
-			"time": 14,
+			"time": 12,
 			"responseCode": {
 				"code": 204,
 				"name": "No Content"
@@ -2191,7 +2326,7 @@
 				}
 			},
 			"times": [
-				14
+				12
 			],
 			"allTests": [
 				{
@@ -2203,7 +2338,7 @@
 			"id": "b1ac98fc-2c62-4a3a-b3b4-bc8d608915a2",
 			"name": "Delete A Producer Criteria Error",
 			"url": "http://localhost:8080/producers/deleteById?method=true&id=2000",
-			"time": 13,
+			"time": 7,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -2218,7 +2353,7 @@
 				}
 			},
 			"times": [
-				13
+				7
 			],
 			"allTests": [
 				{
@@ -2230,7 +2365,7 @@
 			"id": "a62646c1-6d78-49de-b43d-841b76fb00d5",
 			"name": "Delete A Serie JPA",
 			"url": "http://localhost:8080/series/deleteById?method=false&id=550",
-			"time": 32,
+			"time": 20,
 			"responseCode": {
 				"code": 204,
 				"name": "No Content"
@@ -2245,7 +2380,7 @@
 				}
 			},
 			"times": [
-				32
+				20
 			],
 			"allTests": [
 				{
@@ -2284,7 +2419,7 @@
 			"id": "d500e2b3-a4e4-4840-9d97-5e41e31322dd",
 			"name": "Delete A Serie Criteria",
 			"url": "http://localhost:8080/series/deleteById?method=true&id=700",
-			"time": 17,
+			"time": 16,
 			"responseCode": {
 				"code": 204,
 				"name": "No Content"
@@ -2299,7 +2434,7 @@
 				}
 			},
 			"times": [
-				17
+				16
 			],
 			"allTests": [
 				{
@@ -2311,60 +2446,6 @@
 			"id": "536e81dc-1031-4772-aba9-c45cd456da3b",
 			"name": "Delete A Serie Criteria Error",
 			"url": "http://localhost:8080/series/deleteById?method=true&id=2000",
-			"time": 7,
-			"responseCode": {
-				"code": 404,
-				"name": "Not Found"
-			},
-			"tests": {
-				"Error DELETE request": true
-			},
-			"testPassFailCounts": {
-				"Error DELETE request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"Error DELETE request": true
-				}
-			]
-		},
-		{
-			"id": "4265a789-8579-4aa8-b0da-c916e7b7f54a",
-			"name": "Delete A Film JPA",
-			"url": "http://localhost:8080/films/deleteById?method=false&id=120",
-			"time": 12,
-			"responseCode": {
-				"code": 204,
-				"name": "No Content"
-			},
-			"tests": {
-				"Successful DELETE request": true
-			},
-			"testPassFailCounts": {
-				"Successful DELETE request": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				12
-			],
-			"allTests": [
-				{
-					"Successful DELETE request": true
-				}
-			]
-		},
-		{
-			"id": "44eb827f-9805-4f66-b370-321fb6edf02d",
-			"name": "Delete A Film JPA Error",
-			"url": "http://localhost:8080/films/deleteById?method=false&id=2000",
 			"time": 8,
 			"responseCode": {
 				"code": 404,
@@ -2389,10 +2470,10 @@
 			]
 		},
 		{
-			"id": "8c893b05-9cbe-48ea-8b52-a6ceea6a8729",
-			"name": "Delete A Film Criteria",
-			"url": "http://localhost:8080/films/deleteById?method=true&id=220",
-			"time": 30,
+			"id": "4265a789-8579-4aa8-b0da-c916e7b7f54a",
+			"name": "Delete A Film JPA",
+			"url": "http://localhost:8080/films/deleteById?method=false&id=120",
+			"time": 14,
 			"responseCode": {
 				"code": 204,
 				"name": "No Content"
@@ -2407,7 +2488,61 @@
 				}
 			},
 			"times": [
-				30
+				14
+			],
+			"allTests": [
+				{
+					"Successful DELETE request": true
+				}
+			]
+		},
+		{
+			"id": "44eb827f-9805-4f66-b370-321fb6edf02d",
+			"name": "Delete A Film JPA Error",
+			"url": "http://localhost:8080/films/deleteById?method=false&id=2000",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Error DELETE request": true
+			},
+			"testPassFailCounts": {
+				"Error DELETE request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"Error DELETE request": true
+				}
+			]
+		},
+		{
+			"id": "8c893b05-9cbe-48ea-8b52-a6ceea6a8729",
+			"name": "Delete A Film Criteria",
+			"url": "http://localhost:8080/films/deleteById?method=true&id=220",
+			"time": 20,
+			"responseCode": {
+				"code": 204,
+				"name": "No Content"
+			},
+			"tests": {
+				"Successful DELETE request": true
+			},
+			"testPassFailCounts": {
+				"Successful DELETE request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				20
 			],
 			"allTests": [
 				{
@@ -2444,7 +2579,7 @@
 		}
 	],
 	"count": 1,
-	"totalTime": 8894,
+	"totalTime": 1821,
 	"collection": {
 		"requests": [
 			{
@@ -2624,6 +2759,10 @@
 				"method": "GET"
 			},
 			{
+				"id": "9780b877-499b-4048-abb6-0a1393dbb811",
+				"method": "GET"
+			},
+			{
 				"id": "b0094d9d-7c76-41a0-9431-81c0efe922fd",
 				"method": "GET"
 			},
@@ -2645,6 +2784,10 @@
 			},
 			{
 				"id": "8977b899-c144-4171-a33e-b5db7e82c83b",
+				"method": "GET"
+			},
+			{
+				"id": "9f3a3d7e-24b6-4eba-84fb-d7ddd8b94af4",
 				"method": "GET"
 			},
 			{
@@ -2672,6 +2815,10 @@
 				"method": "GET"
 			},
 			{
+				"id": "b8c49939-fa00-42e3-b83f-026d637bfd3d",
+				"method": "GET"
+			},
+			{
 				"id": "ff5b6d75-2208-40dc-97a8-21f2e1c3cc5a",
 				"method": "GET"
 			},
@@ -2696,6 +2843,10 @@
 				"method": "GET"
 			},
 			{
+				"id": "b1426401-230d-47b1-b827-23dc27859428",
+				"method": "GET"
+			},
+			{
 				"id": "5bb09093-cb3d-4557-9965-cb26c29b702d",
 				"method": "GET"
 			},
@@ -2717,6 +2868,10 @@
 			},
 			{
 				"id": "e88bff30-3c2e-451e-975c-054070c72943",
+				"method": "GET"
+			},
+			{
+				"id": "cd6f18d8-b29c-419c-89dd-c8320c1ba270",
 				"method": "GET"
 			},
 			{
