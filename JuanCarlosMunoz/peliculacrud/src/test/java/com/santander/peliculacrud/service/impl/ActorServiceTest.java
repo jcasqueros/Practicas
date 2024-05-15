@@ -118,7 +118,7 @@ class ActorServiceTest {
     void testGetAllActors() {
         // Configuración de mocks
         when(actorRepository.findAll()).thenReturn(List.of());
-        when(actorBOMapper.listEntitytoListBo(List.of())).thenReturn(actors);
+        when(actorBOMapper.listEntityListBo(List.of())).thenReturn(actors);
 
         // Ejecución del método
         List<ActorBO> result = actorService.getAllActors();

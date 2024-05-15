@@ -1,254 +1,169 @@
-//package com.santander.peliculacrud.service.impl;
-//
-//import com.santander.peliculacrud.model.api.ActorRepository;
-//import com.santander.peliculacrud.model.api.DirectorRepository;
-//import com.santander.peliculacrud.model.api.SeriesRepository;
-//import com.santander.peliculacrud.model.bo.SeriesBO;
-//import com.santander.peliculacrud.model.entity.Actor;
-//import com.santander.peliculacrud.model.entity.Director;
-//import com.santander.peliculacrud.model.entity.Series;
-//import com.santander.peliculacrud.model.dto.SeriesDTO;
-//
-//import com.santander.peliculacrud.service.SeriesServiceInterface;
-//import com.santander.peliculacrud.util.CommonOperation;
-//import com.santander.peliculacrud.util.TransformObjects;
-//import jakarta.validation.Valid;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//import org.springframework.validation.BeanPropertyBindingResult;
-//import org.springframework.validation.BindingResult;
-//import org.springframework.validation.Validator;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-///**
-// * The type Series service.
-// */
-//@Service
-//public class SeriesService implements SeriesServiceInterface {
-//
-//    @Autowired
-//    private SeriesRepository seriesRepository;
-//
-//    @Autowired
-//    private ActorRepository actorRepository;
-//
-//    @Autowired
-//    private DirectorRepository directorRepository;
-//
-//    @Autowired
-//    private TransformObjects transformObjects;
-//
-//    @Autowired
-//    private Validator validator;
-//
-//    private static final Logger logger = LoggerFactory.getLogger(SeriesService.class);
-//
-//    @Autowired
-//    private CommonOperation commonOperation;
-//
-//    /**
-//     * Create series boolean.
-//     *
-//     * @param seriesDTO
-//     *         the series out
-//     * @return the boolean
-//     */
-//    public boolean createSeries(@Valid SeriesDTO seriesDTO) {
-//
-//        boolean create = false;
-//
-//        BindingResult result = new BeanPropertyBindingResult(seriesDTO, "SeriesDTO");
-//        validator.validate(seriesDTO, result);
-//
-//        if (result.hasErrors()) {
-//            commonOperation.showErrorModel(logger, result);
-//            throw new RuntimeException("Invalid actor data: " + result.getAllErrors());
-//        } else {
-//
-//            Director director = directorRepository.findById(seriesDTO.getIdDirector()).orElse(null);
-//            List<Actor> actors = actorRepository.findAllById(seriesDTO.getIdActor());
-//
-//            if (director != null && !actors.isEmpty()) {
-//
-//                Series series = transformObjects.seriesOutToSeries(seriesDTO);
-//
-//                try {
-//                    seriesRepository.save(series);
-//                    create = true;
-//
-//                } catch (Exception e) {
-//                    logger.error("Failed to create actor: {}", e.getMessage());
-//                    throw new RuntimeException("Failed to create actor: ", e);
-//                }
-//            }
-//        }
-//
-//        return create;
-//    }
-//
-//    /**
-//     * Update series boolean.
-//     *
-//     * @param id
-//     *         the id
-//     * @param seriesDTO
-//     *         the series out
-//     * @return the boolean
-//     */
-//    public boolean updateSeries(Long id, @Valid SeriesDTO seriesDTO) {
-//
-//        boolean update = false;
-//        if (seriesRepository.existsById(id)) {
-//
-//            BindingResult result = new BeanPropertyBindingResult(seriesDTO, "seriesDTO");
-//            validator.validate(seriesDTO, result);
-//
-//            if (result.hasErrors()) {
-//                commonOperation.showErrorModel(logger, result);
-//                throw new RuntimeException("Invalid actor data: " + result.getAllErrors());
-//            } else {
-//
-//                try {
-//                    Series seriesUpdate = transformObjects.seriesOutToSeries(seriesDTO);
-//                    if (seriesUpdate.getDirector() != null && !seriesUpdate.getActors().isEmpty()) {
-//
-//                        seriesUpdate.setId(id);
-//                        seriesRepository.save(seriesUpdate);
-//                        update = seriesRepository.existsById(id);
-//                    }
-//                } catch (Exception e) {
-//
-//                    logger.error("Failed to update series: {}", e.getMessage());
-//                    throw new RuntimeException("Failed to update series: ", e);
-//
-//                }
-//            }
-//
-//        } else {
-//            seriesNotfound();
-//            throw new RuntimeException("Actor not found");
-//        }
-//        return update;
-//    }
-//
-//    /**
-//     * Gets all series.
-//     *
-//     * @return the all series
-//     */
-//    public List<SeriesBO> getAllSeries() {
-//
-//        List<Series> seriess = seriesRepository.findAll();
-//        List<SeriesBO> seriesBOS = new ArrayList<>();
-//        for (Series series : seriess) {
-//
-//            SeriesBO seriesBO = transformObjects.seriesToSeriesOut(series);
-//            seriesBOS.add(seriesBO);
-//
-//        }
-//
-//        return seriesBOS;
-//    }
-//
-//    /**
-//     * Get a series show.
-//     *
-//     * @param id
-//     *         the id
-//     * @return the series show
-//     */
-//    public SeriesBO seriesOut(Long id) {
-//
-//        Series series = seriesRepository.findById(id).orElse(null);
-//        SeriesBO seriesBO = null;
-//        if (series != null) {
-//            seriesBO = transformObjects.seriesToSeriesOut(series);
-//        }
-//
-//        return seriesBO;
-//    }
-//
-//    /**
-//     * Delete series boolean.
-//     *
-//     * @param id
-//     *         the id
-//     * @return the boolean
-//     */
-//    public boolean deleteSeries(Long id) {
-//        boolean delete = false;
-//
-//        if (id == null) {
-//            throw new RuntimeException("Invalid series id: null");
-//        }
-//
-//        if (!seriesRepository.existsById(id)) {
-//            seriesNotfound();
-//        }
-//
-//        try {
-//            seriesRepository.deleteById(id);
-//            delete = !seriesRepository.existsById(id);
-//        } catch (Exception e) {
-//            logger.error("Failed to delete series: {}", e.getMessage());
-//            throw new RuntimeException("Failed to delete series: {}", e);
-//        }
-//
-//        return delete;
-//    }
-//
-//    /**
-//     * Gets last series.
-//     *
-//     * @return the last series
-//     */
-//    public Series getLastSeries() {
-//
-//        List<Series> seriess = seriesRepository.findLastSeries();
-//        long idLastSeries = seriess.get(0).getId();
-//        return seriesRepository.findById(idLastSeries).orElse(null);
-//    }
-//
-//    /**
-//     * Gets series by id.
-//     *
-//     * @param id
-//     *         the id
-//     * @return the series by id
-//     */
-//    public Series getSeriesById(Long id) {
-//        return seriesRepository.findById(id).orElse(null);
-//
-//    }
-//
-//    /**
-//     * Exists series by id boolean.
-//     *
-//     * @param id
-//     *         the id
-//     * @return the boolean
-//     */
-//    public boolean existsSeriesById(Long id) {
-//        return seriesRepository.existsById(id);
-//    }
-//
-//    /**
-//     * Seriess list size int.
-//     *
-//     * @return the int
-//     */
-//    public int getListSize() {
-//        return seriesRepository.findAll().size();
-//    }
-//
-//    private void seriesNotfound() {
-//        logger.error("Series not found");
-//        throw new RuntimeException("Series not found");
-//
-//    }
-//
-//}
+package com.santander.peliculacrud.service.impl;
+
+import com.santander.peliculacrud.model.api.ActorRepository;
+import com.santander.peliculacrud.model.api.DirectorRepository;
+import com.santander.peliculacrud.model.api.SeriesRepository;
+import com.santander.peliculacrud.model.bo.ActorBO;
+import com.santander.peliculacrud.model.bo.SeriesBO;
+import com.santander.peliculacrud.model.entity.Actor;
+import com.santander.peliculacrud.model.entity.Director;
+import com.santander.peliculacrud.model.entity.Series;
+import com.santander.peliculacrud.service.SeriesServiceInterface;
+import com.santander.peliculacrud.util.mapper.SeriesBOMapper;
+import org.mapstruct.factory.Mappers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * The type Series service.
+ */
+@Service
+public class SeriesService implements SeriesServiceInterface {
+
+    @Autowired
+    private SeriesRepository seriesRepository;
+
+    @Autowired
+    private ActorRepository actorRepository;
+
+    @Autowired
+    private DirectorRepository directorRepository;
+
+    @Autowired
+    private final SeriesBOMapper seriesBOMapper = Mappers.getMapper(SeriesBOMapper.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(SeriesService.class);
+
+    /**
+     * Create series boolean.
+     *
+     * @param seriesBO
+     *         the series out
+     * @return the boolean
+     */
+
+    public SeriesBO createSeries(SeriesBO seriesBO) {
+
+        SeriesBO seriesBOReturn = SeriesBO.builder().build();
+
+        //Se comprueba que los directores y actores se encuentran en el repositorio
+        Director director = directorRepository.findById(seriesBO.getDirector().getId()).orElse(null);
+        List<Long> idActors = getIdActors(seriesBO.getActors());
+        List<Actor> actors = actorRepository.findAllById(idActors);
+
+        if (director != null && !actors.isEmpty()) {
+            try {
+
+                Series series = seriesBOMapper.boToEntity(seriesBO);
+
+                Series seriesAux = seriesRepository.save(series);
+                seriesBOReturn = seriesBOMapper.entityToBo(seriesAux);
+
+            } catch (DataAccessException e) {
+                logger.error("Failed to create actor", e);
+                throw new RuntimeException("Failed to create actor: " + e.getMessage(), e);
+            } catch (Exception e) {
+                logger.error("Failed to create actor: {}", e.getMessage());
+                throw new RuntimeException("Failed to create actor: ", e);
+            }
+        } else {
+            logger.error("Failed to create actor invalid director or actor");
+            throw new RuntimeException("Failed to create actor invalid director or actor");
+        }
+
+        return seriesBOReturn;
+    }
+
+    @Override
+    public SeriesBO updateSeries(Long id, SeriesBO seriesBO) {
+        SeriesBO seriesBOReturn = SeriesBO.builder().build();
+        if (seriesRepository.existsById(id)) {
+
+            Director director = directorRepository.findById(seriesBO.getDirector().getId()).orElse(null);
+            List<Long> idActors = getIdActors(seriesBO.getActors());
+            List<Actor> actors = actorRepository.findAllById(idActors);
+
+            if (director != null && !actors.isEmpty()) {
+                try {
+
+                    Series seriesUpdate = seriesBOMapper.boToEntity(seriesBO);
+                    seriesUpdate.setId(id);
+                    Series series = seriesRepository.save(seriesUpdate);
+                    seriesBOReturn = seriesBOMapper.entityToBo(series);
+
+                } catch (DataAccessException e) {
+                    logger.error("Failed to update actor", e);
+                    throw new RuntimeException("Failed to update actor: " + e.getMessage(), e);
+                } catch (Exception e) {
+                    logger.error("Failed to update actor: {}", e.getMessage());
+                    throw new RuntimeException("Failed to update actor: ", e);
+                }
+            } else {
+                logger.error("Failed to update actor invalid director or actor");
+                throw new RuntimeException("Failed to update actor invalid director or actor");
+            }
+        } else {
+            seriesNotfound();
+        }
+
+        return seriesBOReturn;
+    }
+
+    @Override
+    public List<SeriesBO> getAllSeries() {
+        List<Series> seriess = seriesRepository.findAll();
+
+        return seriesBOMapper.listEntityListBo(seriess);
+    }
+
+    @Override
+    public boolean deleteSeries(Long id) {
+        boolean deleted = false;
+        if (id != null) {
+
+            if (seriesRepository.existsById(id)) {
+
+                try {
+                    seriesRepository.deleteById(id);
+                    deleted = true;
+                } catch (Exception e) {
+                    logger.error("Failed to delete series: {}", e.getMessage());
+                    throw new RuntimeException("Failed to delete series: {}", e);
+
+                }
+            } else {
+                seriesNotfound();
+            }
+        } else {
+            throw new RuntimeException("Invalid series id: null");
+
+        }
+
+        return deleted;
+    }
+
+    @Override
+    public SeriesBO getSeriesById(Long id) {
+        Series series = seriesRepository.findById(id).orElse(null);
+
+        return seriesBOMapper.entityToBo(series);
+    }
+
+    private List<Long> getIdActors(List<ActorBO> actorBOS) {
+        return actorBOS.stream().map(ActorBO::getId).collect(Collectors.toList());
+    }
+
+    private void seriesNotfound() {
+        logger.error("Series not found");
+        throw new RuntimeException("Series not found");
+
+    }
+
+}
+
