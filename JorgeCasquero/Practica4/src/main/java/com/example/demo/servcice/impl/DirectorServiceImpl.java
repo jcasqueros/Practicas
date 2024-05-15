@@ -3,15 +3,20 @@ package com.example.demo.servcice.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.model.Director;
 import com.example.demo.repository.cb.DirectorRepositoryCriteria;
 import com.example.demo.repository.jpa.DirectorRepository;
 import com.example.demo.servcice.DirectorService;
 import com.example.demo.servcice.bo.DirectorBo;
 import com.example.demo.servcice.exception.AlreadyExistsExeption;
+import com.example.demo.servcice.exception.EmptyException;
 import com.example.demo.servcice.exception.NotFoundException;
 
 @Service
@@ -19,6 +24,7 @@ public class DirectorServiceImpl implements DirectorService {
 
 	@Autowired
 	DirectorRepository directorRepository;
+
 	@Autowired
 	DirectorRepositoryCriteria directorRepositoryCriteria;
 
@@ -29,9 +35,15 @@ public class DirectorServiceImpl implements DirectorService {
 	ModelToBo modelToBo;
 
 	@Override
-	public List<DirectorBo> getAll() {
+	public Page<DirectorBo> getAll(Pageable pageable) {
+		Page<Director> directorPage = directorRepository.findAll(pageable);
 
-		return directorRepository.findAll().stream().map(director -> modelToBo.directorToDirectorBo(director)).toList();
+		if (directorPage.isEmpty()) {
+			throw new EmptyException("no se ha encontrado la lista de directores");
+		}
+		List<DirectorBo> directorBoList = directorPage.stream().map(modelToBo::directorToDirectorBo).toList();
+
+		return new PageImpl<>(directorBoList, directorPage.getPageable(), directorPage.getTotalPages());
 	}
 
 	@Override
@@ -62,14 +74,21 @@ public class DirectorServiceImpl implements DirectorService {
 	}
 
 	@Override
-	public List<DirectorBo> getAllCriteria() {
-		return directorRepositoryCriteria.getAll().stream().map(director -> modelToBo.directorToDirectorBo(director))
-				.toList();
+	public Page<DirectorBo> getAllCriteria(Pageable pageable) {
+		Page<Director> directorPage = directorRepositoryCriteria.getAll(pageable);
+
+		if (directorPage.isEmpty()) {
+			throw new EmptyException("no se ha encontrado el director");
+		}
+		List<DirectorBo> directorBoList = directorPage.stream().map(modelToBo::directorToDirectorBo).toList();
+
+		return new PageImpl<>(directorBoList, directorPage.getPageable(), directorPage.getTotalPages());
 	}
 
 	@Override
 	public DirectorBo getByIdCriteria(long id) throws NotFoundException {
-		return modelToBo.directorToDirectorBo(directorRepositoryCriteria.getById(id));
+		return modelToBo.directorToDirectorBo(directorRepositoryCriteria.getById(id)
+				.orElseThrow(() -> new NotFoundException("no se ha encontrado el director ")));
 	}
 
 	@Override
