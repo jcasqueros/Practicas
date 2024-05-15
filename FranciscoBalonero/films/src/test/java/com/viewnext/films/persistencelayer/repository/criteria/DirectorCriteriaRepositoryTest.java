@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest(showSql = false)
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.criteria")
@@ -120,7 +121,7 @@ class DirectorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredDirectors).isNotNull();
-        assertThat(filteredDirectors.size()).isEqualTo(1);
+        assertEquals(1, filteredDirectors.size());
         assertThat(filteredDirectors.get(0).getName()).isEqualTo("Jhon");
     }
 
@@ -140,7 +141,7 @@ class DirectorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredDirectors).isNotNull();
-        assertThat(filteredDirectors.size()).isEqualTo(1);
+        assertEquals(1, filteredDirectors.size());
         assertThat(filteredDirectors.get(0).getAge()).isEqualTo(18);
     }
 
@@ -160,7 +161,7 @@ class DirectorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredDirectors).isNotNull();
-        assertThat(filteredDirectors.size()).isEqualTo(1);
+        assertEquals(1, filteredDirectors.size());
         assertThat(filteredDirectors.get(0).getNationality()).isEqualTo("spain");
     }
 
@@ -180,7 +181,7 @@ class DirectorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredDirectors).isNotNull();
-        assertThat(filteredDirectors.size()).isEqualTo(1);
+        assertEquals(1, filteredDirectors.size());
         assertThat(filteredDirectors.get(0).getName()).isEqualTo("Jhon");
         assertThat(filteredDirectors.get(0).getAge()).isEqualTo(18);
         assertThat(filteredDirectors.get(0).getNationality()).isEqualTo("spain");
@@ -202,6 +203,6 @@ class DirectorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredDirectors).isNotNull();
-        assertThat(filteredDirectors.size()).isEqualTo(1); // assuming there are 10 directors in the database
+        assertEquals(1, filteredDirectors.size());
     }
 }

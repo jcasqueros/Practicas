@@ -57,6 +57,7 @@ public class ActorServiceImpl implements ActorService {
             // Busca un actor por ID utilizando Criteria API
             return converter.actorEntityToBO(
                     actorCriteriaRepository.getActorById(id).orElseThrow(NotFoundException::new));
+
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching actor by id: {}", id, e);

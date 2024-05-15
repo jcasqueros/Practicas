@@ -40,7 +40,7 @@ class ProducerJPARepositoryTest {
         assertThat(savedProducer).isNotNull();
         assertThat(savedProducer.getName()).isEqualTo(producer.getName());
         assertThat(savedProducer.getFoundationYear()).isEqualTo(producer.getFoundationYear());
-        assertThat(savedProducer.getId()).isNotNull();
+        assertThat(savedProducer.getId()).isNotZero();
 
     }
 

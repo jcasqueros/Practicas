@@ -40,7 +40,7 @@ class FilmJPARepositoryTest {
         assertThat(savedFilm).isNotNull();
         assertThat(savedFilm.getTitle()).isEqualTo(film.getTitle());
         assertThat(savedFilm.getReleaseYear()).isEqualTo(film.getReleaseYear());
-        assertThat(savedFilm.getId()).isNotNull();
+        assertThat(savedFilm.getId()).isNotZero();
 
     }
 

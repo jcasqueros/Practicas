@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest(showSql = false)
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.criteria")
@@ -76,7 +77,7 @@ class SerieCriteriaRepositoryTest {
         assertThat(createdSerie.getDirector()).isEqualTo(serie.getDirector());
         assertThat(createdSerie.getProducer()).isEqualTo(serie.getProducer());
         assertThat(createdSerie.getActors()).isEqualTo(serie.getActors());
-        assertThat(createdSerie.getId()).isNotNull();
+        assertThat(createdSerie.getId()).isNotZero();
 
     }
 
@@ -148,7 +149,7 @@ class SerieCriteriaRepositoryTest {
         List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(titles, null, null, null, null, pageable);
 
         assertThat(filteredSeries).isNotNull();
-        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertEquals(1, filteredSeries.size());
         assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
     }
 
@@ -166,7 +167,7 @@ class SerieCriteriaRepositoryTest {
                 pageable);
 
         assertThat(filteredSeries).isNotNull();
-        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertEquals(1, filteredSeries.size());
         assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
     }
 
@@ -184,7 +185,7 @@ class SerieCriteriaRepositoryTest {
         List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(null, null, directors, null, null, pageable);
 
         assertThat(filteredSeries).isNotNull();
-        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertEquals(1, filteredSeries.size());
         assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
     }
 
@@ -202,7 +203,7 @@ class SerieCriteriaRepositoryTest {
         List<Serie> filteredSeries = serieCriteriaRepository.filterSeries(null, null, null, producers, null, pageable);
 
         assertThat(filteredSeries).isNotNull();
-        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertEquals(1, filteredSeries.size());
         assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
     }
 
@@ -217,7 +218,7 @@ class SerieCriteriaRepositoryTest {
                 createdSerie.getActors(), pageable);
 
         assertThat(filteredSeries).isNotNull();
-        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertEquals(1, filteredSeries.size());
         assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
     }
 
@@ -246,7 +247,7 @@ class SerieCriteriaRepositoryTest {
                 createdSerie.getActors(), pageable);
 
         assertThat(filteredSeries).isNotNull();
-        assertThat(filteredSeries.size()).isEqualTo(1);
+        assertEquals(1, filteredSeries.size());
         assertThat(filteredSeries.get(0)).isEqualTo(createdSerie);
     }
 }

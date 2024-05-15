@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest(showSql = false)
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.criteria")
@@ -119,7 +120,7 @@ class ActorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredActors).isNotNull();
-        assertThat(filteredActors.size()).isEqualTo(1);
+        assertEquals(1, filteredActors.size());
         assertThat(filteredActors.get(0).getName()).isEqualTo("Jhon");
     }
 
@@ -138,7 +139,7 @@ class ActorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredActors).isNotNull();
-        assertThat(filteredActors.size()).isEqualTo(1);
+        assertEquals(1, filteredActors.size());
         assertThat(filteredActors.get(0).getAge()).isEqualTo(18);
     }
 
@@ -157,7 +158,7 @@ class ActorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredActors).isNotNull();
-        assertThat(filteredActors.size()).isEqualTo(1);
+        assertEquals(1, filteredActors.size());
         assertThat(filteredActors.get(0).getNationality()).isEqualTo("spain");
     }
 
@@ -176,7 +177,7 @@ class ActorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredActors).isNotNull();
-        assertThat(filteredActors.size()).isEqualTo(1);
+        assertEquals(1, filteredActors.size());
         assertThat(filteredActors.get(0).getName()).isEqualTo("Jhon");
         assertThat(filteredActors.get(0).getAge()).isEqualTo(18);
         assertThat(filteredActors.get(0).getNationality()).isEqualTo("spain");
@@ -197,7 +198,7 @@ class ActorCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredActors).isNotNull();
-        assertThat(filteredActors.size()).isEqualTo(1); // assuming there are 10 actors in the database
+        assertEquals(1, filteredActors.size());// assuming there are 10 actors in the database
     }
 
 }
