@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest(showSql = false)
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.criteria")
@@ -76,7 +77,7 @@ class FilmCriteriaRepositoryTest {
         assertThat(createdFilm.getDirector()).isEqualTo(film.getDirector());
         assertThat(createdFilm.getProducer()).isEqualTo(film.getProducer());
         assertThat(createdFilm.getActors()).isEqualTo(film.getActors());
-        assertThat(createdFilm.getId()).isNotNull();
+        assertThat(createdFilm.getId()).isNotZero();
 
     }
 
@@ -148,7 +149,7 @@ class FilmCriteriaRepositoryTest {
         List<Film> filteredFilms = filmCriteriaRepository.filterFilms(titles, null, null, null, null, pageable);
 
         assertThat(filteredFilms).isNotNull();
-        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertEquals(1, filteredFilms.size());
         assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
     }
 
@@ -165,7 +166,7 @@ class FilmCriteriaRepositoryTest {
         List<Film> filteredFilms = filmCriteriaRepository.filterFilms(null, releaseYears, null, null, null, pageable);
 
         assertThat(filteredFilms).isNotNull();
-        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertEquals(1, filteredFilms.size());
         assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
     }
 
@@ -183,7 +184,7 @@ class FilmCriteriaRepositoryTest {
         List<Film> filteredFilms = filmCriteriaRepository.filterFilms(null, null, directors, null, null, pageable);
 
         assertThat(filteredFilms).isNotNull();
-        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertEquals(1, filteredFilms.size());
         assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
     }
 
@@ -201,7 +202,7 @@ class FilmCriteriaRepositoryTest {
         List<Film> filteredFilms = filmCriteriaRepository.filterFilms(null, null, null, producers, null, pageable);
 
         assertThat(filteredFilms).isNotNull();
-        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertEquals(1, filteredFilms.size());
         assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
     }
 
@@ -216,7 +217,7 @@ class FilmCriteriaRepositoryTest {
                 pageable);
 
         assertThat(filteredFilms).isNotNull();
-        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertEquals(1, filteredFilms.size());
         assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
     }
 
@@ -245,7 +246,7 @@ class FilmCriteriaRepositoryTest {
                 createdFilm.getActors(), pageable);
 
         assertThat(filteredFilms).isNotNull();
-        assertThat(filteredFilms.size()).isEqualTo(1);
+        assertEquals(1, filteredFilms.size());
         assertThat(filteredFilms.get(0)).isEqualTo(createdFilm);
     }
 }

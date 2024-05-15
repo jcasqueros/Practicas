@@ -57,7 +57,7 @@ public class ActorService implements ActorServiceInterface {
     @Override
     public List<ActorBO> getAllActors() {
         List<Actor> actors = actorRepository.findAll();
-        return actorBOMapper.listEntitytoListBo(actors);
+        return actorBOMapper.listEntityListBo(actors);
     }
 
     @Override

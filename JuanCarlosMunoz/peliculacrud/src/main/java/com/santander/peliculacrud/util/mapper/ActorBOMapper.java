@@ -3,7 +3,6 @@ package com.santander.peliculacrud.util.mapper;
 import com.santander.peliculacrud.model.bo.ActorBO;
 import com.santander.peliculacrud.model.entity.Actor;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -20,7 +19,6 @@ public interface ActorBOMapper {
      *         the actor bo
      * @return the actor
      */
-    @Mapping(target = "id", ignore = true)
     Actor boToEntity(ActorBO actorBO);
 
     /**
@@ -39,6 +37,6 @@ public interface ActorBOMapper {
      *         the actors
      * @return the list
      */
-    List<ActorBO> listEntitytoListBo(List<Actor> actors);
+    List<ActorBO> listEntityListBo(List<Actor> actors);
 
 }

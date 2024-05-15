@@ -16,12 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest(showSql = false)
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.criteria")
 @Sql(scripts = "/no-data.sql")
 class ProducerCriteriaRepositoryTest {
-    
+
     @Autowired
     ProducerCriteriaRepository producerCriteriaRepository;
     private Producer producer;
@@ -42,7 +43,7 @@ class ProducerCriteriaRepositoryTest {
         assertThat(createdProducer).isNotNull();
         assertThat(createdProducer.getName()).isEqualTo(producer.getName());
         assertThat(createdProducer.getFoundationYear()).isEqualTo(producer.getFoundationYear());
-        assertThat(createdProducer.getId()).isNotNull();
+        assertThat(createdProducer.getId()).isNotZero();
 
     }
 
@@ -115,7 +116,7 @@ class ProducerCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredProducers).isNotNull();
-        assertThat(filteredProducers.size()).isEqualTo(1);
+        assertEquals(1, filteredProducers.size());
         assertThat(filteredProducers.get(0).getName()).isEqualTo("Producer 1");
     }
 
@@ -133,7 +134,7 @@ class ProducerCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredProducers).isNotNull();
-        assertThat(filteredProducers.size()).isEqualTo(1);
+        assertEquals(1, filteredProducers.size());
         assertThat(filteredProducers.get(0).getFoundationYear()).isEqualTo(2000);
     }
 
@@ -151,7 +152,7 @@ class ProducerCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredProducers).isNotNull();
-        assertThat(filteredProducers.size()).isEqualTo(1);
+        assertEquals(1, filteredProducers.size());
         assertThat(filteredProducers.get(0).getName()).isEqualTo("Producer 1");
         assertThat(filteredProducers.get(0).getFoundationYear()).isEqualTo(2000);
     }
@@ -170,7 +171,7 @@ class ProducerCriteriaRepositoryTest {
 
         // Assert
         assertThat(filteredProducers).isNotNull();
-        assertThat(filteredProducers.size()).isEqualTo(1); // assuming there are 10 producers in the database
+        assertEquals(1, filteredProducers.size());
     }
 
 }

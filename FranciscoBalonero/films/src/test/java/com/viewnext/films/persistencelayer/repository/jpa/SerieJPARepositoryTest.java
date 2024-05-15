@@ -40,7 +40,7 @@ class SerieJPARepositoryTest {
         assertThat(savedSerie).isNotNull();
         assertThat(savedSerie.getTitle()).isEqualTo(serie.getTitle());
         assertThat(savedSerie.getReleaseYear()).isEqualTo(serie.getReleaseYear());
-        assertThat(savedSerie.getId()).isNotNull();
+        assertThat(savedSerie.getId()).isNotZero();
 
     }
 

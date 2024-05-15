@@ -57,11 +57,11 @@ class ActorBOMapperTest {
      */
     @Test
     @DisplayName("Test mapper list entity to list ActorBO")
-    void testListEntitytoListBo() {
+    void testListEntityListBo() {
         List<Actor> actors = Arrays.asList(Actor.builder().name("Actor 1").age(30).build(),
                 Actor.builder().name("Actor 2").age(25).build());
 
-        List<ActorBO> actorBOs = actorBOMapper.listEntitytoListBo(actors);
+        List<ActorBO> actorBOs = actorBOMapper.listEntityListBo(actors);
 
         assertNotNull(actorBOs);
         assertEquals(2, actorBOs.size());

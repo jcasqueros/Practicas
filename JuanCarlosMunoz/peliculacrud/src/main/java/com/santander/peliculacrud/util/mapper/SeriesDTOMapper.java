@@ -1,50 +1,50 @@
 package com.santander.peliculacrud.util.mapper;
 
-import com.santander.peliculacrud.model.bo.FilmBO;
 import com.santander.peliculacrud.model.bo.SeriesBO;
-import com.santander.peliculacrud.model.entity.Film;
-import com.santander.peliculacrud.model.entity.Series;
-import org.mapstruct.Mapper;
+import com.santander.peliculacrud.model.dto.SeriesDTO;
+
 import org.mapstruct.Mapping;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * The interface Series bo mapper.
+ * The interface Series dto mapper.
  */
-@Mapper(componentModel = "spring")
-public interface SeriesBOMapper {
+@Service
+public interface SeriesDTOMapper {
 
     /**
-     * Bo to entity series.
+     * Dto to bo series dto.
      *
      * @param seriesBO
      *         the series bo
-     * @return the series
+     * @return the series dto
      */
     @Mapping(source = "actors", target = "actors")
     @Mapping(source = "director", target = "director")
-    Series boToEntity(SeriesBO seriesBO);
+    SeriesDTO boToDTO(SeriesBO seriesBO);
 
     /**
-     * Entity to bo series bo.
+     * Bo to dto series bo.
      *
-     * @param series
-     *         the series
+     * @param seriesDTO
+     *         the series dto
      * @return the series bo
      */
     @Mapping(source = "actors", target = "actors")
     @Mapping(source = "director", target = "director")
-    SeriesBO entityToBo(Series series);
+    SeriesBO dtoToBo(SeriesDTO seriesDTO);
 
     /**
-     * List entity list bo list.
+     * List bos to dtos list.
      *
-     * @param series
-     *         the series
+     * @param seriesBOS
+     *         the series bos
      * @return the list
      */
     @Mapping(source = "actors", target = "actors")
     @Mapping(source = "director", target = "director")
-    List<SeriesBO> listEntityListBo(List<Series> series);
+    List<SeriesDTO> bosToDtos(List<SeriesBO> seriesBOS);
+
 }
