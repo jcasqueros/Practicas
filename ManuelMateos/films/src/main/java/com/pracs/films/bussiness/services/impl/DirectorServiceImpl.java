@@ -97,7 +97,7 @@ public class DirectorServiceImpl implements DirectorService {
             List<DirectorBO> directorBOList = directorRepository.findByNameAndAge(name, age).stream()
                     .map(modelToBoConverter::directorModelToBo).toList();
 
-            if (directorBOList == null) {
+            if (directorBOList.isEmpty()) {
                 throw new EmptyException(constantMessages.noDirectors());
             }
 
@@ -200,7 +200,7 @@ public class DirectorServiceImpl implements DirectorService {
             List<DirectorBO> directorBOList = directorRepositoryCriteria.findByNameAndAge(name, age).stream()
                     .map(modelToBoConverter::directorModelToBo).toList();
 
-            if (directorBOList == null) {
+            if (directorBOList.isEmpty()) {
                 throw new EmptyException(constantMessages.noDirectors());
             }
 

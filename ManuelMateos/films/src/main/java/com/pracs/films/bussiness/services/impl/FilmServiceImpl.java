@@ -94,7 +94,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO save(FilmBO filmBO, String port) throws ServiceException {
         try {
-            filmBO.getActors().stream().forEach(a -> existsActorJPA(a.getId(), port));
+            filmBO.getActors().forEach(a -> existsActorJPA(a.getId(), port));
             existsDirectorJPA(filmBO.getDirector().getId(), port);
             existsProducerJPA(filmBO.getProducer().getId(), port);
 

@@ -7,6 +7,7 @@ import com.pracs.films.persistence.models.Actor;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ActorDtoIn;
+import com.pracs.films.presentation.dto.ActorDtoInUpdate;
 import com.pracs.films.presentation.dto.ActorDtoOut;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -140,16 +141,7 @@ public class ActorController {
      * @return ResponseEntity<ActorDtoOut>
      */
     @GetMapping("/findByName/{name}")
-    public ResponseEntity<List<ActorDtoOut>> getByName(@RequestParam boolean method,
-            @PathVariable("name") String name) {
-        //        if (method) {
-        //            try {
-        //                return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(actorService.findByIdCriteria(id)),
-        //                        HttpStatus.OK);
-        //            } catch (ServiceException e) {
-        //                throw new PresentationException(e.getLocalizedMessage());
-        //            }
-        //        }
+    public ResponseEntity<List<ActorDtoOut>> getByName(@PathVariable("name") String name) {
         try {
             return new ResponseEntity<>(
                     actorService.findByName(name).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
@@ -214,19 +206,19 @@ public class ActorController {
      */
     @Transactional
     @PutMapping("/update")
-    public ResponseEntity<ActorDtoOut> update(@RequestParam boolean method, @Valid @RequestBody ActorDtoIn actorDtoIn) {
+    public ResponseEntity<ActorDtoOut> update(@RequestParam boolean method,
+            @Valid @RequestBody ActorDtoInUpdate actorDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
-                        actorService.updateCriteria(dtoToBoConverter.actorDtoToBo(actorDtoIn))), HttpStatus.OK);
+                        actorService.updateCriteria(dtoToBoConverter.actorDtoUpdateToBo(actorDtoIn))), HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            return new ResponseEntity<>(
-                    boToDtoConverter.actorBoToDtoOut(actorService.update(dtoToBoConverter.actorDtoToBo(actorDtoIn))),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
+                    actorService.update(dtoToBoConverter.actorDtoUpdateToBo(actorDtoIn))), HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }
