@@ -203,4 +203,30 @@ public interface ActorService {
      */
     List<ActorBO> filterActors(List<String> names, List<Integer> ages, List<String> nationalities, int pageNumber,
             int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
+
+    /**
+     * Retrieves actors by name and age using Criteria.
+     *
+     * @param name
+     *         The name of the actors to retrieve.
+     * @param age
+     *         The age of the actors to retrieve.
+     * @return A list of {@link ActorBO} that match the name and age.
+     * @throws ServiceException
+     *         If an error occurs during the operation.
+     */
+    List<ActorBO> criteriaFindByNameAndAge(String name, int age) throws ServiceException;
+
+    /**
+     * Retrieves actors by name and age using JPA.
+     *
+     * @param name
+     *         The name of the actors to retrieve.
+     * @param age
+     *         The age of the actors to retrieve.
+     * @return A list of {@link ActorBO} that match the name and age.
+     * @throws ServiceException
+     *         If an error occurs during the operation.
+     */
+    List<ActorBO> jpaFindByNameAndAge(String name, int age) throws ServiceException;
 }

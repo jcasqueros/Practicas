@@ -129,4 +129,23 @@ public class DirectorController {
                 directorService.filterDirectors(names, ages, nationalities, pageNumber, pageSize, sortBy, sortOrder)
                         .stream().map(converter::directorBOToOutDTO).toList(), HttpStatus.OK);
     }
+
+    @Operation(summary = "Find Directors by name and age")
+    @GetMapping("/findByNameAndAge")
+    public ResponseEntity<List<DirectorOutDTO>> findByNameAndAge(
+            @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select,
+            @RequestParam @Parameter(description = "Name of the directors to find") String name,
+            @RequestParam @Parameter(description = "Age of the directors to find") int age) throws ServiceException {
+
+        if (select) {
+            return new ResponseEntity<>(
+                    directorService.criteriaFindByNameAndAge(name, age).stream().map(converter::directorBOToOutDTO)
+                            .toList(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(
+                    directorService.jpaFindByNameAndAge(name, age).stream().map(converter::directorBOToOutDTO).toList(),
+                    HttpStatus.OK);
+        }
+
+    }
 }

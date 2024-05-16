@@ -28,6 +28,7 @@ import java.util.List;
  * @see ActorService
  * @see Converter
  */
+
 @RestController
 @RequestMapping("api/v1/Actor")
 @RequiredArgsConstructor
@@ -135,6 +136,25 @@ public class ActorController {
             return new ResponseEntity<>(
                     converter.actorBOToOutDTO(actorService.jpaUpdate(converter.actorUpdateDTOToBO(actorUpdateDTO))),
                     HttpStatus.CREATED);
+        }
+
+    }
+
+    @Operation(summary = "Find Actors by name and age")
+    @GetMapping("/findByNameAndAge")
+    public ResponseEntity<List<ActorOutDTO>> findByNameAndAge(
+            @RequestParam @Parameter(description = "True if Criteria, False JPA") boolean select,
+            @RequestParam @Parameter(description = "Name of the actors to find") String name,
+            @RequestParam @Parameter(description = "Age of the actors to find") int age) throws ServiceException {
+
+        if (select) {
+            return new ResponseEntity<>(
+                    actorService.criteriaFindByNameAndAge(name, age).stream().map(converter::actorBOToOutDTO).toList(),
+                    HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(
+                    actorService.jpaFindByNameAndAge(name, age).stream().map(converter::actorBOToOutDTO).toList(),
+                    HttpStatus.OK);
         }
 
     }
