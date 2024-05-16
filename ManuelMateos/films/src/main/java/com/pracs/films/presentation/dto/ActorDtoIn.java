@@ -17,9 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ActorDtoIn {
-
-    private long id;
-
+    
     @NotBlank
     @Schema(description = "Name of the actor", example = "Michael")
     private String name;

@@ -40,11 +40,24 @@ public interface ActorService {
     ActorBO findById(long id) throws ServiceException;
 
     /**
-     * Method for get all actors paginated
+     * Method for find an actor by his name
      *
-     * @param pageable
+     * @param name
+     * @return
+     * @throws ServiceException
+     */
+    List<ActorBO> findByName(String name) throws ServiceException;
+
+    /**
+     * Method for get actors by name and age
+     *
+     * @param name
+     * @param age
      * @return List of ActorBO
      */
+
+    List<ActorBO> findByNameAndAge(String name, int age) throws ServiceException;
+
     Page<ActorBO> findAll(Pageable pageable) throws ServiceException;
 
     /**
@@ -77,6 +90,16 @@ public interface ActorService {
      * @return ActorBO
      */
     ActorBO findByIdCriteria(long id) throws ServiceException;
+
+    /**
+     * Method for get actors by name and age
+     *
+     * @param name
+     * @param age
+     * @return List of ActorBO
+     */
+
+    List<ActorBO> findByNameAndAgeCriteria(String name, int age) throws ServiceException;
 
     /**
      * Method for get all actors paginated

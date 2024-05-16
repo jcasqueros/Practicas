@@ -17,9 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class DirectorDtoIn {
-
-    private long id;
-
+    
     @NotBlank
     @Schema(description = "Name of the director", example = "Michael")
     private String name;

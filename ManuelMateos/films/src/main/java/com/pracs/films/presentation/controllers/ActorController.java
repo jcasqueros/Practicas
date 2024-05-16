@@ -134,6 +134,53 @@ public class ActorController {
     }
 
     /**
+     * Method for get an actor by his name.
+     *
+     * @param name
+     * @return ResponseEntity<ActorDtoOut>
+     */
+    @GetMapping("/findByName/{name}")
+    public ResponseEntity<List<ActorDtoOut>> getByName(@RequestParam boolean method,
+            @PathVariable("name") String name) {
+        //        if (method) {
+        //            try {
+        //                return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(actorService.findByIdCriteria(id)),
+        //                        HttpStatus.OK);
+        //            } catch (ServiceException e) {
+        //                throw new PresentationException(e.getLocalizedMessage());
+        //            }
+        //        }
+        try {
+            return new ResponseEntity<>(
+                    actorService.findByName(name).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    @GetMapping("/findByNameAndAge")
+    public ResponseEntity<List<ActorDtoOut>> getByNameAndAge(@RequestParam boolean method, @RequestParam String name,
+            @RequestParam int age) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        actorService.findByNameAndAgeCriteria(name, age).stream().map(boToDtoConverter::actorBoToDtoOut)
+                                .toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    actorService.findByNameAndAge(name, age).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
      * Method for create an actor
      *
      * @param actorDtoIn

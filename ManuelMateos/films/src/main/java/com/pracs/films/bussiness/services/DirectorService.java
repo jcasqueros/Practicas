@@ -40,6 +40,16 @@ public interface DirectorService {
     DirectorBO findById(long id) throws ServiceException;
 
     /**
+     * Method for get directors by name and age
+     *
+     * @param name
+     * @param age
+     * @return List of DirectorsBO
+     */
+
+    List<DirectorBO> findByNameAndAge(String name, int age) throws ServiceException;
+
+    /**
      * Method for get all directors paginated
      *
      * @return List of DirectorBO
@@ -76,6 +86,16 @@ public interface DirectorService {
      * @return DirectorBO
      */
     DirectorBO findByIdCriteria(long id) throws ServiceException;
+
+    /**
+     * Method for get directors by name and age
+     *
+     * @param name
+     * @param age
+     * @return List of DirectorsBO
+     */
+
+    List<DirectorBO> findByNameAndAgeCriteria(String name, int age) throws ServiceException;
 
     /**
      * Method for get all directors paginated
