@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +67,7 @@ class ActorCriteriaRepositoryTest {
 
         Actor createdActor = actorCriteriaRepository.createActor(actor);
 
-        Optional<Actor> foundActor = actorCriteriaRepository.getActorById(createdActor.getId());
+        Optional<Actor> foundActor = actorCriteriaRepository.getActorById(actor.getId());
 
         assertThat(foundActor).isPresent();
         assertThat(foundActor).contains(createdActor);
@@ -109,14 +108,12 @@ class ActorCriteriaRepositoryTest {
     @DisplayName("Filter actors by name")
     void givenName_whenFilterActors_thenReturnFilteredActors() {
         // Arrange
-        Actor createdActor = actorCriteriaRepository.createActor(actor);
-        List<String> names = Arrays.asList("Jhon");
-        List<Integer> ages = null;
-        List<String> nationalities = null;
+        actorCriteriaRepository.createActor(actor);
+        List<String> names = List.of("Jhon");
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, null, null, pageable);
 
         // Assert
         assertThat(filteredActors).isNotNull();
@@ -128,14 +125,12 @@ class ActorCriteriaRepositoryTest {
     @DisplayName("Filter actors by age")
     void givenAge_whenFilterActors_thenReturnFilteredActors() {
         // Arrange
-        Actor createdActor = actorCriteriaRepository.createActor(actor);
-        List<String> names = null;
-        List<Integer> ages = Arrays.asList(18);
-        List<String> nationalities = null;
+        actorCriteriaRepository.createActor(actor);
+        List<Integer> ages = List.of(18);
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(null, ages, null, pageable);
 
         // Assert
         assertThat(filteredActors).isNotNull();
@@ -147,14 +142,12 @@ class ActorCriteriaRepositoryTest {
     @DisplayName("Filter actors by nationality")
     void givenNationality_whenFilterActors_thenReturnFilteredActors() {
         // Arrange
-        Actor createdActor = actorCriteriaRepository.createActor(actor);
-        List<String> names = null;
-        List<Integer> ages = null;
-        List<String> nationalities = Arrays.asList("spain");
+        actorCriteriaRepository.createActor(actor);
+        List<String> nationalities = List.of("spain");
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(null, null, nationalities, pageable);
 
         // Assert
         assertThat(filteredActors).isNotNull();
@@ -166,10 +159,10 @@ class ActorCriteriaRepositoryTest {
     @DisplayName("Filter actors by multiple criteria")
     void givenMultipleCriteria_whenFilterActors_thenReturnFilteredActors() {
         // Arrange
-        Actor createdActor = actorCriteriaRepository.createActor(actor);
-        List<String> names = Arrays.asList("Jhon");
-        List<Integer> ages = Arrays.asList(18);
-        List<String> nationalities = Arrays.asList("spain");
+        actorCriteriaRepository.createActor(actor);
+        List<String> names = List.of("Jhon");
+        List<Integer> ages = List.of(18);
+        List<String> nationalities = List.of("spain");
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
@@ -187,18 +180,29 @@ class ActorCriteriaRepositoryTest {
     @DisplayName("Filter actors with no criteria")
     void givenNoCriteria_whenFilterActors_thenReturnAllActors() {
         // Arrange
-        Actor createdActor = actorCriteriaRepository.createActor(actor);
-        List<String> names = null;
-        List<Integer> ages = null;
-        List<String> nationalities = null;
+        actorCriteriaRepository.createActor(actor);
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Actor> filteredActors = actorCriteriaRepository.filterActors(names, ages, nationalities, pageable);
+        List<Actor> filteredActors = actorCriteriaRepository.filterActors(null, null, null, pageable);
 
         // Assert
         assertThat(filteredActors).isNotNull();
-        assertEquals(1, filteredActors.size());// assuming there are 10 actors in the database
+        assertEquals(1, filteredActors.size());
     }
 
+    @Test
+    @DisplayName("Get actors by name and age")
+    void givenNameAndAge_whenGetActorsByNameAndAge_thenReturnFilteredActors() {
+        // Arrange
+        actorCriteriaRepository.createActor(actor);
+        // Act
+        List<Actor> filteredActors = actorCriteriaRepository.getActorsByNameAndAge("Jhon", 18);
+
+        // Assert
+        assertThat(filteredActors).isNotNull();
+        assertEquals(1, filteredActors.size());
+        assertThat(filteredActors.get(0).getName()).isEqualTo("Jhon");
+        assertThat(filteredActors.get(0).getAge()).isEqualTo(18);
+    }
 }

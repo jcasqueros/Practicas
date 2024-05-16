@@ -94,4 +94,16 @@ public interface ActorCriteriaRepository {
      * @return a {@link List} of all {@link Actor} filters.
      */
     List<Actor> filterActors(List<String> names, List<Integer> ages, List<String> nationalities, Pageable pageable);
+
+    /**
+     * Retrieves a list of actors by name and age.
+     *
+     * @param name
+     *         the name of the actors to be retrieved
+     * @param age
+     *         the age of the actors to be retrieved
+     * @return a list of actors that match the specified name and age, or an empty list if no actors are found
+     */
+    List<Actor> getActorsByNameAndAge(String name, int age);
+
 }

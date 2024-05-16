@@ -82,4 +82,16 @@ public interface DirectorCriteriaRepository {
 
     List<Director> filterDirectors(List<String> names, List<Integer> ages, List<String> nationalities,
             Pageable pageable);
+
+    /**
+     * Retrieves a list of directors by name and age.
+     *
+     * @param name
+     *         the name of the directors to be retrieved
+     * @param age
+     *         the age of the directors to be retrieved
+     * @return a list of directors that match the specified name and age, or an empty list if no directors are found
+     */
+    List<Director> getDirectorsByNameAndAge(String name, int age);
+
 }
