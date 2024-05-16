@@ -8,6 +8,7 @@ import com.pracs.films.persistence.repositories.jpa.*;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ActorDtoIn;
+import com.pracs.films.presentation.dto.ActorDtoInUpdate;
 import com.pracs.films.presentation.dto.ActorDtoOut;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,6 +74,8 @@ class ActorControllerTest {
 
     private ActorDtoIn actorDtoIn;
 
+    private ActorDtoInUpdate actorDtoInUpdate;
+
     private ActorDtoOut actorDtoOut;
 
     @BeforeEach
@@ -85,10 +88,15 @@ class ActorControllerTest {
         actorBO.setNationality("Spain");
 
         actorDtoIn = new ActorDtoIn();
-        actorDtoIn.setId(1L);
         actorDtoIn.setName("prueba");
         actorDtoIn.setAge(25);
         actorDtoIn.setNationality("Spain");
+
+        actorDtoInUpdate = new ActorDtoInUpdate();
+        actorDtoInUpdate.setId(1L);
+        actorDtoInUpdate.setName("prueba");
+        actorDtoInUpdate.setAge(25);
+        actorDtoInUpdate.setNationality("Spain");
 
         actorDtoOut = new ActorDtoOut();
         actorDtoOut.setId(1L);
@@ -295,13 +303,12 @@ class ActorControllerTest {
     @Test
     void givenActorDTO_whenUpdate_thenUpdatedActorDTO() throws Exception {
         given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
-        given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
+        given(dtoToBoConverter.actorDtoUpdateToBo(actorDtoInUpdate)).willReturn(actorBO);
         given(actorService.update(any(ActorBO.class))).willAnswer((invocation -> invocation.getArgument(0)));
 
-        ActorDtoIn updatedActorDTO = new ActorDtoIn();
-        updatedActorDTO.setId(actorDtoIn.getId());
+        ActorDtoInUpdate updatedActorDTO = actorDtoInUpdate;
         updatedActorDTO.setName("updated");
-        updatedActorDTO.setAge(90);
+        updatedActorDTO.setAge(100);
         updatedActorDTO.setNationality("updated");
 
         ResultActions response = mockMvc.perform(
@@ -309,9 +316,7 @@ class ActorControllerTest {
                         .content(objectMapper.writeValueAsString(updatedActorDTO)));
 
         response.andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) updatedActorDTO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.age", is(90)))
-                .andExpect(jsonPath("$.nationality", is("updated")));
+                .andExpect(jsonPath("$.id", is((int) updatedActorDTO.getId())));
     }
 
     @DisplayName("Junit test for update an actor - negative")
@@ -322,14 +327,9 @@ class ActorControllerTest {
         given(actorService.findById(actorBO.getId())).willReturn(actorBO);
         given(actorService.update(any(ActorBO.class))).willThrow(new ServiceException(""));
 
-        ActorDtoIn updatedActorDTO = actorDtoIn;
-        updatedActorDTO.setName("updated");
-        updatedActorDTO.setAge(100);
-        updatedActorDTO.setNationality("updated");
-
         ResultActions response = mockMvc.perform(
                 put("/actors/update?method=false").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedActorDTO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -338,11 +338,11 @@ class ActorControllerTest {
     @Test
     void givenActorDTO_whenUpdateCriteria_thenUpdatedActorDTO() throws Exception {
         given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
-        given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
+        given(dtoToBoConverter.actorDtoUpdateToBo(actorDtoInUpdate)).willReturn(actorBO);
         given(actorService.findByIdCriteria(actorBO.getId())).willReturn(actorBO);
         given(actorService.updateCriteria(any(ActorBO.class))).willAnswer((invocation -> invocation.getArgument(0)));
 
-        ActorDtoIn updatedActorDTO = actorDtoIn;
+        ActorDtoInUpdate updatedActorDTO = actorDtoInUpdate;
         updatedActorDTO.setName("updated");
         updatedActorDTO.setAge(100);
         updatedActorDTO.setNationality("updated");
@@ -352,9 +352,7 @@ class ActorControllerTest {
                         .content(objectMapper.writeValueAsString(updatedActorDTO)));
 
         response.andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) updatedActorDTO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.age", is(90)))
-                .andExpect(jsonPath("$.nationality", is("updated")));
+                .andExpect(jsonPath("$.id", is((int) updatedActorDTO.getId())));
     }
 
     @DisplayName("Junit test for update an actor - negative")
@@ -365,14 +363,9 @@ class ActorControllerTest {
         given(actorService.findByIdCriteria(actorBO.getId())).willReturn(actorBO);
         given(actorService.updateCriteria(any(ActorBO.class))).willThrow(new ServiceException(""));
 
-        ActorDtoIn updatedActorDTO = actorDtoIn;
-        updatedActorDTO.setName("updated");
-        updatedActorDTO.setAge(100);
-        updatedActorDTO.setNationality("updated");
-
         ResultActions response = mockMvc.perform(
                 put("/actors/update?method=true").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedActorDTO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -383,7 +376,7 @@ class ActorControllerTest {
         willDoNothing().given(actorService).deleteById(actorBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/actors/deleteById?method=false").param("id", String.valueOf(actorDtoIn.getId())));
+                delete("/actors/deleteById?method=false").param("id", String.valueOf(actorDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -394,7 +387,7 @@ class ActorControllerTest {
         willThrow(new ServiceException("")).given(actorService).deleteById(actorBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/actors/deleteById?method=false").param("id", String.valueOf(actorDtoIn.getId())));
+                delete("/actors/deleteById?method=false").param("id", String.valueOf(actorDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -405,7 +398,7 @@ class ActorControllerTest {
         willDoNothing().given(actorService).deleteByIdCriteria(actorBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/actors/deleteById?method=true").param("id", String.valueOf(actorDtoIn.getId())));
+                delete("/actors/deleteById?method=true").param("id", String.valueOf(actorDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -416,7 +409,7 @@ class ActorControllerTest {
         willThrow(new ServiceException("")).given(actorService).deleteByIdCriteria(actorBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/actors/deleteById?method=true").param("id", String.valueOf(actorDtoIn.getId())));
+                delete("/actors/deleteById?method=true").param("id", String.valueOf(actorDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }

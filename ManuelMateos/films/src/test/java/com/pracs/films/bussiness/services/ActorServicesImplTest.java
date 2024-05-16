@@ -174,6 +174,61 @@ class ActorServicesImplTest {
         assertThrows(ServiceException.class, () -> actorService.findById(actorBO.getId()));
     }
 
+    @DisplayName("JUnit test for find an actor by his name - positive")
+    @Test
+    void givenActorName_whenFindByName_thenReturnListActorBoObject() throws ServiceException {
+        given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
+        given(actorRepository.findByName(actor.getName())).willReturn(List.of(actor));
+
+        List<ActorBO> actorBOList = actorService.findByName(actorBO.getName());
+
+        assertEquals(1, actorBOList.size());
+    }
+
+    @DisplayName("JUnit test for find an actor by his name - negative")
+    @Test
+    void givenActorName_whenFindByName_thenThrowEntityNotFoundExcepition() throws ServiceException {
+        given(actorRepository.findByName(actor.getName())).willReturn(List.of());
+
+        assertThrows(EmptyException.class, () -> actorService.findByName(actorBO.getName()));
+    }
+
+    @DisplayName("JUnit test for find an actor by his name - negative")
+    @Test
+    void givenActorName_whenFindByName_thenThrowNestedRuntimeException() throws ServiceException {
+        when(actorRepository.findByName(actor.getName())).thenThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class, () -> actorService.findByName(actorBO.getName()));
+    }
+
+    @DisplayName("JUnit test for find an actor by his name and age - positive")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAge_thenReturnListActorBoObject() throws ServiceException {
+        given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
+        given(actorRepository.findByNameAndAge(actor.getName(), actor.getAge())).willReturn(List.of(actor));
+
+        List<ActorBO> actorBOList = actorService.findByNameAndAge(actorBO.getName(), actor.getAge());
+
+        assertEquals(1, actorBOList.size());
+    }
+
+    @DisplayName("JUnit test for find an actor by his name and age - negative")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAge_thenThrowEntityNotFoundExcepition() throws ServiceException {
+        given(actorRepository.findByNameAndAge(actor.getName(), actor.getAge())).willReturn(List.of());
+
+        assertThrows(EmptyException.class, () -> actorService.findByNameAndAge(actorBO.getName(), actor.getAge()));
+    }
+
+    @DisplayName("JUnit test for find an actor by his name and age - negative")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+        when(actorRepository.findByNameAndAge(actor.getName(), actor.getAge())).thenThrow(
+                InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class, () -> actorService.findByNameAndAge(actorBO.getName(), actor.getAge()));
+    }
+
     @DisplayName("JUnit test for get all actors - positive")
     @Test
     void givenNothing_whenFindAll_thenReturnActorBoObject() throws ServiceException {
@@ -325,6 +380,36 @@ class ActorServicesImplTest {
                 InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> actorService.findByIdCriteria(actorBO.getId()));
+    }
+
+    @DisplayName("JUnit test for find an actor by his name and age - positive")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAgeCriteria_thenReturnListActorBoObject() throws ServiceException {
+        given(modelToBoConverter.actorModelToBo(actor)).willReturn(actorBO);
+        given(actorRepositoryCriteria.findByNameAndAge(actor.getName(), actor.getAge())).willReturn(List.of(actor));
+
+        List<ActorBO> actorBOList = actorService.findByNameAndAgeCriteria(actorBO.getName(), actor.getAge());
+
+        assertEquals(1, actorBOList.size());
+    }
+
+    @DisplayName("JUnit test for find an actor by his name and age - negative")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAgeCriteria_thenThrowEntityNotFoundExcepition() throws ServiceException {
+        given(actorRepositoryCriteria.findByNameAndAge(actor.getName(), actor.getAge())).willReturn(List.of());
+
+        assertThrows(EmptyException.class,
+                () -> actorService.findByNameAndAgeCriteria(actorBO.getName(), actor.getAge()));
+    }
+
+    @DisplayName("JUnit test for find an actor by his name and age - negative")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAgeCriteria_thenThrowNestedRuntimeException() throws ServiceException {
+        when(actorRepositoryCriteria.findByNameAndAge(actor.getName(), actor.getAge())).thenThrow(
+                InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> actorService.findByNameAndAgeCriteria(actorBO.getName(), actor.getAge()));
     }
 
     @DisplayName("JUnit test for get all actors - positive")

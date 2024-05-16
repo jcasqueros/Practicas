@@ -8,7 +8,6 @@ import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.impl.FilmServiceImpl;
 import com.pracs.films.configuration.ConstantMessages;
-import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
@@ -27,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +46,9 @@ class FilmServicesImplTest {
 
     @Mock
     private ConstantMessages constantMessages;
+
+    @Mock
+    private WebClient webClient;
 
     @Mock
     private ModelToBoConverter modelToBoConverter;
@@ -145,10 +148,12 @@ class FilmServicesImplTest {
     void givenFilmBoObject_whenSave_thenReturnFilmBoObject() throws ServiceException {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
         given(boToModelConverter.filmBoToModel(filmBO)).willReturn(film);
-        given(filmRepository.existsById(1L)).willReturn(false);
+        given(filmService.existsActorJPA(1L, "8080")).willReturn(true);
+        given(filmService.existsDirectorCriteria(1L, "8080")).willReturn(true);
+        given(filmService.existsProducerCriteria(1L, "8080")).willReturn(true);
         given(filmRepository.save(boToModelConverter.filmBoToModel(filmBO))).willReturn(film);
 
-        FilmBO savedfilmBO = filmService.save(filmBO);
+        FilmBO savedfilmBO = filmService.save(filmBO, "8080");
 
         assertEquals(filmBO, savedfilmBO);
     }
@@ -158,17 +163,16 @@ class FilmServicesImplTest {
     void givenFilmBoObject_whenSave_thenThrowDuplicatedException() throws ServiceException {
         given(filmRepository.existsById(1L)).willReturn(true);
 
-        assertThrows(DuplicatedIdException.class, () -> filmService.save(filmBO));
+        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO, "8080"));
     }
 
     @DisplayName("JUnit test for save a film - negative")
     @Test()
     void givenFilmBoObject_whenSave_thenThrowNestedRuntimeException() throws ServiceException {
-        given(filmRepository.existsById(1L)).willReturn(false);
         when(filmRepository.save(boToModelConverter.filmBoToModel(filmBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> filmService.save(filmBO));
+        assertThrows(ServiceException.class, () -> filmService.save(filmBO, "8080"));
     }
 
     @DisplayName("JUnit test for update a film - positive")
@@ -296,30 +300,23 @@ class FilmServicesImplTest {
     void givenFilmBoObject_whenSaveCriteria_thenReturnFilmBoObject() throws ServiceException {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
         given(boToModelConverter.filmBoToModel(filmBO)).willReturn(film);
-        given(filmRepositoryCriteria.findFilmById(1L)).willReturn(Optional.empty());
+        given(filmService.existsActorJPA(1L, "8080")).willReturn(true);
+        given(filmService.existsDirectorJPA(1L, "8080")).willReturn(true);
+        given(filmService.existsProducerJPA(1L, "8080")).willReturn(true);
         given(filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO))).willReturn(film);
 
-        FilmBO savedfilmBO = filmService.saveCriteria(filmBO);
+        FilmBO savedfilmBO = filmService.saveCriteria(filmBO, "8080");
 
         assertEquals(filmBO, savedfilmBO);
     }
 
     @DisplayName("JUnit test for save a film - negative")
-    @Test
-    void givenFilmBoObject_whenSaveCriteria_thenThrowDuplicatedException() throws ServiceException {
-        given(filmRepositoryCriteria.findFilmById(1L)).willReturn(Optional.of(film));
-
-        assertThrows(DuplicatedIdException.class, () -> filmService.saveCriteria(filmBO));
-    }
-
-    @DisplayName("JUnit test for save a film - negative")
     @Test()
     void givenFilmBoObject_whenSaveCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        given(filmRepositoryCriteria.findFilmById(1L)).willReturn(Optional.empty());
         when(filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> filmService.saveCriteria(filmBO));
+        assertThrows(ServiceException.class, () -> filmService.saveCriteria(filmBO, "8080"));
     }
 
     @DisplayName("JUnit test for update a film - positive")

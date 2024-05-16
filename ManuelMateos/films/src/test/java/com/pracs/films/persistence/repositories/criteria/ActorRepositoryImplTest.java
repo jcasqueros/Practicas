@@ -78,6 +78,15 @@ class ActorRepositoryImplTest {
         assertEquals(500L, savedActor.get().getId());
     }
 
+    @DisplayName("JUnit test for get an actor by his name and age")
+    @Test
+    void givenActorNameAndAge_whenFindActorByNameAndAge_thenReturnListActorObject() {
+
+        List<Actor> actorList = actorRepository.findByNameAndAge(actor.getName(), actor.getAge());
+
+        assertEquals(1, actorList.size());
+    }
+
     @DisplayName("JUnit test for get all actors")
     @Test
     void givenPageable_whenFindAllActor_thenReturnActorList() {

@@ -8,7 +8,6 @@ import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.impl.SerieServiceImpl;
 import com.pracs.films.configuration.ConstantMessages;
-import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
@@ -25,8 +24,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,9 @@ class SerieServicesImplTest {
 
     @Mock
     private ConstantMessages constantMessages;
+
+    @MockBean
+    private WebClient webClient;
 
     @InjectMocks
     private SerieServiceImpl serieService;
@@ -145,10 +149,12 @@ class SerieServicesImplTest {
     void givenSerieBoObject_whenSave_thenReturnSerieBoObject() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
         given(boToModelConverter.serieBoToModel(serieBO)).willReturn(serie);
-        given(serieRepository.existsById(1L)).willReturn(false);
+        given(serieService.existsActorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
         given(serieRepository.save(boToModelConverter.serieBoToModel(serieBO))).willReturn(serie);
 
-        SerieBO savedserieBO = serieService.save(serieBO);
+        SerieBO savedserieBO = serieService.save(serieBO, "8080");
 
         assertEquals(serieBO, savedserieBO);
     }
@@ -156,19 +162,20 @@ class SerieServicesImplTest {
     @DisplayName("JUnit test for save an serie - negative")
     @Test
     void givenSerieBoObject_whenSave_thenThrowDuplicatedException() throws ServiceException {
-        given(serieRepository.existsById(1L)).willReturn(true);
 
-        assertThrows(DuplicatedIdException.class, () -> serieService.save(serieBO));
+        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO, "8080"));
     }
 
     @DisplayName("JUnit test for save an serie - negative")
     @Test()
     void givenSerieBoObject_whenSave_thenThrowNestedRuntimeException() throws ServiceException {
-        given(serieRepository.existsById(1L)).willReturn(false);
+        given(serieService.existsActorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
         when(serieRepository.save(boToModelConverter.serieBoToModel(serieBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> serieService.save(serieBO));
+        assertThrows(ServiceException.class, () -> serieService.save(serieBO, "8080"));
     }
 
     @DisplayName("JUnit test for update an serie - positive")
@@ -296,10 +303,13 @@ class SerieServicesImplTest {
     void givenSerieBoObject_whenSaveCriteria_thenReturnSerieBoObject() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
         given(boToModelConverter.serieBoToModel(serieBO)).willReturn(serie);
-        given(serieRepositoryCriteria.findSerieById(1L)).willReturn(Optional.empty());
+
+        given(serieService.existsActorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
         given(serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO))).willReturn(serie);
 
-        SerieBO savedserieBO = serieService.saveCriteria(serieBO);
+        SerieBO savedserieBO = serieService.saveCriteria(serieBO, "8080");
 
         assertEquals(serieBO, savedserieBO);
     }
@@ -307,19 +317,23 @@ class SerieServicesImplTest {
     @DisplayName("JUnit test for save an serie - negative")
     @Test
     void givenSerieBoObject_whenSaveCriteria_thenThrowDuplicatedException() throws ServiceException {
-        given(serieRepositoryCriteria.findSerieById(1L)).willReturn(Optional.of(serie));
-
-        assertThrows(DuplicatedIdException.class, () -> serieService.saveCriteria(serieBO));
+        given(serieService.existsActorJPA(1L, "8080")).willReturn(true);
+        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
+        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO, "8080"));
     }
 
     @DisplayName("JUnit test for save an serie - negative")
     @Test()
     void givenSerieBoObject_whenSaveCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        given(serieRepositoryCriteria.findSerieById(1L)).willReturn(Optional.empty());
+        given(serieService.existsActorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
+        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
+
         when(serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> serieService.saveCriteria(serieBO));
+        assertThrows(ServiceException.class, () -> serieService.saveCriteria(serieBO, "8080"));
     }
 
     @DisplayName("JUnit test for update an serie - positive")

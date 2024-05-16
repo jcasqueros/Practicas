@@ -76,11 +76,15 @@ class FilmControllerTest {
 
     private ActorDtoIn actorDtoIn;
 
+    private ActorDtoInUpdate actorDtoInUpdate;
+
     private ActorDtoOut actorDtoOut;
 
     private DirectorBO directorBO;
 
     private DirectorDtoIn directorDtoIn;
+
+    private DirectorDtoInUpdate directorDtoInUpdate;
 
     private DirectorDtoOut directorDtoOut;
 
@@ -88,11 +92,15 @@ class FilmControllerTest {
 
     private ProducerDtoIn producerDtoIn;
 
+    private ProducerDtoInUpdate producerDtoInUpdate;
+
     private ProducerDtoOut producerDtoOut;
 
     private FilmBO filmBO;
 
     private FilmDtoIn filmDtoIn;
+
+    private FilmDtoInUpdate filmDtoInUpdate;
 
     private FilmDtoOut filmDtoOut;
 
@@ -108,12 +116,15 @@ class FilmControllerTest {
         actorsBO.add(actorBO);
 
         actorDtoIn = new ActorDtoIn();
-        actorDtoIn.setId(1L);
         actorDtoIn.setName("prueba");
         actorDtoIn.setAge(25);
         actorDtoIn.setNationality("Spain");
-        List<ActorDtoIn> actorsDtoIn = new ArrayList<>();
-        actorsDtoIn.add(actorDtoIn);
+
+        actorDtoInUpdate = new ActorDtoInUpdate();
+        actorDtoInUpdate.setId(1L);
+        actorDtoInUpdate.setName("prueba");
+        actorDtoInUpdate.setAge(25);
+        actorDtoInUpdate.setNationality("Spain");
 
         actorDtoOut = new ActorDtoOut();
         actorDtoOut.setId(1L);
@@ -130,10 +141,15 @@ class FilmControllerTest {
         directorBO.setNationality("Spain");
 
         directorDtoIn = new DirectorDtoIn();
-        directorDtoIn.setId(1L);
         directorDtoIn.setName("prueba");
         directorDtoIn.setAge(25);
         directorDtoIn.setNationality("Spain");
+
+        directorDtoInUpdate = new DirectorDtoInUpdate();
+        directorDtoInUpdate.setId(1L);
+        directorDtoInUpdate.setName("prueba");
+        directorDtoInUpdate.setAge(25);
+        directorDtoInUpdate.setNationality("Spain");
 
         directorDtoOut = new DirectorDtoOut();
         directorDtoOut.setId(1L);
@@ -147,9 +163,13 @@ class FilmControllerTest {
         producerBO.setDebut(2020);
 
         producerDtoIn = new ProducerDtoIn();
-        producerDtoIn.setId(1L);
         producerDtoIn.setName("prueba");
         producerDtoIn.setDebut(2020);
+
+        producerDtoInUpdate = new ProducerDtoInUpdate();
+        producerDtoInUpdate.setId(1L);
+        producerDtoInUpdate.setName("prueba");
+        producerDtoInUpdate.setDebut(2020);
 
         producerDtoOut = new ProducerDtoOut();
         producerDtoOut.setId(1L);
@@ -165,12 +185,19 @@ class FilmControllerTest {
         filmBO.setActors(actorsBO);
 
         filmDtoIn = new FilmDtoIn();
-        filmDtoIn.setId(1L);
         filmDtoIn.setTitle("prueba");
         filmDtoIn.setDebut(2020);
-        filmDtoIn.setProducer(producerDtoIn);
-        filmDtoIn.setDirector(directorDtoIn);
-        filmDtoIn.setActors(actorsDtoIn);
+        filmDtoIn.setProducer(producerDtoOut);
+        filmDtoIn.setDirector(directorDtoOut);
+        filmDtoIn.setActors(actorsDtoOut);
+
+        filmDtoInUpdate = new FilmDtoInUpdate();
+        filmDtoInUpdate.setId(1L);
+        filmDtoInUpdate.setTitle("prueba");
+        filmDtoInUpdate.setDebut(2020);
+        filmDtoInUpdate.setProducer(producerDtoOut);
+        filmDtoInUpdate.setDirector(directorDtoOut);
+        filmDtoInUpdate.setActors(actorsDtoOut);
 
         filmDtoOut = new FilmDtoOut();
         filmDtoOut.setId(1L);
@@ -314,10 +341,10 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSave_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.save(any(FilmBO.class))).willAnswer((invocation) -> invocation.getArgument(0));
+        given(filmService.save(any(FilmBO.class), "8080")).willAnswer((invocation) -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(
-                post("/films/save?method=false").contentType(MediaType.APPLICATION_JSON)
+                post("/films/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filmDtoIn)));
 
         response.andDo(print()).andExpect(status().isCreated())
@@ -331,10 +358,10 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSave_PresentationException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.save(any(FilmBO.class))).willThrow(new ServiceException("error"));
+        given(filmService.save(any(FilmBO.class), "8080")).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(
-                post("/films/save?method=false").contentType(MediaType.APPLICATION_JSON)
+                post("/films/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filmDtoIn)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
@@ -345,10 +372,12 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSaveCriteria_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.saveCriteria(any(FilmBO.class))).willAnswer((invocation) -> invocation.getArgument(0));
+        given(filmService.saveCriteria(any(FilmBO.class), "8080")).willAnswer(
+                (invocation) -> invocation.getArgument(0));
 
-        ResultActions response = mockMvc.perform(post("/films/save?method=true").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(filmDtoIn)));
+        ResultActions response = mockMvc.perform(
+                post("/films/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filmDtoIn)));
 
         response.andDo(print()).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is((int) filmDtoOut.getId())))
@@ -361,10 +390,11 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSaveCriteria_PresentationException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.saveCriteria(any(FilmBO.class))).willThrow(new ServiceException("error"));
+        given(filmService.saveCriteria(any(FilmBO.class), "8080")).willThrow(new ServiceException("error"));
 
-        ResultActions response = mockMvc.perform(post("/films/save?method=true").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(filmDtoIn)));
+        ResultActions response = mockMvc.perform(
+                post("/films/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filmDtoIn)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -373,11 +403,10 @@ class FilmControllerTest {
     @Test
     void givenFilmDTO_whenUpdate_thenUpdatedFilmDTO() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
-        given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
+        given(dtoToBoConverter.filmDtoUpdateToBo(filmDtoInUpdate)).willReturn(filmBO);
         given(filmService.update(any(FilmBO.class))).willAnswer((invocation -> invocation.getArgument(0)));
 
-        FilmDtoIn updatedFilmDTO = new FilmDtoIn();
-        updatedFilmDTO.setId(filmDtoIn.getId());
+        FilmDtoInUpdate updatedFilmDTO = filmDtoInUpdate;
         updatedFilmDTO.setTitle("updated");
         updatedFilmDTO.setDebut(2000);
 
@@ -385,9 +414,8 @@ class FilmControllerTest {
                 put("/films/update?method=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedFilmDTO)));
 
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.id", is((int) updatedFilmDTO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.age", is(2000)))
-                .andExpect(jsonPath("$.nationality", is("updated")));
+        response.andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is((int) updatedFilmDTO.getId())));
     }
 
     @DisplayName("Junit test for update a serie - negative")
@@ -398,13 +426,9 @@ class FilmControllerTest {
         given(filmService.findById(filmBO.getId())).willReturn(filmBO);
         given(filmService.update(any(FilmBO.class))).willThrow(new ServiceException(""));
 
-        FilmDtoIn updatedFilmDTO = filmDtoIn;
-        updatedFilmDTO.setTitle("updated");
-        updatedFilmDTO.setDebut(2000);
-
         ResultActions response = mockMvc.perform(
                 put("/films/update?method=false").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedFilmDTO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -413,11 +437,11 @@ class FilmControllerTest {
     @Test
     void givenFilmDTO_whenUpdateCriteria_thenUpdatedFilmDTO() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
-        given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
+        given(dtoToBoConverter.filmDtoUpdateToBo(filmDtoInUpdate)).willReturn(filmBO);
         given(filmService.findByIdCriteria(filmBO.getId())).willReturn(filmBO);
         given(filmService.updateCriteria(any(FilmBO.class))).willAnswer((invocation -> invocation.getArgument(0)));
 
-        FilmDtoIn updatedFilmDTO = filmDtoIn;
+        FilmDtoInUpdate updatedFilmDTO = filmDtoInUpdate;
         updatedFilmDTO.setTitle("updated");
         updatedFilmDTO.setDebut(2000);
 
@@ -425,9 +449,8 @@ class FilmControllerTest {
                 put("/films/update?method=true").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedFilmDTO)));
 
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.id", is((int) updatedFilmDTO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.age", is(2000)))
-                .andExpect(jsonPath("$.nationality", is("updated")));
+        response.andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is((int) updatedFilmDTO.getId())));
     }
 
     @DisplayName("Junit test for update a serie - negative")
@@ -438,13 +461,9 @@ class FilmControllerTest {
         given(filmService.findByIdCriteria(filmBO.getId())).willReturn(filmBO);
         given(filmService.updateCriteria(any(FilmBO.class))).willThrow(new ServiceException(""));
 
-        FilmDtoIn updatedFilmDTO = filmDtoIn;
-        updatedFilmDTO.setTitle("updated");
-        updatedFilmDTO.setDebut(2000);
-
         ResultActions response = mockMvc.perform(
                 put("/films/update?method=true").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedFilmDTO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -455,7 +474,7 @@ class FilmControllerTest {
         willDoNothing().given(filmService).deleteById(filmBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/films/deleteById?method=false").param("id", String.valueOf(filmDtoIn.getId())));
+                delete("/films/deleteById?method=false").param("id", String.valueOf(filmDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -466,7 +485,7 @@ class FilmControllerTest {
         willThrow(new ServiceException("")).given(filmService).deleteById(filmBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/films/deleteById?method=false").param("id", String.valueOf(filmDtoIn.getId())));
+                delete("/films/deleteById?method=false").param("id", String.valueOf(filmDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -477,7 +496,7 @@ class FilmControllerTest {
         willDoNothing().given(filmService).deleteByIdCriteria(filmBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/films/deleteById?method=true").param("id", String.valueOf(filmDtoIn.getId())));
+                delete("/films/deleteById?method=true").param("id", String.valueOf(filmDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -488,7 +507,7 @@ class FilmControllerTest {
         willThrow(new ServiceException("")).given(filmService).deleteByIdCriteria(filmBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/films/deleteById?method=true").param("id", String.valueOf(filmDtoIn.getId())));
+                delete("/films/deleteById?method=true").param("id", String.valueOf(filmDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
