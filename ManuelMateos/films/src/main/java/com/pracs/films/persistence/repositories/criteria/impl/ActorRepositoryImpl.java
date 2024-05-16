@@ -63,6 +63,21 @@ public class ActorRepositoryImpl implements ActorCustomRepository {
     }
 
     @Override
+    public List<Actor> findByNameAndAge(String name, int age) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
+
+        Root<Actor> actor = criteriaQuery.from(Actor.class);
+        Predicate actorNamePredicate = criteriaBuilder.equal(actor.get("name"), name);
+        Predicate actorAgePredicate = criteriaBuilder.equal(actor.get("age"), age);
+        criteriaQuery.where(actorNamePredicate, actorAgePredicate);
+
+        TypedQuery<Actor> query = entityManager.createQuery(criteriaQuery);
+
+        return query.getResultStream().toList();
+    }
+
+    @Override
     public Page<Actor> findAllActors(Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);

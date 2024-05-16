@@ -5,16 +5,13 @@ import com.santander.peliculacrud.model.bo.DirectorBO;
 import com.santander.peliculacrud.model.entity.Director;
 
 import com.santander.peliculacrud.service.DirectorServiceInterface;
-import com.santander.peliculacrud.util.CommonOperation;
 import com.santander.peliculacrud.util.mapper.DirectorBOMapper;
 
 import org.slf4j.Logger;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-
-import org.springframework.validation.Validator;
 
 import java.util.List;
 
@@ -30,13 +27,7 @@ public class DirectorService implements DirectorServiceInterface {
     @Autowired
     private DirectorBOMapper directorBOMapper;
 
-    @Autowired
-    private Validator validator;
-
     private static final Logger logger = LoggerFactory.getLogger(DirectorService.class);
-
-    @Autowired
-    private CommonOperation commonOperation;
 
     @Override
     public DirectorBO createDirector(DirectorBO directorBO) {
@@ -48,9 +39,6 @@ public class DirectorService implements DirectorServiceInterface {
             director = directorRepository.save(director);
             directorBO = directorBOMapper.entityToBo(director);
 
-        } catch (DataAccessException e) {
-            logger.error("Failed to create director", e);
-            throw new RuntimeException("Failed to create director: " + e.getMessage(), e);
         } catch (Exception e) {
             logger.error("Failed to create director: {}", e.getMessage());
             throw new RuntimeException("Failed to create director: ", e);
@@ -97,7 +85,6 @@ public class DirectorService implements DirectorServiceInterface {
 
         } else {
             directorNotfound();
-            throw new RuntimeException("Director not found");
         }
         return update;
     }
@@ -110,11 +97,11 @@ public class DirectorService implements DirectorServiceInterface {
             try {
                 directorRepository.deleteById(id);
 
-                delete = !directorRepository.existsById(id);
+                delete = true;
 
             } catch (Exception e) {
-                logger.error("Failed to delete user: {}", e.getMessage());
-                throw new RuntimeException("Failed to delete user: {}", e);
+                logger.error("Failed to delete director: {}", e.getMessage());
+                throw new RuntimeException("Failed to delete director: {}", e);
             }
 
         } else {

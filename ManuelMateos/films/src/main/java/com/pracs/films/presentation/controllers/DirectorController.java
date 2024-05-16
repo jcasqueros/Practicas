@@ -135,6 +135,26 @@ public class DirectorController {
         }
     }
 
+    @GetMapping("/findByNameAndAge")
+    public ResponseEntity<List<DirectorDtoOut>> getByNameAndAge(@RequestParam boolean method, @RequestParam String name,
+            @RequestParam int age) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(directorService.findByNameAndAgeCriteria(name, age).stream()
+                        .map(boToDtoConverter::directorBoToDtoOut).toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    directorService.findByNameAndAge(name, age).stream().map(boToDtoConverter::directorBoToDtoOut)
+                            .toList(), HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
     /**
      * Method for create a director
      *

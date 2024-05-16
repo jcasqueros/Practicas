@@ -20,8 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 public class FilmDtoIn {
 
-    private long id;
-
     @NotBlank
     @Schema(description = "Title of the film", example = "Back to the Future")
     private String title;
@@ -33,14 +31,14 @@ public class FilmDtoIn {
     private int debut;
 
     @NotNull
-    @Schema(description = "Id of the director", example = "1")
-    private DirectorDtoIn director;
+    @Schema(description = "Director Object")
+    private DirectorDtoOut director;
 
     @NotNull
-    @Schema(description = "Id of the producer", example = "1")
-    private ProducerDtoIn producer;
+    @Schema(description = "Producer Object")
+    private ProducerDtoOut producer;
 
     @NotNull
-    @Schema(description = "List of actor", example = "[1, 3, 6, 7]")
-    private List<ActorDtoIn> actors;
+    @Schema(description = "List of actors")
+    private List<ActorDtoOut> actors;
 }

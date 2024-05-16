@@ -39,6 +39,15 @@ public interface DirectorCustomRepository {
     Optional<Director> findDirectorById(long id);
 
     /**
+     * Method for get director by name and age
+     *
+     * @param name
+     * @param age
+     * @return List of actor
+     */
+    List<Director> findByNameAndAge(String name, int age);
+
+    /**
      * Method for get all directors paginated
      *
      * @return List of Director

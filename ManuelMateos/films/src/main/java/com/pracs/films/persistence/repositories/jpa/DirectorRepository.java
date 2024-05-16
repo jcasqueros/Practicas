@@ -30,4 +30,13 @@ public interface DirectorRepository extends JpaRepository<Director, Long> {
      * @return
      */
     public List<Director> findByName(String name);
+
+    /**
+     * Method for get actors by name and age
+     *
+     * @param name
+     * @param age
+     * @return
+     */
+    List<Director> findByNameAndAge(String name, int age);
 }

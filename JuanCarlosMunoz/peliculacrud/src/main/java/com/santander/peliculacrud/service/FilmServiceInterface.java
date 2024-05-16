@@ -39,15 +39,6 @@ public interface FilmServiceInterface {
     List<FilmBO> getAllFilm();
 
     /**
-     * Film out film out.
-     *
-     * @param id
-     *         the id
-     * @return the film out
-     */
-    FilmBO filmOut(Long id);
-
-    /**
      * Delete film boolean.
      *
      * @param id
@@ -64,14 +55,5 @@ public interface FilmServiceInterface {
      * @return the film by id
      */
     FilmBO getFilmById(Long id);
-
-    /**
-     * Exists film by id boolean.
-     *
-     * @param id
-     *         the id
-     * @return the boolean
-     */
-    boolean existsFilmById(Long id);
 
 }

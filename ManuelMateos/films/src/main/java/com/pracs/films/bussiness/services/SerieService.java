@@ -21,7 +21,7 @@ public interface SerieService {
      * @param serieBO
      * @return SerieBO
      */
-    SerieBO save(SerieBO serieBO) throws ServiceException;
+    SerieBO save(SerieBO serieBO, String port) throws ServiceException;
 
     /**
      * Method for update a serie
@@ -59,7 +59,7 @@ public interface SerieService {
      * @param serieBO
      * @return SerieBO
      */
-    SerieBO saveCriteria(SerieBO serieBO) throws ServiceException;
+    SerieBO saveCriteria(SerieBO serieBO, String port) throws ServiceException;
 
     /**
      * Method for update a serie

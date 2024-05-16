@@ -91,6 +91,33 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
+    public List<ActorBO> findByName(String name) throws ServiceException {
+        try {
+            return actorRepository.findByName(name).stream().map(modelToBoConverter::actorModelToBo).toList();
+        } catch (NestedRuntimeException e) {
+            log.error(constantMessages.errorService());
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<ActorBO> findByNameAndAge(String name, int age) throws ServiceException {
+        try {
+            List<ActorBO> actorBOList = actorRepository.findByNameAndAge(name, age).stream()
+                    .map(modelToBoConverter::actorModelToBo).toList();
+
+            if (actorBOList == null) {
+                throw new EmptyException(constantMessages.noActors());
+            }
+
+            return actorBOList;
+        } catch (NestedRuntimeException e) {
+            log.error(constantMessages.errorService());
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
     public Page<ActorBO> findAll(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo actors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
@@ -169,6 +196,23 @@ public class ActorServiceImpl implements ActorService {
             // Conversión de model a bo del resultado de buscar un actor por id.
             return modelToBoConverter.actorModelToBo(actorRepositoryCriteria.findActorById(id)
                     .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
+        } catch (NestedRuntimeException e) {
+            log.error(constantMessages.errorService());
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<ActorBO> findByNameAndAgeCriteria(String name, int age) throws ServiceException {
+        try {
+            List<ActorBO> actorBOList = actorRepositoryCriteria.findByNameAndAge(name, age).stream()
+                    .map(modelToBoConverter::actorModelToBo).toList();
+
+            if (actorBOList == null) {
+                throw new EmptyException(constantMessages.noActors());
+            }
+
+            return actorBOList;
         } catch (NestedRuntimeException e) {
             log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());

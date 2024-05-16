@@ -20,4 +20,5 @@ public interface FilmRepository extends JpaRepository<Film, Long> {
     @EntityGraph(attributePaths = { "actors", "director" })
     @Query("SELECT u FROM Film u ORDER BY u.id DESC")
     List<Film> findLastFilm();
+
 }

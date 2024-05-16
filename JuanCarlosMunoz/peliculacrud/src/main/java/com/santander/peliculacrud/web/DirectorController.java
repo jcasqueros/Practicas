@@ -1,28 +1,31 @@
-/*
 package com.santander.peliculacrud.web;
 
 import com.santander.peliculacrud.model.bo.DirectorBO;
+import com.santander.peliculacrud.model.dto.DirectorDTO;
 import com.santander.peliculacrud.service.DirectorServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
+
+import com.santander.peliculacrud.util.mapper.DirectorDTOMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import java.util.List;
 
-*/
 /**
  * The type Director controller.
- *//*
-
+ */
 @RestController
 @RequestMapping("/directors")
 public class DirectorController {
@@ -31,23 +34,25 @@ public class DirectorController {
     private DirectorServiceInterface directorService;
     @Autowired
     private CommonOperation commonOperation;
+    @Autowired
+    private DirectorDTOMapper directorDTOMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(DirectorController.class);
 
-    */
-/**
-     * Create director string.
+    /**
+     * Create director response entity.
      *
      * @param director
      *         the director
      * @param bindingResult
      *         the binding result
-     * @return the string
-     *//*
-
+     * @return the response entity
+     */
+    @ApiOperation(value = "Create a new director", notes = "Create a new director with the provided information")
+    @ApiResponses({ @ApiResponse(code = 201, message = "Director created successfulnesses"),
+            @ApiResponse(code = 400, message = "Invalid request") })
     @PostMapping
-    public ResponseEntity<String> createDirector(@Valid @RequestBody DirectorBO director,
-            BindingResult bindingResult) {
+    public ResponseEntity<String> createDirector(@Valid @RequestBody DirectorDTO director, BindingResult bindingResult) {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String message = "Director not created";
@@ -57,17 +62,20 @@ public class DirectorController {
             commonOperation.showErrorModel(logger, bindingResult);
 
         } else {
-            directorService.createDirector(director);
-            message = "Director created successfully";
-            status = HttpStatus.CREATED;
+            DirectorBO directorBO = directorDTOMapper.dtoToBo(director);
+            if (directorService.createDirector(directorBO) != null) {
+                message = "Director created successfully";
+                status = HttpStatus.CREATED;
+
+            }
+
         }
         return new ResponseEntity<>(message, status);
 
     }
 
-    */
-/**
-     * Update director string.
+    /**
+     * Update director response entity.
      *
      * @param id
      *         the id
@@ -75,39 +83,40 @@ public class DirectorController {
      *         the updated director
      * @param bindingResult
      *         the binding result
-     * @return the string
-     *//*
-
+     * @return the response entity
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateDirector(@PathVariable @NotNull Long id,
-            @Valid @RequestBody DirectorBO updatedDirector, BindingResult bindingResult) {
+    public ResponseEntity<String> updateDirector(@PathVariable @NotNull Long id, @Valid @RequestBody DirectorDTO updatedDirector,
+            BindingResult bindingResult) {
         String message = "Director not update";
-        HttpStatus status = HttpStatus.OK;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
 
         if (bindingResult.hasErrors()) {
 
             commonOperation.showErrorModel(logger, bindingResult);
-            status = HttpStatus.BAD_REQUEST;
 
-        } else if (directorService.updateDirector(id, updatedDirector)) {
-            message = "Director updated successfully";
+        } else {
+            DirectorBO directorBO = directorDTOMapper.dtoToBo(updatedDirector);
+            if (directorService.updateDirector(id, directorBO)) {
+                message = "Director updated successfully";
+                status = HttpStatus.OK;
+
+            }
         }
 
         return new ResponseEntity<>(message, status);
     }
 
-    */
-/**
-     * Delete director string.
+    /**
+     * Delete director response entity.
      *
      * @param id
      *         the id
-     * @return the string
-     *//*
-
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDirector(@PathVariable @NotNull Long id) {
-        String message = "Director not delete";
+        String message = "User not delete";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         if (directorService.deleteDirector(id)) {
             message = "Director delete";
@@ -117,37 +126,34 @@ public class DirectorController {
         return new ResponseEntity<>(message, status);
     }
 
-    */
-/**
+    /**
      * Gets all directors.
      *
      * @return the all directors
-     *//*
-
+     */
     @GetMapping()
-    public List<DirectorBO> getAllDirectors() {
-        return directorService.getAllDirectors();
+    public List<DirectorDTO> getAllDirectors() {
+        List<DirectorBO> directorBOS = directorService.getAllDirectors();
+        return directorDTOMapper.bosToDtos(directorBOS);
     }
 
-    */
-/**
+    /**
      * Gets director by id.
      *
      * @param id
      *         the id
      * @return the director by id
-     *//*
-
+     */
     @GetMapping("/{id}")
-    public DirectorBO getDirectorById(@PathVariable @NotNull Long id) {
+    public DirectorDTO getDirectorById(@PathVariable @NotNull Long id) {
+        DirectorBO directorBO = directorService.getDirectorById(id);
+        DirectorDTO directorDTO = directorDTOMapper.boToDto(directorBO);
 
-        DirectorBO directorBO = this.directorService.getDirectorById(id);
-
-        if (directorBO == null) {
+        if (directorDTO == null) {
             logger.error("Director not found");
         }
-        return directorBO;
+        return directorDTO;
 
     }
 }
-*/
+

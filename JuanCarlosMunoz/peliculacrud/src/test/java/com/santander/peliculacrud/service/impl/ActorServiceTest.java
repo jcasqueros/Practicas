@@ -30,7 +30,6 @@ class ActorServiceTest {
     @InjectMocks
     private ActorService actorService;
 
-
     @Mock
     private ActorBOMapper actorBOMapper;
 
@@ -118,7 +117,7 @@ class ActorServiceTest {
     void testGetAllActors() {
         // Configuración de mocks
         when(actorRepository.findAll()).thenReturn(List.of());
-        when(actorBOMapper.listEntitytoListBo(List.of())).thenReturn(actors);
+        when(actorBOMapper.listEntityListBo(List.of())).thenReturn(actors);
 
         // Ejecución del método
         List<ActorBO> result = actorService.getAllActors();
@@ -276,6 +275,22 @@ class ActorServiceTest {
             fail("Expected RuntimeException");
         } catch (RuntimeException e) {
             assertEquals("Actor not found", e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Tets delete actor with actor found")
+    void testDeleteActor_actorFound() {
+        // Configuración de mocks
+        when(actorRepository.existsById(ID)).thenReturn(true);
+        doNothing().when(actorRepository).deleteById(1L);
+
+        // Ejecución del método
+        try {
+            boolean deleted = actorService.deleteActor(ID);
+            assertTrue(deleted);
+        } catch (RuntimeException e) {
+            fail("RuntimeException");
         }
     }
 
