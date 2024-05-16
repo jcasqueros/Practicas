@@ -10,7 +10,6 @@ import com.santander.peliculacrud.util.mapper.ActorBOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 
@@ -42,10 +41,7 @@ public class ActorService implements ActorServiceInterface {
             actor = actorRepository.save(actor);
             actorBO = actorBOMapper.entityToBo(actor);
 
-        } catch (DataAccessException e) {
-            logger.error("Failed to create actor", e);
-            throw new RuntimeException("Failed to create actor: " + e.getMessage(), e);
-        } catch (Exception e) {
+        }  catch (Exception e) {
             logger.error("Failed to create actor: {}", e.getMessage());
             throw new RuntimeException("Failed to create actor: ", e);
         }
@@ -91,7 +87,6 @@ public class ActorService implements ActorServiceInterface {
 
         } else {
             actorNotfound();
-            throw new RuntimeException("Actor not found");
         }
         return update;
     }
@@ -104,7 +99,7 @@ public class ActorService implements ActorServiceInterface {
             try {
                 actorRepository.deleteById(id);
 
-                delete = !actorRepository.existsById(id);
+                delete = true;
 
             } catch (Exception e) {
                 logger.error("Failed to delete actor: {}", e.getMessage());

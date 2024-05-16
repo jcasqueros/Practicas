@@ -10,15 +10,12 @@ import com.santander.peliculacrud.model.entity.Director;
 import com.santander.peliculacrud.model.entity.Film;
 import com.santander.peliculacrud.service.FilmServiceInterface;
 import com.santander.peliculacrud.util.mapper.FilmBOMapper;
-import com.santander.peliculacrud.util.mapper.SeriesBOMapper;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,9 +64,6 @@ public class FilmService implements FilmServiceInterface {
                 Film filmAux = filmRepository.save(film);
                 filmBOReturn = filmBOMapper.entityToBo(filmAux);
 
-            } catch (DataAccessException e) {
-                logger.error("Failed to create actor", e);
-                throw new RuntimeException("Failed to create actor: " + e.getMessage(), e);
             } catch (Exception e) {
                 logger.error("Failed to create actor: {}", e.getMessage());
                 throw new RuntimeException("Failed to create actor: ", e);
@@ -92,20 +86,12 @@ public class FilmService implements FilmServiceInterface {
             List<Actor> actors = actorRepository.findAllById(idActors);
 
             if (director != null && !actors.isEmpty()) {
-                try {
 
-                    Film filmUpdate = filmBOMapper.boToEntity(filmBO);
-                    filmUpdate.setId(id);
-                    Film film = filmRepository.save(filmUpdate);
-                    filmBOReturn = filmBOMapper.entityToBo(film);
+                Film filmUpdate = filmBOMapper.boToEntity(filmBO);
+                filmUpdate.setId(id);
+                Film film = filmRepository.save(filmUpdate);
+                filmBOReturn = filmBOMapper.entityToBo(film);
 
-                } catch (DataAccessException e) {
-                    logger.error("Failed to update actor", e);
-                    throw new RuntimeException("Failed to update actor: " + e.getMessage(), e);
-                } catch (Exception e) {
-                    logger.error("Failed to update actor: {}", e.getMessage());
-                    throw new RuntimeException("Failed to update actor: ", e);
-                }
             } else {
                 logger.error("Failed to update actor invalid director or actor");
                 throw new RuntimeException("Failed to update actor invalid director or actor");
@@ -131,14 +117,9 @@ public class FilmService implements FilmServiceInterface {
 
             if (filmRepository.existsById(id)) {
 
-                try {
                     filmRepository.deleteById(id);
                     deleted = true;
-                } catch (Exception e) {
-                    logger.error("Failed to delete film: {}", e.getMessage());
-                    throw new RuntimeException("Failed to delete film: {}", e);
 
-                }
             } else {
                 filmNotfound();
             }

@@ -14,7 +14,6 @@ import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,9 +64,6 @@ public class SeriesService implements SeriesServiceInterface {
                 Series seriesAux = seriesRepository.save(series);
                 seriesBOReturn = seriesBOMapper.entityToBo(seriesAux);
 
-            } catch (DataAccessException e) {
-                logger.error("Failed to create actor", e);
-                throw new RuntimeException("Failed to create actor: " + e.getMessage(), e);
             } catch (Exception e) {
                 logger.error("Failed to create actor: {}", e.getMessage());
                 throw new RuntimeException("Failed to create actor: ", e);
@@ -90,20 +86,12 @@ public class SeriesService implements SeriesServiceInterface {
             List<Actor> actors = actorRepository.findAllById(idActors);
 
             if (director != null && !actors.isEmpty()) {
-                try {
 
-                    Series seriesUpdate = seriesBOMapper.boToEntity(seriesBO);
-                    seriesUpdate.setId(id);
-                    Series series = seriesRepository.save(seriesUpdate);
-                    seriesBOReturn = seriesBOMapper.entityToBo(series);
+                Series seriesUpdate = seriesBOMapper.boToEntity(seriesBO);
+                seriesUpdate.setId(id);
+                Series series = seriesRepository.save(seriesUpdate);
+                seriesBOReturn = seriesBOMapper.entityToBo(series);
 
-                } catch (DataAccessException e) {
-                    logger.error("Failed to update actor", e);
-                    throw new RuntimeException("Failed to update actor: " + e.getMessage(), e);
-                } catch (Exception e) {
-                    logger.error("Failed to update actor: {}", e.getMessage());
-                    throw new RuntimeException("Failed to update actor: ", e);
-                }
             } else {
                 logger.error("Failed to update actor invalid director or actor");
                 throw new RuntimeException("Failed to update actor invalid director or actor");
@@ -129,14 +117,9 @@ public class SeriesService implements SeriesServiceInterface {
 
             if (seriesRepository.existsById(id)) {
 
-                try {
-                    seriesRepository.deleteById(id);
-                    deleted = true;
-                } catch (Exception e) {
-                    logger.error("Failed to delete series: {}", e.getMessage());
-                    throw new RuntimeException("Failed to delete series: {}", e);
+                seriesRepository.deleteById(id);
+                deleted = true;
 
-                }
             } else {
                 seriesNotfound();
             }

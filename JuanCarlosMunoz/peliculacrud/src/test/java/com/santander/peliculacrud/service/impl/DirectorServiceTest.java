@@ -280,6 +280,20 @@ class DirectorServiceTest {
             assertEquals("Director not found", e.getMessage());
         }
     }
+    @Test
+    @DisplayName("Tets delete director with director found")
+    void testDeleteDirector_directorFound() {
+        // Configuración de mocks
+        when(directorRepository.existsById(ID)).thenReturn(true);
+        doNothing().when(directorRepository).deleteById(1L);
 
+        // Ejecución del método
+        try {
+            boolean deleted = directorService.deleteDirector(ID);
+            assertTrue(deleted);
+        } catch (RuntimeException e) {
+            fail("RuntimeException");
+        }
+    }
 }
 
