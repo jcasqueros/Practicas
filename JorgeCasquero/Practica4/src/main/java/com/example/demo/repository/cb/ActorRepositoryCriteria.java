@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Actor;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
 public interface ActorRepositoryCriteria {
 

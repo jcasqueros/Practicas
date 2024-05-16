@@ -10,11 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Pelicula;
 import com.example.demo.model.Productora;
 import com.example.demo.repository.cb.ProductoraRepositoryCriteria;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.servcice.bo.ActorBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
 /**
  * 

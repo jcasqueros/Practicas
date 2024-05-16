@@ -2,9 +2,13 @@ package com.example.demo.presentation.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.service.spi.ServiceException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,54 +20,53 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.converters.BoToDTo;
 import com.example.demo.converters.DtoToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.PresentationException;
 import com.example.demo.presentation.dto.DirectorDto;
 import com.example.demo.servcice.DirectorService;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
-@Slf4j
+@Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/director")
 public class DirectorController {
 
-	@Autowired
-	DirectorService directorService;
+	private final DirectorService directorService;
 
-	@Autowired
-	BoToDTo boToDto;
+	private final BoToDTo boToDto;
 
-	@Autowired
-	DtoToBo dtoToBo;
+	private final DtoToBo dtoToBo;
 
 	@GetMapping("/getAll")
-	public ResponseEntity<List<DirectorDto>> getAll(@RequestParam boolean metodo) {
-		List<DirectorDto> directores;
-		if (metodo) {
-			directores = directorService.getAll().stream().map(director -> boToDto.boToDirectorDto(director)).toList();
-		} else {
-			directores = directorService.getAllCriteria().stream().map(director -> boToDto.boToDirectorDto(director))
-					.toList();
-		}
-		return ResponseEntity.ok(directores);
-	}
+	public ResponseEntity<List<DirectorDto>> getAll(@RequestParam boolean metodo,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int tamano,
+			@RequestParam(defaultValue = "0", value = "Variable para el orden de la lista") String sort,
+			@RequestParam(defaultValue = "asc") String orden) throws PresentationException {
 
-	@GetMapping("getById/{id}")
-	public ResponseEntity<DirectorDto> getById(@PathVariable long id, @RequestParam boolean metodo)
-			throws NotFoundException {
-		log.debug("Solicitud de la consulta al director con id: " + id + ".");
-		DirectorDto director;
+		Pageable pageable = PageRequest.of(page, tamano, Sort.by(sort).ascending());
+
 		if (metodo) {
-			director = boToDto.boToDirectorDto(directorService.getById(id));
-		} else {
-			director = boToDto.boToDirectorDto(directorService.getByIdCriteria(id));
+			try {
+				return new ResponseEntity<>(
+						directorService.getAll(pageable).stream().map(boToDto::boToDirectorDto).toList(),
+						HttpStatus.OK);
+			} catch (ServiceException e) {
+				throw new PresentationException(e.getLocalizedMessage());
+			}
+
 		}
-		if (director != null) {
-			return ResponseEntity.ok(director);
-		} else {
-			return ResponseEntity.notFound().build();
+
+		try {
+			return new ResponseEntity<>(
+					directorService.getAllCriteria(pageable).stream().map(boToDto::boToDirectorDto).toList(),
+					HttpStatus.OK);
+		} catch (ServiceException e) {
+			throw new PresentationException(e.getLocalizedMessage());
 		}
+
 	}
 
 	@PostMapping("/save")
@@ -91,6 +94,35 @@ public class DirectorController {
 			return ResponseEntity.noContent().build();
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	@GetMapping("/findAllFilter")
+	public ResponseEntity<List<DirectorDto>> findAllFilter(@RequestParam(required = false) List<String> nombres,
+			@RequestParam(required = false) List<Integer> edades,
+			@RequestParam(required = false) List<String> nacionalidades, @RequestParam boolean metodo,
+			@RequestParam(defaultValue = "id", value = "Variable para el orden de la lista") String sort,
+			@RequestParam(defaultValue = "asc") String orden) throws ServiceException, PresentationException {
+
+		Sort.Direction direction = orden.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+		Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
+
+		if (metodo) {
+			try {
+				return new ResponseEntity<>(
+						directorService.findAllCriteriaFilter(pageable, nombres, edades, nacionalidades).stream()
+								.map(boToDto::boToDirectorDto).toList(),
+						HttpStatus.OK);
+			} catch (ServiceException e) {
+				throw new PresentationException(e.getLocalizedMessage());
+			}
+		}
+		try {
+			return new ResponseEntity<>(
+					directorService.getAll(pageable).stream().map(boToDto::boToDirectorDto).toList(), HttpStatus.OK);
+		} catch (ServiceException e) {
+			throw new PresentationException(e.getLocalizedMessage());
 		}
 	}
 }

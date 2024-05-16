@@ -10,29 +10,30 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.EmptyException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Actor;
 import com.example.demo.repository.cb.ActorRepositoryCriteria;
 import com.example.demo.repository.jpa.ActorRepository;
 import com.example.demo.servcice.ActorService;
 import com.example.demo.servcice.bo.ActorBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.EmptyException;
-import com.example.demo.servcice.exception.NotFoundException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ActorServiceImpl implements ActorService {
 
-	@Autowired
-	ActorRepository actorRepository;
+	private final ActorRepository actorRepository;
 
-	@Autowired
-	ActorRepositoryCriteria actorRepositoryCriteria;
+	private final ActorRepositoryCriteria actorRepositoryCriteria;
 
-	@Autowired
-	BoToModel boToModel;
+	private final BoToModel boToModel;
 
-	@Autowired
-	ModelToBo modelToBo;
+	private final ModelToBo modelToBo;
 
 	@Override
 	public Page<ActorBo> getAll(Pageable pageable) {
@@ -122,7 +123,7 @@ public class ActorServiceImpl implements ActorService {
 
 		List<ActorBo> actorBoList = actorPage.stream().map(modelToBo::actorToActorBo).toList();
 		return new PageImpl<>(actorBoList, actorPage.getPageable(), actorPage.getTotalPages());
-		
+
 	}
 
 }

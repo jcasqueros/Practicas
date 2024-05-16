@@ -1,11 +1,14 @@
 package com.example.demo.servcice;
 
+import java.util.List;
+
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.servcice.bo.PeliculaBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
 /**
  * @author Jorge Casquero Sancho
@@ -63,5 +66,8 @@ public interface PeliculaService {
 	 * @throws NotFoundException
 	 */
 	void deleteByIdCriteria(long id) throws NotFoundException;
+
+	Page<PeliculaBo> findAllCriteriaFilter(Pageable pageable, List<String> titles, List<Integer> ages,
+			List<String> directors, List<String> producers, List<String> actors) throws ServiceException;
 
 }

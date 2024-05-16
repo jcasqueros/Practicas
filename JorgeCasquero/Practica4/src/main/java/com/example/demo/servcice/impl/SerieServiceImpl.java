@@ -1,37 +1,64 @@
 package com.example.demo.servcice.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.service.spi.ServiceException;
+import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.EmptyException;
+import com.example.demo.exception.NotFoundException;
+import com.example.demo.model.Actor;
+import com.example.demo.model.Director;
+import com.example.demo.model.Productora;
+import com.example.demo.model.Serie;
 import com.example.demo.repository.cb.SerieRepositoryCriteria;
+import com.example.demo.repository.jpa.ActorRepository;
+import com.example.demo.repository.jpa.DirectorRepository;
+import com.example.demo.repository.jpa.ProductoraRepository;
 import com.example.demo.repository.jpa.SerieRepository;
 import com.example.demo.servcice.SerieService;
 import com.example.demo.servcice.bo.SerieBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class SerieServiceImpl implements SerieService {
 
-	@Autowired
-	SerieRepository serieRepository;
+	private final SerieRepository serieRepository;
+	private final DirectorRepository directorRepository;
+	private final ActorRepository actorRepository;
+	private final ProductoraRepository productoraRepository;
+	private final SerieRepositoryCriteria serieRepositoryCriteria;
 
-	@Autowired
-	SerieRepositoryCriteria serieRepositoryCriteria;
+	private final ModelToBo modelToBo;
 
-	@Autowired
-	ModelToBo modelToBo;
-
-	@Autowired
-	BoToModel boToModel;
+	private final BoToModel boToModel;
 
 	@Override
-	public List<SerieBo> getAll() {
-		return serieRepository.findAll().stream().map(serie -> modelToBo.serieToSerieBo(serie)).toList();
+	public Page<SerieBo> getAll(Pageable pageable) {
+		try {
+			Page<Serie> seriePage = serieRepository.findAll(pageable);
+			if (seriePage.isEmpty()) {
+				throw new EmptyException("No se encuentran productores");
+			}
+			List<SerieBo> peliculaBoList = seriePage.stream().map(modelToBo::serieToSerieBo).toList();
+			return new PageImpl<>(peliculaBoList, seriePage.getPageable(), seriePage.getTotalPages());
+		} catch (NestedRuntimeException e) {
+			throw new ServiceException(e.getLocalizedMessage());
+		}
+
 	}
 
 	@Override
@@ -61,13 +88,29 @@ public class SerieServiceImpl implements SerieService {
 	}
 
 	@Override
-	public List<SerieBo> getAllCriteria() {
-		return serieRepositoryCriteria.getAll().stream().map(serie -> modelToBo.serieToSerieBo(serie)).toList();
+	public Page<SerieBo> getAllCriteria(Pageable pageable) {
+		try {
+			Page<Serie> seriePage = serieRepositoryCriteria.getAll(pageable);
+			if (seriePage.isEmpty()) {
+				throw new EmptyException("No se encuentran series");
+			}
+			List<SerieBo> serieBoList = seriePage.stream().map(modelToBo::serieToSerieBo).toList();
+			return new PageImpl<>(serieBoList, seriePage.getPageable(), seriePage.getTotalPages());
+		} catch (NestedRuntimeException e) {
+			throw new ServiceException(e.getLocalizedMessage());
+		}
 	}
 
 	@Override
 	public SerieBo getByIdCriteria(long id) throws NotFoundException {
-		return modelToBo.serieToSerieBo(serieRepositoryCriteria.getById(id));
+		try {
+			return modelToBo.serieToSerieBo(serieRepositoryCriteria.getById(id)
+					.orElseThrow(() -> new EntityNotFoundException("productora no encontrada")));
+
+		} catch (NestedRuntimeException e) {
+			log.error("productor No encontrado");
+			throw new ServiceException(e.getLocalizedMessage());
+		}
 	}
 
 	@Override
@@ -87,4 +130,40 @@ public class SerieServiceImpl implements SerieService {
 			throw new NotFoundException("no se ha encontrado la serie que quiere borrar con el id: " + id);
 		}
 	}
+	 public Page<SerieBo> findAllCriteriaFilter(Pageable pageable, List<String> titles, List<Integer> ages,
+	            List<String> directors, List<String> producers, List<String> actors) throws ServiceException {
+	        try {
+	            //Búsqueda de los todos las series, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
+	            List<Director> directorList = new ArrayList<>();
+	            List<Productora> producerList = new ArrayList<>();
+	            List<Actor> actorList = new ArrayList<>();
+
+	            if (directors != null && !directors.isEmpty()) {
+	                directors.forEach(d -> directorList.addAll(directorRepository.findByName(d)));
+	            }
+
+	            if (producers != null && !producers.isEmpty()) {
+	                
+					producers.forEach(p -> producerList.addAll(productoraRepository.findByName(p)));
+	            }
+
+	            if (actors != null && !actors.isEmpty()) {
+	                actors.forEach(a -> actorList.addAll(actorRepository.findByName(a)));
+	            }
+
+	            Page<Serie> seriePage = serieRepositoryCriteria.findAllFilter(pageable, titles, ages, directorList,
+	                    producerList, actorList);
+
+	            if (seriePage.isEmpty()) {
+	                throw new EmptyException("No films");
+	            }
+
+	            List<SerieBo> serieBOList = seriePage.stream().map(modelToBo::serieToSerieBo).toList();
+
+	            return new PageImpl<>(serieBOList, seriePage.getPageable(), seriePage.getTotalPages());
+	        } catch (NestedRuntimeException e) {
+	            log.error("no se han econtrado series");
+	            throw new ServiceException(e.getLocalizedMessage());
+	        }
+	    }
 }

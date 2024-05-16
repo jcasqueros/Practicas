@@ -2,7 +2,12 @@ package com.example.demo.presentation.controllers;
 
 import java.util.List;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.converters.BoToDTo;
 import com.example.demo.converters.DtoToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.PresentationException;
 import com.example.demo.presentation.dto.SerieDto;
 import com.example.demo.servcice.SerieService;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,15 +43,29 @@ public class SerieController {
 	DtoToBo dtoToBo;
 
 	@GetMapping("/getAll")
-	public ResponseEntity<List<SerieDto>> getAll(@RequestParam boolean metodo) {
-		List<SerieDto> series;
-		if (metodo) {
-			series = serieService.getAll().stream().map(serie -> boToDto.boToSerieDto(serie)).toList();
-		} else {
-			series = serieService.getAllCriteria().stream().map(serie -> boToDto.boToSerieDto(serie)).toList();
-		}
+	public ResponseEntity<List<SerieDto>> findAll(@RequestParam boolean method,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+			@RequestParam(defaultValue = "id", value = "Variable for order the list") String sort)
+			throws ServiceException, PresentationException {
 
-		return ResponseEntity.ok(series);
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
+		if (method) {
+			try {
+				return new ResponseEntity<>(
+						serieService.getAll(pageable).stream().map(boToDto::boToSerieDto).toList(),
+						HttpStatus.OK);
+			} catch (ServiceException e) {
+				throw new PresentationException(e.getLocalizedMessage());
+			}
+		}
+		try {
+			return new ResponseEntity<>(
+					serieService.getAllCriteria(pageable).stream().map(boToDto::boToSerieDto).toList(),
+					HttpStatus.OK);
+		} catch (ServiceException e) {
+			throw new PresentationException(e.getLocalizedMessage());
+		}
 	}
 
 	@GetMapping("getById/{id}")

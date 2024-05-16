@@ -2,7 +2,10 @@ package com.example.demo.presentation.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.service.spi.ServiceException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,40 +19,78 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.converters.BoToDTo;
 import com.example.demo.converters.DtoToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.PresentationException;
 import com.example.demo.presentation.dto.ProductoraDto;
 import com.example.demo.servcice.ProductoraService;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/productora")
 public class ProductoraController {
-	@Autowired
-	ProductoraService productoraService;
 
-	@Autowired
-	BoToDTo boToDto;
+	private final ProductoraService productoraService;
 
-	@Autowired
-	DtoToBo dtoToBo;
+	private final BoToDTo boToDto;
+
+	private final DtoToBo dtoToBo;
 
 	@GetMapping("/getAll")
-	public ResponseEntity<List<ProductoraDto>> getAll(@RequestParam boolean metodo) {
-		List<ProductoraDto> productoras;
+	public ResponseEntity<List<ProductoraDto>> getAll(@RequestParam boolean method,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+			@RequestParam(defaultValue = "id", value = "Variable for order the list") String sort)
+			throws ServiceException, PresentationException {
 
-		if (metodo) {
-			productoras = productoraService.getAll().stream().map(productora -> boToDto.boToProductoraDto(productora))
-					.toList();
-		} else {
-			productoras = productoraService.getAllCriteria().stream()
-					.map(productora -> boToDto.boToProductoraDto(productora)).toList();
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
+		if (method) {
+			try {
+				return new ResponseEntity<>(productoraService.getAllCriteria(pageable).stream()
+						.map(boToDto::boToProductoraDto).toList(), HttpStatus.OK);
+			} catch (ServiceException e) {
+				throw new PresentationException(e.getLocalizedMessage());
+			}
 		}
-		return ResponseEntity.ok(productoras);
-
+		try {
+			return new ResponseEntity<>(
+					productoraService.getAll(pageable).stream().map(boToDto::boToProductoraDto).toList(),
+					HttpStatus.OK);
+		} catch (ServiceException e) {
+			throw new PresentationException(e.getLocalizedMessage());
+		}
 	}
+	@GetMapping("/getAllFilter")
+    public ResponseEntity<List<ProductoraDto>> getAllFilter(@RequestParam(required = false) List<String> names,
+            @RequestParam(required = false) List<Integer> ages, @RequestParam boolean method,
+            @RequestParam(defaultValue = "id", value = "Variable for order the list") String sort,
+            @RequestParam(defaultValue = "asc") String order) throws ServiceException, PresentationException {
+
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
+
+        if (method) {
+            try {
+                return new ResponseEntity<>(productoraService.findAllCriteriaFilter(pageable, names, ages).stream()
+                        .map(boToDto::boToProductoraDto).toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    productoraService.getAll(pageable).stream().map(boToDto::boToProductoraDto).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
 
 	@GetMapping("getById/{id}")
 	public ResponseEntity<ProductoraDto> getById(@PathVariable long id, @RequestParam boolean metodo)
