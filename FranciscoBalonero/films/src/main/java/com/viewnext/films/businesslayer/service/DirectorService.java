@@ -203,4 +203,30 @@ public interface DirectorService {
      */
     List<DirectorBO> filterDirectors(List<String> names, List<Integer> ages, List<String> nationalities, int pageNumber,
             int pageSize, String sortBy, boolean sortOrder) throws ServiceException;
+
+    /**
+     * Retrieves directors by name and age using JPA.
+     *
+     * @param name
+     *         The name of the directors to retrieve.
+     * @param age
+     *         The age of the directors to retrieve.
+     * @return A list of {@link DirectorBO} that match the name and age.
+     * @throws ServiceException
+     *         If an error occurs during the operation.
+     */
+    List<DirectorBO> jpaFindByNameAndAge(String name, int age) throws ServiceException;
+
+    /**
+     * Retrieves directors by name and age using Criteria.
+     *
+     * @param name
+     *         The name of the directors to retrieve.
+     * @param age
+     *         The age of the directors to retrieve.
+     * @return A list of {@link DirectorBO} that match the name and age.
+     * @throws ServiceException
+     *         If an error occurs during the operation.
+     */
+    List<DirectorBO> criteriaFindByNameAndAge(String name, int age) throws ServiceException;
 }

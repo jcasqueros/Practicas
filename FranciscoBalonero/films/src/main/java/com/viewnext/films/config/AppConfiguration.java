@@ -1,4 +1,5 @@
 package com.viewnext.films.config;
+
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -6,6 +7,7 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Configuration class for the application.
@@ -58,4 +60,8 @@ public class AppConfiguration {
                 .version("0.0.1"));
     }
 
+    @Bean
+    public WebClient webClient() {
+        return WebClient.builder().build();
+    }
 }

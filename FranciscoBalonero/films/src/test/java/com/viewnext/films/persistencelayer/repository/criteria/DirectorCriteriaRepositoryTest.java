@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,15 +108,12 @@ class DirectorCriteriaRepositoryTest {
     @DisplayName("Filter directors by name")
     void givenName_whenFilterDirectors_thenReturnFilteredDirectors() {
         // Arrange
-        Director createdDirector = directorCriteriaRepository.createDirector(director);
-        List<String> names = Arrays.asList("Jhon");
-        List<Integer> ages = null;
-        List<String> nationalities = null;
+        directorCriteriaRepository.createDirector(director);
+        List<String> names = List.of("Jhon");
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Director> filteredDirectors = directorCriteriaRepository.filterDirectors(names, ages, nationalities,
-                pageable);
+        List<Director> filteredDirectors = directorCriteriaRepository.filterDirectors(names, null, null, pageable);
 
         // Assert
         assertThat(filteredDirectors).isNotNull();
@@ -129,15 +125,12 @@ class DirectorCriteriaRepositoryTest {
     @DisplayName("Filter directors by age")
     void givenAge_whenFilterDirectors_thenReturnFilteredDirectors() {
         // Arrange
-        Director createdDirector = directorCriteriaRepository.createDirector(director);
-        List<String> names = null;
-        List<Integer> ages = Arrays.asList(18);
-        List<String> nationalities = null;
+        directorCriteriaRepository.createDirector(director);
+        List<Integer> ages = List.of(18);
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Director> filteredDirectors = directorCriteriaRepository.filterDirectors(names, ages, nationalities,
-                pageable);
+        List<Director> filteredDirectors = directorCriteriaRepository.filterDirectors(null, ages, null, pageable);
 
         // Assert
         assertThat(filteredDirectors).isNotNull();
@@ -149,14 +142,12 @@ class DirectorCriteriaRepositoryTest {
     @DisplayName("Filter directors by nationality")
     void givenNationality_whenFilterDirectors_thenReturnFilteredDirectors() {
         // Arrange
-        Director createdDirector = directorCriteriaRepository.createDirector(director);
-        List<String> names = null;
-        List<Integer> ages = null;
-        List<String> nationalities = Arrays.asList("spain");
+        directorCriteriaRepository.createDirector(director);
+        List<String> nationalities = List.of("spain");
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Director> filteredDirectors = directorCriteriaRepository.filterDirectors(names, ages, nationalities,
+        List<Director> filteredDirectors = directorCriteriaRepository.filterDirectors(null, null, nationalities,
                 pageable);
 
         // Assert
@@ -169,10 +160,10 @@ class DirectorCriteriaRepositoryTest {
     @DisplayName("Filter directors by multiple criteria")
     void givenMultipleCriteria_whenFilterDirectors_thenReturnFilteredDirectors() {
         // Arrange
-        Director createdDirector = directorCriteriaRepository.createDirector(director);
-        List<String> names = Arrays.asList("Jhon");
-        List<Integer> ages = Arrays.asList(18);
-        List<String> nationalities = Arrays.asList("spain");
+        directorCriteriaRepository.createDirector(director);
+        List<String> names = List.of("Jhon");
+        List<Integer> ages = List.of(18);
+        List<String> nationalities = List.of("spain");
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
@@ -191,18 +182,29 @@ class DirectorCriteriaRepositoryTest {
     @DisplayName("Filter directors with no criteria")
     void givenNoCriteria_whenFilterDirectors_thenReturnAllDirectors() {
         // Arrange
-        Director createdDirector = directorCriteriaRepository.createDirector(director);
-        List<String> names = null;
-        List<Integer> ages = null;
-        List<String> nationalities = null;
+        directorCriteriaRepository.createDirector(director);
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Director> filteredDirectors = directorCriteriaRepository.filterDirectors(names, ages, nationalities,
-                pageable);
+        List<Director> filteredDirectors = directorCriteriaRepository.filterDirectors(null, null, null, pageable);
 
         // Assert
         assertThat(filteredDirectors).isNotNull();
         assertEquals(1, filteredDirectors.size());
+    }
+
+    @Test
+    @DisplayName("Get directors by name and age")
+    void givenNameAndAge_whenGetDirectorsByNameAndAge_thenReturnFilteredDirectors() {
+        // Arrange
+        directorCriteriaRepository.createDirector(director);
+        // Act
+        List<Director> filteredDirectors = directorCriteriaRepository.getDirectorsByNameAndAge("Jhon", 18);
+
+        // Assert
+        assertThat(filteredDirectors).isNotNull();
+        assertEquals(1, filteredDirectors.size());
+        assertThat(filteredDirectors.get(0).getName()).isEqualTo("Jhon");
+        assertThat(filteredDirectors.get(0).getAge()).isEqualTo(18);
     }
 }

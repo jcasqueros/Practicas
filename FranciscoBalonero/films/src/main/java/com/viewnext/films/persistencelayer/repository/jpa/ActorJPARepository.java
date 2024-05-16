@@ -4,6 +4,7 @@ import com.viewnext.films.persistencelayer.entity.Actor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -17,7 +18,8 @@ import java.util.List;
  * @see JpaRepository
  * @see Actor
  **/
-//@Repository
+
+@Repository
 public interface ActorJPARepository extends JpaRepository<Actor, Long> {
 
     /**
@@ -27,8 +29,26 @@ public interface ActorJPARepository extends JpaRepository<Actor, Long> {
      *         the pagination and sorting information
      * @return a page of actors matching the pagination and sorting criteria
      */
-
     Page<Actor> findAll(Pageable pageable);
 
+    /**
+     * Retrieves a list of actors by name.
+     *
+     * @param name
+     *         the name of the actors to be retrieved
+     * @return a list of actors that match the specified name, or an empty list if no actors are found
+     */
     List<Actor> findByName(String name);
+
+    /**
+     * Retrieves a list of actors by name and age.
+     *
+     * @param name
+     *         the name of the actors to be retrieved
+     * @param age
+     *         the age of the actors to be retrieved
+     * @return a list of actors that match the specified name and age, or an empty list if no actors are found
+     */
+    List<Actor> findByNameAndAge(String name, int age);
+
 }

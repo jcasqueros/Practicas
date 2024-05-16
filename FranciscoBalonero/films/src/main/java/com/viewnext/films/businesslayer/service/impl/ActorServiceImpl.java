@@ -125,6 +125,24 @@ public class ActorServiceImpl implements ActorService {
         }
     }
 
+    @Override
+    public List<ActorBO> criteriaFindByNameAndAge(String name, int age) throws ServiceException {
+        try {
+            // Busca actores que coinciden con el nombre y la edad utilizando Criteria API
+            List<Actor> actors = actorCriteriaRepository.getActorsByNameAndAge(name, age);
+            if (!actors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return actors.stream().map(converter::actorEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error searching actors by name and age", e);
+            throw new ServiceException("The actors could not be searched", e);
+        }
+    }
+
     // Métodos para interactuar con la capa de persistencia utilizando JPA
     @Override
     public ActorBO jpaGetById(long id) throws ServiceException {
@@ -223,4 +241,21 @@ public class ActorServiceImpl implements ActorService {
         }
     }
 
+    @Override
+    public List<ActorBO> jpaFindByNameAndAge(String name, int age) throws ServiceException {
+        try {
+            // Busca actores que coinciden con el nombre y la edad utilizando JPA
+            List<Actor> actors = actorJPARepository.findByNameAndAge(name, age);
+            if (!actors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return actors.stream().map(converter::actorEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error searching actors by name and age", e);
+            throw new ServiceException("The actors could not be searched", e);
+        }
+    }
 }

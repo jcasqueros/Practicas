@@ -144,4 +144,22 @@ public class ActorCriteriaRepositoryImpl implements ActorCriteriaRepository {
 
         return query.getResultList();
     }
+
+    @Override
+    public List<Actor> getActorsByNameAndAge(String name, int age) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
+        Root<Actor> root = criteriaQuery.from(Actor.class);
+
+        // Agrega condiciones de filtrado
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.equal(root.get("name"), name));
+        predicates.add(criteriaBuilder.equal(root.get("age"), age));
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        // Ejecuta la consulta y devuelve la lista de actores
+        TypedQuery<Actor> query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
+    }
+
 }
