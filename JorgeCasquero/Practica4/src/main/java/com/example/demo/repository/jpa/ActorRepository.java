@@ -15,4 +15,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
 	public Page<Actor> findAll(Pageable pageable);
 
 	public List<Actor> findByName(String nombre);
+
+	public List<Actor> findByNameAndAge(String nombre, int edad);
+
 }

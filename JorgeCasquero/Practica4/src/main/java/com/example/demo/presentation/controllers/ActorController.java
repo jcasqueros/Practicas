@@ -133,6 +133,28 @@ public class ActorController {
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
+	}
+
+	@GetMapping("getByNombreYEdad")
+	public ResponseEntity<List<ActorDto>> getNombreEdad(@RequestParam boolean metodo, @RequestParam String nombre,
+			@RequestParam int edad) throws PresentationException {
+		if (metodo) {
+			try {
+				return new ResponseEntity<>(
+						actorService.findByNameAndAge(nombre, edad).stream().map(boToDto::boToActorDto).toList(),
+						HttpStatus.OK);
+			} catch (ServiceException e) {
+				throw new PresentationException(e.getLocalizedMessage());
+			}
+		}
+		try {
+			return new ResponseEntity<>(
+					actorService.findByNameAndAgeCriteria(nombre, edad).stream().map(boToDto::boToActorDto).toList(),
+					HttpStatus.OK);
+		} catch (ServiceException e) {
+			throw new PresentationException(e.getLocalizedMessage());
+		}
 
 	}
+
 }

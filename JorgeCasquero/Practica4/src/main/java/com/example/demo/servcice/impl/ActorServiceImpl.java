@@ -2,7 +2,8 @@ package com.example.demo.servcice.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.service.spi.ServiceException;
+import org.springframework.core.NestedRuntimeException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +21,8 @@ import com.example.demo.servcice.ActorService;
 import com.example.demo.servcice.bo.ActorBo;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ActorServiceImpl implements ActorService {
 
@@ -69,7 +68,6 @@ public class ActorServiceImpl implements ActorService {
 	public void deleteById(long id) throws NotFoundException {
 		if (actorRepository.existsById(id)) {
 			actorRepository.deleteById(id);
-
 		} else {
 			throw new NotFoundException("no se ha encontrado el actor que quiere borrar con el id: " + id);
 		}
@@ -123,6 +121,35 @@ public class ActorServiceImpl implements ActorService {
 
 		List<ActorBo> actorBoList = actorPage.stream().map(modelToBo::actorToActorBo).toList();
 		return new PageImpl<>(actorBoList, actorPage.getPageable(), actorPage.getTotalPages());
+
+	}
+
+	@Override
+	public List<ActorBo> findByNameAndAge(String name, int edad) {
+		try {
+			List<ActorBo> lista = actorRepository.findByNameAndAge(name, edad).stream()
+					.map(modelToBo::actorToActorBo).toList();
+			if (lista.isEmpty()) {
+				throw new EmptyException("no se ha encontrado  ningun actor");
+			}
+			return lista;
+		} catch (NestedRuntimeException e) {
+			throw new ServiceException(e.getLocalizedMessage());
+		}
+	}
+
+	@Override
+	public List<ActorBo> findByNameAndAgeCriteria(String name, int edad) {
+		try {
+			List<ActorBo> lista = actorRepositoryCriteria.findByNameAndAgeCriteria(name, edad).stream()
+					.map(modelToBo::actorToActorBo).toList();
+			if (lista.isEmpty()) {
+				throw new EmptyException("no se ha encontrado  ningun actor");
+			}
+			return lista;
+		} catch (NestedRuntimeException e) {
+			throw new ServiceException(e.getLocalizedMessage());
+		}
 
 	}
 

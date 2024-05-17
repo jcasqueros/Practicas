@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.example.demo.converters.BoToDTo;
 import com.example.demo.converters.DtoToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
 import com.example.demo.presentation.dto.ActorDto;
 import com.example.demo.repository.cb.DirectorRepositoryCriteria;
 import com.example.demo.repository.cb.PeliculaRepositoryCriteria;
@@ -38,8 +39,6 @@ import com.example.demo.repository.jpa.ProductoraRepository;
 import com.example.demo.repository.jpa.SerieRepository;
 import com.example.demo.servcice.ActorService;
 import com.example.demo.servcice.bo.ActorBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

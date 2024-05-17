@@ -22,4 +22,7 @@ public interface ActorRepositoryCriteria {
 
 	Page<Actor> findAllFilter(Pageable pageable, List<String> nombres, List<Integer> edades,
 			List<String> nacionalidades);
+
+	public List<Actor> findByNameAndAgeCriteria(String nombre, int edad);
+	
 }

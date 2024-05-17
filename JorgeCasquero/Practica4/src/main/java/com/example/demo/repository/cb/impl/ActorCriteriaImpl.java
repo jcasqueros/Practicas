@@ -143,4 +143,18 @@ public class ActorCriteriaImpl implements ActorRepositoryCriteria {
 
 	}
 
+	@Override
+	public List<Actor> findByNameAndAgeCriteria(String nombre, int name) {
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Actor> cq = cb.createQuery(Actor.class);
+		Root<Actor> root = cq.from(Actor.class);
+		Predicate nombrePredicado = cb.equal(root.get("nombre"), nombre);
+		Predicate edadPredicado = cb.equal(root.get("edad"), nombre);
+		cq.where(nombrePredicado, edadPredicado);
+
+		TypedQuery<Actor> query = entityManager.createQuery(cq);
+
+		return query.getResultStream().toList();
+	}
+
 }

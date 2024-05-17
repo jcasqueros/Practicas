@@ -69,4 +69,8 @@ public interface ActorService {
 
 	Page<ActorBo> getAllCriteriaFilter(Pageable pageable, List<String> nombres, List<Integer> edades,
 			List<String> nacionalidades);
+
+	List<ActorBo> findByNameAndAge(String name, int edad);
+
+	List<ActorBo> findByNameAndAgeCriteria(String name, int edad);
 }
