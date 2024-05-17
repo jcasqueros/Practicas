@@ -18,8 +18,9 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class FilmDtoOut {
+public class FilmDtoInUpdate {
 
+    @NotNull
     private long id;
 
     @NotBlank

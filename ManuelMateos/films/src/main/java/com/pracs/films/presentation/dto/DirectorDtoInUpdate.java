@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class DirectorDtoOut {
+public class DirectorDtoInUpdate {
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Director Id", example = "1")
     private long id;
 

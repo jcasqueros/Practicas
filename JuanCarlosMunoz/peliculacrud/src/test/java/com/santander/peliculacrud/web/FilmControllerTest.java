@@ -168,7 +168,7 @@ class FilmControllerTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals("Actor 1", response.getTitle());
+        assertEquals("film", response.getTitle());
         assertEquals(1930, response.getCreated());
     }
     @Test

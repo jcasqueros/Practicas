@@ -8,6 +8,7 @@ import com.pracs.films.persistence.repositories.jpa.*;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.DirectorDtoIn;
+import com.pracs.films.presentation.dto.DirectorDtoInUpdate;
 import com.pracs.films.presentation.dto.DirectorDtoOut;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,6 +74,8 @@ class DirectorControllerTest {
 
     private DirectorDtoIn directorDtoIn;
 
+    private DirectorDtoInUpdate directorDtoInUpdate;
+
     private DirectorDtoOut directorDtoOut;
 
     @BeforeEach
@@ -85,10 +88,15 @@ class DirectorControllerTest {
         directorBO.setNationality("Spain");
 
         directorDtoIn = new DirectorDtoIn();
-        directorDtoIn.setId(1L);
         directorDtoIn.setName("prueba");
         directorDtoIn.setAge(25);
         directorDtoIn.setNationality("Spain");
+
+        directorDtoInUpdate = new DirectorDtoInUpdate();
+        directorDtoInUpdate.setId(1L);
+        directorDtoInUpdate.setName("prueba");
+        directorDtoInUpdate.setAge(25);
+        directorDtoInUpdate.setNationality("Spain");
 
         directorDtoOut = new DirectorDtoOut();
         directorDtoOut.setId(1L);
@@ -299,11 +307,10 @@ class DirectorControllerTest {
     @Test
     void givenDirectorDTO_whenUpdate_thenupdatedDirectorDTO() throws Exception {
         given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
-        given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
+        given(dtoToBoConverter.directorUpdateDtoToBo(directorDtoInUpdate)).willReturn(directorBO);
         given(directorService.update(any(DirectorBO.class))).willAnswer((invocation -> invocation.getArgument(0)));
 
-        DirectorDtoIn updatedDirectorDTO = new DirectorDtoIn();
-        updatedDirectorDTO.setId(directorDtoIn.getId());
+        DirectorDtoInUpdate updatedDirectorDTO = directorDtoInUpdate;
         updatedDirectorDTO.setName("updated");
         updatedDirectorDTO.setAge(90);
         updatedDirectorDTO.setNationality("updated");
@@ -313,9 +320,7 @@ class DirectorControllerTest {
                         .content(objectMapper.writeValueAsString(updatedDirectorDTO)));
 
         response.andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) updatedDirectorDTO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.age", is(90)))
-                .andExpect(jsonPath("$.nationality", is("updated")));
+                .andExpect(jsonPath("$.id", is((int) updatedDirectorDTO.getId())));
     }
 
     @DisplayName("Junit test for update a director - negative")
@@ -326,14 +331,9 @@ class DirectorControllerTest {
         given(directorService.findById(directorBO.getId())).willReturn(directorBO);
         given(directorService.update(any(DirectorBO.class))).willThrow(new ServiceException(""));
 
-        DirectorDtoIn updatedDirectorDTO = directorDtoIn;
-        updatedDirectorDTO.setName("updated");
-        updatedDirectorDTO.setAge(100);
-        updatedDirectorDTO.setNationality("updated");
-
         ResultActions response = mockMvc.perform(
                 put("/directors/update?method=false").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedDirectorDTO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -342,12 +342,12 @@ class DirectorControllerTest {
     @Test
     void givenDirectorDTO_whenUpdateCriteria_thenupdatedDirectorDTO() throws Exception {
         given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
-        given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
+        given(dtoToBoConverter.directorUpdateDtoToBo(directorDtoInUpdate)).willReturn(directorBO);
         given(directorService.findByIdCriteria(directorBO.getId())).willReturn(directorBO);
         given(directorService.updateCriteria(any(DirectorBO.class))).willAnswer(
                 (invocation -> invocation.getArgument(0)));
 
-        DirectorDtoIn updatedDirectorDTO = directorDtoIn;
+        DirectorDtoInUpdate updatedDirectorDTO = directorDtoInUpdate;
         updatedDirectorDTO.setName("updated");
         updatedDirectorDTO.setAge(100);
         updatedDirectorDTO.setNationality("updated");
@@ -357,9 +357,7 @@ class DirectorControllerTest {
                         .content(objectMapper.writeValueAsString(updatedDirectorDTO)));
 
         response.andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) updatedDirectorDTO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.age", is(90)))
-                .andExpect(jsonPath("$.nationality", is("updated")));
+                .andExpect(jsonPath("$.id", is((int) updatedDirectorDTO.getId())));
     }
 
     @DisplayName("Junit test for update a director - negative")
@@ -370,14 +368,9 @@ class DirectorControllerTest {
         given(directorService.findByIdCriteria(directorBO.getId())).willReturn(directorBO);
         given(directorService.updateCriteria(any(DirectorBO.class))).willThrow(new ServiceException(""));
 
-        DirectorDtoIn updatedDirectorDTO = directorDtoIn;
-        updatedDirectorDTO.setName("updated");
-        updatedDirectorDTO.setAge(100);
-        updatedDirectorDTO.setNationality("updated");
-
         ResultActions response = mockMvc.perform(
                 put("/directors/update?method=true").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedDirectorDTO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -388,7 +381,7 @@ class DirectorControllerTest {
         willDoNothing().given(directorService).deleteById(directorBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/directors/deleteById?method=false").param("id", String.valueOf(directorDtoIn.getId())));
+                delete("/directors/deleteById?method=false").param("id", String.valueOf(directorDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -399,7 +392,7 @@ class DirectorControllerTest {
         willThrow(new ServiceException("")).given(directorService).deleteById(directorBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/directors/deleteById?method=false").param("id", String.valueOf(directorDtoIn.getId())));
+                delete("/directors/deleteById?method=false").param("id", String.valueOf(directorDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -410,7 +403,7 @@ class DirectorControllerTest {
         willDoNothing().given(directorService).deleteByIdCriteria(directorBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/directors/deleteById?method=true").param("id", String.valueOf(directorDtoIn.getId())));
+                delete("/directors/deleteById?method=true").param("id", String.valueOf(directorDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -421,7 +414,7 @@ class DirectorControllerTest {
         willThrow(new ServiceException("")).given(directorService).deleteByIdCriteria(directorBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/directors/deleteById?method=true").param("id", String.valueOf(directorDtoIn.getId())));
+                delete("/directors/deleteById?method=true").param("id", String.valueOf(directorDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }

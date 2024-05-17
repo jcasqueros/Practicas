@@ -39,6 +39,15 @@ public interface ActorCustomRepository {
     Optional<Actor> findActorById(long id);
 
     /**
+     * Method for get actor by name and age
+     *
+     * @param name
+     * @param age
+     * @return List of actor
+     */
+    List<Actor> findByNameAndAge(String name, int age);
+
+    /**
      * Method for get all actors
      *
      * @return List of Actor

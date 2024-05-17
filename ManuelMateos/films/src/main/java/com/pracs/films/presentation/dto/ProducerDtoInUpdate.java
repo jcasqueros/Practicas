@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class ProducerDtoOut {
+public class ProducerDtoInUpdate {
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Producer Id", example = "1")
     private long id;
 

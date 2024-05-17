@@ -92,6 +92,23 @@ public class DirectorServiceImpl implements DirectorService {
     }
 
     @Override
+    public List<DirectorBO> findByNameAndAge(String name, int age) throws ServiceException {
+        try {
+            List<DirectorBO> directorBOList = directorRepository.findByNameAndAge(name, age).stream()
+                    .map(modelToBoConverter::directorModelToBo).toList();
+
+            if (directorBOList.isEmpty()) {
+                throw new EmptyException(constantMessages.noDirectors());
+            }
+
+            return directorBOList;
+        } catch (NestedRuntimeException e) {
+            log.error(constantMessages.errorService());
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
     public Page<DirectorBO> findAll(Pageable pageable) throws ServiceException {
         try {
             //Búsqueda de los todos lo directors, se recorre la lista, se mapea a objeto bo y se convierte el resultado en lista
@@ -171,6 +188,23 @@ public class DirectorServiceImpl implements DirectorService {
             // Conversión de model a bo del resultado de buscar un director por id.
             return modelToBoConverter.directorModelToBo(directorRepositoryCriteria.findDirectorById(id)
                     .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
+        } catch (NestedRuntimeException e) {
+            log.error(constantMessages.errorService());
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<DirectorBO> findByNameAndAgeCriteria(String name, int age) throws ServiceException {
+        try {
+            List<DirectorBO> directorBOList = directorRepositoryCriteria.findByNameAndAge(name, age).stream()
+                    .map(modelToBoConverter::directorModelToBo).toList();
+
+            if (directorBOList.isEmpty()) {
+                throw new EmptyException(constantMessages.noDirectors());
+            }
+
+            return directorBOList;
         } catch (NestedRuntimeException e) {
             log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());

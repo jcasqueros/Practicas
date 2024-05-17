@@ -1,9 +1,11 @@
 package com.viewnext.films.businesslayer.service.impl;
 
+import com.viewnext.films.businesslayer.bo.ActorBO;
 import com.viewnext.films.businesslayer.bo.FilmBO;
 import com.viewnext.films.businesslayer.exception.NotFoundException;
 import com.viewnext.films.businesslayer.exception.ServiceException;
 import com.viewnext.films.businesslayer.service.FilmService;
+import com.viewnext.films.businesslayer.service.WebClientService;
 import com.viewnext.films.persistencelayer.entity.Actor;
 import com.viewnext.films.persistencelayer.entity.Director;
 import com.viewnext.films.persistencelayer.entity.Film;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,8 @@ import java.util.List;
 public class FilmServiceImpl implements FilmService {
 
     // Inyección de dependencias
+
+    private final WebClient webClient;
     /**
      * The film criteria repository.
      */
@@ -68,6 +73,8 @@ public class FilmServiceImpl implements FilmService {
      * The Producer JPA repository.
      */
     private final ProducerJPARepository producerJPARepository;
+
+    private final WebClientService webClientService;
 
     // Métodos para interactuar con la capa de persistencia utilizando Criteria API
     @Override
@@ -133,6 +140,11 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO criteriaCreate(FilmBO filmBO) throws ServiceException {
         try {
+            for (ActorBO actorBO : filmBO.getActors()) {
+                webClientService.existsActor(actorBO.getId());
+            }
+            webClientService.existsDirector(filmBO.getDirector().getId());
+            webClientService.existsProducer(filmBO.getProducer().getId());
             // Crea un film utilizando Criteria API
             return converter.filmEntityToBO(filmCriteriaRepository.createFilm(converter.filmBOToEntity(filmBO)));
         } catch (NestedRuntimeException e) {
@@ -209,6 +221,11 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmBO jpaCreate(FilmBO filmBO) throws ServiceException {
         try {
+            for (ActorBO actorBO : filmBO.getActors()) {
+                webClientService.existsActor(actorBO.getId());
+            }
+            webClientService.existsDirector(filmBO.getDirector().getId());
+            webClientService.existsProducer(filmBO.getProducer().getId());
             // Crea un film utilizando JPA
             return converter.filmEntityToBO(filmJPARepository.save(converter.filmBOToEntity(filmBO)));
         } catch (NestedRuntimeException e) {

@@ -60,6 +60,21 @@ public class DirectorRepositoryImpl implements DirectorCustomRepository {
     }
 
     @Override
+    public List<Director> findByNameAndAge(String name, int age) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Director> criteriaQuery = criteriaBuilder.createQuery(Director.class);
+
+        Root<Director> director = criteriaQuery.from(Director.class);
+        Predicate directorNamePredicate = criteriaBuilder.equal(director.get("name"), name);
+        Predicate directorAgePredicate = criteriaBuilder.equal(director.get("age"), age);
+        criteriaQuery.where(directorNamePredicate, directorAgePredicate);
+
+        TypedQuery<Director> query = entityManager.createQuery(criteriaQuery);
+
+        return query.getResultStream().toList();
+    }
+
+    @Override
     public Page<Director> findAllDirector(Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Director> criteriaQuery = criteriaBuilder.createQuery(Director.class);

@@ -173,6 +173,36 @@ class DirectorServicesImplTest {
         assertThrows(ServiceException.class, () -> directorService.findById(directorBO.getId()));
     }
 
+    @DisplayName("JUnit test for find a director by his name and age - positive")
+    @Test
+    void givendirectorNameAndAge_whenFindByNameAndAge_thenReturnListDirectorBObject() throws ServiceException {
+        given(modelToBoConverter.directorModelToBo(director)).willReturn(directorBO);
+        given(directorRepository.findByNameAndAge(director.getName(), director.getAge())).willReturn(List.of(director));
+
+        List<DirectorBO> directorBOList = directorService.findByNameAndAge(director.getName(), director.getAge());
+
+        assertEquals(1, directorBOList.size());
+    }
+
+    @DisplayName("JUnit test for find a director by his name and age - negative")
+    @Test
+    void givendirectorNameAndAge_whenFindByNameAndAge_thenThrowEntityNotFoundExcepition() throws ServiceException {
+        given(directorRepository.findByNameAndAge(director.getName(), director.getAge())).willReturn(List.of());
+
+        assertThrows(EmptyException.class,
+                () -> directorService.findByNameAndAge(director.getName(), director.getAge()));
+    }
+
+    @DisplayName("JUnit test for find a director by his name and age - negative")
+    @Test
+    void givendirectorNameAndAge_whenFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+        when(directorRepository.findByNameAndAge(director.getName(), director.getAge())).thenThrow(
+                InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> directorService.findByNameAndAge(director.getName(), director.getAge()));
+    }
+
     @DisplayName("JUnit test for get all directors - positive")
     @Test
     void givenNothing_whenFindAll_thenReturnDirectorBObject() throws ServiceException {
@@ -326,6 +356,40 @@ class DirectorServicesImplTest {
                 InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> directorService.findByIdCriteria(directorBO.getId()));
+    }
+
+    @DisplayName("JUnit test for find a director by his name and age - positive")
+    @Test
+    void givendirectorNameAndAge_whenFindByNameAndAgeCriteria_thenReturnListDirectorBObject() throws ServiceException {
+        given(modelToBoConverter.directorModelToBo(director)).willReturn(directorBO);
+        given(directorRepositoryCriteria.findByNameAndAge(director.getName(), director.getAge())).willReturn(
+                List.of(director));
+
+        List<DirectorBO> directorBOList = directorService.findByNameAndAgeCriteria(director.getName(),
+                director.getAge());
+
+        assertEquals(1, directorBOList.size());
+    }
+
+    @DisplayName("JUnit test for find a director by his name and age - negative")
+    @Test
+    void givendirectorNameAndAge_whenFindByNameAndAgeCriteria_thenThrowEntityNotFoundExcepition()
+            throws ServiceException {
+        given(directorRepositoryCriteria.findByNameAndAge(director.getName(), director.getAge())).willReturn(List.of());
+
+        assertThrows(EmptyException.class,
+                () -> directorService.findByNameAndAgeCriteria(director.getName(), director.getAge()));
+    }
+
+    @DisplayName("JUnit test for find a director by his name and age - negative")
+    @Test
+    void givendirectorNameAndAge_whenFindByNameAndAgeCriteria_thenThrowNestedRuntimeException()
+            throws ServiceException {
+        when(directorRepositoryCriteria.findByNameAndAge(director.getName(), director.getAge())).thenThrow(
+                InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class,
+                () -> directorService.findByNameAndAgeCriteria(director.getName(), director.getAge()));
     }
 
     @DisplayName("JUnit test for get all directors - positive")

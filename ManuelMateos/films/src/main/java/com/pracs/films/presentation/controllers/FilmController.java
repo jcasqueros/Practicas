@@ -7,6 +7,7 @@ import com.pracs.films.persistence.models.Film;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.FilmDtoIn;
+import com.pracs.films.presentation.dto.FilmDtoInUpdate;
 import com.pracs.films.presentation.dto.FilmDtoOut;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -145,18 +146,19 @@ public class FilmController {
      */
     @Transactional
     @PostMapping("/save")
-    public ResponseEntity<FilmDtoOut> save(@RequestParam boolean method, @Valid @RequestBody FilmDtoIn filmDtoIn) {
+    public ResponseEntity<FilmDtoOut> save(@RequestParam boolean method, @RequestParam String port,
+            @Valid @RequestBody FilmDtoIn filmDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.filmBoToDtoOut(
-                        filmService.saveCriteria(dtoToBoConverter.filmDtoToBo(filmDtoIn))), HttpStatus.CREATED);
+                        filmService.saveCriteria(dtoToBoConverter.filmDtoToBo(filmDtoIn), port)), HttpStatus.CREATED);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
             return new ResponseEntity<>(
-                    boToDtoConverter.filmBoToDtoOut(filmService.save(dtoToBoConverter.filmDtoToBo(filmDtoIn))),
+                    boToDtoConverter.filmBoToDtoOut(filmService.save(dtoToBoConverter.filmDtoToBo(filmDtoIn), port)),
                     HttpStatus.CREATED);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
@@ -171,18 +173,19 @@ public class FilmController {
      */
     @Transactional
     @PutMapping("/update")
-    public ResponseEntity<FilmDtoOut> update(@RequestParam boolean method, @Valid @RequestBody FilmDtoIn filmDtoIn) {
+    public ResponseEntity<FilmDtoOut> update(@RequestParam boolean method,
+            @Valid @RequestBody FilmDtoInUpdate filmDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.filmBoToDtoOut(
-                        filmService.updateCriteria(dtoToBoConverter.filmDtoToBo(filmDtoIn))), HttpStatus.OK);
+                        filmService.updateCriteria(dtoToBoConverter.filmDtoUpdateToBo(filmDtoIn))), HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
             return new ResponseEntity<>(
-                    boToDtoConverter.filmBoToDtoOut(filmService.update(dtoToBoConverter.filmDtoToBo(filmDtoIn))),
+                    boToDtoConverter.filmBoToDtoOut(filmService.update(dtoToBoConverter.filmDtoUpdateToBo(filmDtoIn))),
                     HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());

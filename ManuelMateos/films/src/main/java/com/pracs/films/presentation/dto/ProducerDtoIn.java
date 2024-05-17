@@ -17,9 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ProducerDtoIn {
-
-    private long id;
-
+    
     @NotBlank
     @Schema(description = "Name of the producer", example = "Michael Productions")
     private String name;

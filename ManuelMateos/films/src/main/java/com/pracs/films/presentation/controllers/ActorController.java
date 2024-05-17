@@ -7,6 +7,7 @@ import com.pracs.films.persistence.models.Actor;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ActorDtoIn;
+import com.pracs.films.presentation.dto.ActorDtoInUpdate;
 import com.pracs.films.presentation.dto.ActorDtoOut;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -134,6 +135,44 @@ public class ActorController {
     }
 
     /**
+     * Method for get an actor by his name.
+     *
+     * @param name
+     * @return ResponseEntity<ActorDtoOut>
+     */
+    @GetMapping("/findByName/{name}")
+    public ResponseEntity<List<ActorDtoOut>> getByName(@PathVariable("name") String name) {
+        try {
+            return new ResponseEntity<>(
+                    actorService.findByName(name).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    @GetMapping("/findByNameAndAge")
+    public ResponseEntity<List<ActorDtoOut>> getByNameAndAge(@RequestParam boolean method, @RequestParam String name,
+            @RequestParam int age) {
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        actorService.findByNameAndAgeCriteria(name, age).stream().map(boToDtoConverter::actorBoToDtoOut)
+                                .toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    actorService.findByNameAndAge(name, age).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
      * Method for create an actor
      *
      * @param actorDtoIn
@@ -167,19 +206,19 @@ public class ActorController {
      */
     @Transactional
     @PutMapping("/update")
-    public ResponseEntity<ActorDtoOut> update(@RequestParam boolean method, @Valid @RequestBody ActorDtoIn actorDtoIn) {
+    public ResponseEntity<ActorDtoOut> update(@RequestParam boolean method,
+            @Valid @RequestBody ActorDtoInUpdate actorDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
-                        actorService.updateCriteria(dtoToBoConverter.actorDtoToBo(actorDtoIn))), HttpStatus.OK);
+                        actorService.updateCriteria(dtoToBoConverter.actorDtoUpdateToBo(actorDtoIn))), HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            return new ResponseEntity<>(
-                    boToDtoConverter.actorBoToDtoOut(actorService.update(dtoToBoConverter.actorDtoToBo(actorDtoIn))),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(boToDtoConverter.actorBoToDtoOut(
+                    actorService.update(dtoToBoConverter.actorDtoUpdateToBo(actorDtoIn))), HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }

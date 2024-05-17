@@ -36,4 +36,24 @@ public class DtoToBoConverter {
     public ProducerBO producerDtoToBo(ProducerDtoIn producerDTO) {
         return modelMapper.map(producerDTO, ProducerBO.class);
     }
+
+    public ActorBO actorDtoUpdateToBo(ActorDtoInUpdate actorDTO) {
+        return modelMapper.map(actorDTO, ActorBO.class);
+    }
+
+    public DirectorBO directorUpdateDtoToBo(DirectorDtoInUpdate directorDTO) {
+        return modelMapper.map(directorDTO, DirectorBO.class);
+    }
+
+    public FilmBO filmDtoUpdateToBo(FilmDtoInUpdate filmDTO) {
+        return modelMapper.map(filmDTO, FilmBO.class);
+    }
+
+    public SerieBO serieDtoUpdateToBo(SerieDtoInUpdate serieDTO) {
+        return modelMapper.map(serieDTO, SerieBO.class);
+    }
+
+    public ProducerBO producerDtoUpdateToBo(ProducerDtoInUpdate producerDTO) {
+        return modelMapper.map(producerDTO, ProducerBO.class);
+    }
 }

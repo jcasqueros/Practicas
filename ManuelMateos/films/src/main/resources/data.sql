@@ -999,7 +999,7 @@ insert into persons (id, name, age, nationality) values (998, 'Kerianne', 9, 'Ch
 insert into persons (id, name, age, nationality) values (999, 'Emlynne', 14, 'American');
 insert into persons (id, name, age, nationality) values (1000, 'Marianne', 88, 'Italian');
 
-insert into producers (id, name, debut) values (1, 'praesent id massa id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi', 1955);
+insert into producers (id, name, debut) values (1, 'praesent', 1955);
 insert into producers (id, name, debut) values (2, 'habitasse platea dictumst morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum', 1933);
 insert into producers (id, name, debut) values (3, 'bibendum imperdiet nullam orci pede venenatis non sodales sed tincidunt eu felis fusce posuere felis sed lacus', 2023);
 insert into producers (id, name, debut) values (4, 'pharetra magna ac consequat metus sapien ut nunc vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere', 1940);

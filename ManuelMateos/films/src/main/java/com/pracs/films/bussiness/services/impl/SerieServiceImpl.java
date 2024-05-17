@@ -5,7 +5,6 @@ import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.SerieService;
 import com.pracs.films.configuration.ConstantMessages;
-import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
@@ -18,16 +17,21 @@ import com.pracs.films.persistence.repositories.jpa.ActorRepository;
 import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
 import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
 import com.pracs.films.persistence.repositories.jpa.SerieRepository;
+import com.pracs.films.presentation.dto.DirectorDtoOut;
+import com.pracs.films.presentation.dto.ProducerDtoOut;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Implementation of the interface {@link SerieService}
@@ -36,6 +40,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SerieServiceImpl implements SerieService {
+
+    @Autowired
+    private WebClient webClient;
 
     private final ConstantMessages constantMessages;
 
@@ -53,13 +60,42 @@ public class SerieServiceImpl implements SerieService {
 
     private final SerieRepositoryImpl serieRepositoryCriteria;
 
-    @Override
-    public SerieBO save(SerieBO serieBO) throws ServiceException {
+    public boolean existsActorJPA(long id, String port) {
         try {
-            //Comprobar si existe ya un serie registrado con el mismo id.
-            if (serieRepository.existsById(serieBO.getId())) {
-                throw new DuplicatedIdException("Existing production");
-            }
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/actors/findById/" + id + "?method=false")
+                            .retrieve().bodyToMono(Actor.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noActors());
+        }
+    }
+
+    public boolean existsDirectorJPA(long id, String port) {
+        try {
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/directors/findById/" + id + "?method=false")
+                            .retrieve().bodyToMono(DirectorDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noDirectors());
+        }
+    }
+
+    public boolean existsProducerJPA(long id, String port) {
+        try {
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/producers/findById/" + id + "?method=false")
+                            .retrieve().bodyToMono(ProducerDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noProducers());
+        }
+    }
+
+    @Override
+    public SerieBO save(SerieBO serieBO, String port) throws ServiceException {
+        try {
+            serieBO.getActors().stream().forEach(a -> existsActorJPA(a.getId(), port));
+            existsDirectorJPA(serieBO.getDirector().getId(), port);
+            existsProducerJPA(serieBO.getProducer().getId(), port);
 
             // Conversión de model a bo del resultado de crear un serie.
             return modelToBoConverter.serieModelToBo(serieRepository.save(boToModelConverter.serieBoToModel(serieBO)));
@@ -139,13 +175,42 @@ public class SerieServiceImpl implements SerieService {
         }
     }
 
-    @Override
-    public SerieBO saveCriteria(SerieBO serieBO) throws ServiceException {
+    public boolean existsActorCriteria(long id, String port) {
         try {
-            //Comprobar si existe ya un serie registrado con el mismo id.
-            if (!serieRepositoryCriteria.findSerieById(serieBO.getId()).isEmpty()) {
-                throw new DuplicatedIdException("Existing production");
-            }
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/actors/findById/" + id + "?method=true")
+                            .retrieve().bodyToMono(Actor.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noActors());
+        }
+    }
+
+    public boolean existsDirectorCriteria(long id, String port) {
+        try {
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/directors/findById/" + id + "?method=true")
+                            .retrieve().bodyToMono(DirectorDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noDirectors());
+        }
+    }
+
+    public boolean existsProducerCriteria(long id, String port) {
+        try {
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/producers/findById/" + id + "?method=true")
+                            .retrieve().bodyToMono(ProducerDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noProducers());
+        }
+    }
+
+    @Override
+    public SerieBO saveCriteria(SerieBO serieBO, String port) throws ServiceException {
+        try {
+            serieBO.getActors().stream().forEach(a -> existsActorCriteria(a.getId(), port));
+            existsDirectorCriteria(serieBO.getDirector().getId(), port);
+            existsProducerCriteria(serieBO.getProducer().getId(), port);
 
             // Conversión de model a bo del resultado de crear un serie.
             return modelToBoConverter.serieModelToBo(

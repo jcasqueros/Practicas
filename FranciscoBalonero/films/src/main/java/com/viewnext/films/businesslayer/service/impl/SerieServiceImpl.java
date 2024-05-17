@@ -1,9 +1,11 @@
 package com.viewnext.films.businesslayer.service.impl;
 
+import com.viewnext.films.businesslayer.bo.ActorBO;
 import com.viewnext.films.businesslayer.bo.SerieBO;
 import com.viewnext.films.businesslayer.exception.NotFoundException;
 import com.viewnext.films.businesslayer.exception.ServiceException;
 import com.viewnext.films.businesslayer.service.SerieService;
+import com.viewnext.films.businesslayer.service.WebClientService;
 import com.viewnext.films.persistencelayer.entity.Actor;
 import com.viewnext.films.persistencelayer.entity.Director;
 import com.viewnext.films.persistencelayer.entity.Producer;
@@ -59,6 +61,7 @@ public class SerieServiceImpl implements SerieService {
     private final ActorJPARepository actorJPARepository;
     private final DirectorJPARepository directorJPARepository;
     private final ProducerJPARepository producerJPARepository;
+    private final WebClientService webClientService;
 
     // Métodos para interactuar con la capa de persistencia utilizando Criteria API
     @Override
@@ -125,6 +128,11 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public SerieBO criteriaCreate(SerieBO serieBO) throws ServiceException {
         try {
+            for (ActorBO actorBO : serieBO.getActors()) {
+                webClientService.existsActor(actorBO.getId());
+            }
+            webClientService.existsDirector(serieBO.getDirector().getId());
+            webClientService.existsProducer(serieBO.getProducer().getId());
             // Crea un serie utilizando Criteria API
             return converter.serieEntityToBO(serieCriteriaRepository.createSerie(converter.serieBOToEntity(serieBO)));
         } catch (NestedRuntimeException e) {
@@ -201,6 +209,11 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public SerieBO jpaCreate(SerieBO serieBO) throws ServiceException {
         try {
+            for (ActorBO actorBO : serieBO.getActors()) {
+                webClientService.existsActor(actorBO.getId());
+            }
+            webClientService.existsDirector(serieBO.getDirector().getId());
+            webClientService.existsProducer(serieBO.getProducer().getId());
             // Crea un serie utilizando JPA
             return converter.serieEntityToBO(serieJPARepository.save(converter.serieBOToEntity(serieBO)));
         } catch (NestedRuntimeException e) {

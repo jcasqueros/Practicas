@@ -5,7 +5,6 @@ import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.FilmService;
 import com.pracs.films.configuration.ConstantMessages;
-import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
@@ -18,6 +17,9 @@ import com.pracs.films.persistence.repositories.jpa.ActorRepository;
 import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
 import com.pracs.films.persistence.repositories.jpa.FilmRepository;
 import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
+import com.pracs.films.presentation.dto.ActorDtoOut;
+import com.pracs.films.presentation.dto.DirectorDtoOut;
+import com.pracs.films.presentation.dto.ProducerDtoOut;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
@@ -25,9 +27,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Implementation of the interface {@link FilmService}
@@ -36,6 +40,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
+
+    private final WebClient webClient;
 
     private final ConstantMessages constantMessages;
 
@@ -53,13 +59,44 @@ public class FilmServiceImpl implements FilmService {
 
     private final FilmRepositoryImpl filmRepositoryCriteria;
 
-    @Override
-    public FilmBO save(FilmBO filmBO) throws ServiceException {
+    public boolean existsActorJPA(long id, String port) {
         try {
-            //Comprobar si existe ya un pelicula registrado con el mismo id.
-            if (filmRepository.existsById(filmBO.getId())) {
-                throw new DuplicatedIdException("Existing production");
-            }
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/actors/findById/" + id + "?method=false")
+                            .retrieve().bodyToMono(ActorDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noActors());
+        }
+        // retrieve recibe el cuerpo de la respuesta HTPP
+        //block bloquea el hilo hasta que se complete la solicitud HTTP
+    }
+
+    public boolean existsDirectorJPA(long id, String port) {
+        try {
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/directors/findById/" + id + "?method=false")
+                            .retrieve().bodyToMono(DirectorDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noDirectors());
+        }
+    }
+
+    public boolean existsProducerJPA(long id, String port) {
+        try {
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/producers/findById/" + id + "?method=false")
+                            .retrieve().bodyToMono(ProducerDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noProducers());
+        }
+    }
+
+    @Override
+    public FilmBO save(FilmBO filmBO, String port) throws ServiceException {
+        try {
+            filmBO.getActors().forEach(a -> existsActorJPA(a.getId(), port));
+            existsDirectorJPA(filmBO.getDirector().getId(), port);
+            existsProducerJPA(filmBO.getProducer().getId(), port);
 
             // Conversión de model a bo del resultado de crear un pelicula.
             return modelToBoConverter.filmModelToBo(filmRepository.save(boToModelConverter.filmBoToModel(filmBO)));
@@ -138,13 +175,42 @@ public class FilmServiceImpl implements FilmService {
         }
     }
 
-    @Override
-    public FilmBO saveCriteria(FilmBO filmBO) throws ServiceException {
+    public boolean existsActorCriteria(long id, String port) {
         try {
-            //Comprobar si existe ya un pelicula registrado con el mismo id.
-            if (!filmRepositoryCriteria.findFilmById(filmBO.getId()).isEmpty()) {
-                throw new DuplicatedIdException("Existing production");
-            }
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/actors/findById/" + id + "?method=true")
+                            .retrieve().bodyToMono(Actor.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noActors());
+        }
+    }
+
+    public boolean existsDirectorCriteria(long id, String port) {
+        try {
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/directors/findById/" + id + "?method=true")
+                            .retrieve().bodyToMono(DirectorDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noDirectors());
+        }
+    }
+
+    public boolean existsProducerCriteria(long id, String port) {
+        try {
+            return Boolean.TRUE.equals(
+                    webClient.get().uri("http://localhost:" + port + "/producers/findById/" + id + "?method=true")
+                            .retrieve().bodyToMono(ProducerDtoOut.class).map(Objects::nonNull).block());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(constantMessages.noProducers());
+        }
+    }
+
+    @Override
+    public FilmBO saveCriteria(FilmBO filmBO, String port) throws ServiceException {
+        try {
+            filmBO.getActors().stream().forEach(a -> existsActorCriteria(a.getId(), port));
+            existsDirectorCriteria(filmBO.getDirector().getId(), port);
+            existsProducerCriteria(filmBO.getProducer().getId(), port);
 
             // Conversión de model a bo del resultado de crear un pelicula.
             return modelToBoConverter.filmModelToBo(

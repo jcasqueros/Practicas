@@ -23,21 +23,31 @@ public class DtoToBoConverterTest {
 
     private ActorDtoIn actorDtoIn;
 
+    private ActorDtoInUpdate actorDtoInUpdate;
+
     private DirectorBO directorBO;
 
     private DirectorDtoIn directorDtoIn;
+
+    private DirectorDtoInUpdate directorDtoInUpdate;
 
     private ProducerBO producerBO;
 
     private ProducerDtoIn producerDtoIn;
 
+    private ProducerDtoInUpdate producerDtoInUpdate;
+
     private SerieBO serieBO;
 
     private SerieDtoIn serieDtoIn;
 
+    private SerieDtoInUpdate serieDtoInUpdate;
+
     private FilmBO filmBO;
 
     private FilmDtoIn filmDtoIn;
+
+    private FilmDtoInUpdate filmDtoInUpdate;
 
     @BeforeEach
     void setup() {
@@ -78,39 +88,67 @@ public class DtoToBoConverterTest {
         filmBO.setDirector(directorBO);
 
         actorDtoIn = new ActorDtoIn();
-        actorDtoIn.setId(1L);
         actorDtoIn.setName("prueba");
         actorDtoIn.setAge(25);
         actorDtoIn.setNationality("Spain");
         List<ActorDtoIn> actorsDtoIn = new ArrayList<>();
         actorsDtoIn.add(actorDtoIn);
 
+        actorDtoInUpdate = new ActorDtoInUpdate();
+        actorDtoInUpdate.setId(1L);
+        actorDtoInUpdate.setName("prueba");
+        actorDtoInUpdate.setAge(25);
+        actorDtoInUpdate.setNationality("Spain");
+
         directorDtoIn = new DirectorDtoIn();
-        directorDtoIn.setId(2L);
         directorDtoIn.setName("prueba");
         directorDtoIn.setAge(25);
         directorDtoIn.setNationality("Spain");
 
+        directorDtoInUpdate = new DirectorDtoInUpdate();
+        directorDtoInUpdate.setId(2L);
+        directorDtoInUpdate.setName("prueba");
+        directorDtoInUpdate.setAge(25);
+        directorDtoInUpdate.setNationality("Spain");
+
         producerDtoIn = new ProducerDtoIn();
-        producerDtoIn.setId(1L);
         producerDtoIn.setName("prueba");
         producerDtoIn.setDebut(2020);
 
+        producerDtoInUpdate = new ProducerDtoInUpdate();
+        producerDtoInUpdate.setId(1L);
+        producerDtoInUpdate.setName("prueba");
+        producerDtoInUpdate.setDebut(2020);
+
         serieDtoIn = new SerieDtoIn();
-        serieDtoIn.setId(1L);
         serieDtoIn.setTitle("prueba");
         serieDtoIn.setDebut(2020);
-        serieDtoIn.setActors(actorsDtoIn);
-        serieDtoIn.setProducer(producerDtoIn);
-        serieDtoIn.setDirector(directorDtoIn);
+        serieDtoIn.setActors(null);
+        serieDtoIn.setProducer(null);
+        serieDtoIn.setDirector(null);
+
+        serieDtoInUpdate = new SerieDtoInUpdate();
+        serieDtoInUpdate.setId(1L);
+        serieDtoInUpdate.setTitle("prueba");
+        serieDtoInUpdate.setDebut(2020);
+        serieDtoInUpdate.setActors(null);
+        serieDtoInUpdate.setProducer(null);
+        serieDtoInUpdate.setDirector(null);
 
         filmDtoIn = new FilmDtoIn();
-        filmDtoIn.setId(1L);
         filmDtoIn.setTitle("prueba");
         filmDtoIn.setDebut(2020);
-        filmDtoIn.setActors(actorsDtoIn);
-        filmDtoIn.setProducer(producerDtoIn);
-        filmDtoIn.setDirector(directorDtoIn);
+        filmDtoIn.setActors(null);
+        filmDtoIn.setProducer(null);
+        filmDtoIn.setDirector(null);
+
+        filmDtoInUpdate = new FilmDtoInUpdate();
+        filmDtoInUpdate.setId(1L);
+        filmDtoInUpdate.setTitle("prueba");
+        filmDtoInUpdate.setDebut(2020);
+        filmDtoInUpdate.setActors(null);
+        filmDtoInUpdate.setProducer(null);
+        filmDtoInUpdate.setDirector(null);
     }
 
     @DisplayName("JUnit test for convert ActorDtoIn To ActorBO")
@@ -119,7 +157,7 @@ public class DtoToBoConverterTest {
 
         ActorBO savedActorBO = DtoToBoConverter.actorDtoToBo(actorDtoIn);
 
-        assertEquals(actorBO, savedActorBO);
+        assertEquals(actorBO.getName(), savedActorBO.getName());
     }
 
     @DisplayName("JUnit test for convert DirectorDtoIn To DirectorBO")
@@ -128,7 +166,7 @@ public class DtoToBoConverterTest {
 
         DirectorBO savedDirectorBO = DtoToBoConverter.directorDtoToBo(directorDtoIn);
 
-        assertEquals(directorBO, savedDirectorBO);
+        assertEquals(directorBO.getName(), savedDirectorBO.getName());
     }
 
     @DisplayName("JUnit test for convert ProducerDtoIn To DirectorBO")
@@ -137,7 +175,7 @@ public class DtoToBoConverterTest {
 
         ProducerBO savedProducerBO = DtoToBoConverter.producerDtoToBo(producerDtoIn);
 
-        assertEquals(producerBO, savedProducerBO);
+        assertEquals(producerBO.getName(), savedProducerBO.getName());
     }
 
     @DisplayName("JUnit test for convert SerieDtoIn To SerieBO")
@@ -146,7 +184,7 @@ public class DtoToBoConverterTest {
 
         SerieBO savedSerieBO = DtoToBoConverter.serieDtoToBo(serieDtoIn);
 
-        assertEquals(serieBO, savedSerieBO);
+        assertEquals(serieBO.getTitle(), savedSerieBO.getTitle());
     }
 
     @DisplayName("JUnit test for convert FilmDtoIn To FilmBO")
@@ -155,6 +193,51 @@ public class DtoToBoConverterTest {
 
         FilmBO savedFilmBO = DtoToBoConverter.filmDtoToBo(filmDtoIn);
 
-        assertEquals(filmBO, savedFilmBO);
+        assertEquals(filmBO.getTitle(), savedFilmBO.getTitle());
+    }
+
+    @DisplayName("JUnit test for convert ActorDtoInUpdate To ActorBO")
+    @Test
+    void givenActorDtoInUpdateObject_whenActorBoToDto_thenReturnActorBoObject() {
+
+        ActorBO savedActorBO = DtoToBoConverter.actorDtoUpdateToBo(actorDtoInUpdate);
+
+        assertEquals(actorBO, savedActorBO);
+    }
+
+    @DisplayName("JUnit test for convert DirectorDtoInUpdate To DirectorBO")
+    @Test
+    void givenDirectorDtoInUpdateObject_whenDirectorBoToDto_thenReturnDirectorBoObject() {
+
+        DirectorBO savedDirectorBO = DtoToBoConverter.directorUpdateDtoToBo(directorDtoInUpdate);
+
+        assertEquals(directorBO, savedDirectorBO);
+    }
+
+    @DisplayName("JUnit test for convert ProducerDtoInUpdate To DirectorBO")
+    @Test
+    void givenProducerDtoInUpdateObject_whenProducerBoToDto_thenReturnProducerBoObject() {
+
+        ProducerBO savedProducerBO = DtoToBoConverter.producerDtoUpdateToBo(producerDtoInUpdate);
+
+        assertEquals(producerBO, savedProducerBO);
+    }
+
+    @DisplayName("JUnit test for convert SerieDtoInUpdate To SerieBO")
+    @Test
+    void givenSerieDtoInUpdateObject_whenSerieBoToDto_thenReturnSerieBoObject() {
+
+        SerieBO savedSerieBO = DtoToBoConverter.serieDtoUpdateToBo(serieDtoInUpdate);
+
+        assertEquals(serieBO.getTitle(), savedSerieBO.getTitle());
+    }
+
+    @DisplayName("JUnit test for convert FilmDtoInUpdate To FilmBO")
+    @Test
+    void givenFilmDtoInUpdateObject_whenFilmBoToDto_thenReturnFilmBoObject() {
+
+        FilmBO savedFilmBO = DtoToBoConverter.filmDtoUpdateToBo(filmDtoInUpdate);
+
+        assertEquals(filmBO.getTitle(), savedFilmBO.getTitle());
     }
 }

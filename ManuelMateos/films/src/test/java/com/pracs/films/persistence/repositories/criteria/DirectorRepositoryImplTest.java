@@ -74,6 +74,15 @@ class DirectorRepositoryImplTest {
         assertEquals(1L, savedDirector.get().getId());
     }
 
+    @DisplayName("JUnit test for get an director by his name and age")
+    @Test
+    void givenDirectorNameAndAge_whenFindDirectorByNameAndAge_thenReturnListDirectorObject() {
+
+        List<Director> directorList = directorRepository.findByNameAndAge(director.getName(), director.getAge());
+
+        assertEquals(1, directorList.size());
+    }
+
     @DisplayName("JUnit test for get all directors")
     @Test
     void givenNothing_whenFindAllDirector_thenReturnDirectorList() {

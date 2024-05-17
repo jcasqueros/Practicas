@@ -12,9 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest(showSql = false)
 @ComponentScan(basePackages = "com.viewnext.films.persistencelayer.repository.jpa")
@@ -83,5 +85,19 @@ class ActorJPARepositoryTest {
 
         assertThat(foundActor).isEmpty();
 
+    }
+
+    @Test
+    @DisplayName("Find actors by name and age")
+    void givenNameAndAge_whenFindByNameAndAge_thenReturnFilteredActors() {
+        
+        actorJPARepository.save(actor);
+
+        List<Actor> filteredActors = actorJPARepository.findByNameAndAge("Jhon", 18);
+
+        assertThat(filteredActors).isNotNull();
+        assertEquals(1, filteredActors.size());
+        assertThat(filteredActors.get(0).getName()).isEqualTo("Jhon");
+        assertThat(filteredActors.get(0).getAge()).isEqualTo(18);
     }
 }

@@ -32,4 +32,13 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
      * @return
      */
     public List<Actor> findByName(String name);
+
+    /**
+     * Method for get actors by name and age
+     *
+     * @param name
+     * @param age
+     * @return
+     */
+    List<Actor> findByNameAndAge(String name, int age);
 }

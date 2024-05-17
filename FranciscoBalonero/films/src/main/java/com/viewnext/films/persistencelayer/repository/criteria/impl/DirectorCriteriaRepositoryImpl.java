@@ -143,4 +143,22 @@ public class DirectorCriteriaRepositoryImpl implements DirectorCriteriaRepositor
 
         return query.getResultList();
     }
+
+    @Override
+    public List<Director> getDirectorsByNameAndAge(String name, int age) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Director> criteriaQuery = criteriaBuilder.createQuery(Director.class);
+        Root<Director> root = criteriaQuery.from(Director.class);
+
+        // Agrega condiciones de filtrado
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.equal(root.get("name"), name));
+        predicates.add(criteriaBuilder.equal(root.get("age"), age));
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        // Ejecuta la consulta y devuelve la lista de directores
+        TypedQuery<Director> query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
+    }
+
 }

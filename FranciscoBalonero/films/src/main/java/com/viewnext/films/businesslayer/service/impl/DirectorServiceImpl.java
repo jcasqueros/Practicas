@@ -126,6 +126,24 @@ public class DirectorServiceImpl implements DirectorService {
         }
     }
 
+    @Override
+    public List<DirectorBO> criteriaFindByNameAndAge(String name, int age) throws ServiceException {
+        try {
+            // Busca directores que coinciden con el nombre y la edad utilizando Criteria API
+            List<Director> directors = directorCriteriaRepository.getDirectorsByNameAndAge(name, age);
+            if (!directors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return directors.stream().map(converter::directorEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error searching directors by name and age", e);
+            throw new ServiceException("The directors could not be searched", e);
+        }
+    }
+
     // Métodos para interactuar con la capa de persistencia utilizando JPA
     @Override
     public DirectorBO jpaGetById(long id) throws ServiceException {
@@ -222,6 +240,24 @@ public class DirectorServiceImpl implements DirectorService {
             // Maneja excepciones y registra un error en el log
             log.error("Error filtering directors", e);
             throw new ServiceException("The directors could not be filtered", e);
+        }
+    }
+
+    @Override
+    public List<DirectorBO> jpaFindByNameAndAge(String name, int age) throws ServiceException {
+        try {
+            // Busca directores que coinciden con el nombre y la edad utilizando JPA
+            List<Director> directors = directorJPARepository.findByNameAndAge(name, age);
+            if (!directors.isEmpty()) {
+                // Convierte la lista de entidades a una lista de objetos de negocio
+                return directors.stream().map(converter::directorEntityToBO).toList();
+            } else {
+                throw new NotFoundException();
+            }
+        } catch (NestedRuntimeException e) {
+            // Maneja excepciones y registra un error en el log
+            log.error("Error searching directors by name and age", e);
+            throw new ServiceException("The directors could not be searched", e);
         }
     }
 }

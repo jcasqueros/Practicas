@@ -1,6 +1,6 @@
 package com.pracs.films.presentation.dto;
 
-import com.pracs.films.persistence.models.Director;
+import com.pracs.films.persistence.models.Actor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -10,26 +10,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Data Transfer Object of {@link Director}
+ * Data Transfer Object of {@link Actor}
  *
  * @author Manuel Mateos de Torres
  */
 @Data
 @NoArgsConstructor
-public class DirectorDtoOut {
+public class ActorDtoInUpdate {
 
-    @NotBlank
-    @Schema(description = "Director Id", example = "1")
+    @NotNull
+    @Schema(description = "Actor Id", example = "600")
     private long id;
 
     @NotBlank
-    @Schema(description = "Name of the director", example = "Michael")
+    @Schema(description = "Name of the actor", example = "Michael")
     private String name;
 
     @NotNull
     @Min(1)
     @Max(100)
-    @Schema(description = "Age of the director", example = "25")
+    @Schema(description = "Age of the actor", example = "25")
     private int age;
 
     @NotBlank

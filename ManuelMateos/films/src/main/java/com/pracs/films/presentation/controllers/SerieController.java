@@ -7,6 +7,7 @@ import com.pracs.films.persistence.models.Serie;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.SerieDtoIn;
+import com.pracs.films.presentation.dto.SerieDtoInUpdate;
 import com.pracs.films.presentation.dto.SerieDtoOut;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -145,19 +146,20 @@ public class SerieController {
      */
     @Transactional
     @PostMapping("/save")
-    public ResponseEntity<SerieDtoOut> save(@RequestParam boolean method, @Valid @RequestBody SerieDtoIn serieDtoIn) {
+    public ResponseEntity<SerieDtoOut> save(@RequestParam boolean method, @RequestParam String port,
+            @Valid @RequestBody SerieDtoIn serieDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
-                        serieService.saveCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.CREATED);
+                        serieService.saveCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn), port)),
+                        HttpStatus.CREATED);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            return new ResponseEntity<>(
-                    boToDtoConverter.serieBoToDtoOut(serieService.save(dtoToBoConverter.serieDtoToBo(serieDtoIn))),
-                    HttpStatus.CREATED);
+            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
+                    serieService.save(dtoToBoConverter.serieDtoToBo(serieDtoIn), port)), HttpStatus.CREATED);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }
@@ -171,19 +173,19 @@ public class SerieController {
      */
     @Transactional
     @PutMapping("/update")
-    public ResponseEntity<SerieDtoOut> update(@RequestParam boolean method, @Valid @RequestBody SerieDtoIn serieDtoIn) {
+    public ResponseEntity<SerieDtoOut> update(@RequestParam boolean method,
+            @Valid @RequestBody SerieDtoInUpdate serieDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
-                        serieService.updateCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.OK);
+                        serieService.updateCriteria(dtoToBoConverter.serieDtoUpdateToBo(serieDtoIn))), HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            return new ResponseEntity<>(
-                    boToDtoConverter.serieBoToDtoOut(serieService.update(dtoToBoConverter.serieDtoToBo(serieDtoIn))),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
+                    serieService.update(dtoToBoConverter.serieDtoUpdateToBo(serieDtoIn))), HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }
