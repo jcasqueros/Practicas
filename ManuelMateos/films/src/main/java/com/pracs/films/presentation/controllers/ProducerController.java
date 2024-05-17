@@ -7,6 +7,7 @@ import com.pracs.films.persistence.models.Producer;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ProducerDtoIn;
+import com.pracs.films.presentation.dto.ProducerDtoInUpdate;
 import com.pracs.films.presentation.dto.ProducerDtoOut;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -157,11 +158,11 @@ public class ProducerController {
     @Transactional
     @PutMapping("/update")
     public ResponseEntity<ProducerDtoOut> update(@RequestParam boolean method,
-            @Valid @RequestBody ProducerDtoIn producerDtoIn) {
+            @Valid @RequestBody ProducerDtoInUpdate producerDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.producerBoToDtoOut(
-                        producerService.updateCriteria(dtoToBoConverter.producerDtoToBo(producerDtoIn))),
+                        producerService.updateCriteria(dtoToBoConverter.producerDtoUpdateToBo(producerDtoIn))),
                         HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
@@ -169,7 +170,7 @@ public class ProducerController {
         }
         try {
             return new ResponseEntity<>(boToDtoConverter.producerBoToDtoOut(
-                    producerService.update(dtoToBoConverter.producerDtoToBo(producerDtoIn))), HttpStatus.OK);
+                    producerService.update(dtoToBoConverter.producerDtoUpdateToBo(producerDtoIn))), HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }

@@ -93,7 +93,13 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public List<ActorBO> findByName(String name) throws ServiceException {
         try {
-            return actorRepository.findByName(name).stream().map(modelToBoConverter::actorModelToBo).toList();
+            List<ActorBO> actorBOList = actorRepository.findByName(name).stream()
+                    .map(modelToBoConverter::actorModelToBo).toList();
+
+            if (actorBOList.isEmpty()) {
+                throw new EmptyException(constantMessages.noActors());
+            }
+            return actorBOList;
         } catch (NestedRuntimeException e) {
             log.error(constantMessages.errorService());
             throw new ServiceException(e.getLocalizedMessage());
@@ -106,7 +112,7 @@ public class ActorServiceImpl implements ActorService {
             List<ActorBO> actorBOList = actorRepository.findByNameAndAge(name, age).stream()
                     .map(modelToBoConverter::actorModelToBo).toList();
 
-            if (actorBOList == null) {
+            if (actorBOList.isEmpty()) {
                 throw new EmptyException(constantMessages.noActors());
             }
 
@@ -208,7 +214,7 @@ public class ActorServiceImpl implements ActorService {
             List<ActorBO> actorBOList = actorRepositoryCriteria.findByNameAndAge(name, age).stream()
                     .map(modelToBoConverter::actorModelToBo).toList();
 
-            if (actorBOList == null) {
+            if (actorBOList.isEmpty()) {
                 throw new EmptyException(constantMessages.noActors());
             }
 

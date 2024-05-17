@@ -2,7 +2,10 @@ package com.example.demo.presentation.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.service.spi.ServiceException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,38 +19,82 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.converters.BoToDTo;
 import com.example.demo.converters.DtoToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.PresentationException;
 import com.example.demo.presentation.dto.PeliculaDto;
 import com.example.demo.servcice.PeliculaService;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/pelicula")
 public class PeliculaController {
 
-	@Autowired
-	PeliculaService peliculaService;
+	private final PeliculaService peliculaService;
 
-	@Autowired
-	BoToDTo boToDto;
+	private final BoToDTo boToDto;
 
-	@Autowired
-	DtoToBo dtoToBo;
+	private final DtoToBo dtoToBo;
 
 	@GetMapping("/getAll")
-	public ResponseEntity<List<PeliculaDto>> getAll(@RequestParam boolean metodo) {
-		List<PeliculaDto> peliculas;
-		if (metodo) {
-			peliculas = peliculaService.getAll().stream().map(pelicula -> boToDto.boToPeliculaDto(pelicula)).toList();
-		} else {
-			peliculas = peliculaService.getAllCriteria().stream().map(pelicula -> boToDto.boToPeliculaDto(pelicula))
-					.toList();
-		}
-		return ResponseEntity.ok(peliculas);
-	}
+    public ResponseEntity<List<PeliculaDto>> getAll(@RequestParam boolean method,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id", value = "Variable for order the list") String sort)
+            throws ServiceException, PresentationException {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        peliculaService.getAllCriteria(pageable).stream().map(boToDto::boToPeliculaDto).toList(),
+                        HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    peliculaService.getAll(pageable).stream().map(boToDto::boToPeliculaDto).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+	@GetMapping("/findAllFilter")
+    public ResponseEntity<List<PeliculaDto>> findAllFilter(@RequestParam(required = false) List<String> names,
+            @RequestParam(required = false) List<Integer> ages, @RequestParam(required = false) List<String> directors,
+            @RequestParam(required = false) List<String> producers, @RequestParam(required = false) List<String> actors,
+            @RequestParam boolean method,
+            @RequestParam(defaultValue = "id", value = "Variable for order the list") String sort,
+            @RequestParam(defaultValue = "asc") String order) throws ServiceException, PresentationException {
+
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
+
+        if (method) {
+            try {
+                return new ResponseEntity<>(
+                        peliculaService.findAllCriteriaFilter(pageable, names, ages, directors, producers, actors).stream()
+                                .map(boToDto::boToPeliculaDto).toList(), HttpStatus.OK);
+            } catch (ServiceException e) {
+                throw new PresentationException(e.getLocalizedMessage());
+            }
+        }
+        try {
+            return new ResponseEntity<>(
+                    peliculaService.getAll(pageable).stream().map(boToDto::boToPeliculaDto).toList(),
+                    HttpStatus.OK);
+        } catch (ServiceException e) {
+            throw new PresentationException(e.getLocalizedMessage());
+        }
+    }
+
 
 	@GetMapping("getById/{id}")
 	public ResponseEntity<PeliculaDto> getById(@PathVariable long id, @RequestParam boolean metodo)

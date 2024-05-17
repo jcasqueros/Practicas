@@ -3,9 +3,9 @@ package com.example.demo.servcice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.servcice.bo.SerieBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
 public interface SerieService {
 	Page<SerieBo> getAll(Pageable pageable);

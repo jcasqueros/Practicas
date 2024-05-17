@@ -7,6 +7,7 @@ import com.pracs.films.persistence.models.Director;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.DirectorDtoIn;
+import com.pracs.films.presentation.dto.DirectorDtoInUpdate;
 import com.pracs.films.presentation.dto.DirectorDtoOut;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -191,11 +192,11 @@ public class DirectorController {
     @Transactional
     @PutMapping("/update")
     public ResponseEntity<DirectorDtoOut> update(@RequestParam boolean method,
-            @Valid @RequestBody DirectorDtoIn directorDtoIn) {
+            @Valid @RequestBody DirectorDtoInUpdate directorDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.directorBoToDtoOut(
-                        directorService.updateCriteria(dtoToBoConverter.directorDtoToBo(directorDtoIn))),
+                        directorService.updateCriteria(dtoToBoConverter.directorUpdateDtoToBo(directorDtoIn))),
                         HttpStatus.OK);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
@@ -203,7 +204,7 @@ public class DirectorController {
         }
         try {
             return new ResponseEntity<>(boToDtoConverter.directorBoToDtoOut(
-                    directorService.update(dtoToBoConverter.directorDtoToBo(directorDtoIn))), HttpStatus.OK);
+                    directorService.update(dtoToBoConverter.directorUpdateDtoToBo(directorDtoIn))), HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }

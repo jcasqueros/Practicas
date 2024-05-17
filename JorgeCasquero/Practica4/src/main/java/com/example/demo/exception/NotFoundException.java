@@ -1,4 +1,4 @@
-package com.example.demo.servcice.exception;
+package com.example.demo.exception;
 
 public class NotFoundException extends Exception {
 

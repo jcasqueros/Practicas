@@ -1,24 +1,30 @@
 package com.example.demo.servcice;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.servcice.bo.DirectorBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
 /**
  * @author Jorge Casquero Sancho
  */
 public interface DirectorService {
 
-	/**Metodo para encontrar todos los directores con paginacion
+	/**
+	 * Metodo para encontrar todos los directores con paginacion
+	 * 
 	 * @param pageable
 	 * @return
 	 */
 	Page<DirectorBo> getAll(Pageable pageable);
 
-	/**Metodo para encontrar todos los directores con Criteria y paginacion
+	/**
+	 * Metodo para encontrar todos los directores con Criteria y paginacion
+	 * 
 	 * @param pageable
 	 * @return
 	 */
@@ -69,5 +75,8 @@ public interface DirectorService {
 	 * @throws NotFoundException
 	 */
 	void deleteByIdCriteria(long id) throws NotFoundException;
+
+	Page<DirectorBo> findAllCriteriaFilter(Pageable pageable, List<String> nombres, List<Integer> edades,
+			List<String> nacionalidades);
 
 }

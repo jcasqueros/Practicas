@@ -2,7 +2,6 @@ package com.example.demo.servcice.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -10,29 +9,28 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.converters.BoToModel;
 import com.example.demo.converters.ModelToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.EmptyException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Director;
 import com.example.demo.repository.cb.DirectorRepositoryCriteria;
 import com.example.demo.repository.jpa.DirectorRepository;
 import com.example.demo.servcice.DirectorService;
 import com.example.demo.servcice.bo.DirectorBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.EmptyException;
-import com.example.demo.servcice.exception.NotFoundException;
+
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class DirectorServiceImpl implements DirectorService {
 
-	@Autowired
-	DirectorRepository directorRepository;
+	private final DirectorRepository directorRepository;
 
-	@Autowired
-	DirectorRepositoryCriteria directorRepositoryCriteria;
+	private final DirectorRepositoryCriteria directorRepositoryCriteria;
 
-	@Autowired
-	BoToModel boToModel;
+	private final BoToModel boToModel;
 
-	@Autowired
-	ModelToBo modelToBo;
+	private final ModelToBo modelToBo;
 
 	@Override
 	public Page<DirectorBo> getAll(Pageable pageable) {
@@ -108,5 +106,22 @@ public class DirectorServiceImpl implements DirectorService {
 		} else {
 			throw new NotFoundException("No se ha encontrado el director que quiere borrar con el id: " + id);
 		}
+	}
+
+	@Override
+	public Page<DirectorBo> findAllCriteriaFilter(Pageable pageable, List<String> nombres, List<Integer> edades,
+			List<String> nacionalidades) {
+
+		Page<Director> directorPage = directorRepositoryCriteria.findAndFilter(pageable, nombres, edades,
+				nacionalidades);
+
+		if (directorPage.isEmpty()) {
+			throw new EmptyException("no hay registros para actores y sus filtros");
+		}
+
+		List<DirectorBo> actorBoList = directorPage.stream().map(modelToBo::directorToDirectorBo).toList();
+
+		return new PageImpl<>(actorBoList, directorPage.getPageable(), directorPage.getTotalPages());
+
 	}
 }

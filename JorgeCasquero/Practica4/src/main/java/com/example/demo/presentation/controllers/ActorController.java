@@ -2,7 +2,7 @@ package com.example.demo.presentation.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,39 +19,73 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.converters.BoToDTo;
 import com.example.demo.converters.DtoToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.PresentationException;
 import com.example.demo.presentation.dto.ActorDto;
 import com.example.demo.servcice.ActorService;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/actor")
+
 public class ActorController {
 
-	@Autowired
-	ActorService actorService;
+	private final ActorService actorService;
 
-	@Autowired
-	BoToDTo boToDto;
+	private final BoToDTo boToDto;
 
-	@Autowired
-	DtoToBo dtoToBo;
+	private final DtoToBo dtoToBo;
 
 	@GetMapping("/getAll")
 	public ResponseEntity<List<ActorDto>> getAll(@RequestParam boolean metodo, @RequestParam int pagina,
 			@RequestParam int tamano, @RequestParam String sort) {
 		Pageable pageable = PageRequest.of(pagina, tamano, Sort.by(sort).ascending());
 
-
 		if (metodo) {
-			return new ResponseEntity<>(actorService.getAll(pageable).stream().map(boToDto::boToActorDto).toList(),
-					HttpStatus.OK);
+			try {
+				return new ResponseEntity<>(actorService.getAll(pageable).stream().map(boToDto::boToActorDto).toList(),
+						HttpStatus.OK);
+			} catch (ServiceException e) {
+				return new ResponseEntity<>(
+						actorService.getAllCriteria(pageable).stream().map(boToDto::boToActorDto).toList(),
+						HttpStatus.OK);
+			}
+
 		} else {
 			return new ResponseEntity<>(
 					actorService.getAllCriteria(pageable).stream().map(boToDto::boToActorDto).toList(), HttpStatus.OK);
+		}
+	}
+
+	@GetMapping("/findAllFilter")
+	public ResponseEntity<List<ActorDto>> findAllFilter(@RequestParam(required = false) List<String> names,
+			@RequestParam(required = false) List<Integer> ages,
+			@RequestParam(required = false) List<String> nationalities, @RequestParam boolean method,
+			@RequestParam(defaultValue = "id", name = "Variable to order the list") String sort,
+			@RequestParam(defaultValue = "asc") String order) throws ServiceException, PresentationException {
+
+		Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+		Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
+
+		if (method) {
+			try {
+				return new ResponseEntity<>(actorService.getAllCriteriaFilter(pageable, names, ages, nationalities)
+						.stream().map(boToDto::boToActorDto).toList(), HttpStatus.OK);
+			} catch (ServiceException e) {
+				throw new PresentationException(e.getLocalizedMessage());
+			}
+		}
+		try {
+			return new ResponseEntity<>(actorService.getAll(pageable).stream().map(boToDto::boToActorDto).toList(),
+					HttpStatus.OK);
+		} catch (ServiceException e) {
+			throw new PresentationException(e.getLocalizedMessage());
 		}
 	}
 
@@ -69,7 +103,6 @@ public class ActorController {
 			return ResponseEntity.ok(actorDto);
 		} else {
 			return ResponseEntity.notFound().build();
-//			throw new NotFoundException("Actor no encontrado con el id: " + id);
 		}
 	}
 

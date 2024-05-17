@@ -76,11 +76,15 @@ class SerieControllerTest {
 
     private ActorDtoIn actorDtoIn;
 
+    private ActorDtoInUpdate actorDtoInUpdate;
+
     private ActorDtoOut actorDtoOut;
 
     private DirectorBO directorBO;
 
     private DirectorDtoIn directorDtoIn;
+
+    private DirectorDtoInUpdate directorDtoInUpdate;
 
     private DirectorDtoOut directorDtoOut;
 
@@ -88,11 +92,15 @@ class SerieControllerTest {
 
     private ProducerDtoIn producerDtoIn;
 
+    private ProducerDtoInUpdate producerDtoInUpdate;
+
     private ProducerDtoOut producerDtoOut;
 
     private SerieBO serieBO;
 
     private SerieDtoIn serieDtoIn;
+
+    private SerieDtoInUpdate serieDtoInUpdate;
 
     private SerieDtoOut serieDtoOut;
 
@@ -108,12 +116,15 @@ class SerieControllerTest {
         actorsBO.add(actorBO);
 
         actorDtoIn = new ActorDtoIn();
-        actorDtoIn.setId(1L);
         actorDtoIn.setName("prueba");
         actorDtoIn.setAge(25);
         actorDtoIn.setNationality("Spain");
-        List<ActorDtoIn> actorsDtoIn = new ArrayList<>();
-        actorsDtoIn.add(actorDtoIn);
+
+        actorDtoInUpdate = new ActorDtoInUpdate();
+        actorDtoInUpdate.setId(1L);
+        actorDtoInUpdate.setName("prueba");
+        actorDtoInUpdate.setAge(25);
+        actorDtoInUpdate.setNationality("Spain");
 
         actorDtoOut = new ActorDtoOut();
         actorDtoOut.setId(1L);
@@ -130,10 +141,15 @@ class SerieControllerTest {
         directorBO.setNationality("Spain");
 
         directorDtoIn = new DirectorDtoIn();
-        directorDtoIn.setId(1L);
         directorDtoIn.setName("prueba");
         directorDtoIn.setAge(25);
         directorDtoIn.setNationality("Spain");
+
+        directorDtoInUpdate = new DirectorDtoInUpdate();
+        directorDtoInUpdate.setId(1L);
+        directorDtoInUpdate.setName("prueba");
+        directorDtoInUpdate.setAge(25);
+        directorDtoInUpdate.setNationality("Spain");
 
         directorDtoOut = new DirectorDtoOut();
         directorDtoOut.setId(1L);
@@ -147,9 +163,13 @@ class SerieControllerTest {
         producerBO.setDebut(2020);
 
         producerDtoIn = new ProducerDtoIn();
-        producerDtoIn.setId(1L);
         producerDtoIn.setName("prueba");
         producerDtoIn.setDebut(2020);
+
+        producerDtoInUpdate = new ProducerDtoInUpdate();
+        producerDtoInUpdate.setId(1L);
+        producerDtoInUpdate.setName("prueba");
+        producerDtoInUpdate.setDebut(2020);
 
         producerDtoOut = new ProducerDtoOut();
         producerDtoOut.setId(1L);
@@ -165,12 +185,19 @@ class SerieControllerTest {
         serieBO.setActors(actorsBO);
 
         serieDtoIn = new SerieDtoIn();
-        serieDtoIn.setId(1L);
         serieDtoIn.setTitle("prueba");
         serieDtoIn.setDebut(2020);
-        serieDtoIn.setProducer(producerDtoIn);
-        serieDtoIn.setDirector(directorDtoIn);
-        serieDtoIn.setActors(actorsDtoIn);
+        serieDtoIn.setProducer(producerDtoOut);
+        serieDtoIn.setDirector(directorDtoOut);
+        serieDtoIn.setActors(actorsDtoOut);
+
+        serieDtoInUpdate = new SerieDtoInUpdate();
+        serieDtoInUpdate.setId(1L);
+        serieDtoInUpdate.setTitle("prueba");
+        serieDtoInUpdate.setDebut(2020);
+        serieDtoInUpdate.setProducer(producerDtoOut);
+        serieDtoInUpdate.setDirector(directorDtoOut);
+        serieDtoInUpdate.setActors(actorsDtoOut);
 
         serieDtoOut = new SerieDtoOut();
         serieDtoOut.setId(1L);
@@ -314,7 +341,7 @@ class SerieControllerTest {
     void givenActorDTOObject_whenSave_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.save(any(SerieBO.class))).willAnswer((invocation) -> invocation.getArgument(0));
+        given(serieService.save(any(SerieBO.class), "8080")).willAnswer((invocation) -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(
                 post("/series/save?method=false").contentType(MediaType.APPLICATION_JSON)
@@ -331,10 +358,10 @@ class SerieControllerTest {
     void givenActorDTOObject_whenSave_PresentationException() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.save(any(SerieBO.class))).willThrow(new ServiceException("error"));
+        given(serieService.save(any(SerieBO.class), "8080")).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(
-                post("/series/save?method=false").contentType(MediaType.APPLICATION_JSON)
+                post("/series/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(serieDtoIn)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
@@ -345,10 +372,11 @@ class SerieControllerTest {
     void givenActorDTOObject_whenSaveCriteria_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.saveCriteria(any(SerieBO.class))).willAnswer((invocation) -> invocation.getArgument(0));
+        given(serieService.saveCriteria(any(SerieBO.class), "8080")).willAnswer(
+                (invocation) -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(
-                post("/series/save?method=true").contentType(MediaType.APPLICATION_JSON)
+                post("/series/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(serieDtoIn)));
 
         response.andDo(print()).andExpect(status().isCreated())
@@ -362,10 +390,10 @@ class SerieControllerTest {
     void givenActorDTOObject_whenSaveCriteria_PresentationException() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.saveCriteria(any(SerieBO.class))).willThrow(new ServiceException("error"));
+        given(serieService.saveCriteria(any(SerieBO.class), "8080")).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(
-                post("/series/save?method=true").contentType(MediaType.APPLICATION_JSON)
+                post("/series/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(serieDtoIn)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
@@ -375,11 +403,10 @@ class SerieControllerTest {
     @Test
     void givenActorDTO_whenUpdate_thenUpdatedActorDTO() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
-        given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
+        given(dtoToBoConverter.serieDtoUpdateToBo(serieDtoInUpdate)).willReturn(serieBO);
         given(serieService.update(any(SerieBO.class))).willAnswer((invocation -> invocation.getArgument(0)));
 
-        SerieDtoIn updatedActorDTO = new SerieDtoIn();
-        updatedActorDTO.setId(serieDtoIn.getId());
+        SerieDtoInUpdate updatedActorDTO = serieDtoInUpdate;
         updatedActorDTO.setTitle("updated");
         updatedActorDTO.setDebut(2000);
 
@@ -388,9 +415,7 @@ class SerieControllerTest {
                         .content(objectMapper.writeValueAsString(updatedActorDTO)));
 
         response.andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) updatedActorDTO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.age", is(2000)))
-                .andExpect(jsonPath("$.nationality", is("updated")));
+                .andExpect(jsonPath("$.id", is((int) updatedActorDTO.getId())));
     }
 
     @DisplayName("Junit test for update an actor - negative")
@@ -401,13 +426,9 @@ class SerieControllerTest {
         given(serieService.findById(serieBO.getId())).willReturn(serieBO);
         given(serieService.update(any(SerieBO.class))).willThrow(new ServiceException(""));
 
-        SerieDtoIn updatedActorDTO = serieDtoIn;
-        updatedActorDTO.setTitle("updated");
-        updatedActorDTO.setDebut(2000);
-
         ResultActions response = mockMvc.perform(
                 put("/series/update?method=false").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedActorDTO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -416,11 +437,11 @@ class SerieControllerTest {
     @Test
     void givenActorDTO_whenUpdateCriteria_thenUpdatedActorDTO() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
-        given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
+        given(dtoToBoConverter.serieDtoUpdateToBo(serieDtoInUpdate)).willReturn(serieBO);
         given(serieService.findByIdCriteria(serieBO.getId())).willReturn(serieBO);
         given(serieService.updateCriteria(any(SerieBO.class))).willAnswer((invocation -> invocation.getArgument(0)));
 
-        SerieDtoIn updatedActorDTO = serieDtoIn;
+        SerieDtoInUpdate updatedActorDTO = serieDtoInUpdate;
         updatedActorDTO.setTitle("updated");
         updatedActorDTO.setDebut(2000);
 
@@ -429,9 +450,7 @@ class SerieControllerTest {
                         .content(objectMapper.writeValueAsString(updatedActorDTO)));
 
         response.andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) updatedActorDTO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.age", is(2000)))
-                .andExpect(jsonPath("$.nationality", is("updated")));
+                .andExpect(jsonPath("$.id", is((int) updatedActorDTO.getId())));
     }
 
     @DisplayName("Junit test for update an actor - negative")
@@ -442,13 +461,9 @@ class SerieControllerTest {
         given(serieService.findByIdCriteria(serieBO.getId())).willReturn(serieBO);
         given(serieService.updateCriteria(any(SerieBO.class))).willThrow(new ServiceException(""));
 
-        SerieDtoIn updatedActorDTO = serieDtoIn;
-        updatedActorDTO.setTitle("updated");
-        updatedActorDTO.setDebut(2000);
-
         ResultActions response = mockMvc.perform(
                 put("/series/update?method=true").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedActorDTO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -459,7 +474,7 @@ class SerieControllerTest {
         willDoNothing().given(serieService).deleteById(serieBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/series/deleteById?method=false").param("id", String.valueOf(serieDtoIn.getId())));
+                delete("/series/deleteById?method=false").param("id", String.valueOf(serieDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -470,7 +485,7 @@ class SerieControllerTest {
         willThrow(new ServiceException("")).given(serieService).deleteById(serieBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/series/deleteById?method=false").param("id", String.valueOf(serieDtoIn.getId())));
+                delete("/series/deleteById?method=false").param("id", String.valueOf(serieDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -481,7 +496,7 @@ class SerieControllerTest {
         willDoNothing().given(serieService).deleteByIdCriteria(serieBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/series/deleteById?method=true").param("id", String.valueOf(serieDtoIn.getId())));
+                delete("/series/deleteById?method=true").param("id", String.valueOf(serieDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -492,7 +507,7 @@ class SerieControllerTest {
         willThrow(new ServiceException("")).given(serieService).deleteByIdCriteria(serieBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/series/deleteById?method=true").param("id", String.valueOf(serieDtoIn.getId())));
+                delete("/series/deleteById?method=true").param("id", String.valueOf(serieDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }

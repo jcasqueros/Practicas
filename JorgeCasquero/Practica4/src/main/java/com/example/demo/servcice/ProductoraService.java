@@ -1,11 +1,14 @@
 package com.example.demo.servcice;
 
+import java.util.List;
+
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.servcice.bo.ProductoraBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
 /**
  * @author Jorge Casquero Sancho
@@ -63,5 +66,14 @@ public interface ProductoraService {
 	 * @throws NotFoundException
 	 */
 	void deleteByIdCriteria(long id) throws NotFoundException;
-
+	
+	/**
+	 * @param pageable
+	 * @param names
+	 * @param ages
+	 * @return
+	 * @throws ServiceException
+	 */
+	Page<ProductoraBo> findAllCriteriaFilter(Pageable pageable, List<String> names, List<Integer> ages)
+            throws ServiceException;
 }

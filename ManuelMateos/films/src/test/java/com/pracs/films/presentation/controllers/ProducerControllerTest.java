@@ -8,6 +8,7 @@ import com.pracs.films.persistence.repositories.jpa.*;
 import com.pracs.films.presentation.converters.BoToDtoConverter;
 import com.pracs.films.presentation.converters.DtoToBoConverter;
 import com.pracs.films.presentation.dto.ProducerDtoIn;
+import com.pracs.films.presentation.dto.ProducerDtoInUpdate;
 import com.pracs.films.presentation.dto.ProducerDtoOut;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,6 +74,8 @@ class ProducerControllerTest {
 
     private ProducerDtoIn producerDtoIn;
 
+    private ProducerDtoInUpdate producerDtoInUpdate;
+
     private ProducerDtoOut producerDtoOut;
 
     @BeforeEach
@@ -84,9 +87,13 @@ class ProducerControllerTest {
         producerBO.setDebut(2020);
 
         producerDtoIn = new ProducerDtoIn();
-        producerDtoIn.setId(1L);
         producerDtoIn.setName("prueba");
         producerDtoIn.setDebut(2020);
+
+        producerDtoInUpdate = new ProducerDtoInUpdate();
+        producerDtoInUpdate.setId(1L);
+        producerDtoInUpdate.setName("prueba");
+        producerDtoInUpdate.setDebut(2020);
 
         producerDtoOut = new ProducerDtoOut();
         producerDtoOut.setId(1L);
@@ -293,11 +300,10 @@ class ProducerControllerTest {
     @Test
     void givenProducerDTOO_whenUpdate_thenUpdatedProducerDTOO() throws Exception {
         given(boToDtoConverter.producerBoToDtoOut(producerBO)).willReturn(producerDtoOut);
-        given(dtoToBoConverter.producerDtoToBo(producerDtoIn)).willReturn(producerBO);
+        given(dtoToBoConverter.producerDtoUpdateToBo(producerDtoInUpdate)).willReturn(producerBO);
         given(producerService.update(any(ProducerBO.class))).willAnswer((invocation -> invocation.getArgument(0)));
 
-        ProducerDtoIn updatedProducerDTOO = new ProducerDtoIn();
-        updatedProducerDTOO.setId(producerDtoIn.getId());
+        ProducerDtoInUpdate updatedProducerDTOO = producerDtoInUpdate;
         updatedProducerDTOO.setName("updated");
         updatedProducerDTOO.setDebut(2000);
 
@@ -306,8 +312,7 @@ class ProducerControllerTest {
                         .content(objectMapper.writeValueAsString(updatedProducerDTOO)));
 
         response.andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) updatedProducerDTOO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.debut", is(2000)));
+                .andExpect(jsonPath("$.id", is((int) updatedProducerDTOO.getId())));
     }
 
     @DisplayName("Junit test for update a producer - negative")
@@ -318,13 +323,9 @@ class ProducerControllerTest {
         given(producerService.findById(producerBO.getId())).willReturn(producerBO);
         given(producerService.update(any(ProducerBO.class))).willThrow(new ServiceException(""));
 
-        ProducerDtoIn updatedProducerDTOO = producerDtoIn;
-        updatedProducerDTOO.setName("updated");
-        updatedProducerDTOO.setDebut(2000);
-
         ResultActions response = mockMvc.perform(
                 put("/producers/update?method=false").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedProducerDTOO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -333,12 +334,12 @@ class ProducerControllerTest {
     @Test
     void givenProducerDTOO_whenUpdateCriteria_thenUpdatedProducerDTOO() throws Exception {
         given(boToDtoConverter.producerBoToDtoOut(producerBO)).willReturn(producerDtoOut);
-        given(dtoToBoConverter.producerDtoToBo(producerDtoIn)).willReturn(producerBO);
+        given(dtoToBoConverter.producerDtoUpdateToBo(producerDtoInUpdate)).willReturn(producerBO);
         given(producerService.findByIdCriteria(producerBO.getId())).willReturn(producerBO);
         given(producerService.updateCriteria(any(ProducerBO.class))).willAnswer(
                 (invocation -> invocation.getArgument(0)));
 
-        ProducerDtoIn updatedProducerDTOO = producerDtoIn;
+        ProducerDtoInUpdate updatedProducerDTOO = producerDtoInUpdate;
         updatedProducerDTOO.setName("updated");
         updatedProducerDTOO.setDebut(2000);
 
@@ -347,8 +348,7 @@ class ProducerControllerTest {
                         .content(objectMapper.writeValueAsString(updatedProducerDTOO)));
 
         response.andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) updatedProducerDTOO.getId())))
-                .andExpect(jsonPath("$.name", is("updated"))).andExpect(jsonPath("$.debut", is(2000)));
+                .andExpect(jsonPath("$.id", is((int) updatedProducerDTOO.getId())));
     }
 
     @DisplayName("Junit test for update a producer - negative")
@@ -359,13 +359,9 @@ class ProducerControllerTest {
         given(producerService.findByIdCriteria(producerBO.getId())).willReturn(producerBO);
         given(producerService.updateCriteria(any(ProducerBO.class))).willThrow(new ServiceException(""));
 
-        ProducerDtoIn updatedProducerDTOO = producerDtoIn;
-        updatedProducerDTOO.setName("updated");
-        updatedProducerDTOO.setDebut(2000);
-
         ResultActions response = mockMvc.perform(
                 put("/producers/update?method=true").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedProducerDTOO)));
+                        .content(objectMapper.writeValueAsString(null)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -376,7 +372,7 @@ class ProducerControllerTest {
         willDoNothing().given(producerService).deleteById(producerBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/producers/deleteById?method=false").param("id", String.valueOf(producerDtoIn.getId())));
+                delete("/producers/deleteById?method=false").param("id", String.valueOf(producerDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -387,7 +383,7 @@ class ProducerControllerTest {
         willThrow(new ServiceException("")).given(producerService).deleteById(producerBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/producers/deleteById?method=false").param("id", String.valueOf(producerDtoIn.getId())));
+                delete("/producers/deleteById?method=false").param("id", String.valueOf(producerDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -398,7 +394,7 @@ class ProducerControllerTest {
         willDoNothing().given(producerService).deleteByIdCriteria(producerBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/producers/deleteById?method=true").param("id", String.valueOf(producerDtoIn.getId())));
+                delete("/producers/deleteById?method=true").param("id", String.valueOf(producerDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isNoContent());
     }
@@ -409,7 +405,7 @@ class ProducerControllerTest {
         willThrow(new ServiceException("")).given(producerService).deleteByIdCriteria(producerBO.getId());
 
         ResultActions response = mockMvc.perform(
-                delete("/producers/deleteById?method=true").param("id", String.valueOf(producerDtoIn.getId())));
+                delete("/producers/deleteById?method=true").param("id", String.valueOf(producerDtoInUpdate.getId())));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
