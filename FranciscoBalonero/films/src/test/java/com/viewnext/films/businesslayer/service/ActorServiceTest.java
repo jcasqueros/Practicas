@@ -355,7 +355,7 @@ class ActorServiceImplTest {
     @Test
     @DisplayName("Filter actors: nested runtime exception")
     void givenFilters_whenFilterActors_thenThrowNestedRuntimeException() throws ServiceException {
-        
+
         List<String> names = List.of("Jhon", "Jhon");
         List<Integer> ages = List.of(18, 25);
         List<String> nationalities = List.of("spain", "usa");
@@ -370,6 +370,76 @@ class ActorServiceImplTest {
 
         assertThrows(ServiceException.class,
                 () -> actorService.filterActors(names, ages, nationalities, pageNumber, pageSize, sortBy, sortOrder));
+    }
+
+    @Test
+    @DisplayName("Criteria find by name and age: correct case")
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenReturnListWithActorsBO() throws ServiceException {
+        String name = "Jhon";
+        int age = 18;
+        List<Actor> actors = List.of(actor);
+        BDDMockito.given(actorCriteriaRepository.getActorsByNameAndAge(name, age)).willReturn(actors);
+        BDDMockito.given(converter.actorEntityToBO(actor)).willReturn(actorBO);
+
+        List<ActorBO> result = actorService.criteriaFindByNameAndAge(name, age);
+
+        assertThat(result).isNotNull().hasSize(1).contains(actorBO);
+    }
+
+    @Test
+    @DisplayName("Criteria find by name and age: not found")
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNotFoundException() throws ServiceException {
+        String name = "Jhon";
+        int age = 25;
+        BDDMockito.given(actorCriteriaRepository.getActorsByNameAndAge(name, age)).willReturn(List.of());
+
+        assertThrows(NotFoundException.class, () -> actorService.criteriaFindByNameAndAge(name, age));
+    }
+
+    @Test
+    @DisplayName("Criteria find by name and age: nested runtime exception")
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+        String name = "Jhon";
+        int age = 30;
+        BDDMockito.given(actorCriteriaRepository.getActorsByNameAndAge(name, age))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class, () -> actorService.criteriaFindByNameAndAge(name, age));
+    }
+
+    @Test
+    @DisplayName("JPA find by name and age: correct case")
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenReturnListWithActorsBO() throws ServiceException {
+        String name = "Jhon";
+        int age = 18;
+        List<Actor> actors = List.of(actor);
+        BDDMockito.given(actorJPARepository.findByNameAndAge(name, age)).willReturn(actors);
+        BDDMockito.given(converter.actorEntityToBO(actor)).willReturn(actorBO);
+
+        List<ActorBO> result = actorService.jpaFindByNameAndAge(name, age);
+
+        assertThat(result).isNotNull().hasSize(1).contains(actorBO);
+    }
+
+    @Test
+    @DisplayName("JPA find by name and age: not found")
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNotFoundException() throws ServiceException {
+        String name = "Jhon";
+        int age = 25;
+        BDDMockito.given(actorJPARepository.findByNameAndAge(name, age)).willReturn(List.of());
+
+        assertThrows(NotFoundException.class, () -> actorService.jpaFindByNameAndAge(name, age));
+    }
+
+    @Test
+    @DisplayName("JPA find by name and age: nested runtime exception")
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+        String name = "Jhon";
+        int age = 30;
+        BDDMockito.given(actorJPARepository.findByNameAndAge(name, age))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class, () -> actorService.jpaFindByNameAndAge(name, age));
     }
 
 }

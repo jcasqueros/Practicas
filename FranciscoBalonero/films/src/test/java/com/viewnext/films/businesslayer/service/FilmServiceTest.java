@@ -48,6 +48,9 @@ class FilmServiceImplTest {
     private FilmCriteriaRepository filmCriteriaRepository;
 
     @Mock
+    private WebClientService webClientService;
+
+    @Mock
     private FilmJPARepository filmJPARepository;
 
     @Mock
@@ -78,7 +81,7 @@ class FilmServiceImplTest {
         actor.setNationality("spain");
 
         director = new Director();
-        director.setId(2L);
+        director.setId(1L);
         director.setAge(18);
         director.setName("James");
         director.setNationality("france");
@@ -105,7 +108,7 @@ class FilmServiceImplTest {
         actorBO.setNationality("spain");
 
         DirectorBO directorBO = new DirectorBO();
-        directorBO.setId(2L);
+        directorBO.setId(1L);
         directorBO.setAge(18);
         directorBO.setName("James");
         directorBO.setNationality("france");
@@ -228,6 +231,9 @@ class FilmServiceImplTest {
     @Test
     @DisplayName("Criteria create: correct case")
     void givenFilmBO_whenCriteriaCreate_thenReturnCreatedFilmBO() throws ServiceException {
+        BDDMockito.willDoNothing().given(webClientService).existsActor(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsDirector(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsProducer(1L);
         BDDMockito.given(filmCriteriaRepository.createFilm(film)).willReturn(film);
         BDDMockito.given(converter.filmEntityToBO(film)).willReturn(filmBO);
         BDDMockito.given(converter.filmBOToEntity(filmBO)).willReturn(film);
@@ -240,6 +246,9 @@ class FilmServiceImplTest {
     @Test
     @DisplayName("Criteria create: nested runtime exception")
     void givenFilmBO_whenCriteriaCreate_thenThrowNestedRuntimeException() throws ServiceException {
+        BDDMockito.willDoNothing().given(webClientService).existsActor(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsDirector(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsProducer(1L);
         BDDMockito.given(filmCriteriaRepository.createFilm(film)).willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.filmBOToEntity(filmBO)).willReturn(film);
 
@@ -299,6 +308,9 @@ class FilmServiceImplTest {
     @Test
     @DisplayName("JPA create: correct case")
     void givenFilmBO_whenJpaCreate_thenReturnCreatedFilmBO() throws ServiceException {
+        BDDMockito.willDoNothing().given(webClientService).existsActor(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsDirector(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsProducer(1L);
         BDDMockito.given(filmJPARepository.save(film)).willReturn(film);
         BDDMockito.given(converter.filmEntityToBO(film)).willReturn(filmBO);
         BDDMockito.given(converter.filmBOToEntity(filmBO)).willReturn(film);
@@ -367,7 +379,10 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("JPA create: nested runtime exception")
-    void givenFilmBO_whenJpaCreate_thenThrowNestedRuntimeException() {
+    void givenFilmBO_whenJpaCreate_thenThrowNestedRuntimeException() throws NotFoundException {
+        BDDMockito.willDoNothing().given(webClientService).existsActor(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsDirector(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsProducer(1L);
         BDDMockito.given(filmJPARepository.save(film)).willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.filmBOToEntity(filmBO)).willReturn(film);
 

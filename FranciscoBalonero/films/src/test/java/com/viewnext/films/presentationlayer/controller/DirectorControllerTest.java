@@ -335,7 +335,7 @@ class DirectorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter directors by name, age, and nationality")
+    @DisplayName("Filter directors by name, age, and nationality : correct case")
     void filterDirectors_byNameAgeNationality_thenReturnFilteredDirectors() throws Exception {
 
         List<DirectorBO> directorBOs = List.of(directorBO);
@@ -350,7 +350,7 @@ class DirectorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter directors by name only")
+    @DisplayName("Filter directors by name only : correct case")
     void filterDirectors_byNameOnly_thenReturnFilteredDirectors() throws Exception {
 
         List<DirectorBO> directorBOs = List.of(directorBO);
@@ -364,7 +364,7 @@ class DirectorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter directors by age only")
+    @DisplayName("Filter directors by age only : correct case")
     void filterDirectors_byAgeOnly_thenReturnFilteredDirectors() throws Exception {
 
         List<DirectorBO> directorBOs = List.of(directorBO);
@@ -378,7 +378,7 @@ class DirectorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter directors by nationality only")
+    @DisplayName("Filter directors by nationality only : correct case")
     void filterDirectors_byNationalityOnly_thenReturnFilteredDirectors() throws Exception {
 
         List<DirectorBO> directorBOs = List.of(directorBO);
@@ -393,7 +393,7 @@ class DirectorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter directors with invalid parameters")
+    @DisplayName("Filter directors : incorrect case -> NotFoundException")
     void filterDirectors_withInvalidParameters_thenThrowServiceException() throws Exception {
 
         given(directorService.filterDirectors(anyList(), anyList(), anyList(), anyInt(), anyInt(), anyString(),
@@ -401,6 +401,53 @@ class DirectorControllerTest {
 
         ResultActions response = mockMvc.perform(
                 get("/api/v1/Director/filterDirectors?names=notfound&ages=1&nationalities=notfound&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Find directors by name and age using Criteria : correct case")
+    void findByNameAndAge_usingCriteria_thenReturnDirectors() throws Exception {
+        List<DirectorBO> directorBOs = List.of(directorBO);
+        given(directorService.criteriaFindByNameAndAge("John", 30)).willReturn(directorBOs);
+        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/Director/findByNameAndAge?select=true&name=John&age=30"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Find directors by name and age using JPA : correct case")
+    void findByNameAndAge_usingJPA_thenReturnDirectors() throws Exception {
+        List<DirectorBO> directorBOs = List.of(directorBO);
+        given(directorService.jpaFindByNameAndAge("John", 30)).willReturn(directorBOs);
+        given(converter.directorBOToOutDTO(any(DirectorBO.class))).willReturn(directorOutDTO);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/findByNameAndAge?select=false&name=John&age=30"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Find directors by name and age using Criteria : incorrect case  -> NotFoundException")
+    void findByNameAndAgeCriteria_withInvalidParameters_thenThrowServiceException() throws Exception {
+        given(directorService.criteriaFindByNameAndAge(anyString(), anyInt())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/findByNameAndAge?select=true&name=notfound&age=1"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Find directors by name and age using JPA : incorrect case  -> NotFoundException")
+    void findByNameAndAgeJPA_withInvalidParameters_thenThrowServiceException() throws Exception {
+        given(directorService.jpaFindByNameAndAge(anyString(), anyInt())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Director/findByNameAndAge?select=false&name=notfound&age=1"));
 
         response.andDo(print()).andExpect(status().isNotFound());
     }
