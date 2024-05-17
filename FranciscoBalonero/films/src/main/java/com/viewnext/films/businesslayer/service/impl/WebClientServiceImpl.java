@@ -10,10 +10,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 
+/**
+ * Implementation of the {@link WebClientService} interface.
+ *
+ * @author Francisco Balonero Olivera
+ */
 @Service
 @RequiredArgsConstructor
 public class WebClientServiceImpl implements WebClientService {
 
+    /**
+     * The WebClient instance used to make HTTP requests.
+     */
     private final WebClient webClient;
 
     public void existsActor(long id) throws NotFoundException {
@@ -42,5 +50,4 @@ public class WebClientServiceImpl implements WebClientService {
             throw new NotFoundException("The producer in that production don't exist.");
         }
     }
-
 }

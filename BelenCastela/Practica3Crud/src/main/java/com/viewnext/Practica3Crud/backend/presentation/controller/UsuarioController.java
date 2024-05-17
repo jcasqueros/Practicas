@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.viewnext.Practica3Crud.backend.business.bo.UsuarioBo;
@@ -102,6 +104,21 @@ public class UsuarioController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		} catch (NullPointerException npe) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
+	//localhost:8080/users/filter?edades=11,33&nombres=Miguel,Pedro
+	@GetMapping("/filter")
+	public ResponseEntity<List<UsuarioDto>> getUsersByAgeNameCriteria
+	(@RequestParam(required = false) List<Integer> edades,
+			@RequestParam(required = false) List<String> nombres) {
+		try {
+			List<UsuarioBo> users = usuarioServices.getUsersByAgeNameCriteria(edades, nombres);
+			List<UsuarioDto> usersDto = users.stream().map(boToDto::usuarioBoTousuarioDto)
+					.collect(Collectors.toList());
+			return ResponseEntity.ok(usersDto);
+		} catch (ServiceException se) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 }

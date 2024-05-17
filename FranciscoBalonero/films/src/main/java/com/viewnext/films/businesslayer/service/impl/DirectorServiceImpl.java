@@ -35,6 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class DirectorServiceImpl implements DirectorService {
+    public static final String DIRECTORS_COULD_NOT_BE_SEARCHED = "The directors could not be searched";
 
     // Inyección de dependencias
     /**
@@ -82,7 +83,7 @@ public class DirectorServiceImpl implements DirectorService {
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching all directors", e);
-            throw new ServiceException("The directors could not be searched", e);
+            throw new ServiceException(DIRECTORS_COULD_NOT_BE_SEARCHED, e);
         }
     }
 
@@ -140,7 +141,7 @@ public class DirectorServiceImpl implements DirectorService {
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching directors by name and age", e);
-            throw new ServiceException("The directors could not be searched", e);
+            throw new ServiceException(DIRECTORS_COULD_NOT_BE_SEARCHED, e);
         }
     }
 
@@ -175,7 +176,7 @@ public class DirectorServiceImpl implements DirectorService {
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching all directors", e);
-            throw new ServiceException("The directors could not be searched", e);
+            throw new ServiceException(DIRECTORS_COULD_NOT_BE_SEARCHED, e);
         }
     }
 
@@ -257,7 +258,7 @@ public class DirectorServiceImpl implements DirectorService {
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching directors by name and age", e);
-            throw new ServiceException("The directors could not be searched", e);
+            throw new ServiceException(DIRECTORS_COULD_NOT_BE_SEARCHED, e);
         }
     }
 }

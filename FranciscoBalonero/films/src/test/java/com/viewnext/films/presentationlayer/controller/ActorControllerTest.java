@@ -333,7 +333,7 @@ class ActorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter actors by name, age, and nationality")
+    @DisplayName("Filter actors by name, age, and nationality : correct case")
     void filterActors_byNameAgeNationality_thenReturnFilteredActors() throws Exception {
 
         List<ActorBO> actorBOs = List.of(actorBO);
@@ -348,7 +348,7 @@ class ActorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter actors by name only")
+    @DisplayName("Filter actors by name only : correct case")
     void filterActors_byNameOnly_thenReturnFilteredActors() throws Exception {
 
         List<ActorBO> actorBOs = List.of(actorBO);
@@ -362,7 +362,7 @@ class ActorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter actors by age only")
+    @DisplayName("Filter actors by age only : correct case")
     void filterActors_byAgeOnly_thenReturnFilteredActors() throws Exception {
 
         List<ActorBO> actorBOs = List.of(actorBO);
@@ -376,7 +376,7 @@ class ActorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter actors by nationality only")
+    @DisplayName("Filter actors by nationality only : correct case")
     void filterActors_byNationalityOnly_thenReturnFilteredActors() throws Exception {
 
         List<ActorBO> actorBOs = List.of(actorBO);
@@ -390,7 +390,7 @@ class ActorControllerTest {
     }
 
     @Test
-    @DisplayName("Filter actors with invalid parameters")
+    @DisplayName("Filter actors : incorrect case -> NotFoundException")
     void filterActors_withInvalidParameters_thenThrowServiceException() throws Exception {
 
         given(actorService.filterActors(anyList(), anyList(), anyList(), anyInt(), anyInt(), anyString(),
@@ -398,6 +398,51 @@ class ActorControllerTest {
 
         ResultActions response = mockMvc.perform(
                 get("/api/v1/Actor/filterActors?names=notfound&ages=1&nationalities=notfound&pageNumber=0&pageSize=10&sortBy=id&sortOrder=true"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Find actors by name and age using Criteria : correct case")
+    void findByNameAndAge_usingCriteria_thenReturnActors() throws Exception {
+        List<ActorBO> actorBOs = List.of(actorBO);
+        given(actorService.criteriaFindByNameAndAge("John", 30)).willReturn(actorBOs);
+        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/Actor/findByNameAndAge?select=true&name=John&age=30"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Find actors by name and age using JPA : correct case")
+    void findByNameAndAge_usingJPA_thenReturnActors() throws Exception {
+        List<ActorBO> actorBOs = List.of(actorBO);
+        given(actorService.jpaFindByNameAndAge("John", 30)).willReturn(actorBOs);
+        given(converter.actorBOToOutDTO(any(ActorBO.class))).willReturn(actorOutDTO);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/Actor/findByNameAndAge?select=false&name=John&age=30"));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    @DisplayName("Find actors by name and age using Criteria : incorrect case  -> NotFoundException")
+    void findByNameAndAgeCriteria_withInvalidParameters_thenThrowServiceException() throws Exception {
+        given(actorService.criteriaFindByNameAndAge(anyString(), anyInt())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(get("/api/v1/Actor/findByNameAndAge?select=true&name=notfound&age=1"));
+
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Find actors by name and age using JPA : incorrect case  -> NotFoundException")
+    void findByNameAndAgeJPA_withInvalidParameters_thenThrowServiceException() throws Exception {
+        given(actorService.jpaFindByNameAndAge(anyString(), anyInt())).willThrow(new NotFoundException());
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/Actor/findByNameAndAge?select=false&name=notfound&age=1"));
 
         response.andDo(print()).andExpect(status().isNotFound());
     }

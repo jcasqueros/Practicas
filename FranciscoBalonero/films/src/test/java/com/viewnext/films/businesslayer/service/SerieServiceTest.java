@@ -46,10 +46,10 @@ class SerieServiceImplTest {
 
     @Mock
     private SerieCriteriaRepository serieCriteriaRepository;
-
     @Mock
     private SerieJPARepository serieJPARepository;
-
+    @Mock
+    private WebClientService webClientService;
     @Mock
     private Converter converter;
     @Mock
@@ -79,7 +79,7 @@ class SerieServiceImplTest {
         actor.setNationality("spain");
 
         director = new Director();
-        director.setId(2L);
+        director.setId(1L);
         director.setAge(18);
         director.setName("James");
         director.setNationality("france");
@@ -106,7 +106,7 @@ class SerieServiceImplTest {
         actorBO.setNationality("spain");
 
         directorBO = new DirectorBO();
-        directorBO.setId(2L);
+        directorBO.setId(1L);
         directorBO.setAge(18);
         directorBO.setName("James");
         directorBO.setNationality("france");
@@ -230,6 +230,9 @@ class SerieServiceImplTest {
     @Test
     @DisplayName("Criteria create: correct case")
     void givenSerieBO_whenCriteriaCreate_thenReturnCreatedSerieBO() throws ServiceException {
+        BDDMockito.willDoNothing().given(webClientService).existsActor(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsDirector(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsProducer(1L);
         BDDMockito.given(serieCriteriaRepository.createSerie(serie)).willReturn(serie);
         BDDMockito.given(converter.serieEntityToBO(serie)).willReturn(serieBO);
         BDDMockito.given(converter.serieBOToEntity(serieBO)).willReturn(serie);
@@ -242,6 +245,9 @@ class SerieServiceImplTest {
     @Test
     @DisplayName("Criteria create: nested runtime exception")
     void givenSerieBO_whenCriteriaCreate_thenThrowNestedRuntimeException() throws ServiceException {
+        BDDMockito.willDoNothing().given(webClientService).existsActor(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsDirector(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsProducer(1L);
         BDDMockito.given(serieCriteriaRepository.createSerie(serie))
                 .willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.serieBOToEntity(serieBO)).willReturn(serie);
@@ -302,6 +308,9 @@ class SerieServiceImplTest {
     @Test
     @DisplayName("JPA create: correct case")
     void givenSerieBO_whenJpaCreate_thenReturnCreatedSerieBO() throws ServiceException {
+        BDDMockito.willDoNothing().given(webClientService).existsActor(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsDirector(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsProducer(1L);
         BDDMockito.given(serieJPARepository.save(serie)).willReturn(serie);
         BDDMockito.given(converter.serieEntityToBO(serie)).willReturn(serieBO);
         BDDMockito.given(converter.serieBOToEntity(serieBO)).willReturn(serie);
@@ -370,7 +379,10 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("JPA create: nested runtime exception")
-    void givenSerieBO_whenJpaCreate_thenThrowNestedRuntimeException() {
+    void givenSerieBO_whenJpaCreate_thenThrowNestedRuntimeException() throws NotFoundException {
+        BDDMockito.willDoNothing().given(webClientService).existsActor(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsDirector(1L);
+        BDDMockito.willDoNothing().given(webClientService).existsProducer(1L);
         BDDMockito.given(serieJPARepository.save(serie)).willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.serieBOToEntity(serieBO)).willReturn(serie);
 

@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,7 +106,7 @@ class ProducerCriteriaRepositoryTest {
     void givenName_whenFilterProducers_thenReturnFilteredProducers() {
         // Arrange
         Producer createdProducer = producerCriteriaRepository.createProducer(producer);
-        List<String> names = Arrays.asList("Producer 1");
+        List<String> names = List.of("Producer 1");
         List<Integer> foundationYears = null;
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -126,7 +125,7 @@ class ProducerCriteriaRepositoryTest {
         // Arrange
         Producer createdProducer = producerCriteriaRepository.createProducer(producer);
         List<String> names = null;
-        List<Integer> foundationYears = Arrays.asList(2000);
+        List<Integer> foundationYears = List.of(2000);
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
@@ -143,8 +142,8 @@ class ProducerCriteriaRepositoryTest {
     void givenMultipleCriteria_whenFilterProducers_thenReturnFilteredProducers() {
         // Arrange
         Producer createdProducer = producerCriteriaRepository.createProducer(producer);
-        List<String> names = Arrays.asList("Producer 1");
-        List<Integer> foundationYears = Arrays.asList(2000);
+        List<String> names = List.of("Producer 1");
+        List<Integer> foundationYears = List.of(2000);
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act

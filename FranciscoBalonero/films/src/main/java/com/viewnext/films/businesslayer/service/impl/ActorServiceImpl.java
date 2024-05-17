@@ -35,6 +35,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ActorServiceImpl implements ActorService {
+    
+    public static final String ACTORS_COULD_NOT_BE_SEARCHED = "The actors could not be searched";
 
     // Inyección de dependencias
     /**
@@ -83,7 +85,7 @@ public class ActorServiceImpl implements ActorService {
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching all actors", e);
-            throw new ServiceException("The actors could not be searched", e);
+            throw new ServiceException(ACTORS_COULD_NOT_BE_SEARCHED, e);
         }
     }
 
@@ -139,7 +141,7 @@ public class ActorServiceImpl implements ActorService {
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching actors by name and age", e);
-            throw new ServiceException("The actors could not be searched", e);
+            throw new ServiceException(ACTORS_COULD_NOT_BE_SEARCHED, e);
         }
     }
 
@@ -174,7 +176,7 @@ public class ActorServiceImpl implements ActorService {
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching all actors", e);
-            throw new ServiceException("The actors could not be searched", e);
+            throw new ServiceException(ACTORS_COULD_NOT_BE_SEARCHED, e);
         }
     }
 
@@ -255,7 +257,7 @@ public class ActorServiceImpl implements ActorService {
         } catch (NestedRuntimeException e) {
             // Maneja excepciones y registra un error en el log
             log.error("Error searching actors by name and age", e);
-            throw new ServiceException("The actors could not be searched", e);
+            throw new ServiceException(ACTORS_COULD_NOT_BE_SEARCHED, e);
         }
     }
 }

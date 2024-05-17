@@ -376,5 +376,76 @@ class DirectorServiceImplTest {
                 () -> directorService.filterDirectors(names, ages, nationalities, pageNumber, pageSize, sortBy,
                         sortOrder));
     }
+
+    @Test
+    @DisplayName("Criteria find by name and age: correct case")
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenReturnListWithDirectorsBO() throws ServiceException {
+        String name = "Jhon";
+        int age = 18;
+        List<Director> directors = List.of(director);
+        BDDMockito.given(directorCriteriaRepository.getDirectorsByNameAndAge(name, age)).willReturn(directors);
+        BDDMockito.given(converter.directorEntityToBO(director)).willReturn(directorBO);
+
+        List<DirectorBO> result = directorService.criteriaFindByNameAndAge(name, age);
+
+        assertThat(result).isNotNull().hasSize(1).contains(directorBO);
+    }
+
+    @Test
+    @DisplayName("Criteria find by name and age: not found")
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNotFoundException() throws ServiceException {
+        String name = "Jhon";
+        int age = 25;
+        BDDMockito.given(directorCriteriaRepository.getDirectorsByNameAndAge(name, age)).willReturn(List.of());
+
+        assertThrows(NotFoundException.class, () -> directorService.criteriaFindByNameAndAge(name, age));
+    }
+
+    @Test
+    @DisplayName("Criteria find by name and age: nested runtime exception")
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+        String name = "Jhon";
+        int age = 30;
+        BDDMockito.given(directorCriteriaRepository.getDirectorsByNameAndAge(name, age))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class, () -> directorService.criteriaFindByNameAndAge(name, age));
+    }
+
+    @Test
+    @DisplayName("JPA find by name and age: correct case")
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenReturnListWithDirectorsBO() throws ServiceException {
+        String name = "Jhon";
+        int age = 18;
+        List<Director> directors = List.of(director);
+        BDDMockito.given(directorJPARepository.findByNameAndAge(name, age)).willReturn(directors);
+        BDDMockito.given(converter.directorEntityToBO(director)).willReturn(directorBO);
+
+        List<DirectorBO> result = directorService.jpaFindByNameAndAge(name, age);
+
+        assertThat(result).isNotNull().hasSize(1).contains(directorBO);
+    }
+
+    @Test
+    @DisplayName("JPA find by name and age: not found")
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNotFoundException() throws ServiceException {
+        String name = "Jhon";
+        int age = 25;
+        BDDMockito.given(directorJPARepository.findByNameAndAge(name, age)).willReturn(List.of());
+
+        assertThrows(NotFoundException.class, () -> directorService.jpaFindByNameAndAge(name, age));
+    }
+
+    @Test
+    @DisplayName("JPA find by name and age: nested runtime exception")
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+        String name = "Jhon";
+        int age = 30;
+        BDDMockito.given(directorJPARepository.findByNameAndAge(name, age))
+                .willThrow(InvalidDataAccessApiUsageException.class);
+
+        assertThrows(ServiceException.class, () -> directorService.jpaFindByNameAndAge(name, age));
+    }
+
 }
 

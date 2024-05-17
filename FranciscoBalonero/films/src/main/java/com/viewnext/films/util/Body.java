@@ -35,7 +35,7 @@ public class Body {
      * Timestamp of when the error occurred.
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
-    private LocalDateTime date = LocalDateTime.now();
+    private final LocalDateTime date = LocalDateTime.now();
 
     /**
      * Error message.
