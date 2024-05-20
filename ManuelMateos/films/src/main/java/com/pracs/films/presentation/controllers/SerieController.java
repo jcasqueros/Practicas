@@ -146,20 +146,19 @@ public class SerieController {
      */
     @Transactional
     @PostMapping("/save")
-    public ResponseEntity<SerieDtoOut> save(@RequestParam boolean method, @RequestParam String port,
-            @Valid @RequestBody SerieDtoIn serieDtoIn) {
+    public ResponseEntity<SerieDtoOut> save(@RequestParam boolean method, @Valid @RequestBody SerieDtoIn serieDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
-                        serieService.saveCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn), port)),
-                        HttpStatus.CREATED);
+                        serieService.saveCriteria(dtoToBoConverter.serieDtoToBo(serieDtoIn))), HttpStatus.CREATED);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
-            return new ResponseEntity<>(boToDtoConverter.serieBoToDtoOut(
-                    serieService.save(dtoToBoConverter.serieDtoToBo(serieDtoIn), port)), HttpStatus.CREATED);
+            return new ResponseEntity<>(
+                    boToDtoConverter.serieBoToDtoOut(serieService.save(dtoToBoConverter.serieDtoToBo(serieDtoIn))),
+                    HttpStatus.CREATED);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }

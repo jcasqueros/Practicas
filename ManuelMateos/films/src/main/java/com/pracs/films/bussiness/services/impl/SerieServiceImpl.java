@@ -54,11 +54,11 @@ public class SerieServiceImpl implements SerieService {
     private final WebClientService webClientService;
 
     @Override
-    public SerieBO save(SerieBO serieBO, String port) throws ServiceException {
+    public SerieBO save(SerieBO serieBO) throws ServiceException {
         try {
-            serieBO.getActors().stream().forEach(a -> webClientService.existsActorJPA(a.getId(), port));
-            webClientService.existsDirectorJPA(serieBO.getDirector().getId(), port);
-            webClientService.existsProducerJPA(serieBO.getProducer().getId(), port);
+            serieBO.getActors().stream().forEach(a -> webClientService.existsActorJPA(a.getId()));
+            webClientService.existsDirectorJPA(serieBO.getDirector().getId());
+            webClientService.existsProducerJPA(serieBO.getProducer().getId());
 
             // Conversión de model a bo del resultado de crear un serie.
             return modelToBoConverter.serieModelToBo(serieRepository.save(boToModelConverter.serieBoToModel(serieBO)));
@@ -139,11 +139,11 @@ public class SerieServiceImpl implements SerieService {
     }
 
     @Override
-    public SerieBO saveCriteria(SerieBO serieBO, String port) throws ServiceException {
+    public SerieBO saveCriteria(SerieBO serieBO) throws ServiceException {
         try {
-            serieBO.getActors().stream().forEach(a -> webClientService.existsActorCriteria(a.getId(), port));
-            webClientService.existsDirectorCriteria(serieBO.getDirector().getId(), port);
-            webClientService.existsProducerCriteria(serieBO.getProducer().getId(), port);
+            serieBO.getActors().stream().forEach(a -> webClientService.existsActorCriteria(a.getId()));
+            webClientService.existsDirectorCriteria(serieBO.getDirector().getId());
+            webClientService.existsProducerCriteria(serieBO.getProducer().getId());
 
             // Conversión de model a bo del resultado de crear un serie.
             return modelToBoConverter.serieModelToBo(
