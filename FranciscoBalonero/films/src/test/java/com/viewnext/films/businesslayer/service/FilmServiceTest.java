@@ -142,7 +142,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: not found")
-    void givenId_whenCriteriaGetById_thenThrowNotFoundException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNotFoundException() {
         BDDMockito.given(filmCriteriaRepository.getFilmById(1L)).willReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> filmService.criteriaGetById(1L));
@@ -150,7 +150,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: nested runtime exception")
-    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() {
         BDDMockito.given(filmCriteriaRepository.getFilmById(1L)).willThrow(InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> filmService.criteriaGetById(1L));
@@ -171,7 +171,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: no films found")
-    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() {
         BDDMockito.given(filmCriteriaRepository.getAllFilms(PageRequest.of(0, 10, Sort.by("title").ascending())))
                 .willReturn(List.of());
 
@@ -180,7 +180,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
-    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() {
         BDDMockito.given(filmCriteriaRepository.getAllFilms(PageRequest.of(0, 10, Sort.by("title").ascending())))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
@@ -199,7 +199,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("Criteria delete by id: nested runtime exception")
-    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() {
         willThrow(InvalidDataAccessApiUsageException.class).given(filmCriteriaRepository).deleteFilm(1L);
         assertThrows(ServiceException.class, () -> filmService.criteriaDeleteById(1L));
     }
@@ -219,7 +219,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("Criteria update: nested runtime exception")
-    void givenFilmBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenFilmBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() {
         BDDMockito.given(filmCriteriaRepository.getFilmById(1L)).willReturn(Optional.of(film));
         BDDMockito.given(converter.filmEntityToBO(film)).willReturn(filmBO);
         BDDMockito.given(filmCriteriaRepository.updateFilm(film)).willThrow(InvalidDataAccessApiUsageException.class);
@@ -299,7 +299,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("JPA update: not found")
-    void givenFilmBO_whenJpaUpdate_thenThrowNotFoundException() throws ServiceException {
+    void givenFilmBO_whenJpaUpdate_thenThrowNotFoundException() {
         BDDMockito.given(filmJPARepository.existsById(filmBO.getId())).willReturn(false);
 
         assertThrows(NotFoundException.class, () -> filmService.jpaUpdate(filmBO));
@@ -419,7 +419,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("Filter films: no films found")
-    void givenFilters_whenFilterFilms_thenThrowNotFoundException() throws ServiceException {
+    void givenFilters_whenFilterFilms_thenThrowNotFoundException() {
 
         int pageNumber = 0;
         int pageSize = 10;
@@ -444,7 +444,7 @@ class FilmServiceImplTest {
 
     @Test
     @DisplayName("Filter films: nested runtime exception")
-    void givenFilters_whenFilterFilms_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenFilters_whenFilterFilms_thenThrowNestedRuntimeException() {
 
         int pageNumber = 0;
         int pageSize = 10;
