@@ -76,7 +76,6 @@ public class ActorController {
      * @param names
      * @param ages
      * @param nationalities
-     * @param method
      * @param sort
      * @param order
      * @return
@@ -85,7 +84,7 @@ public class ActorController {
     @GetMapping("/findAllFilter")
     public ResponseEntity<List<ActorDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
             @RequestParam(required = false) List<Integer> ages,
-            @RequestParam(required = false) List<String> nationalities, @RequestParam boolean method,
+            @RequestParam(required = false) List<String> nationalities,
             @RequestParam(defaultValue = "id", name = "Variable to order the list") String sort,
             @RequestParam(defaultValue = "asc") String order) throws ServiceException {
 
@@ -93,19 +92,10 @@ public class ActorController {
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
 
-        if (method) {
-            try {
-                return new ResponseEntity<>(
-                        actorService.findAllCriteriaFilter(pageable, names, ages, nationalities).stream()
-                                .map(boToDtoConverter::actorBoToDtoOut).toList(), HttpStatus.OK);
-            } catch (ServiceException e) {
-                throw new PresentationException(e.getLocalizedMessage());
-            }
-        }
         try {
             return new ResponseEntity<>(
-                    actorService.findAll(pageable).stream().map(boToDtoConverter::actorBoToDtoOut).toList(),
-                    HttpStatus.OK);
+                    actorService.findAllCriteriaFilter(pageable, names, ages, nationalities).stream()
+                            .map(boToDtoConverter::actorBoToDtoOut).toList(), HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }

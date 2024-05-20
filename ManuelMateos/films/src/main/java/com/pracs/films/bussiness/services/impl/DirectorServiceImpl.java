@@ -30,8 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DirectorServiceImpl implements DirectorService {
 
-    private final ConstantMessages constantMessages;
-
     private final ModelToBoConverter modelToBoConverter;
 
     private final BoToModelConverter boToModelConverter;
@@ -52,7 +50,7 @@ public class DirectorServiceImpl implements DirectorService {
             return modelToBoConverter.directorModelToBo(
                     directorRepository.save(boToModelConverter.directorBoToModel(directorBO)));
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -63,7 +61,7 @@ public class DirectorServiceImpl implements DirectorService {
             // Búsqueda de un director con el id introducido para comprobar que existe
             DirectorBO savedDirectorBO = modelToBoConverter.directorModelToBo(
                     directorRepository.findById(directorBO.getId())
-                            .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
+                            .orElseThrow(() -> new EntityNotFoundException(ConstantMessages.ERRORPERSON)));
 
             //Actualización con los campos introducidos
             savedDirectorBO.setName(directorBO.getName());
@@ -74,7 +72,7 @@ public class DirectorServiceImpl implements DirectorService {
             return modelToBoConverter.directorModelToBo(
                     directorRepository.save(boToModelConverter.directorBoToModel(savedDirectorBO)));
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -84,9 +82,9 @@ public class DirectorServiceImpl implements DirectorService {
         try {
             //Comprobar si existe ya un director registrado con el mismo id.
             return modelToBoConverter.directorModelToBo(directorRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
+                    .orElseThrow(() -> new EntityNotFoundException(ConstantMessages.ERRORPERSON)));
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -98,12 +96,12 @@ public class DirectorServiceImpl implements DirectorService {
                     .map(modelToBoConverter::directorModelToBo).toList();
 
             if (directorBOList.isEmpty()) {
-                throw new EmptyException(constantMessages.noDirectors());
+                throw new EmptyException(ConstantMessages.NODIRECTORS);
             }
 
             return directorBOList;
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -115,14 +113,14 @@ public class DirectorServiceImpl implements DirectorService {
             Page<Director> directorPage = directorRepository.findAll(pageable);
 
             if (directorPage.isEmpty()) {
-                throw new EmptyException(constantMessages.noDirectors());
+                throw new EmptyException(ConstantMessages.NODIRECTORS);
             }
 
             List<DirectorBO> directorBOList = directorPage.stream().map(modelToBoConverter::directorModelToBo).toList();
 
             return new PageImpl<>(directorBOList, directorPage.getPageable(), directorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -133,12 +131,12 @@ public class DirectorServiceImpl implements DirectorService {
             //Comprobar si el director no existe
             if (!directorRepository.existsById(id)) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(constantMessages.errorPerson());
+                throw new EntityNotFoundException(ConstantMessages.ERRORPERSON);
             }
 
             directorRepository.deleteById(id);
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -155,7 +153,7 @@ public class DirectorServiceImpl implements DirectorService {
             return modelToBoConverter.directorModelToBo(
                     directorRepositoryCriteria.saveDirector(boToModelConverter.directorBoToModel(directorBO)));
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -166,7 +164,7 @@ public class DirectorServiceImpl implements DirectorService {
             // Búsqueda de un director con el id introducido para comprobar que existe
             DirectorBO savedDirectorBO = modelToBoConverter.directorModelToBo(
                     directorRepositoryCriteria.findDirectorById(directorBO.getId())
-                            .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
+                            .orElseThrow(() -> new EntityNotFoundException(ConstantMessages.ERRORPERSON)));
 
             //Actualización con los campos introducidos
             savedDirectorBO.setName(directorBO.getName());
@@ -177,7 +175,7 @@ public class DirectorServiceImpl implements DirectorService {
             return modelToBoConverter.directorModelToBo(
                     directorRepositoryCriteria.updateDirector(boToModelConverter.directorBoToModel(savedDirectorBO)));
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -187,9 +185,9 @@ public class DirectorServiceImpl implements DirectorService {
         try {
             // Conversión de model a bo del resultado de buscar un director por id.
             return modelToBoConverter.directorModelToBo(directorRepositoryCriteria.findDirectorById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(constantMessages.errorPerson())));
+                    .orElseThrow(() -> new EntityNotFoundException(ConstantMessages.ERRORPERSON)));
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -201,12 +199,12 @@ public class DirectorServiceImpl implements DirectorService {
                     .map(modelToBoConverter::directorModelToBo).toList();
 
             if (directorBOList.isEmpty()) {
-                throw new EmptyException(constantMessages.noDirectors());
+                throw new EmptyException(ConstantMessages.NODIRECTORS);
             }
 
             return directorBOList;
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -218,14 +216,14 @@ public class DirectorServiceImpl implements DirectorService {
             Page<Director> directorPage = directorRepositoryCriteria.findAllDirector(pageable);
 
             if (directorPage.isEmpty()) {
-                throw new EmptyException(constantMessages.noDirectors());
+                throw new EmptyException(ConstantMessages.NODIRECTORS);
             }
 
             List<DirectorBO> directorBOList = directorPage.stream().map(modelToBoConverter::directorModelToBo).toList();
 
             return new PageImpl<>(directorBOList, directorPage.getPageable(), directorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -239,14 +237,14 @@ public class DirectorServiceImpl implements DirectorService {
                     nationalities);
 
             if (directorPage.isEmpty()) {
-                throw new EmptyException(constantMessages.noDirectors());
+                throw new EmptyException(ConstantMessages.NODIRECTORS);
             }
 
             List<DirectorBO> directorBOList = directorPage.stream().map(modelToBoConverter::directorModelToBo).toList();
 
             return new PageImpl<>(directorBOList, directorPage.getPageable(), directorPage.getTotalPages());
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -257,12 +255,12 @@ public class DirectorServiceImpl implements DirectorService {
             //Comprobar si existe el director con el id pasado
             if (directorRepositoryCriteria.findDirectorById(id).isEmpty()) {
                 log.error("EntityNotFoundException");
-                throw new EntityNotFoundException(constantMessages.errorPerson());
+                throw new EntityNotFoundException(ConstantMessages.ERRORPERSON);
             }
 
             directorRepositoryCriteria.deleteDirectorById(directorRepositoryCriteria.findDirectorById(id).get());
         } catch (NestedRuntimeException e) {
-            log.error(constantMessages.errorService());
+            log.error(ConstantMessages.ERRORSERVICE);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }

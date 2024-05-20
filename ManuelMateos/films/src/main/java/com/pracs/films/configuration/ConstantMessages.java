@@ -1,59 +1,20 @@
 package com.pracs.films.configuration;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
-@Data
-@RequiredArgsConstructor
-@Component
 public class ConstantMessages {
 
-    private static final String NOACTORS = "No actors";
+    public static final String NOACTORS = "No actors";
 
-    private static final String NODIRECTORS = "No directors";
+    public static final String NODIRECTORS = "No directors";
 
-    private static final String NOPRODUCERS = "No producers";
+    public static final String NOPRODUCERS = "No producers";
 
-    private static final String NOFILMS = "No films";
+    public static final String NOFILMS = "No films";
 
-    private static final String ERRORPERSON = "Person not found";
+    public static final String ERRORPERSON = "Person not found";
 
-    private static final String ERORRPRODUCER = "Producer not found";
+    public static final String ERRORPRODUCER = "Producer not found";
 
-    private static final String ERORRPRODUCTION = "Production not found";
+    public static final String ERRORPRODUCTION = "Production not found";
 
-    private static final String ERRORSERVICE = "Error in service layer";
-
-    public String noActors() {
-        return NOACTORS;
-    }
-
-    public String noDirectors() {
-        return NODIRECTORS;
-    }
-
-    public String noProducers() {
-        return NOPRODUCERS;
-    }
-
-    public String noFilms() {
-        return NOFILMS;
-    }
-
-    public String errorPerson() {
-        return ERRORPERSON;
-    }
-
-    public String errorProducer() {
-        return ERORRPRODUCER;
-    }
-
-    public String errorProduction() {
-        return ERORRPRODUCTION;
-    }
-
-    public String errorService() {
-        return ERRORSERVICE;
-    }
+    public static final String ERRORSERVICE = "Error in service layer";
 }

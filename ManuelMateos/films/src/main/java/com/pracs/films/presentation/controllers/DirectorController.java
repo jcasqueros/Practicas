@@ -77,7 +77,6 @@ public class DirectorController {
      * @param names
      * @param ages
      * @param nationalities
-     * @param method
      * @param sort
      * @param order
      * @return
@@ -86,7 +85,7 @@ public class DirectorController {
     @GetMapping("/findAllFilter")
     public ResponseEntity<List<DirectorDtoOut>> findAllFilter(@RequestParam(required = false) List<String> names,
             @RequestParam(required = false) List<Integer> ages,
-            @RequestParam(required = false) List<String> nationalities, @RequestParam boolean method,
+            @RequestParam(required = false) List<String> nationalities,
             @RequestParam(defaultValue = "id", value = "Variable for order the list") String sort,
             @RequestParam(defaultValue = "asc") String order) throws ServiceException {
 
@@ -94,19 +93,10 @@ public class DirectorController {
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(new Sort.Order(direction, sort)));
 
-        if (method) {
-            try {
-                return new ResponseEntity<>(
-                        directorService.findAllCriteriaFilter(pageable, names, ages, nationalities).stream()
-                                .map(boToDtoConverter::directorBoToDtoOut).toList(), HttpStatus.OK);
-            } catch (ServiceException e) {
-                throw new PresentationException(e.getLocalizedMessage());
-            }
-        }
         try {
             return new ResponseEntity<>(
-                    directorService.findAll(pageable).stream().map(boToDtoConverter::directorBoToDtoOut).toList(),
-                    HttpStatus.OK);
+                    directorService.findAllCriteriaFilter(pageable, names, ages, nationalities).stream()
+                            .map(boToDtoConverter::directorBoToDtoOut).toList(), HttpStatus.OK);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());
         }
