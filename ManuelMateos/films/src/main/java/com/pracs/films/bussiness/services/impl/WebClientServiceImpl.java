@@ -8,6 +8,7 @@ import com.pracs.films.presentation.dto.ActorDtoOut;
 import com.pracs.films.presentation.dto.DirectorDtoOut;
 import com.pracs.films.presentation.dto.ProducerDtoOut;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,6 +19,7 @@ import java.util.Objects;
  *
  * @author Manuel Mateos de Torres
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class WebClientServiceImpl implements WebClientService {
@@ -30,6 +32,7 @@ public class WebClientServiceImpl implements WebClientService {
             webClient.get().uri("http://localhost:" + port + "/actors/findById/" + id + "?method=false").retrieve()
                     .bodyToMono(ActorDtoOut.class).map(Objects::nonNull).block();
         } catch (Exception e) {
+            log.error(e.getLocalizedMessage());
             throw new EntityNotFoundException(ConstantMessages.NOACTORS);
         }
         // retrieve recibe el cuerpo de la respuesta HTPP
