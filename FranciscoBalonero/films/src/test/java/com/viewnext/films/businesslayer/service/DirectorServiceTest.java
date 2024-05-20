@@ -75,7 +75,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: not found")
-    void givenId_whenCriteriaGetById_thenThrowNotFoundException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNotFoundException() {
         BDDMockito.given(directorCriteriaRepository.getDirectorById(1L)).willReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> directorService.criteriaGetById(1L));
@@ -83,7 +83,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: nested runtime exception")
-    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() {
         BDDMockito.given(directorCriteriaRepository.getDirectorById(1L))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
@@ -105,7 +105,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: no directors found")
-    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() {
         BDDMockito.given(directorCriteriaRepository.getAllDirectors(PageRequest.of(0, 10, Sort.by("name").ascending())))
                 .willReturn(List.of());
 
@@ -114,7 +114,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
-    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() {
         BDDMockito.given(directorCriteriaRepository.getAllDirectors(PageRequest.of(0, 10, Sort.by("name").ascending())))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
@@ -133,7 +133,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria delete by id: nested runtime exception")
-    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() {
         willThrow(InvalidDataAccessApiUsageException.class).given(directorCriteriaRepository).deleteDirector(1L);
         assertThrows(ServiceException.class, () -> directorService.criteriaDeleteById(1L));
     }
@@ -153,7 +153,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria update: nested runtime exception")
-    void givenDirectorBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenDirectorBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() {
         BDDMockito.given(directorCriteriaRepository.getDirectorById(1L)).willReturn(Optional.of(director));
         BDDMockito.given(converter.directorEntityToBO(director)).willReturn(directorBO);
         BDDMockito.given(directorCriteriaRepository.updateDirector(director))
@@ -177,7 +177,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria create: nested runtime exception")
-    void givenDirectorBO_whenCriteriaCreate_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenDirectorBO_whenCriteriaCreate_thenThrowNestedRuntimeException() {
         BDDMockito.given(directorCriteriaRepository.createDirector(director))
                 .willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.directorBOToEntity(directorBO)).willReturn(director);
@@ -229,7 +229,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("JPA update: not found")
-    void givenDirectorBO_whenJpaUpdate_thenThrowNotFoundException() throws ServiceException {
+    void givenDirectorBO_whenJpaUpdate_thenThrowNotFoundException() {
         BDDMockito.given(directorJPARepository.existsById(directorBO.getId())).willReturn(false);
 
         assertThrows(NotFoundException.class, () -> directorService.jpaUpdate(directorBO));
@@ -338,7 +338,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Filter directors: no directors found")
-    void givenFilters_whenFilterDirectors_thenThrowNotFoundException() throws ServiceException {
+    void givenFilters_whenFilterDirectors_thenThrowNotFoundException() {
 
         List<String> names = List.of("Jhon", "Jhon");
         List<Integer> ages = List.of(18, 25);
@@ -358,7 +358,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Filter directors: nested runtime exception")
-    void givenFilters_whenFilterDirectors_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenFilters_whenFilterDirectors_thenThrowNestedRuntimeException() {
 
         List<String> names = List.of("Jhon", "Jhon");
         List<Integer> ages = List.of(18, 25);
@@ -393,7 +393,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria find by name and age: not found")
-    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNotFoundException() throws ServiceException {
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNotFoundException() {
         String name = "Jhon";
         int age = 25;
         BDDMockito.given(directorCriteriaRepository.getDirectorsByNameAndAge(name, age)).willReturn(List.of());
@@ -403,7 +403,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("Criteria find by name and age: nested runtime exception")
-    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNestedRuntimeException() {
         String name = "Jhon";
         int age = 30;
         BDDMockito.given(directorCriteriaRepository.getDirectorsByNameAndAge(name, age))
@@ -428,7 +428,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("JPA find by name and age: not found")
-    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNotFoundException() throws ServiceException {
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNotFoundException() {
         String name = "Jhon";
         int age = 25;
         BDDMockito.given(directorJPARepository.findByNameAndAge(name, age)).willReturn(List.of());
@@ -438,7 +438,7 @@ class DirectorServiceImplTest {
 
     @Test
     @DisplayName("JPA find by name and age: nested runtime exception")
-    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNestedRuntimeException() {
         String name = "Jhon";
         int age = 30;
         BDDMockito.given(directorJPARepository.findByNameAndAge(name, age))

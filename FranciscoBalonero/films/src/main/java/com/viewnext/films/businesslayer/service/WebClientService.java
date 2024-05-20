@@ -5,8 +5,9 @@ import com.viewnext.films.businesslayer.exception.NotFoundException;
 /**
  * Interface for a service that checks if an actor, director, or producer exists.
  *
- * This service provides methods to verify the existence of an actor, director, or producer by their ID. If the entity
- * does not exist, a {@link NotFoundException} is thrown.
+ * <p>This service provides methods to verify the existence of an actor, director, or producer by their ID. If the
+ * entity
+ * does not exist, a {@link NotFoundException} is thrown.</p>
  *
  * @author Francisco Balonero Olivera
  */

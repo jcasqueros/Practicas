@@ -5,6 +5,7 @@ import com.viewnext.films.businesslayer.service.WebClientService;
 import com.viewnext.films.presentationlayer.dto.ActorOutDTO;
 import com.viewnext.films.presentationlayer.dto.DirectorOutDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -19,14 +20,21 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class WebClientServiceImpl implements WebClientService {
 
+    public static final String PROTOCOL = "http://";
     /**
      * The WebClient instance used to make HTTP requests.
      */
     private final WebClient webClient;
 
+    @Value("${host}")
+    private String host;
+
+    @Value("${port}")
+    private int port;
+
     public void existsActor(long id) throws NotFoundException {
         try {
-            webClient.get().uri("http://localhost:8080/api/v1/Actor/getActor?select=true&id=" + id).retrieve()
+            webClient.get().uri(PROTOCOL + host + ":" + port + "/api/v1/Actor/getActor?select=true&id=" + id).retrieve()
                     .bodyToMono(ActorOutDTO.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             throw new NotFoundException("The actors in that production don't exist.");
@@ -35,8 +43,8 @@ public class WebClientServiceImpl implements WebClientService {
 
     public void existsDirector(long id) throws NotFoundException {
         try {
-            webClient.get().uri("http://localhost:8080/api/v1/Director/getDirector?select=true&id=" + id).retrieve()
-                    .bodyToMono(DirectorOutDTO.class).map(Objects::nonNull).block();
+            webClient.get().uri(PROTOCOL + host + ":" + port + "/api/v1/Director/getDirector?select=true&id=" + id)
+                    .retrieve().bodyToMono(DirectorOutDTO.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             throw new NotFoundException("The director in that production don't exist.");
         }
@@ -44,8 +52,8 @@ public class WebClientServiceImpl implements WebClientService {
 
     public void existsProducer(long id) throws NotFoundException {
         try {
-            webClient.get().uri("http://localhost:8080/api/v1/Producer/getProducer?select=true&id=" + id).retrieve()
-                    .bodyToMono(DirectorOutDTO.class).map(Objects::nonNull).block();
+            webClient.get().uri(PROTOCOL + host + ":" + port + "/api/v1/Producer/getProducer?select=true&id=" + id)
+                    .retrieve().bodyToMono(DirectorOutDTO.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             throw new NotFoundException("The producer in that production don't exist.");
         }

@@ -60,8 +60,13 @@ public class AppConfiguration {
                 .version("0.0.1"));
     }
 
+    /**
+     * Creates a WebClient bean.
+     *
+     * @return {@link WebClient} The WebClient bean
+     */
     @Bean
     public WebClient webClient() {
-        return WebClient.builder().build();
+        return WebClient.builder().baseUrl("localhost:8080").build();
     }
 }

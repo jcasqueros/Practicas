@@ -75,7 +75,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: not found")
-    void givenId_whenCriteriaGetById_thenThrowNotFoundException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNotFoundException() {
         BDDMockito.given(actorCriteriaRepository.getActorById(1L)).willReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> actorService.criteriaGetById(1L));
@@ -83,7 +83,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: nested runtime exception")
-    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() {
         BDDMockito.given(actorCriteriaRepository.getActorById(1L)).willThrow(InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> actorService.criteriaGetById(1L));
@@ -104,7 +104,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: no actors found")
-    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() {
         BDDMockito.given(actorCriteriaRepository.getAllActors(PageRequest.of(0, 10, Sort.by("name").ascending())))
                 .willReturn(List.of());
 
@@ -113,7 +113,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
-    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() {
         BDDMockito.given(actorCriteriaRepository.getAllActors(PageRequest.of(0, 10, Sort.by("name").ascending())))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
@@ -132,7 +132,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria delete by id: nested runtime exception")
-    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() {
         willThrow(InvalidDataAccessApiUsageException.class).given(actorCriteriaRepository).deleteActor(1L);
         assertThrows(ServiceException.class, () -> actorService.criteriaDeleteById(1L));
     }
@@ -152,7 +152,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria update: nested runtime exception")
-    void givenActorBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenActorBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() {
         BDDMockito.given(actorCriteriaRepository.getActorById(1L)).willReturn(Optional.of(actor));
         BDDMockito.given(converter.actorEntityToBO(actor)).willReturn(actorBO);
         BDDMockito.given(actorCriteriaRepository.updateActor(actor))
@@ -176,7 +176,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria create: nested runtime exception")
-    void givenActorBO_whenCriteriaCreate_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenActorBO_whenCriteriaCreate_thenThrowNestedRuntimeException() {
         BDDMockito.given(actorCriteriaRepository.createActor(actor))
                 .willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.actorBOToEntity(actorBO)).willReturn(actor);
@@ -228,7 +228,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("JPA update: not found")
-    void givenActorBO_whenJpaUpdate_thenThrowNotFoundException() throws ServiceException {
+    void givenActorBO_whenJpaUpdate_thenThrowNotFoundException() {
         BDDMockito.given(actorJPARepository.existsById(actorBO.getId())).willReturn(false);
 
         assertThrows(NotFoundException.class, () -> actorService.jpaUpdate(actorBO));
@@ -335,7 +335,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Filter actors: no actors found")
-    void givenFilters_whenFilterActors_thenThrowNotFoundException() throws ServiceException {
+    void givenFilters_whenFilterActors_thenThrowNotFoundException() {
 
         List<String> names = List.of("Jhon", "Jhon");
         List<Integer> ages = List.of(18, 25);
@@ -354,7 +354,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Filter actors: nested runtime exception")
-    void givenFilters_whenFilterActors_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenFilters_whenFilterActors_thenThrowNestedRuntimeException() {
 
         List<String> names = List.of("Jhon", "Jhon");
         List<Integer> ages = List.of(18, 25);
@@ -388,7 +388,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria find by name and age: not found")
-    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNotFoundException() throws ServiceException {
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNotFoundException() {
         String name = "Jhon";
         int age = 25;
         BDDMockito.given(actorCriteriaRepository.getActorsByNameAndAge(name, age)).willReturn(List.of());
@@ -398,7 +398,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("Criteria find by name and age: nested runtime exception")
-    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNameAndAge_whenCriteriaFindByNameAndAge_thenThrowNestedRuntimeException() {
         String name = "Jhon";
         int age = 30;
         BDDMockito.given(actorCriteriaRepository.getActorsByNameAndAge(name, age))
@@ -423,7 +423,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("JPA find by name and age: not found")
-    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNotFoundException() throws ServiceException {
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNotFoundException() {
         String name = "Jhon";
         int age = 25;
         BDDMockito.given(actorJPARepository.findByNameAndAge(name, age)).willReturn(List.of());
@@ -433,7 +433,7 @@ class ActorServiceImplTest {
 
     @Test
     @DisplayName("JPA find by name and age: nested runtime exception")
-    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNameAndAge_whenJpaFindByNameAndAge_thenThrowNestedRuntimeException() {
         String name = "Jhon";
         int age = 30;
         BDDMockito.given(actorJPARepository.findByNameAndAge(name, age))

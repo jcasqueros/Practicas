@@ -107,11 +107,10 @@ class ProducerCriteriaRepositoryTest {
         // Arrange
         Producer createdProducer = producerCriteriaRepository.createProducer(producer);
         List<String> names = List.of("Producer 1");
-        List<Integer> foundationYears = null;
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(names, foundationYears, pageable);
+        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(names, null, pageable);
 
         // Assert
         assertThat(filteredProducers).isNotNull();
@@ -124,12 +123,11 @@ class ProducerCriteriaRepositoryTest {
     void givenFoundationYear_whenFilterProducers_thenReturnFilteredProducers() {
         // Arrange
         Producer createdProducer = producerCriteriaRepository.createProducer(producer);
-        List<String> names = null;
         List<Integer> foundationYears = List.of(2000);
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(names, foundationYears, pageable);
+        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(null, foundationYears, pageable);
 
         // Assert
         assertThat(filteredProducers).isNotNull();
@@ -161,12 +159,10 @@ class ProducerCriteriaRepositoryTest {
     void givenNoCriteria_whenFilterProducers_thenReturnAllProducers() {
         // Arrange
         Producer createdProducer = producerCriteriaRepository.createProducer(producer);
-        List<String> names = null;
-        List<Integer> foundationYears = null;
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(names, foundationYears, pageable);
+        List<Producer> filteredProducers = producerCriteriaRepository.filterProducers(null, null, pageable);
 
         // Assert
         assertThat(filteredProducers).isNotNull();

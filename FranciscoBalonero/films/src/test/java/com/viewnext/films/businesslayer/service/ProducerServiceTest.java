@@ -73,7 +73,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: not found")
-    void givenId_whenCriteriaGetById_thenThrowNotFoundException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNotFoundException() {
         BDDMockito.given(producerCriteriaRepository.getProducerById(1L)).willReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> producerService.criteriaGetById(1L));
@@ -81,7 +81,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: nested runtime exception")
-    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() {
         BDDMockito.given(producerCriteriaRepository.getProducerById(1L))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
@@ -103,7 +103,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: no producers found")
-    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() {
         BDDMockito.given(producerCriteriaRepository.getAllProducers(PageRequest.of(0, 10, Sort.by("name").ascending())))
                 .willReturn(List.of());
 
@@ -112,7 +112,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
-    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() {
         BDDMockito.given(producerCriteriaRepository.getAllProducers(PageRequest.of(0, 10, Sort.by("name").ascending())))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
@@ -131,7 +131,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Criteria delete by id: nested runtime exception")
-    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() {
         willThrow(InvalidDataAccessApiUsageException.class).given(producerCriteriaRepository).deleteProducer(1L);
         assertThrows(ServiceException.class, () -> producerService.criteriaDeleteById(1L));
     }
@@ -151,7 +151,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Criteria update: nested runtime exception")
-    void givenProducerBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenProducerBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() {
         BDDMockito.given(producerCriteriaRepository.getProducerById(1L)).willReturn(Optional.of(producer));
         BDDMockito.given(converter.producerEntityToBO(producer)).willReturn(producerBO);
         BDDMockito.given(producerCriteriaRepository.updateProducer(producer))
@@ -175,7 +175,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Criteria create: nested runtime exception")
-    void givenProducerBO_whenCriteriaCreate_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenProducerBO_whenCriteriaCreate_thenThrowNestedRuntimeException() {
         BDDMockito.given(producerCriteriaRepository.createProducer(producer))
                 .willThrow(InvalidDataAccessApiUsageException.class);
         BDDMockito.given(converter.producerBOToEntity(producerBO)).willReturn(producer);
@@ -227,7 +227,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("JPA update: not found")
-    void givenProducerBO_whenJpaUpdate_thenThrowNotFoundException() throws ServiceException {
+    void givenProducerBO_whenJpaUpdate_thenThrowNotFoundException() {
         BDDMockito.given(producerJPARepository.existsById(producerBO.getId())).willReturn(false);
 
         assertThrows(NotFoundException.class, () -> producerService.jpaUpdate(producerBO));
@@ -335,7 +335,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Filter producers: no producers found")
-    void givenFilters_whenFilterProducers_thenThrowNotFoundException() throws ServiceException {
+    void givenFilters_whenFilterProducers_thenThrowNotFoundException() {
 
         List<String> names = List.of("Producer 1", "PRV18");
         List<Integer> foundationYears = List.of(2000, 2010);
@@ -353,7 +353,7 @@ class ProducerServiceImplTest {
 
     @Test
     @DisplayName("Filter producers: nested runtime exception")
-    void givenFilters_whenFilterProducers_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenFilters_whenFilterProducers_thenThrowNestedRuntimeException() {
 
         List<String> names = List.of("Producer 1", "PRV20");
         List<Integer> foundationYears = List.of(2000, 2010);

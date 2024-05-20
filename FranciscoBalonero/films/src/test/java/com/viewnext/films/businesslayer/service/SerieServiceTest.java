@@ -63,9 +63,6 @@ class SerieServiceImplTest {
 
     private Serie serie;
     private SerieBO serieBO;
-    private DirectorBO directorBO;
-    private ActorBO actorBO;
-    private ProducerBO producerBO;
     private Producer producer;
     private Actor actor;
     private Director director;
@@ -99,19 +96,19 @@ class SerieServiceImplTest {
         actors.add(actor);
         serie.setActors(actors);
 
-        actorBO = new ActorBO();
+        ActorBO actorBO = new ActorBO();
         actorBO.setId(1L);
         actorBO.setAge(18);
         actorBO.setName("Jhon");
         actorBO.setNationality("spain");
 
-        directorBO = new DirectorBO();
+        DirectorBO directorBO = new DirectorBO();
         directorBO.setId(1L);
         directorBO.setAge(18);
         directorBO.setName("James");
         directorBO.setNationality("france");
 
-        producerBO = new ProducerBO();
+        ProducerBO producerBO = new ProducerBO();
         producerBO.setId(1L);
         producerBO.setName("Paramount");
         producerBO.setFoundationYear(2003);
@@ -140,7 +137,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: not found")
-    void givenId_whenCriteriaGetById_thenThrowNotFoundException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNotFoundException() {
         BDDMockito.given(serieCriteriaRepository.getSerieById(1L)).willReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> serieService.criteriaGetById(1L));
@@ -148,7 +145,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("Criteria get by id: nested runtime exception")
-    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaGetById_thenThrowNestedRuntimeException() {
         BDDMockito.given(serieCriteriaRepository.getSerieById(1L)).willThrow(InvalidDataAccessApiUsageException.class);
 
         assertThrows(ServiceException.class, () -> serieService.criteriaGetById(1L));
@@ -169,7 +166,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: no series found")
-    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNotFoundException() {
         BDDMockito.given(serieCriteriaRepository.getAllSeries(PageRequest.of(0, 10, Sort.by("title").ascending())))
                 .willReturn(List.of());
 
@@ -178,7 +175,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("Criteria get all: nested runtime exception")
-    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenNothing_whenCriteriaGetAll_thenThrowNestedRuntimeException() {
         BDDMockito.given(serieCriteriaRepository.getAllSeries(PageRequest.of(0, 10, Sort.by("title").ascending())))
                 .willThrow(InvalidDataAccessApiUsageException.class);
 
@@ -197,7 +194,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("Criteria delete by id: nested runtime exception")
-    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenId_whenCriteriaDeleteById_thenThrowNestedRuntimeException() {
         willThrow(InvalidDataAccessApiUsageException.class).given(serieCriteriaRepository).deleteSerie(1L);
         assertThrows(ServiceException.class, () -> serieService.criteriaDeleteById(1L));
     }
@@ -217,7 +214,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("Criteria update: nested runtime exception")
-    void givenSerieBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenSerieBO_whenCriteriaUpdate_thenThrowNestedRuntimeException() {
         BDDMockito.given(serieCriteriaRepository.getSerieById(1L)).willReturn(Optional.of(serie));
         BDDMockito.given(converter.serieEntityToBO(serie)).willReturn(serieBO);
         BDDMockito.given(serieCriteriaRepository.updateSerie(serie))
@@ -299,7 +296,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("JPA update: not found")
-    void givenSerieBO_whenJpaUpdate_thenThrowNotFoundException() throws ServiceException {
+    void givenSerieBO_whenJpaUpdate_thenThrowNotFoundException() {
         BDDMockito.given(serieJPARepository.existsById(serieBO.getId())).willReturn(false);
 
         assertThrows(NotFoundException.class, () -> serieService.jpaUpdate(serieBO));
@@ -419,7 +416,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("Filter series: no series found")
-    void givenFilters_whenFilterSeries_thenThrowNotFoundException() throws ServiceException {
+    void givenFilters_whenFilterSeries_thenThrowNotFoundException() {
 
         int pageNumber = 0;
         int pageSize = 10;
@@ -444,7 +441,7 @@ class SerieServiceImplTest {
 
     @Test
     @DisplayName("Filter series: nested runtime exception")
-    void givenFilters_whenFilterSeries_thenThrowNestedRuntimeException() throws ServiceException {
+    void givenFilters_whenFilterSeries_thenThrowNestedRuntimeException() {
 
         int pageNumber = 0;
         int pageSize = 10;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Interface for performing CRUD operations on {@link com.OGR12.films.persistencelayer.entity.Director}.
+ * Interface for performing CRUD operations on {@link com.viewnext.films.persistencelayer.entity.Director}.
  *
  * <p>This interface extends the {@link JpaRepository} interface, providing methods for performing CRUD (Create, Read,
  * Update, Delete) operations on {@link Director} entities.</p>
