@@ -341,7 +341,7 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSave_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.save(any(FilmBO.class), "8080")).willAnswer((invocation) -> invocation.getArgument(0));
+        given(filmService.save(any(FilmBO.class), anyString())).willAnswer((invocation) -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(
                 post("/films/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
@@ -358,7 +358,7 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSave_PresentationException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.save(any(FilmBO.class), "8080")).willThrow(new ServiceException("error"));
+        given(filmService.save(any(FilmBO.class), anyString())).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(
                 post("/films/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
@@ -372,7 +372,7 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSaveCriteria_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.saveCriteria(any(FilmBO.class), "8080")).willAnswer(
+        given(filmService.saveCriteria(any(FilmBO.class), anyString())).willAnswer(
                 (invocation) -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(
@@ -390,7 +390,7 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSaveCriteria_PresentationException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.saveCriteria(any(FilmBO.class), "8080")).willThrow(new ServiceException("error"));
+        given(filmService.saveCriteria(any(FilmBO.class), anyString())).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(
                 post("/films/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)

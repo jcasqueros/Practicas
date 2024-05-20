@@ -235,6 +235,84 @@ class ActorControllerTest {
         response.andDo(print()).andExpect(status().isBadRequest());
     }
 
+    @DisplayName("Junit test for get an actor by his name - positive")
+    @Test
+    void givenActorName_whenGetByName_thenActorDTO() throws Exception {
+        given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
+        given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
+        given(actorService.findByName(actorBO.getName())).willReturn(List.of(actorBO));
+
+        ResultActions response = mockMvc.perform(get("/actors/findByName/{name}?method=false", actorBO.getName()));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get an actor by his id - negative")
+    @Test
+    void givenActorName_whenGetByName_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
+        given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
+        given(actorService.findByName(actorBO.getName())).willThrow(new ServiceException("error"));
+
+        ResultActions response = mockMvc.perform(get("/actors/findById/{name}?method=false", actorBO.getName()));
+
+        response.andDo(print()).andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("Junit test for get actor by his name and age - positive")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAge_thenUserDTO() throws Exception {
+        given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
+        given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
+        given(actorService.findByNameAndAge(actorBO.getName(), actorBO.getAge())).willReturn(List.of(actorBO));
+
+        ResultActions response = mockMvc.perform(
+                get("/actors/findByNameAndAge?method=false&name=" + actorDtoIn.getName() + "&age=" + actorDtoIn.getAge()));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get an actor by his name and age - negative")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAge_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
+        given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
+        given(actorService.findByNameAndAge(actorBO.getName(), actorBO.getAge())).willThrow(
+                new ServiceException("error"));
+
+        ResultActions response = mockMvc.perform(
+                get("/actors/findByNameAndAge?method=false&name=" + actorDtoIn.getName() + "&age=" + actorDtoIn.getAge()));
+
+        response.andDo(print()).andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("Junit test for get an actor by his name and age - positive")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAgeCriteria_thenUserDTO() throws Exception {
+        given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
+        given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
+        given(actorService.findByNameAndAgeCriteria(actorBO.getName(), actorBO.getAge())).willReturn(List.of(actorBO));
+
+        ResultActions response = mockMvc.perform(
+                get("/actors/findByNameAndAge?method=true&name=" + actorDtoIn.getName() + "&age=" + actorDtoIn.getAge()));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get an actor by his name and age - negative")
+    @Test
+    void givenActorNameAndAge_whenFindByNameAndAgeCriteria_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.actorBoToDtoOut(actorBO)).willReturn(actorDtoOut);
+        given(dtoToBoConverter.actorDtoToBo(actorDtoIn)).willReturn(actorBO);
+        given(actorService.findByNameAndAgeCriteria(actorBO.getName(), actorBO.getAge())).willThrow(
+                new ServiceException("error"));
+
+        ResultActions response = mockMvc.perform(
+                get("/actors/findByNameAndAge?method=true&name=" + actorDtoIn.getName() + "&age=" + actorDtoIn.getAge()));
+
+        response.andDo(print()).andExpect(status().isBadRequest());
+    }
+
     @DisplayName("Junit test for save a ActorDTO Object - positive")
     @Test
     void givenActorDTOObject_whenSave_thenReturnSavedActor() throws Exception {

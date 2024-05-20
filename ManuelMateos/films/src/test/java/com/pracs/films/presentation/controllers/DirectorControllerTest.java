@@ -166,7 +166,7 @@ class DirectorControllerTest {
         given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
 
         ResultActions response = mockMvc.perform(
-                get("/directors/findAllFilter?names=prueba&ages=25&nationalities=Spain&method=true&sort=name&order=asc"));
+                get("/directors/findAllFilter?names=prueba&ages=25&nationalities=Spain&sort=name&order=asc"));
 
         response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
     }
@@ -179,7 +179,7 @@ class DirectorControllerTest {
                 new ServiceException(""));
 
         ResultActions response = mockMvc.perform(
-                get("/directors/findAllFilter?names=prueba&ages=25&nationalities=Spain&method=true&sort=name&order=asc"));
+                get("/directors/findAllFilter?names=prueba&ages=25&nationalities=Spain&sort=name&order=asc"));
 
         response.andExpect(status().isBadRequest());
     }
@@ -234,6 +234,62 @@ class DirectorControllerTest {
         given(directorService.findByIdCriteria(directorBO.getId())).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(get("/directors/findById/{id}?method=true", directorBO.getId()));
+
+        response.andDo(print()).andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("Junit test for get director by his name and age - positive")
+    @Test
+    void givenDirectorNameAndAge_whenFindByNameAndAge_thenUserDTO() throws Exception {
+        given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
+        given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
+        given(directorService.findByNameAndAge(directorBO.getName(), directorBO.getAge())).willReturn(
+                List.of(directorBO));
+
+        ResultActions response = mockMvc.perform(
+                get("/directors/findByNameAndAge?method=false&name=" + directorDtoIn.getName() + "&age=" + directorDtoIn.getAge()));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get an director by his name and age - negative")
+    @Test
+    void givenDirectorNameAndAge_whenFindByNameAndAge_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
+        given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
+        given(directorService.findByNameAndAge(directorBO.getName(), directorBO.getAge())).willThrow(
+                new ServiceException("error"));
+
+        ResultActions response = mockMvc.perform(
+                get("/directors/findByNameAndAge?method=false&name=" + directorDtoIn.getName() + "&age=" + directorDtoIn.getAge()));
+
+        response.andDo(print()).andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("Junit test for get an director by his name and age - positive")
+    @Test
+    void givenDirectorNameAndAge_whenFindByNameAndAgeCriteria_thenUserDTO() throws Exception {
+        given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
+        given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
+        given(directorService.findByNameAndAgeCriteria(directorBO.getName(), directorBO.getAge())).willReturn(
+                List.of(directorBO));
+
+        ResultActions response = mockMvc.perform(
+                get("/directors/findByNameAndAge?method=true&name=" + directorDtoIn.getName() + "&age=" + directorDtoIn.getAge()));
+
+        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @DisplayName("Junit test for get an director by his name and age - negative")
+    @Test
+    void givenDirectorNameAndAge_whenFindByNameAndAgeCriteria_thenThrowServiceException() throws Exception {
+        given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
+        given(dtoToBoConverter.directorDtoToBo(directorDtoIn)).willReturn(directorBO);
+        given(directorService.findByNameAndAgeCriteria(directorBO.getName(), directorBO.getAge())).willThrow(
+                new ServiceException("error"));
+
+        ResultActions response = mockMvc.perform(
+                get("/directors/findByNameAndAge?method=true&name=" + directorDtoIn.getName() + "&age=" + directorDtoIn.getAge()));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }
@@ -305,7 +361,7 @@ class DirectorControllerTest {
 
     @DisplayName("Junit test for update a director - positive")
     @Test
-    void givenDirectorDTO_whenUpdate_thenupdatedDirectorDTO() throws Exception {
+    void givenDirectorDTO_whenUpdate_thenUpdatedDirectorDTO() throws Exception {
         given(boToDtoConverter.directorBoToDtoOut(directorBO)).willReturn(directorDtoOut);
         given(dtoToBoConverter.directorUpdateDtoToBo(directorDtoInUpdate)).willReturn(directorBO);
         given(directorService.update(any(DirectorBO.class))).willAnswer((invocation -> invocation.getArgument(0)));

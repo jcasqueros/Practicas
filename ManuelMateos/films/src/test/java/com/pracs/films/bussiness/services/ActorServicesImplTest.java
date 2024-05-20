@@ -4,7 +4,6 @@ import com.pracs.films.bussiness.bo.ActorBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.impl.ActorServiceImpl;
-import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
@@ -36,9 +35,6 @@ import static org.mockito.BDDMockito.*;
  */
 @ExtendWith(MockitoExtension.class)
 class ActorServicesImplTest {
-
-    @Mock
-    private ConstantMessages constantMessages;
 
     @Mock
     private ModelToBoConverter modelToBoConverter;

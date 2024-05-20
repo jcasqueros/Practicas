@@ -4,7 +4,6 @@ import com.pracs.films.bussiness.bo.DirectorBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.impl.DirectorServiceImpl;
-import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.DuplicatedIdException;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
@@ -37,8 +36,6 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 class DirectorServicesImplTest {
 
-    @Mock
-    private ConstantMessages constantMessages;
     @Mock
     private ModelToBoConverter modelToBoConverter;
 

@@ -7,7 +7,6 @@ import com.pracs.films.bussiness.bo.ProducerBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.impl.FilmServiceImpl;
-import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
@@ -16,7 +15,10 @@ import com.pracs.films.persistence.models.Director;
 import com.pracs.films.persistence.models.Film;
 import com.pracs.films.persistence.models.Producer;
 import com.pracs.films.persistence.repositories.criteria.impl.FilmRepositoryImpl;
+import com.pracs.films.persistence.repositories.jpa.ActorRepository;
+import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
 import com.pracs.films.persistence.repositories.jpa.FilmRepository;
+import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.*;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,22 +46,28 @@ import static org.mockito.BDDMockito.*;
 class FilmServicesImplTest {
 
     @Mock
-    private ConstantMessages constantMessages;
-
-    @Mock
-    private WebClient webClient;
-
-    @Mock
     private ModelToBoConverter modelToBoConverter;
 
     @Mock
     private BoToModelConverter boToModelConverter;
 
     @Mock
+    private ActorRepository actorRepository;
+
+    @Mock
+    private DirectorRepository directorRepository;
+
+    @Mock
+    private ProducerRepository producerRepository;
+
+    @Mock
     private FilmRepository filmRepository;
 
     @Mock
     private FilmRepositoryImpl filmRepositoryCriteria;
+
+    @Mock
+    private WebClientService webClientService;
 
     @InjectMocks
     private FilmServiceImpl filmService;
@@ -148,9 +155,9 @@ class FilmServicesImplTest {
     void givenFilmBoObject_whenSave_thenReturnFilmBoObject() throws ServiceException {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
         given(boToModelConverter.filmBoToModel(filmBO)).willReturn(film);
-        given(filmService.existsActorJPA(1L, "8080")).willReturn(true);
-        given(filmService.existsDirectorCriteria(1L, "8080")).willReturn(true);
-        given(filmService.existsProducerCriteria(1L, "8080")).willReturn(true);
+        willDoNothing().given(webClientService).existsActorJPA(1L, "8080");
+        willDoNothing().given(webClientService).existsDirectorJPA(2L, "8080");
+        willDoNothing().given(webClientService).existsProducerJPA(1L, "8080");
         given(filmRepository.save(boToModelConverter.filmBoToModel(filmBO))).willReturn(film);
 
         FilmBO savedfilmBO = filmService.save(filmBO, "8080");
@@ -160,8 +167,24 @@ class FilmServicesImplTest {
 
     @DisplayName("JUnit test for save a film - negative")
     @Test
-    void givenFilmBoObject_whenSave_thenThrowDuplicatedException() throws ServiceException {
-        given(filmRepository.existsById(1L)).willReturn(true);
+    void givenFilmBoObject_whenSave_thenNoActor() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsActorJPA(1L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a film - negative")
+    @Test
+    void givenFilmBoObject_whenSave_thenNoDirector() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorJPA(2L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a film - negative")
+    @Test
+    void givenFilmBoObject_whenSave_thenNoProducer() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerJPA(1L, "8080");
 
         assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO, "8080"));
     }
@@ -169,6 +192,9 @@ class FilmServicesImplTest {
     @DisplayName("JUnit test for save a film - negative")
     @Test()
     void givenFilmBoObject_whenSave_thenThrowNestedRuntimeException() throws ServiceException {
+        willDoNothing().given(webClientService).existsActorJPA(1L, "8080");
+        willDoNothing().given(webClientService).existsDirectorJPA(2L, "8080");
+        willDoNothing().given(webClientService).existsProducerJPA(1L, "8080");
         when(filmRepository.save(boToModelConverter.filmBoToModel(filmBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
@@ -300,9 +326,9 @@ class FilmServicesImplTest {
     void givenFilmBoObject_whenSaveCriteria_thenReturnFilmBoObject() throws ServiceException {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
         given(boToModelConverter.filmBoToModel(filmBO)).willReturn(film);
-        given(filmService.existsActorJPA(1L, "8080")).willReturn(true);
-        given(filmService.existsDirectorJPA(1L, "8080")).willReturn(true);
-        given(filmService.existsProducerJPA(1L, "8080")).willReturn(true);
+        willDoNothing().given(webClientService).existsActorCriteria(1L, "8080");
+        willDoNothing().given(webClientService).existsDirectorCriteria(2L, "8080");
+        willDoNothing().given(webClientService).existsProducerCriteria(1L, "8080");
         given(filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO))).willReturn(film);
 
         FilmBO savedfilmBO = filmService.saveCriteria(filmBO, "8080");
@@ -311,8 +337,35 @@ class FilmServicesImplTest {
     }
 
     @DisplayName("JUnit test for save a film - negative")
+    @Test
+    void givenFilmBoObject_whenSaveCriteria_thenNoActor() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsActorCriteria(1L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a film - negative")
+    @Test
+    void givenFilmBoObject_whenSaveCriteria_thenNoDirector() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorCriteria(2L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a film - negative")
+    @Test
+    void givenFilmBoObject_whenSaveCriteria_thenNoProducer() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerCriteria(1L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a film - negative")
     @Test()
     void givenFilmBoObject_whenSaveCriteria_thenThrowNestedRuntimeException() throws ServiceException {
+        willDoNothing().given(webClientService).existsActorCriteria(1L, "8080");
+        willDoNothing().given(webClientService).existsDirectorCriteria(2L, "8080");
+        willDoNothing().given(webClientService).existsProducerCriteria(1L, "8080");
         when(filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
@@ -389,9 +442,9 @@ class FilmServicesImplTest {
         Page<Film> page = new PageImpl<>(List.of(film), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
         given(filmRepositoryCriteria.findAllFilm(pageable)).willReturn(page);
 
-        Page<FilmBO> savedFilmsBO = filmService.findAllCriteria(pageable);
+        Page<FilmBO> savedSeriesBO = filmService.findAllCriteria(pageable);
 
-        assertEquals(1, savedFilmsBO.getNumberOfElements());
+        assertEquals(1, savedSeriesBO.getNumberOfElements());
     }
 
     @DisplayName("JUnit test for get all films - negative")

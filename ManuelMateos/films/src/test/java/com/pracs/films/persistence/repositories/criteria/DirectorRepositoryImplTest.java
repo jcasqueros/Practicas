@@ -78,6 +78,8 @@ class DirectorRepositoryImplTest {
     @Test
     void givenDirectorNameAndAge_whenFindDirectorByNameAndAge_thenReturnListDirectorObject() {
 
+        directorRepository.saveDirector(director);
+
         List<Director> directorList = directorRepository.findByNameAndAge(director.getName(), director.getAge());
 
         assertEquals(1, directorList.size());

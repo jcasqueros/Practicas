@@ -7,7 +7,6 @@ import com.pracs.films.bussiness.bo.SerieBO;
 import com.pracs.films.bussiness.converters.BoToModelConverter;
 import com.pracs.films.bussiness.converters.ModelToBoConverter;
 import com.pracs.films.bussiness.services.impl.SerieServiceImpl;
-import com.pracs.films.configuration.ConstantMessages;
 import com.pracs.films.exceptions.EmptyException;
 import com.pracs.films.exceptions.EntityNotFoundException;
 import com.pracs.films.exceptions.ServiceException;
@@ -16,6 +15,9 @@ import com.pracs.films.persistence.models.Director;
 import com.pracs.films.persistence.models.Producer;
 import com.pracs.films.persistence.models.Serie;
 import com.pracs.films.persistence.repositories.criteria.impl.SerieRepositoryImpl;
+import com.pracs.films.persistence.repositories.jpa.ActorRepository;
+import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
+import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
 import com.pracs.films.persistence.repositories.jpa.SerieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +26,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.*;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,16 +52,22 @@ class SerieServicesImplTest {
     private BoToModelConverter boToModelConverter;
 
     @Mock
+    private ActorRepository actorRepository;
+
+    @Mock
+    private DirectorRepository directorRepository;
+
+    @Mock
+    private ProducerRepository producerRepository;
+
+    @Mock
     private SerieRepository serieRepository;
 
     @Mock
     private SerieRepositoryImpl serieRepositoryCriteria;
 
     @Mock
-    private ConstantMessages constantMessages;
-
-    @MockBean
-    private WebClient webClient;
+    private WebClientService webClientService;
 
     @InjectMocks
     private SerieServiceImpl serieService;
@@ -144,34 +150,51 @@ class SerieServicesImplTest {
         pageable = PageRequest.of(0, 5, Sort.by("title").ascending());
     }
 
-    @DisplayName("JUnit test for save an serie - positive")
+    @DisplayName("JUnit test for save a serie - positive")
     @Test
     void givenSerieBoObject_whenSave_thenReturnSerieBoObject() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
         given(boToModelConverter.serieBoToModel(serieBO)).willReturn(serie);
-        given(serieService.existsActorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
+        willDoNothing().given(webClientService).existsActorJPA(1L, "8080");
+        willDoNothing().given(webClientService).existsDirectorJPA(2L, "8080");
+        willDoNothing().given(webClientService).existsProducerJPA(1L, "8080");
         given(serieRepository.save(boToModelConverter.serieBoToModel(serieBO))).willReturn(serie);
 
-        SerieBO savedserieBO = serieService.save(serieBO, "8080");
+        SerieBO savedSerieBO = serieService.save(serieBO, "8080");
 
-        assertEquals(serieBO, savedserieBO);
+        assertEquals(serieBO, savedSerieBO);
     }
 
-    @DisplayName("JUnit test for save an serie - negative")
+    @DisplayName("JUnit test for save a serie - negative")
     @Test
-    void givenSerieBoObject_whenSave_thenThrowDuplicatedException() throws ServiceException {
+    void givenSerieBoObject_whenSave_thenNoActor() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsActorJPA(1L, "8080");
 
         assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO, "8080"));
     }
 
-    @DisplayName("JUnit test for save an serie - negative")
+    @DisplayName("JUnit test for save a serie - negative")
+    @Test
+    void givenSerieBoObject_whenSave_thenNoDirector() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorJPA(2L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a serie - negative")
+    @Test
+    void givenSerieBoObject_whenSave_thenNoProducer() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerJPA(1L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a serie - negative")
     @Test()
     void givenSerieBoObject_whenSave_thenThrowNestedRuntimeException() throws ServiceException {
-        given(serieService.existsActorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
+        willDoNothing().given(webClientService).existsActorJPA(1L, "8080");
+        willDoNothing().given(webClientService).existsDirectorJPA(2L, "8080");
+        willDoNothing().given(webClientService).existsProducerJPA(1L, "8080");
         when(serieRepository.save(boToModelConverter.serieBoToModel(serieBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
@@ -298,38 +321,51 @@ class SerieServicesImplTest {
         assertThrows(ServiceException.class, () -> serieService.deleteById(serieBO.getId()));
     }
 
-    @DisplayName("JUnit test for save an serie - positive")
+    @DisplayName("JUnit test for save a serie - positive")
     @Test
     void givenSerieBoObject_whenSaveCriteria_thenReturnSerieBoObject() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
         given(boToModelConverter.serieBoToModel(serieBO)).willReturn(serie);
-
-        given(serieService.existsActorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
+        willDoNothing().given(webClientService).existsActorCriteria(1L, "8080");
+        willDoNothing().given(webClientService).existsDirectorCriteria(2L, "8080");
+        willDoNothing().given(webClientService).existsProducerCriteria(1L, "8080");
         given(serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO))).willReturn(serie);
 
-        SerieBO savedserieBO = serieService.saveCriteria(serieBO, "8080");
+        SerieBO savedSerieBO = serieService.saveCriteria(serieBO, "8080");
 
-        assertEquals(serieBO, savedserieBO);
+        assertEquals(serieBO, savedSerieBO);
     }
 
-    @DisplayName("JUnit test for save an serie - negative")
+    @DisplayName("JUnit test for save a serie - negative")
     @Test
-    void givenSerieBoObject_whenSaveCriteria_thenThrowDuplicatedException() throws ServiceException {
-        given(serieService.existsActorJPA(1L, "8080")).willReturn(true);
-        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
+    void givenSerieBoObject_whenSaveCriteria_thenNoActor() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsActorCriteria(1L, "8080");
+
         assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO, "8080"));
     }
 
-    @DisplayName("JUnit test for save an serie - negative")
+    @DisplayName("JUnit test for save a serie - negative")
+    @Test
+    void givenSerieBoObject_whenSaveCriteria_thenNoDirector() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorCriteria(2L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a serie - negative")
+    @Test
+    void givenSerieBoObject_whenSaveCriteria_thenNoProducer() throws ServiceException {
+        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerCriteria(1L, "8080");
+
+        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO, "8080"));
+    }
+
+    @DisplayName("JUnit test for save a serie - negative")
     @Test()
     void givenSerieBoObject_whenSaveCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        given(serieService.existsActorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsDirectorJPA(1L, "8080")).willReturn(false);
-        given(serieService.existsProducerJPA(1L, "8080")).willReturn(false);
-
+        willDoNothing().given(webClientService).existsActorCriteria(1L, "8080");
+        willDoNothing().given(webClientService).existsDirectorCriteria(2L, "8080");
+        willDoNothing().given(webClientService).existsProducerCriteria(1L, "8080");
         when(serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
@@ -433,12 +469,15 @@ class SerieServicesImplTest {
     @Test
     void givenPageableAndAttributesList_whenFindAllCriteriaFilter_thenReturnSeriesBoList() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
+        given(directorRepository.findByName(anyString())).willReturn(List.of(director));
+        given(producerRepository.findByName(anyString())).willReturn(List.of(producer));
+        given(actorRepository.findByName(anyString())).willReturn(List.of(actor));
         Page<Serie> page = new PageImpl<>(List.of(serie), PageRequest.of(0, 5, Sort.by("name").ascending()), 10);
-        given(serieRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020), List.of(), List.of(),
-                List.of())).willReturn(page);
+        given(serieRepositoryCriteria.findAllFilter(pageable, List.of(), List.of(2020), List.of(director),
+                List.of(producer), List.of(actor))).willReturn(page);
 
-        Page<SerieBO> savedSerieBO = serieService.findAllCriteriaFilter(pageable, List.of(), List.of(2020), List.of(),
-                List.of(), List.of());
+        Page<SerieBO> savedSerieBO = serieService.findAllCriteriaFilter(pageable, List.of(), List.of(2020),
+                List.of(directorBO.getName()), List.of(producerBO.getName()), List.of(actorBO.getName()));
 
         assertEquals(1, savedSerieBO.getNumberOfElements());
     }

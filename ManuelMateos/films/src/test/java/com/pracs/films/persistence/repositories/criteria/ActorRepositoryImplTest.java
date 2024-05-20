@@ -82,6 +82,8 @@ class ActorRepositoryImplTest {
     @Test
     void givenActorNameAndAge_whenFindActorByNameAndAge_thenReturnListActorObject() {
 
+        actorRepository.saveActor(actor);
+
         List<Actor> actorList = actorRepository.findByNameAndAge(actor.getName(), actor.getAge());
 
         assertEquals(1, actorList.size());
