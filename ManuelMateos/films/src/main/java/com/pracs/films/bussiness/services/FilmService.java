@@ -21,7 +21,7 @@ public interface FilmService {
      * @param filmBO
      * @return FilmBO
      */
-    FilmBO save(FilmBO filmBO, String port) throws ServiceException;
+    FilmBO save(FilmBO filmBO) throws ServiceException;
 
     /**
      * Method for update a film
@@ -59,7 +59,7 @@ public interface FilmService {
      * @param filmBO
      * @return FilmBO
      */
-    FilmBO saveCriteria(FilmBO filmBO, String port) throws ServiceException;
+    FilmBO saveCriteria(FilmBO filmBO) throws ServiceException;
 
     /**
      * Method for update a film

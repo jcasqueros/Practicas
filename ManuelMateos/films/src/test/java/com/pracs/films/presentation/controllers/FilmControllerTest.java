@@ -341,10 +341,10 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSave_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.save(any(FilmBO.class), anyString())).willAnswer((invocation) -> invocation.getArgument(0));
+        given(filmService.save(any(FilmBO.class))).willAnswer((invocation) -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(
-                post("/films/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
+                post("/films/save?method=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filmDtoIn)));
 
         response.andDo(print()).andExpect(status().isCreated())
@@ -358,10 +358,10 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSave_PresentationException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.save(any(FilmBO.class), anyString())).willThrow(new ServiceException("error"));
+        given(filmService.save(any(FilmBO.class))).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(
-                post("/films/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
+                post("/films/save?method=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filmDtoIn)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
@@ -372,12 +372,10 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSaveCriteria_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.saveCriteria(any(FilmBO.class), anyString())).willAnswer(
-                (invocation) -> invocation.getArgument(0));
+        given(filmService.saveCriteria(any(FilmBO.class))).willAnswer((invocation) -> invocation.getArgument(0));
 
-        ResultActions response = mockMvc.perform(
-                post("/films/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(filmDtoIn)));
+        ResultActions response = mockMvc.perform(post("/films/save?method=true").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(filmDtoIn)));
 
         response.andDo(print()).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is((int) filmDtoOut.getId())))
@@ -390,11 +388,10 @@ class FilmControllerTest {
     void givenFilmDTOObject_whenSaveCriteria_PresentationException() throws Exception {
         given(boToDtoConverter.filmBoToDtoOut(filmBO)).willReturn(filmDtoOut);
         given(dtoToBoConverter.filmDtoToBo(filmDtoIn)).willReturn(filmBO);
-        given(filmService.saveCriteria(any(FilmBO.class), anyString())).willThrow(new ServiceException("error"));
+        given(filmService.saveCriteria(any(FilmBO.class))).willThrow(new ServiceException("error"));
 
-        ResultActions response = mockMvc.perform(
-                post("/films/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(filmDtoIn)));
+        ResultActions response = mockMvc.perform(post("/films/save?method=true").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(filmDtoIn)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
     }

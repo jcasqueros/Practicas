@@ -146,19 +146,18 @@ public class FilmController {
      */
     @Transactional
     @PostMapping("/save")
-    public ResponseEntity<FilmDtoOut> save(@RequestParam boolean method, @RequestParam String port,
-            @Valid @RequestBody FilmDtoIn filmDtoIn) {
+    public ResponseEntity<FilmDtoOut> save(@RequestParam boolean method, @Valid @RequestBody FilmDtoIn filmDtoIn) {
         if (method) {
             try {
                 return new ResponseEntity<>(boToDtoConverter.filmBoToDtoOut(
-                        filmService.saveCriteria(dtoToBoConverter.filmDtoToBo(filmDtoIn), port)), HttpStatus.CREATED);
+                        filmService.saveCriteria(dtoToBoConverter.filmDtoToBo(filmDtoIn))), HttpStatus.CREATED);
             } catch (ServiceException e) {
                 throw new PresentationException(e.getLocalizedMessage());
             }
         }
         try {
             return new ResponseEntity<>(
-                    boToDtoConverter.filmBoToDtoOut(filmService.save(dtoToBoConverter.filmDtoToBo(filmDtoIn), port)),
+                    boToDtoConverter.filmBoToDtoOut(filmService.save(dtoToBoConverter.filmDtoToBo(filmDtoIn))),
                     HttpStatus.CREATED);
         } catch (ServiceException e) {
             throw new PresentationException(e.getLocalizedMessage());

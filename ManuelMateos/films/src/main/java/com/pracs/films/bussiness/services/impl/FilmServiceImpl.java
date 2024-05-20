@@ -54,11 +54,11 @@ public class FilmServiceImpl implements FilmService {
     private final WebClientService webClientService;
 
     @Override
-    public FilmBO save(FilmBO filmBO, String port) throws ServiceException {
+    public FilmBO save(FilmBO filmBO) throws ServiceException {
         try {
-            filmBO.getActors().forEach(a -> webClientService.existsActorJPA(a.getId(), port));
-            webClientService.existsDirectorJPA(filmBO.getDirector().getId(), port);
-            webClientService.existsProducerJPA(filmBO.getProducer().getId(), port);
+            filmBO.getActors().forEach(a -> webClientService.existsActorJPA(a.getId()));
+            webClientService.existsDirectorJPA(filmBO.getDirector().getId());
+            webClientService.existsProducerJPA(filmBO.getProducer().getId());
 
             // Conversión de model a bo del resultado de crear un pelicula.
             return modelToBoConverter.filmModelToBo(filmRepository.save(boToModelConverter.filmBoToModel(filmBO)));
@@ -138,11 +138,11 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public FilmBO saveCriteria(FilmBO filmBO, String port) throws ServiceException {
+    public FilmBO saveCriteria(FilmBO filmBO) throws ServiceException {
         try {
-            filmBO.getActors().forEach(a -> webClientService.existsActorCriteria(a.getId(), port));
-            webClientService.existsDirectorCriteria(filmBO.getDirector().getId(), port);
-            webClientService.existsProducerCriteria(filmBO.getProducer().getId(), port);
+            filmBO.getActors().forEach(a -> webClientService.existsActorCriteria(a.getId()));
+            webClientService.existsDirectorCriteria(filmBO.getDirector().getId());
+            webClientService.existsProducerCriteria(filmBO.getProducer().getId());
 
             // Conversión de model a bo del resultado de crear un pelicula.
             return modelToBoConverter.filmModelToBo(

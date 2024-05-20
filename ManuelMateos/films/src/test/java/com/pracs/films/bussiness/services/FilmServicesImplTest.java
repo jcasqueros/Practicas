@@ -155,12 +155,12 @@ class FilmServicesImplTest {
     void givenFilmBoObject_whenSave_thenReturnFilmBoObject() throws ServiceException {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
         given(boToModelConverter.filmBoToModel(filmBO)).willReturn(film);
-        willDoNothing().given(webClientService).existsActorJPA(1L, "8080");
-        willDoNothing().given(webClientService).existsDirectorJPA(2L, "8080");
-        willDoNothing().given(webClientService).existsProducerJPA(1L, "8080");
+        willDoNothing().given(webClientService).existsActorJPA(1L);
+        willDoNothing().given(webClientService).existsDirectorJPA(2L);
+        willDoNothing().given(webClientService).existsProducerJPA(1L);
         given(filmRepository.save(boToModelConverter.filmBoToModel(filmBO))).willReturn(film);
 
-        FilmBO savedfilmBO = filmService.save(filmBO, "8080");
+        FilmBO savedfilmBO = filmService.save(filmBO);
 
         assertEquals(filmBO, savedfilmBO);
     }
@@ -168,37 +168,37 @@ class FilmServicesImplTest {
     @DisplayName("JUnit test for save a film - negative")
     @Test
     void givenFilmBoObject_whenSave_thenNoActor() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsActorJPA(1L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsActorJPA(1L);
 
-        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO));
     }
 
     @DisplayName("JUnit test for save a film - negative")
     @Test
     void givenFilmBoObject_whenSave_thenNoDirector() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorJPA(2L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorJPA(2L);
 
-        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO));
     }
 
     @DisplayName("JUnit test for save a film - negative")
     @Test
     void givenFilmBoObject_whenSave_thenNoProducer() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerJPA(1L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerJPA(1L);
 
-        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> filmService.save(filmBO));
     }
 
     @DisplayName("JUnit test for save a film - negative")
     @Test()
     void givenFilmBoObject_whenSave_thenThrowNestedRuntimeException() throws ServiceException {
-        willDoNothing().given(webClientService).existsActorJPA(1L, "8080");
-        willDoNothing().given(webClientService).existsDirectorJPA(2L, "8080");
-        willDoNothing().given(webClientService).existsProducerJPA(1L, "8080");
+        willDoNothing().given(webClientService).existsActorJPA(1L);
+        willDoNothing().given(webClientService).existsDirectorJPA(2L);
+        willDoNothing().given(webClientService).existsProducerJPA(1L);
         when(filmRepository.save(boToModelConverter.filmBoToModel(filmBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> filmService.save(filmBO, "8080"));
+        assertThrows(ServiceException.class, () -> filmService.save(filmBO));
     }
 
     @DisplayName("JUnit test for update a film - positive")
@@ -326,12 +326,12 @@ class FilmServicesImplTest {
     void givenFilmBoObject_whenSaveCriteria_thenReturnFilmBoObject() throws ServiceException {
         given(modelToBoConverter.filmModelToBo(film)).willReturn(filmBO);
         given(boToModelConverter.filmBoToModel(filmBO)).willReturn(film);
-        willDoNothing().given(webClientService).existsActorCriteria(1L, "8080");
-        willDoNothing().given(webClientService).existsDirectorCriteria(2L, "8080");
-        willDoNothing().given(webClientService).existsProducerCriteria(1L, "8080");
+        willDoNothing().given(webClientService).existsActorCriteria(1L);
+        willDoNothing().given(webClientService).existsDirectorCriteria(2L);
+        willDoNothing().given(webClientService).existsProducerCriteria(1L);
         given(filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO))).willReturn(film);
 
-        FilmBO savedfilmBO = filmService.saveCriteria(filmBO, "8080");
+        FilmBO savedfilmBO = filmService.saveCriteria(filmBO);
 
         assertEquals(filmBO, savedfilmBO);
     }
@@ -339,37 +339,37 @@ class FilmServicesImplTest {
     @DisplayName("JUnit test for save a film - negative")
     @Test
     void givenFilmBoObject_whenSaveCriteria_thenNoActor() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsActorCriteria(1L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsActorCriteria(1L);
 
-        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO));
     }
 
     @DisplayName("JUnit test for save a film - negative")
     @Test
     void givenFilmBoObject_whenSaveCriteria_thenNoDirector() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorCriteria(2L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorCriteria(2L);
 
-        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO));
     }
 
     @DisplayName("JUnit test for save a film - negative")
     @Test
     void givenFilmBoObject_whenSaveCriteria_thenNoProducer() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerCriteria(1L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerCriteria(1L);
 
-        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> filmService.saveCriteria(filmBO));
     }
 
     @DisplayName("JUnit test for save a film - negative")
     @Test()
     void givenFilmBoObject_whenSaveCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        willDoNothing().given(webClientService).existsActorCriteria(1L, "8080");
-        willDoNothing().given(webClientService).existsDirectorCriteria(2L, "8080");
-        willDoNothing().given(webClientService).existsProducerCriteria(1L, "8080");
+        willDoNothing().given(webClientService).existsActorCriteria(1L);
+        willDoNothing().given(webClientService).existsDirectorCriteria(2L);
+        willDoNothing().given(webClientService).existsProducerCriteria(1L);
         when(filmRepositoryCriteria.saveFilm(boToModelConverter.filmBoToModel(filmBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> filmService.saveCriteria(filmBO, "8080"));
+        assertThrows(ServiceException.class, () -> filmService.saveCriteria(filmBO));
     }
 
     @DisplayName("JUnit test for update a film - positive")

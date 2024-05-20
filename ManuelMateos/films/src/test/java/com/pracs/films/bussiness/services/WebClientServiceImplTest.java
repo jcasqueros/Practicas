@@ -4,20 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pracs.films.bussiness.services.impl.WebClientServiceImpl;
 import com.pracs.films.exceptions.EntityNotFoundException;
-import com.pracs.films.persistence.repositories.jpa.ActorRepository;
-import com.pracs.films.persistence.repositories.jpa.DirectorRepository;
-import com.pracs.films.persistence.repositories.jpa.ProducerRepository;
 import com.pracs.films.presentation.dto.ActorDtoOut;
 import com.pracs.films.presentation.dto.DirectorDtoOut;
 import com.pracs.films.presentation.dto.ProducerDtoOut;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -30,24 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Manuel Mateos de Torres
  */
-
-@ExtendWith(MockitoExtension.class)
 class WebClientServiceImplTest {
-
-    @Mock
-    private ActorRepository actorRepository;
-
-    @Mock
-    private DirectorRepository directorRepository;
-
-    @Mock
-    private ProducerRepository producerRepository;
-
-    @Mock
-    private WebClient webClient;
-
-    @InjectMocks
-    private WebClientServiceImpl webClientService;
 
     private ObjectMapper objectMapper;
 
@@ -58,6 +38,10 @@ class WebClientServiceImplTest {
     private ProducerDtoOut producerDtoOut;
 
     private static MockWebServer mockBackEnd;
+
+    private WebClient webClient;
+
+    private WebClientService webClientService;
 
     @BeforeEach
     void setup() throws IOException {
@@ -80,12 +64,12 @@ class WebClientServiceImplTest {
         producerDtoOut.setDebut(2000);
 
         objectMapper = new ObjectMapper();
-    }
-
-    @BeforeAll
-    static void setUp() throws IOException {
+        webClient = WebClient.builder().build();
+        webClientService = new WebClientServiceImpl(webClient);
         mockBackEnd = new MockWebServer();
         mockBackEnd.start();
+        ReflectionTestUtils.setField(webClientService, "host", "localhost");
+        ReflectionTestUtils.setField(webClientService, "port", mockBackEnd.getPort());
     }
 
     @AfterAll
@@ -100,7 +84,7 @@ class WebClientServiceImplTest {
         mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", "application/json")
                 .setBody(objectMapper.writeValueAsString(actorDtoOut)));
 
-        webClientService.existsActorJPA(actorDtoOut.getId(), String.valueOf(mockBackEnd.getPort()));
+        webClientService.existsActorJPA(actorDtoOut.getId());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 
@@ -114,8 +98,7 @@ class WebClientServiceImplTest {
 
         mockBackEnd.enqueue(new MockResponse().setResponseCode(401));
 
-        assertThrows(EntityNotFoundException.class,
-                () -> webClientService.existsActorJPA(actorDtoOut.getId(), String.valueOf(mockBackEnd.getPort())));
+        assertThrows(EntityNotFoundException.class, () -> webClientService.existsActorJPA(actorDtoOut.getId()));
     }
 
     @DisplayName("JUnit test for find out an actor - positive")
@@ -126,7 +109,7 @@ class WebClientServiceImplTest {
         mockBackEnd.enqueue(new MockResponse().setBody(objectMapper.writeValueAsString(actorDtoOut))
                 .addHeader("Content-Type", "application/json"));
 
-        webClientService.existsActorCriteria(actorDtoOut.getId(), String.valueOf(mockBackEnd.getPort()));
+        webClientService.existsActorCriteria(actorDtoOut.getId());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 
@@ -141,8 +124,7 @@ class WebClientServiceImplTest {
 
         mockBackEnd.enqueue(new MockResponse().setResponseCode(401));
 
-        assertThrows(EntityNotFoundException.class,
-                () -> webClientService.existsActorCriteria(actorDtoOut.getId(), String.valueOf(mockBackEnd.getPort())));
+        assertThrows(EntityNotFoundException.class, () -> webClientService.existsActorCriteria(actorDtoOut.getId()));
     }
 
     @DisplayName("JUnit test for find out a director - positive")
@@ -153,12 +135,12 @@ class WebClientServiceImplTest {
         mockBackEnd.enqueue(new MockResponse().setBody(objectMapper.writeValueAsString(directorDtoOut))
                 .addHeader("Content-Type", "application/json"));
 
-        webClientService.existsDirectorJPA(directorDtoOut.getId(), String.valueOf(mockBackEnd.getPort()));
+        webClientService.existsDirectorJPA(directorDtoOut.getId());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 
         assertEquals("GET", recordedRequest.getMethod());
-        assertEquals("/directors/findById/1?method=false", recordedRequest.getPath());
+        assertEquals("/directors/findById/2?method=false", recordedRequest.getPath());
     }
 
     @DisplayName("JUnit test for find out a director - negative")
@@ -168,8 +150,7 @@ class WebClientServiceImplTest {
 
         mockBackEnd.enqueue(new MockResponse().setResponseCode(401));
 
-        assertThrows(EntityNotFoundException.class, () -> webClientService.existsDirectorJPA(directorDtoOut.getId(),
-                String.valueOf(mockBackEnd.getPort())));
+        assertThrows(EntityNotFoundException.class, () -> webClientService.existsDirectorJPA(directorDtoOut.getId()));
     }
 
     @DisplayName("JUnit test for find out a director - positive")
@@ -180,12 +161,12 @@ class WebClientServiceImplTest {
         mockBackEnd.enqueue(new MockResponse().setBody(objectMapper.writeValueAsString(directorDtoOut))
                 .addHeader("Content-Type", "application/json"));
 
-        webClientService.existsDirectorCriteria(directorDtoOut.getId(), String.valueOf(mockBackEnd.getPort()));
+        webClientService.existsDirectorCriteria(directorDtoOut.getId());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 
         assertEquals("GET", recordedRequest.getMethod());
-        assertEquals("/directors/findById/1?method=true", recordedRequest.getPath());
+        assertEquals("/directors/findById/2?method=true", recordedRequest.getPath());
     }
 
     @DisplayName("JUnit test for find out a director - negative")
@@ -196,8 +177,7 @@ class WebClientServiceImplTest {
         mockBackEnd.enqueue(new MockResponse().setResponseCode(401));
 
         assertThrows(EntityNotFoundException.class,
-                () -> webClientService.existsDirectorCriteria(directorDtoOut.getId(),
-                        String.valueOf(mockBackEnd.getPort())));
+                () -> webClientService.existsDirectorCriteria(directorDtoOut.getId()));
     }
 
     @DisplayName("JUnit test for find out a producer - positive")
@@ -208,7 +188,7 @@ class WebClientServiceImplTest {
         mockBackEnd.enqueue(new MockResponse().setBody(objectMapper.writeValueAsString(producerDtoOut))
                 .addHeader("Content-Type", "application/json"));
 
-        webClientService.existsProducerJPA(producerDtoOut.getId(), String.valueOf(mockBackEnd.getPort()));
+        webClientService.existsProducerJPA(producerDtoOut.getId());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 
@@ -223,8 +203,7 @@ class WebClientServiceImplTest {
 
         mockBackEnd.enqueue(new MockResponse().setResponseCode(401));
 
-        assertThrows(EntityNotFoundException.class, () -> webClientService.existsProducerJPA(producerDtoOut.getId(),
-                String.valueOf(mockBackEnd.getPort())));
+        assertThrows(EntityNotFoundException.class, () -> webClientService.existsProducerJPA(producerDtoOut.getId()));
     }
 
     @DisplayName("JUnit test for find out a producer - positive")
@@ -235,12 +214,12 @@ class WebClientServiceImplTest {
         mockBackEnd.enqueue(new MockResponse().setBody(objectMapper.writeValueAsString(producerDtoOut))
                 .addHeader("Content-Type", "application/json"));
 
-        webClientService.existsProducerCriteria(producerDtoOut.getId(), String.valueOf(mockBackEnd.getPort()));
+        webClientService.existsProducerCriteria(producerDtoOut.getId());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 
         assertEquals("GET", recordedRequest.getMethod());
-        assertEquals("/producers/findById/1=method=true", recordedRequest.getPath());
+        assertEquals("/producers/findById/1?method=true", recordedRequest.getPath());
     }
 
     @DisplayName("JUnit test for find out a producer - negative")
@@ -251,7 +230,6 @@ class WebClientServiceImplTest {
         mockBackEnd.enqueue(new MockResponse().setResponseCode(401));
 
         assertThrows(EntityNotFoundException.class,
-                () -> webClientService.existsProducerCriteria(producerDtoOut.getId(),
-                        String.valueOf(mockBackEnd.getPort())));
+                () -> webClientService.existsProducerCriteria(producerDtoOut.getId()));
     }
 }

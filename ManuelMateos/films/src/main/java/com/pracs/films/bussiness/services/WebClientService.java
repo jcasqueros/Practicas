@@ -13,47 +13,41 @@ public interface WebClientService {
      * Method for find out if an actor exist
      *
      * @param id
-     * @param port
      */
-    void existsActorJPA(long id, String port);
+    void existsActorJPA(long id);
 
     /**
      * Method for find out if a director exist
      *
      * @param id
-     * @param port
      */
-    void existsDirectorJPA(long id, String port);
+    void existsDirectorJPA(long id);
 
     /**
      * Method for find out if a producer exist
      *
      * @param id
-     * @param port
      */
-    void existsProducerJPA(long id, String port);
+    void existsProducerJPA(long id);
 
     /**
      * Method for find out if an actor exist
      *
      * @param id
-     * @param port
      */
-    void existsActorCriteria(long id, String port);
+    void existsActorCriteria(long id);
 
     /**
      * Method for find out if a director exist
      *
      * @param id
-     * @param port
      */
-    void existsDirectorCriteria(long id, String port);
+    void existsDirectorCriteria(long id);
 
     /**
      * Method for find out if a producer exist
      *
      * @param id
-     * @param port
      */
-    void existsProducerCriteria(long id, String port);
+    void existsProducerCriteria(long id);
 }

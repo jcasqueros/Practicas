@@ -155,12 +155,12 @@ class SerieServicesImplTest {
     void givenSerieBoObject_whenSave_thenReturnSerieBoObject() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
         given(boToModelConverter.serieBoToModel(serieBO)).willReturn(serie);
-        willDoNothing().given(webClientService).existsActorJPA(1L, "8080");
-        willDoNothing().given(webClientService).existsDirectorJPA(2L, "8080");
-        willDoNothing().given(webClientService).existsProducerJPA(1L, "8080");
+        willDoNothing().given(webClientService).existsActorJPA(1L);
+        willDoNothing().given(webClientService).existsDirectorJPA(2L);
+        willDoNothing().given(webClientService).existsProducerJPA(1L);
         given(serieRepository.save(boToModelConverter.serieBoToModel(serieBO))).willReturn(serie);
 
-        SerieBO savedSerieBO = serieService.save(serieBO, "8080");
+        SerieBO savedSerieBO = serieService.save(serieBO);
 
         assertEquals(serieBO, savedSerieBO);
     }
@@ -168,37 +168,37 @@ class SerieServicesImplTest {
     @DisplayName("JUnit test for save a serie - negative")
     @Test
     void givenSerieBoObject_whenSave_thenNoActor() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsActorJPA(1L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsActorJPA(1L);
 
-        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO));
     }
 
     @DisplayName("JUnit test for save a serie - negative")
     @Test
     void givenSerieBoObject_whenSave_thenNoDirector() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorJPA(2L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorJPA(2L);
 
-        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO));
     }
 
     @DisplayName("JUnit test for save a serie - negative")
     @Test
     void givenSerieBoObject_whenSave_thenNoProducer() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerJPA(1L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerJPA(1L);
 
-        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> serieService.save(serieBO));
     }
 
     @DisplayName("JUnit test for save a serie - negative")
     @Test()
     void givenSerieBoObject_whenSave_thenThrowNestedRuntimeException() throws ServiceException {
-        willDoNothing().given(webClientService).existsActorJPA(1L, "8080");
-        willDoNothing().given(webClientService).existsDirectorJPA(2L, "8080");
-        willDoNothing().given(webClientService).existsProducerJPA(1L, "8080");
+        willDoNothing().given(webClientService).existsActorJPA(1L);
+        willDoNothing().given(webClientService).existsDirectorJPA(2L);
+        willDoNothing().given(webClientService).existsProducerJPA(1L);
         when(serieRepository.save(boToModelConverter.serieBoToModel(serieBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> serieService.save(serieBO, "8080"));
+        assertThrows(ServiceException.class, () -> serieService.save(serieBO));
     }
 
     @DisplayName("JUnit test for update an serie - positive")
@@ -326,12 +326,12 @@ class SerieServicesImplTest {
     void givenSerieBoObject_whenSaveCriteria_thenReturnSerieBoObject() throws ServiceException {
         given(modelToBoConverter.serieModelToBo(serie)).willReturn(serieBO);
         given(boToModelConverter.serieBoToModel(serieBO)).willReturn(serie);
-        willDoNothing().given(webClientService).existsActorCriteria(1L, "8080");
-        willDoNothing().given(webClientService).existsDirectorCriteria(2L, "8080");
-        willDoNothing().given(webClientService).existsProducerCriteria(1L, "8080");
+        willDoNothing().given(webClientService).existsActorCriteria(1L);
+        willDoNothing().given(webClientService).existsDirectorCriteria(2L);
+        willDoNothing().given(webClientService).existsProducerCriteria(1L);
         given(serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO))).willReturn(serie);
 
-        SerieBO savedSerieBO = serieService.saveCriteria(serieBO, "8080");
+        SerieBO savedSerieBO = serieService.saveCriteria(serieBO);
 
         assertEquals(serieBO, savedSerieBO);
     }
@@ -339,37 +339,37 @@ class SerieServicesImplTest {
     @DisplayName("JUnit test for save a serie - negative")
     @Test
     void givenSerieBoObject_whenSaveCriteria_thenNoActor() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsActorCriteria(1L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsActorCriteria(1L);
 
-        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO));
     }
 
     @DisplayName("JUnit test for save a serie - negative")
     @Test
     void givenSerieBoObject_whenSaveCriteria_thenNoDirector() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorCriteria(2L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsDirectorCriteria(2L);
 
-        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO));
     }
 
     @DisplayName("JUnit test for save a serie - negative")
     @Test
     void givenSerieBoObject_whenSaveCriteria_thenNoProducer() throws ServiceException {
-        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerCriteria(1L, "8080");
+        willThrow(EntityNotFoundException.class).given(webClientService).existsProducerCriteria(1L);
 
-        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO, "8080"));
+        assertThrows(EntityNotFoundException.class, () -> serieService.saveCriteria(serieBO));
     }
 
     @DisplayName("JUnit test for save a serie - negative")
     @Test()
     void givenSerieBoObject_whenSaveCriteria_thenThrowNestedRuntimeException() throws ServiceException {
-        willDoNothing().given(webClientService).existsActorCriteria(1L, "8080");
-        willDoNothing().given(webClientService).existsDirectorCriteria(2L, "8080");
-        willDoNothing().given(webClientService).existsProducerCriteria(1L, "8080");
+        willDoNothing().given(webClientService).existsActorCriteria(1L);
+        willDoNothing().given(webClientService).existsDirectorCriteria(2L);
+        willDoNothing().given(webClientService).existsProducerCriteria(1L);
         when(serieRepositoryCriteria.saveSerie(boToModelConverter.serieBoToModel(serieBO))).thenThrow(
                 InvalidDataAccessApiUsageException.class);
 
-        assertThrows(ServiceException.class, () -> serieService.saveCriteria(serieBO, "8080"));
+        assertThrows(ServiceException.class, () -> serieService.saveCriteria(serieBO));
     }
 
     @DisplayName("JUnit test for update an serie - positive")

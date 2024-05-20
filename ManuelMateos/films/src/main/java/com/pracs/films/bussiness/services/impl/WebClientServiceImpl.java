@@ -9,6 +9,7 @@ import com.pracs.films.presentation.dto.DirectorDtoOut;
 import com.pracs.films.presentation.dto.ProducerDtoOut;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -24,12 +25,18 @@ import java.util.Objects;
 @Service
 public class WebClientServiceImpl implements WebClientService {
 
+    @Value("${host}")
+    private String host;
+
+    @Value("${port}")
+    private int port;
+
     private final WebClient webClient;
 
     @Override
-    public void existsActorJPA(long id, String port) {
+    public void existsActorJPA(long id) {
         try {
-            webClient.get().uri("http://localhost:" + port + "/actors/findById/" + id + "?method=false").retrieve()
+            webClient.get().uri("http://" + host + ":" + port + "/actors/findById/" + id + "?method=false").retrieve()
                     .bodyToMono(ActorDtoOut.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
@@ -40,29 +47,29 @@ public class WebClientServiceImpl implements WebClientService {
     }
 
     @Override
-    public void existsDirectorJPA(long id, String port) {
+    public void existsDirectorJPA(long id) {
         try {
-            webClient.get().uri("http://localhost:" + port + "/directors/findById/" + id + "?method=false").retrieve()
-                    .bodyToMono(DirectorDtoOut.class).map(Objects::nonNull).block();
+            webClient.get().uri("http://" + host + ":" + port + "/directors/findById/" + id + "?method=false")
+                    .retrieve().bodyToMono(DirectorDtoOut.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             throw new EntityNotFoundException(ConstantMessages.NODIRECTORS);
         }
     }
 
     @Override
-    public void existsProducerJPA(long id, String port) {
+    public void existsProducerJPA(long id) {
         try {
-            webClient.get().uri("http://localhost:" + port + "/producers/findById/" + id + "?method=false").retrieve()
-                    .bodyToMono(ProducerDtoOut.class).map(Objects::nonNull).block();
+            webClient.get().uri("http://" + host + ":" + port + "/producers/findById/" + id + "?method=false")
+                    .retrieve().bodyToMono(ProducerDtoOut.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             throw new EntityNotFoundException(ConstantMessages.NOPRODUCERS);
         }
     }
 
     @Override
-    public void existsActorCriteria(long id, String port) {
+    public void existsActorCriteria(long id) {
         try {
-            webClient.get().uri("http://localhost:" + port + "/actors/findById/" + id + "?method=true").retrieve()
+            webClient.get().uri("http://" + host + ":" + port + "/actors/findById/" + id + "?method=true").retrieve()
                     .bodyToMono(Actor.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             throw new EntityNotFoundException(ConstantMessages.NOACTORS);
@@ -70,9 +77,9 @@ public class WebClientServiceImpl implements WebClientService {
     }
 
     @Override
-    public void existsDirectorCriteria(long id, String port) {
+    public void existsDirectorCriteria(long id) {
         try {
-            webClient.get().uri("http://localhost:" + port + "/directors/findById/" + id + "?method=true").retrieve()
+            webClient.get().uri("http://" + host + ":" + port + "/directors/findById/" + id + "?method=true").retrieve()
                     .bodyToMono(DirectorDtoOut.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             throw new EntityNotFoundException(ConstantMessages.NODIRECTORS);
@@ -80,9 +87,9 @@ public class WebClientServiceImpl implements WebClientService {
     }
 
     @Override
-    public void existsProducerCriteria(long id, String port) {
+    public void existsProducerCriteria(long id) {
         try {
-            webClient.get().uri("http://localhost:" + port + "/producers/findById/" + id + "?method=true").retrieve()
+            webClient.get().uri("http://" + host + ":" + port + "/producers/findById/" + id + "?method=true").retrieve()
                     .bodyToMono(ProducerDtoOut.class).map(Objects::nonNull).block();
         } catch (Exception e) {
             throw new EntityNotFoundException(ConstantMessages.NOPRODUCERS);

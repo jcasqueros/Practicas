@@ -341,10 +341,10 @@ class SerieControllerTest {
     void givenActorDTOObject_whenSave_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.save(any(SerieBO.class), anyString())).willAnswer((invocation) -> invocation.getArgument(0));
+        given(serieService.save(any(SerieBO.class))).willAnswer((invocation) -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(
-                post("/series/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
+                post("/series/save?method=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(serieDtoIn)));
 
         response.andDo(print()).andExpect(status().isCreated())
@@ -358,10 +358,10 @@ class SerieControllerTest {
     void givenActorDTOObject_whenSave_PresentationException() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.save(any(SerieBO.class), anyString())).willThrow(new ServiceException("error"));
+        given(serieService.save(any(SerieBO.class))).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(
-                post("/series/save?method=false&port=8080").contentType(MediaType.APPLICATION_JSON)
+                post("/series/save?method=false").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(serieDtoIn)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
@@ -372,11 +372,10 @@ class SerieControllerTest {
     void givenActorDTOObject_whenSaveCriteria_thenReturnSavedActor() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.saveCriteria(any(SerieBO.class), anyString())).willAnswer(
-                (invocation) -> invocation.getArgument(0));
+        given(serieService.saveCriteria(any(SerieBO.class))).willAnswer((invocation) -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(
-                post("/series/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)
+                post("/series/save?method=true").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(serieDtoIn)));
 
         response.andDo(print()).andExpect(status().isCreated())
@@ -390,10 +389,10 @@ class SerieControllerTest {
     void givenActorDTOObject_whenSaveCriteria_PresentationException() throws Exception {
         given(boToDtoConverter.serieBoToDtoOut(serieBO)).willReturn(serieDtoOut);
         given(dtoToBoConverter.serieDtoToBo(serieDtoIn)).willReturn(serieBO);
-        given(serieService.saveCriteria(any(SerieBO.class), anyString())).willThrow(new ServiceException("error"));
+        given(serieService.saveCriteria(any(SerieBO.class))).willThrow(new ServiceException("error"));
 
         ResultActions response = mockMvc.perform(
-                post("/series/save?method=true&port=8080").contentType(MediaType.APPLICATION_JSON)
+                post("/series/save?method=true").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(serieDtoIn)));
 
         response.andDo(print()).andExpect(status().isBadRequest());
