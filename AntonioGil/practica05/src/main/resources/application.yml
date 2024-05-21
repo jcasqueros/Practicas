@@ -11,3 +11,4 @@ logging:
 
 batch01:
   input-file: tramos_calle_BarrioDismuni.csv
+  strategy: TASKLETS
