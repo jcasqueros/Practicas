@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: vn-practica05
+  profiles:
+    active:
+      - dev
+
+logging:
+  level:
+    root: INFO
+
+batch01:
+  input-file: tramos_calle_BarrioDismuni.csv
