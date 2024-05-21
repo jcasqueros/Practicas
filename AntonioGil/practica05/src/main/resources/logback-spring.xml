@@ -3,7 +3,7 @@
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
     <appender name="lineParseErrorLogger" class="ch.qos.logback.core.FileAppender">
-        <file>./batch01-parse_errors.log</file>
+        <file>./log/batch01-parse_errors.log</file>
         <append>false</append>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -11,18 +11,18 @@
     </appender>
 
     <appender name="acceptedLineLogger" class="ch.qos.logback.core.FileAppender">
-        <file>./batch01-accepted_lines.log</file>
+        <file>./log/batch01-accepted_lines.log</file>
         <append>false</append>
         <encoder>
             <pattern>%msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="com.viewnext.batch01.step.listener.TramoReaderListener#parseError">
+    <logger name="com.viewnext.batch01.step.listener.TramoReadLogger#parseErrorLog">
         <appender-ref ref="lineParseErrorLogger"/>
     </logger>
 
-    <logger name="com.viewnext.batch01.step.TramoItemProcessor#acceptedLineLogger">
+    <logger name="com.viewnext.batch01.step.chunk.TramoSetWriter#outputLog">
         <appender-ref ref="acceptedLineLogger"/>
     </logger>
 

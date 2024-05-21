@@ -11,4 +11,4 @@ logging:
     com.viewnext: INFO
 
 batch01:
-  input-file: tramos_calle_BarrioDismuni.csv
+  tramo-input-file: tramos_calle_BarrioDismuni.csv
