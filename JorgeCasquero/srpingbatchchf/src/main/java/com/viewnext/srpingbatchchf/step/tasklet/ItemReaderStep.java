@@ -47,7 +47,7 @@ public class ItemReaderStep implements Tasklet {
 			tramoCalle.setNombreCalle(lineaActual[2]);
 			tramoCalle.setPrimerNumTramo(Integer.parseInt(lineaActual[3]));
 			tramoCalle.setUltimoNumTramo(Integer.parseInt(lineaActual[4]));
-			tramoCalle.setBarrio(Integer.parseInt(lineaActual[5]));
+			tramoCalle.setBarrio(lineaActual[5]);
 			tramoCalle.setCodDistrito(Integer.parseInt(lineaActual[6]));
 			tramoCalle.setNomDistrito(lineaActual[7]);
 			tramoList.add(tramoCalle);

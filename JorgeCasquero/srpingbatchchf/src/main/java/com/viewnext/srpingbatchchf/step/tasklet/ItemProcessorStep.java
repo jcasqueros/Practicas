@@ -9,7 +9,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.viewnext.srpingbatchchf.model.TramoCalle;
-import com.viewnext.srpingbatchchf.repository.copy.TramoCalleRepository;
+import com.viewnext.srpingbatchchf.persistence.TramoCalleRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
