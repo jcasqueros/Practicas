@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.batch.core.Job;
@@ -21,7 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.viewnext.srpingbatchchf.model.TramoCalle;
+import com.viewnext.srpingbatchchf.persistence.TramoCalleRepository;
+
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Slf4j
 @RestController
@@ -33,6 +38,9 @@ public class BachController {
 	private JobLauncher jobLauncher;
 	@Autowired
 	private Job job;
+
+	@Autowired
+	private TramoCalleRepository tramoCalleRepository;
 
 	@PostMapping("/uploadFile")
 	public ResponseEntity<?> recibirArchivo(@RequestParam(name = "file") MultipartFile multipartFile) {
@@ -50,11 +58,8 @@ public class BachController {
 			JobParameters jobParameters = new JobParametersBuilder().addDate("fecha", new Date())
 					.addString("fileName", fileName).toJobParameters();
 
-			
-			
-			 jobLauncher.run(job, jobParameters);
-			 
-			 
+			jobLauncher.run(job, jobParameters);
+
 			Map<String, String> response = new HashMap<>();
 			response.put("archivo", fileName);
 			response.put("estado", "recibido");
@@ -65,4 +70,11 @@ public class BachController {
 		}
 
 	}
+
+	@GetMapping("/getAll")
+	public ResponseEntity<List<TramoCalle>> getMethodName() {
+		List<TramoCalle> tramosCalle = tramoCalleRepository.findAll();
+		return ResponseEntity.ok(tramosCalle);
+	}
+
 }

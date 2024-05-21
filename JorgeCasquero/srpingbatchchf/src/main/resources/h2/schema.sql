@@ -1,10 +1,10 @@
-CREATE TABLE Tramo_Calle (
-  codigo_calle BIGINT PRIMARY KEY,
-  tipo_via VARCHAR(255),
-  nombre_calle VARCHAR(255),
-  primer_num_tramo INTEGER,
-  ultimo_num_tramo INTEGER,
-  barrio INTEGER,
-  cod_distrito INTEGER,
-  nom_distrito VARCHAR(255)
+CREATE TABLE TRAMO_CALLE (
+  CODIGO_CALLE INT,
+  TIPO_VIA VARCHAR(255),
+  NOMBRE_CALLE VARCHAR(255),
+  PRIMER_NUM_TRAMO INT,
+  ULTIMO_NUM_TRAMO INT,
+  BARRIO VARCHAR(255),
+  COD_DISTRITO INT,
+  NOM_DISTRITO VARCHAR(255)
 );
