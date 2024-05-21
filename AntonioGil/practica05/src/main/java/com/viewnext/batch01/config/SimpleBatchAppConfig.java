@@ -22,13 +22,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
+@Import({MongoDbConfig.class})
 @EnableAutoConfiguration
 @EnableBatchProcessing
-public class SimpleBatchAppConfiguration {
+public class SimpleBatchAppConfig {
 
     private static final String INJECTABLE_PLACEHOLDER = null;
 
@@ -39,7 +41,7 @@ public class SimpleBatchAppConfiguration {
 
     private final StepBuilderFactory steps;
 
-    public SimpleBatchAppConfiguration(JobBuilderFactory jobs, StepBuilderFactory steps) {
+    public SimpleBatchAppConfig(JobBuilderFactory jobs, StepBuilderFactory steps) {
         this.jobs = jobs;
         this.steps = steps;
     }
