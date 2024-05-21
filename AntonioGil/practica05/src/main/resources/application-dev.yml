@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: vn-practica05-dev
+  batch:
+    jdbc:
+      initialize-schema: always
+  datasource:
+    url: jdbc:h2:file:./data/h2/db/bsan-practica05
+    username: practica05
+    password: 123
+    driverClassName: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+
+logging:
+  level:
+    root: INFO
