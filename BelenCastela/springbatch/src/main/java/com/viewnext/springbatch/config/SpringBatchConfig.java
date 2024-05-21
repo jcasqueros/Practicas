@@ -1,73 +1,73 @@
 package com.viewnext.springbatch.config;
 
-import javax.sql.DataSource;
+import java.text.ParseException;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.LineMapper;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.file.FlatFileParseException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.viewnext.springbatch.model.Direccion;
+import com.viewnext.springbatch.step.chunk.DireccionItemProcess;
+import com.viewnext.springbatch.step.chunk.DireccionItemReader;
+import com.viewnext.springbatch.step.chunk.DireccionItemWriter;
 
 @Configuration
 @EnableAutoConfiguration
 public class SpringBatchConfig {
 
 	@Bean
-	public Job job(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, ItemReader<Direccion> itemReader, ItemProcessor<Direccion, Direccion> itemProcessor, ItemWriter<Direccion> itemWriter) {
-
-		Step step = stepBuilderFactory.get("ELT-file-load")
-				.<Direccion,Direccion>chunk(100)
-				.reader(itemReader)
-				.processor(itemProcessor)
-				.writer(itemWriter)
-				.build();
-
-		return jobBuilderFactory.get("ETL-Load")
-				.incrementer(new RunIdIncrementer())
-				.start(step)
-				.build();
+	public DireccionItemReader itemReader() {
+		return new DireccionItemReader();
 	}
 	
 	@Bean
-	public FlatFileItemReader<Direccion> fileItemReader(@Value("${input}") Resource resource) {
-		FlatFileItemReader<Direccion> flatFileItemReader = new FlatFileItemReader<>();
-		flatFileItemReader.setResource(resource);
-		flatFileItemReader.setName("CSV Reader");
-		flatFileItemReader.setLinesToSkip(1);
-		flatFileItemReader.setLineMapper(lineMapper());
-		return flatFileItemReader;
+	public DireccionItemWriter itemWriter() {
+		return new DireccionItemWriter();
 	}
 	
 	@Bean
-	public LineMapper<Direccion> lineMapper() {
-		DefaultLineMapper<Direccion> defaultLineMapper = new DefaultLineMapper<>();
-		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-		
-		lineTokenizer .setDelimiter(",");
-		lineTokenizer.setStrict(false);
-		lineTokenizer.setNames(new String[] {"ID", "CODIGO_CALLE", "TIPO_VIA", "NOMBRE_CALLE", "PRIMER_NUM_TRAMO", "ULTIMO_NUM_TRAMO", "BARRIO", "COD_DISTRITO", "NOM_DISTRITO"});
-		
-		BeanWrapperFieldSetMapper<Direccion> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-		
-		defaultLineMapper.setLineTokenizer(lineTokenizer);
-		
-		return null;
+	public DireccionItemProcess itemProcessor() {
+		return new DireccionItemProcess();
 	}
+	
+	@Bean
+	public TaskExecutor taskExecutor() {
+		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+		taskExecutor.setCorePoolSize(1);
+		taskExecutor.setMaxPoolSize(5);
+		taskExecutor.setQueueCapacity(50);
+		return taskExecutor;
+	}
+	
+	@Bean
+	public Step readFile(JobRepository jobRepository, PlatformTransactionManager transactionManager) throws ParseException {
+		return new StepBuilder("readFile", jobRepository)
+				.<Direccion, Direccion>chunk(100, transactionManager)
+				.reader(itemReader())
+				//.processor(itemProcessor)
+				.writer(itemWriter())
+				.faultTolerant()
+				.skipLimit(100)
+				.skip(FlatFileParseException.class)
+				.taskExecutor(taskExecutor())
+				.build();
+	}
+	
+	@Bean(name= "firstBatchJob")
+	public Job job(JobRepository jobRepository, @Qualifier("readFile") Step readFile) {
+		return new JobBuilder("firstBatchJob", jobRepository)
+				.start(readFile)
+				.build();
+	}
+
 }
-
-//19:37 cvs to database
