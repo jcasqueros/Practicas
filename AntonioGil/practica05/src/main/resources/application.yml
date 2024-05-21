@@ -8,7 +8,7 @@ spring:
 logging:
   level:
     root: INFO
+    com.viewnext: INFO
 
 batch01:
   input-file: tramos_calle_BarrioDismuni.csv
-  strategy: TASKLETS

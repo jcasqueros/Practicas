@@ -145,7 +145,6 @@ public class Tramo {
     @Override
     public String toString() {
         return new StringJoiner(", ", Tramo.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
                 .add("codigoCalle=" + codigoCalle)
                 .add("tipoVia='" + tipoVia + "'")
                 .add("nombreCalle='" + nombreCalle + "'")

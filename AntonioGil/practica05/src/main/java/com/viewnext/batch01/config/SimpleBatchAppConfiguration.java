@@ -7,6 +7,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
@@ -30,11 +31,13 @@ import javax.persistence.EntityManagerFactory;
 @EnableBatchProcessing
 public class SimpleBatchAppConfiguration {
 
+    private static final String INJECTABLE_PLACEHOLDER = null;
+
     @Value("${batch01.input-file}")
     private String inputFile;
 
     @Bean
-    public FlatFileItemReader<Tramo> tramoItemReader() {
+    public FlatFileItemReader<Tramo> itemReader() {
         var fieldSetMapper = new BeanWrapperFieldSetMapper<Tramo>();
         fieldSetMapper.setTargetType(Tramo.class);
 
@@ -50,8 +53,9 @@ public class SimpleBatchAppConfiguration {
     }
 
     @Bean
-    public TramoItemProcessor tramoItemProcessor() {
-        return new TramoItemProcessor();
+    @StepScope
+    public TramoItemProcessor itemProcessor(@Value("#{jobParameters['batch01.district']}") String districtName) {
+        return new TramoItemProcessor(districtName);
     }
 
     @Bean
@@ -80,12 +84,12 @@ public class SimpleBatchAppConfiguration {
         return new StepBuilder("step01")
                 .repository(repository)
                 .<Tramo, Tramo> chunk(10)
-                .reader(tramoItemReader())
+                .reader(itemReader())
                 .listener(new TramoReaderListener())
                 .faultTolerant()
                 .skip(FlatFileParseException.class)
                 .skipLimit(Integer.MAX_VALUE)
-                .processor(tramoItemProcessor())
+                .processor(itemProcessor(INJECTABLE_PLACEHOLDER))
                 .writer(writer)
                 .transactionManager(transactionManager)
                 .build();
