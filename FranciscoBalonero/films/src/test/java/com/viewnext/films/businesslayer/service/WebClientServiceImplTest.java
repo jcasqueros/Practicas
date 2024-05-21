@@ -9,9 +9,9 @@ import com.viewnext.films.presentationlayer.dto.ProducerOutDTO;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -24,12 +24,6 @@ public class WebClientServiceImplTest {
     public static MockWebServer mockBackEnd;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @BeforeAll
-    static void setUp() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start();
-    }
-
     @AfterAll
     static void tearDown() throws IOException {
         mockBackEnd.shutdown();
@@ -38,9 +32,13 @@ public class WebClientServiceImplTest {
     private WebClientService webClientService;
 
     @BeforeEach
-    void initialize() {
+    void initialize() throws IOException {
+        mockBackEnd = new MockWebServer();
+        mockBackEnd.start();
         WebClient webClient = WebClient.builder().build();
         webClientService = new WebClientServiceImpl(webClient);
+        ReflectionTestUtils.setField(webClientService, "port", mockBackEnd.getPort());
+        ReflectionTestUtils.setField(webClientService, "host", "localhost");
     }
 
     @Test
@@ -50,12 +48,12 @@ public class WebClientServiceImplTest {
                 .addHeader("Content-Type", "application/json"));
 
         webClientService.existsActor(1L);
+        assertEquals("/api/v1/Actor/getActor?select=true&id=1", mockBackEnd.takeRequest().getPath());
     }
 
     @Test
     void existsActor_notFound() {
         mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
-
         NotFoundException exception = assertThrows(NotFoundException.class, () -> webClientService.existsActor(1L));
         assertEquals("The actors in that production don't exist.", exception.getMessage());
     }
@@ -67,6 +65,7 @@ public class WebClientServiceImplTest {
                 .addHeader("Content-Type", "application/json"));
 
         webClientService.existsDirector(1L);
+        assertEquals("/api/v1/Director/getDirector?select=true&id=1", mockBackEnd.takeRequest().getPath());
     }
 
     @Test
@@ -84,6 +83,7 @@ public class WebClientServiceImplTest {
                 .addHeader("Content-Type", "application/json"));
 
         webClientService.existsProducer(1L);
+        assertEquals("/api/v1/Producer/getProducer?select=true&id=1", mockBackEnd.takeRequest().getPath());
     }
 
     @Test
