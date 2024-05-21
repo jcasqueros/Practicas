@@ -44,25 +44,26 @@ public class BatchConfiguration {
 	
 	@Bean
 	public Step readFileStep() {
-		return stepBuilderFactory.get("itemReadStep")
+		return stepBuilderFactory.get("itemReaderStep")
 				.tasklet(itemReaderStep()).build();
 	}
+	
 	@Bean
 	public Step processDataStep() {
-		return stepBuilderFactory.get("itemProcessStep")
+		return stepBuilderFactory.get("itemProcessorStep")
 				.tasklet(itemProcessorStep()).build();
 	}
 	@Bean
 	public Step writeFileStep() {
-		return stepBuilderFactory.get("itemWriteStep")
+		return stepBuilderFactory.get("itemWriterStep")
 				.tasklet(itemWriterStep()).build();
 	}
 	
 	@Bean
-	public Job readCsvRead() {
+	public Job readCsv() {
 		return jobBuilderFactory.get("readCsvJob").
 				start(readFileStep())
-				.next(processDataStep())
+//				.next(processDataStep())
 				.next(writeFileStep())
 				.build();
 		

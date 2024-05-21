@@ -1,6 +1,5 @@
 package com.viewnext.srpingbatchchf.model;
 
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -21,7 +20,7 @@ public class TramoCalle {
 	private String nombreCalle;
 	private int primerNumTramo;
 	private int ultimoNumTramo;
-	private int barrio;
+	private String barrio;
 	private int codDistrito;
 	private String nomDistrito;
 
