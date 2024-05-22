@@ -8,14 +8,9 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 
 @Data
-public class ImportUserJob {
+public class ImportJob {
 
-    private JobRepository jobRepository;
-    private JobListener listener;
-    private Step step1;
-    //private Step distritoCountStep;
-
-    public Job importUserJob() {
+    public Job importJob(JobRepository jobRepository, JobListener listener, Step step1) {
         return new JobBuilder("importUserJob", jobRepository).incrementer(new RunIdIncrementer()).listener(listener)
                 .flow(step1).end().build();
     }
