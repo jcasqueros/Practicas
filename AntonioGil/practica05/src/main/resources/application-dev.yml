@@ -1,3 +1,10 @@
+batch01:
+  mongodb:
+    username: practica05
+    password: 123
+    database: batch01
+    uri: mongodb://${batch01.mongodb.username}:${batch01.mongodb.password}@127.0.0.1/${batch01.mongodb.database}
+
 spring:
   application:
     name: vn-practica05-dev
@@ -6,8 +13,7 @@ spring:
       initialize-schema: always
   data:
     mongodb:
-      database: practica05
-      uri: mongodb://practica05:123@127.0.0.1/${spring.data.mongodb.database}
+      uri: mongodb://practica05:123@127.0.0.1/${batch01.mongodb.database}
   datasource:
     url: jdbc:h2:mem:bsan-practica05
     username: practica05

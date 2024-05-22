@@ -1,5 +1,7 @@
 package com.viewnext.batch01.model;
 
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -16,30 +18,39 @@ public class Tramo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_TRAMO")
+    @Field(name = "ID_TRAMO")
     Long id;
 
     @Column(name = "CODIGO_CALLE")
+    @Field(name = "CODIGO_CALLE")
     int codigoCalle;
 
     @Column(name = "TIPO_VIA")
+    @Field(name = "TIPO_VIA")
     String tipoVia;
 
     @Column(name = "NOMBRE_CALLE")
+    @Field(name = "NOMBRE_CALLE")
     String nombreCalle;
 
     @Column(name = "PRIMER_NUM_TRAMO")
+    @Field(name = "PRIMER_NUM_TRAMO")
     int primerNumeroTramo;
 
     @Column(name = "ULTIMO_NUM_TRAMO")
+    @Field(name = "ULTIMO_NUM_TRAMO")
     int ultimoNumeroTramo;
 
     @Column(name = "BARRIO")
+    @Field(name = "BARRIO")
     String barrio;
 
     @Column(name = "COD_DISTRITO")
+    @Field(name = "COD_DISTRITO")
     int codigoDistrito;
 
     @Column(name = "NOM_DISTRITO")
+    @Field(name = "NOM_DISTRITO")
     String nombreDistrito;
 
     public Tramo(Long id, int codigoCalle, String tipoVia, String nombreCalle, int primerNumeroTramo,
@@ -79,68 +90,68 @@ public class Tramo {
         return this.id;
     }
 
-    public int getCodigoCalle() {
-        return this.codigoCalle;
-    }
-
-    public String getTipoVia() {
-        return this.tipoVia;
-    }
-
-    public String getNombreCalle() {
-        return this.nombreCalle;
-    }
-
-    public int getPrimerNumeroTramo() {
-        return this.primerNumeroTramo;
-    }
-
-    public int getUltimoNumeroTramo() {
-        return this.ultimoNumeroTramo;
-    }
-
-    public String getBarrio() {
-        return this.barrio;
-    }
-
-    public int getCodigoDistrito() {
-        return this.codigoDistrito;
-    }
-
-    public String getNombreDistrito() {
-        return this.nombreDistrito;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getCodigoCalle() {
+        return this.codigoCalle;
     }
 
     public void setCodigoCalle(int codigoCalle) {
         this.codigoCalle = codigoCalle;
     }
 
+    public String getTipoVia() {
+        return this.tipoVia;
+    }
+
     public void setTipoVia(String tipoVia) {
         this.tipoVia = tipoVia;
+    }
+
+    public String getNombreCalle() {
+        return this.nombreCalle;
     }
 
     public void setNombreCalle(String nombreCalle) {
         this.nombreCalle = nombreCalle;
     }
 
+    public int getPrimerNumeroTramo() {
+        return this.primerNumeroTramo;
+    }
+
     public void setPrimerNumeroTramo(int primerNumeroTramo) {
         this.primerNumeroTramo = primerNumeroTramo;
+    }
+
+    public int getUltimoNumeroTramo() {
+        return this.ultimoNumeroTramo;
     }
 
     public void setUltimoNumeroTramo(int ultimoNumeroTramo) {
         this.ultimoNumeroTramo = ultimoNumeroTramo;
     }
 
+    public String getBarrio() {
+        return this.barrio;
+    }
+
     public void setBarrio(String barrio) {
         this.barrio = barrio;
     }
 
+    public int getCodigoDistrito() {
+        return this.codigoDistrito;
+    }
+
     public void setCodigoDistrito(int codigoDistrito) {
         this.codigoDistrito = codigoDistrito;
+    }
+
+    public String getNombreDistrito() {
+        return this.nombreDistrito;
     }
 
     public void setNombreDistrito(String nombreDistrito) {
