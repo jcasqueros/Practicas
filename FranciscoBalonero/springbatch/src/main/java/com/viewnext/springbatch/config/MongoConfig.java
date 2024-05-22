@@ -1,31 +1,23 @@
 package com.viewnext.springbatch.config;
 
 import com.mongodb.client.MongoClients;
-import lombok.AllArgsConstructor;
+import com.viewnext.springbatch.values.Values;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
-/**
- * Configuration class for MongoDB connection.
- *
- * @author Francisco Balonero Olivera
- * @see MongoTemplate
- */
-@AllArgsConstructor
+@Configuration
+@RequiredArgsConstructor
 public class MongoConfig {
 
-    /**
-     * MongoDB URL.
-     */
-    private String mongoUrl;
+    private final Values values;
 
-    /**
-     * Creates a new instance of {@link MongoTemplate} using the provided MongoDB URL.
-     *
-     * @return a new instance of {@link MongoTemplate}
-     */
+    @Bean
     public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(new SimpleMongoClientDatabaseFactory(MongoClients.create(mongoUrl), "batch"));
+        return new MongoTemplate(
+                new SimpleMongoClientDatabaseFactory(MongoClients.create(values.getMongoUrl()), "batch"));
     }
 }
 

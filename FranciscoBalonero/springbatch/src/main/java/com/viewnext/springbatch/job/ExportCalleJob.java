@@ -6,10 +6,9 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 
-public class ImportCalleJob {
-
-    public Job importCalle(JobRepository jobRepository, ImportJobListener listener, Step step1, Step step2) {
-        return new JobBuilder("importCalleJob").repository(jobRepository).incrementer(new RunIdIncrementer())
+public class ExportCalleJob {
+    public Job exportCalle(JobRepository jobRepository, ExportJobListener listener, Step step1, Step step2) {
+        return new JobBuilder("exportCalleJob").repository(jobRepository).incrementer(new RunIdIncrementer())
                 .listener(listener).flow(step1).next(step2).end().build();
     }
 }
