@@ -26,7 +26,8 @@ public class MongoOperationPerformerConfig {
     @Bean
     @StepScope
     public MongoItemWriter<Tramo> districtFilterWriter(MongoTemplate mongoTemplate,
-                                @Value("#{jobParameters['batch01.district_filter.district']}") String districtName) {
+                                                       @Value("#{jobParameters['batch01.district_filter.district']}")
+                                                       String districtName) {
         final long timestamp = Instant.now().toEpochMilli();
         final String collectionName = MessageFormat.format("district_filter-{0}-{1,number,#}", districtName,
                 timestamp);
@@ -48,7 +49,8 @@ public class MongoOperationPerformerConfig {
     @Bean
     @StepScope
     public MongoItemReader<Tramo> dbDumpReader(MongoTemplate mongoTemplate,
-                            @Value("#{jobParameters['batch01.db_dump.source_collection']}") String sourceCollection) {
+                                               @Value("#{jobParameters['batch01.db_dump.source_collection']}")
+                                               String sourceCollection) {
         return new MongoItemReaderBuilder<Tramo>()
                 .template(mongoTemplate)
                 .collection(sourceCollection)

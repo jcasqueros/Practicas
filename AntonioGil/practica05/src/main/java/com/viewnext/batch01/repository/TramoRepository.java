@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * The .
+ * Interface that provides data access to {@code Tramo} entities.
  *
  * @author Antonio Gil
  */

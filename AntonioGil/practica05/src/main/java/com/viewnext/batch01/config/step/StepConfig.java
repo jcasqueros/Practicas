@@ -23,13 +23,17 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import static com.viewnext.batch01.util.InjectablePlaceholders.STRING_PLACEHOLDER;
 
+/**
+ * Configuration for batch job steps.
+ *
+ * @author Antonio Gil
+ */
 @Configuration
 public class StepConfig {
 
+    private final StepBuilderFactory steps;
     @Value("${batch01.tramo-input-file}")
     private String tramoInputFile;
-
-    private final StepBuilderFactory steps;
 
     public StepConfig(StepBuilderFactory steps) {
         this.steps = steps;

@@ -17,6 +17,11 @@ import org.springframework.context.annotation.Import;
 import static com.viewnext.batch01.util.InjectablePlaceholders.FILTER_HISTORY_WRITER_PLACEHOLDER;
 import static com.viewnext.batch01.util.InjectablePlaceholders.STRING_PLACEHOLDER;
 
+/**
+ * Configuration for batch jobs.
+ *
+ * @author Antonio Gil
+ */
 @EnableBatchProcessing
 @Configuration
 @Import(StepConfig.class)
@@ -30,9 +35,9 @@ public class JobConfig {
 
     @Bean
     @JobScope
-    public DistrictFilterJobListener filterJobListener
-            (MongoItemWriter<DistrictFilterHistoryEntry> writer,
-             @Value("#{jobParameters['batch01.district_filter.district']}") String district) {
+    public DistrictFilterJobListener filterJobListener(MongoItemWriter<DistrictFilterHistoryEntry> writer,
+                                                       @Value("#{jobParameters['batch01.district_filter.district']}")
+                                                       String district) {
         return new DistrictFilterJobListener(writer, district);
     }
 

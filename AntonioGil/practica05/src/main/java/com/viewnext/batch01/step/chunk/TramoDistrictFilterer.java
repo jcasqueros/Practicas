@@ -4,7 +4,10 @@ import com.viewnext.batch01.model.Tramo;
 import org.springframework.batch.item.ItemProcessor;
 
 /**
- * An item processor that returns
+ * An item processor that returns the input {@code Tramo} object if and only if its district is equal to the given
+ * district.
+ *
+ * @author Antonio Gil
  */
 public class TramoDistrictFilterer implements ItemProcessor<Tramo, Tramo> {
 

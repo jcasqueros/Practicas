@@ -90,68 +90,68 @@ public class Tramo {
         return this.id;
     }
 
-    public int getCodigoCalle() {
-        return this.codigoCalle;
-    }
-
-    public String getTipoVia() {
-        return this.tipoVia;
-    }
-
-    public String getNombreCalle() {
-        return this.nombreCalle;
-    }
-
-    public int getPrimerNumeroTramo() {
-        return this.primerNumeroTramo;
-    }
-
-    public int getUltimoNumeroTramo() {
-        return this.ultimoNumeroTramo;
-    }
-
-    public String getBarrio() {
-        return this.barrio;
-    }
-
-    public int getCodigoDistrito() {
-        return this.codigoDistrito;
-    }
-
-    public String getNombreDistrito() {
-        return this.nombreDistrito;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getCodigoCalle() {
+        return this.codigoCalle;
     }
 
     public void setCodigoCalle(int codigoCalle) {
         this.codigoCalle = codigoCalle;
     }
 
+    public String getTipoVia() {
+        return this.tipoVia;
+    }
+
     public void setTipoVia(String tipoVia) {
         this.tipoVia = tipoVia;
+    }
+
+    public String getNombreCalle() {
+        return this.nombreCalle;
     }
 
     public void setNombreCalle(String nombreCalle) {
         this.nombreCalle = nombreCalle;
     }
 
+    public int getPrimerNumeroTramo() {
+        return this.primerNumeroTramo;
+    }
+
     public void setPrimerNumeroTramo(int primerNumeroTramo) {
         this.primerNumeroTramo = primerNumeroTramo;
+    }
+
+    public int getUltimoNumeroTramo() {
+        return this.ultimoNumeroTramo;
     }
 
     public void setUltimoNumeroTramo(int ultimoNumeroTramo) {
         this.ultimoNumeroTramo = ultimoNumeroTramo;
     }
 
+    public String getBarrio() {
+        return this.barrio;
+    }
+
     public void setBarrio(String barrio) {
         this.barrio = barrio;
     }
 
+    public int getCodigoDistrito() {
+        return this.codigoDistrito;
+    }
+
     public void setCodigoDistrito(int codigoDistrito) {
         this.codigoDistrito = codigoDistrito;
+    }
+
+    public String getNombreDistrito() {
+        return this.nombreDistrito;
     }
 
     public void setNombreDistrito(String nombreDistrito) {

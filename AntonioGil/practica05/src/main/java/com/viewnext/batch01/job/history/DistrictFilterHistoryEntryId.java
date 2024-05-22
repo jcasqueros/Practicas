@@ -23,22 +23,6 @@ public class DistrictFilterHistoryEntryId implements Serializable {
         this.districtName = districtName;
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getDistrictName() {
-        return districtName;
-    }
-
-    public void setDistrictName(String districtName) {
-        this.districtName = districtName;
-    }
-
     @Override
     public String toString() {
         return "DistrictFilterHistoryEntryId{" +

@@ -6,6 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.item.file.FlatFileParseException;
 
+/**
+ * An item read listener that logs read errors.
+ *
+ * @author Antonio Gil
+ */
 public class TramoReadErrorLogger implements ItemReadListener<Tramo> {
 
     private static final Logger log = LoggerFactory.getLogger(TramoReadErrorLogger.class.getCanonicalName());
