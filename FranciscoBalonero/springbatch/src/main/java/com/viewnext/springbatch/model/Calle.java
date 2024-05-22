@@ -3,41 +3,75 @@ package com.viewnext.springbatch.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 
-@Entity
+/**
+ * Represents a Calle entity in the MongoDB database.
+ *
+ * @author Francisco Balonero Olivera
+ */
+@Document(collection = "calles")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Calle {
 
+    /**
+     * The unique identifier for the Calle entity.
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private ObjectId id;
 
-    @Column(name = "CODIGO_CALLE")
+    /**
+     * The codigo_calle field of the Calle entity.
+     */
+    @Field("codigo_calle")
     private Integer codigoCalle;
 
-    @Column(name = "TIPO_VIA")
+    /**
+     * The tipo_via field of the Calle entity.
+     */
+    @Field("tipo_via")
     private String tipoVia;
 
-    @Column(name = "NOMBRE_CALLE")
+    /**
+     * The nombre_calle field of the Calle entity.
+     */
+    @Field("nombre_calle")
     private String nombreCalle;
 
-    @Column(name = "PRIMER_NUM_TRAMO")
+    /**
+     * The primer_num_tramo field of the Calle entity.
+     */
+    @Field("primer_num_tramo")
     private Integer primerNumTramo;
 
-    @Column(name = "ULTIMO_NUM_TRAMO")
+    /**
+     * The ultimo_num_tramo field of the Calle entity.
+     */
+    @Field("ultimo_num_tramo")
     private Integer ultimoNumTramo;
 
-    @Column(name = "BARRIO")
+    /**
+     * The barrio field of the Calle entity.
+     */
+    @Field("barrio")
     private String barrio;
 
-    @Column(name = "COD_DISTRITO")
+    /**
+     * The cod_distrito field of the Calle entity.
+     */
+    @Field("cod_distrito")
     private Integer codDistrito;
 
-    @Column(name = "NOM_DISTRITO")
+    /**
+     * The nom_distrito field of the Calle entity.
+     */
+    @Field("nom_distrito")
     private String nomDistrito;
-
 }
+
