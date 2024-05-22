@@ -10,7 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 public class CalleReader {
 
     @Bean
-    public FlatFileItemReader reader(String fileInput) {
+    public FlatFileItemReader<Calle> reader(String fileInput) {
         return new FlatFileItemReaderBuilder<Calle>().name("tramos_calle_list")
                 .resource(new ClassPathResource(fileInput)).linesToSkip(1).delimited().delimiter(",")
                 .names(new String[] { "codigo", "via", "nombre", "primerNum", "ultimoNum", "barrio", "codDistrito",

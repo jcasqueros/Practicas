@@ -6,37 +6,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.FileWriter;
-import java.util.HashMap;
-import java.util.Map;
-
 @Slf4j
 @Getter
-public class DistritoProcessor1 implements ItemProcessor<Calle, Calle> {
+public class DistritoProcessor2 implements ItemProcessor<Calle, Calle> {
 
     @Value("${distrito}")
     private String distrito;
-    FileWriter writer;
-    private Map<String, Long> distritoCounts = new HashMap<>();
 
     @Override
     public Calle process(Calle calle) throws Exception {
 
         try {
-            String nomDistrito = calle.getNomDistrito();
-            distritoCounts.put(nomDistrito, distritoCounts.getOrDefault(nomDistrito, 0L) + 1);
             return isValid(calle, distrito);
         } catch (Exception e) {
-            writer.write("Error al procesar el item {}: {}" + calle + "No cumple con la validación\n");
             return null;
         }
     }
 
     private Calle isValid(Calle calle, String distrito) {
         if (calle.getNomDistrito().equalsIgnoreCase(distrito.toUpperCase())) {
-            return processItem(calle);
+            return null;
         }
-        return null;
+        return processItem(calle);
     }
 
     private Calle processItem(Calle calle) {

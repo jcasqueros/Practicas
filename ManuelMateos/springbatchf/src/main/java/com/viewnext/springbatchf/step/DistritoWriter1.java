@@ -6,9 +6,9 @@ import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 @RequiredArgsConstructor
-public class DistritoWriter extends MongoItemWriter<Calle> {
+public class DistritoWriter1 extends MongoItemWriter<Calle> {
 
-    public DistritoWriter(MongoTemplate mongoTemplate) {
+    public DistritoWriter1(MongoTemplate mongoTemplate) {
         setTemplate(mongoTemplate);
         setCollection("distritoEspecifico");
     }
