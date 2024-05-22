@@ -8,11 +8,8 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 @Data
 public class MongoDataSource {
 
-    private MongoTemplate mongoTemplate;
-
-    public MongoDataSource() {
-        mongoTemplate = new MongoTemplate(
-                new SimpleMongoClientDatabaseFactory(MongoClients.create("mongodb://localhost:27017"), "batch"));
+    public MongoDataSource(String url) {
+        new MongoTemplate(new SimpleMongoClientDatabaseFactory(MongoClients.create(url), "batch"));
     }
 }
 
