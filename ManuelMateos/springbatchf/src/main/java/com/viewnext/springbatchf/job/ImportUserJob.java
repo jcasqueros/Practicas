@@ -1,19 +1,21 @@
-package com.viewnext.springbatchf.config;
+package com.viewnext.springbatchf.job;
 
-import com.viewnext.springbatchf.job.JobCompletionNotificationListener;
+import lombok.Data;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
-public class JobConfig {
+@Data
+public class ImportUserJob {
 
-    @Bean
-    public Job importUserJob(JobRepository jobRepository, JobCompletionNotificationListener listener, Step step1) {
+    private JobRepository jobRepository;
+    private JobListener listener;
+    private Step step1;
+    //private Step distritoCountStep;
+
+    public Job importUserJob() {
         return new JobBuilder("importUserJob", jobRepository).incrementer(new RunIdIncrementer()).listener(listener)
                 .flow(step1).end().build();
     }
