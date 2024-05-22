@@ -1,6 +1,6 @@
 package com.viewnext.batch01.job.listener;
 
-import com.viewnext.batch01.model.history.DistrictFilterHistoryEntry;
+import com.viewnext.batch01.job.history.DistrictFilterHistoryEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;

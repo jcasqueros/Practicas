@@ -6,11 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.item.file.FlatFileParseException;
 
-public class TramoReadLogger implements ItemReadListener<Tramo> {
+public class TramoReadErrorLogger implements ItemReadListener<Tramo> {
 
-    private static final Logger log = LoggerFactory.getLogger(TramoReadLogger.class.getCanonicalName());
+    private static final Logger log = LoggerFactory.getLogger(TramoReadErrorLogger.class.getCanonicalName());
     private static final Logger parseErrorLog =
-            LoggerFactory.getLogger(TramoReadLogger.class.getCanonicalName() + "#parseErrorLog");
+            LoggerFactory.getLogger(TramoReadErrorLogger.class.getCanonicalName() + "#parseErrorLog");
 
     @Override
     public void beforeRead() {

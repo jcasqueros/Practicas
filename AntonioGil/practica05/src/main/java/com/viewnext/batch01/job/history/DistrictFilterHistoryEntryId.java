@@ -1,4 +1,4 @@
-package com.viewnext.batch01.model.history;
+package com.viewnext.batch01.job.history;
 
 import java.io.Serializable;
 

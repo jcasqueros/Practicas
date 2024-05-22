@@ -3,6 +3,9 @@ package com.viewnext.batch01.step.chunk;
 import com.viewnext.batch01.model.Tramo;
 import org.springframework.batch.item.ItemProcessor;
 
+/**
+ * An item processor that returns
+ */
 public class TramoDistrictFilterer implements ItemProcessor<Tramo, Tramo> {
 
     private final String districtName;

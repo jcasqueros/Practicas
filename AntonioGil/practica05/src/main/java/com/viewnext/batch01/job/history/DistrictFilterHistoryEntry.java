@@ -1,6 +1,5 @@
-package com.viewnext.batch01.model.history;
+package com.viewnext.batch01.job.history;
 
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.*;
@@ -16,9 +15,6 @@ import java.time.LocalDateTime;
 @Table(name = "DISTRICT_FILTER_HISTORY",
         uniqueConstraints = @UniqueConstraint(columnNames = {"TIMESTAMP", "DISTRICT_NAME"}))
 public class DistrictFilterHistoryEntry {
-
-    @Field("JOB_NAME")
-    final String jobName = "district_filter";
 
     @Id
     @Column(name = "TIMESTAMP")
