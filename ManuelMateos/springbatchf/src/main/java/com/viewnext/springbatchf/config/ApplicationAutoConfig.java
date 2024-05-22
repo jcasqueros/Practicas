@@ -62,11 +62,6 @@ public class ApplicationAutoConfig {
         return new CalleReader().reader(fileInput);
     }
 
-    //    @Bean
-    //    public MongoPagingItemReader<Calle> mongoItemReader(MongoTemplate mongoTemplate) {
-    //        return new MongoReader().reader();
-    //    }
-
     @Bean
     public Step1 step1Bean() {
         return new Step1();
@@ -80,36 +75,8 @@ public class ApplicationAutoConfig {
         return step1.step1(jobRepository, transactionManager, reader, processor, writer);
     }
 
-    //    @Bean
-    //    public Step distritoCountStep(JobRepository jobRepository, PlatformTransactionManager transactionManager,
-    //            MongoTemplate mongoTemplate) {
-    //        return new StepBuilder("distritoCountStep", jobRepository).<Calle, Calle>chunk(10, transactionManager)
-    //                .reader(reader()).writer(distritoCountWriter(mongoTemplate)).faultTolerant()
-    //                .listener(new SkipListener<Calle, Calle>() {
-    //                    @Override
-    //                    public void onSkipInRead(Throwable t) {
-    //                    }
-    //                }).skipPolicy(new AlwaysSkipItemSkipPolicy()).build();
-    //    }
-
-    //    @Bean
-    //    public Step step3(JobRepository jobRepository, PlatformTransactionManager transactionManager,
-    //            MongoTemplate mongoTemplate){
-    //        return new StepBuilder("step3", jobRepository).chunk(10, transactionManager).reader(mongoItemReader(mongoTemplate)).writer(csvWriter())
-    //    }
-
     @Bean
     public DistritoWriter distritoWriter(MongoTemplate mongoTemplate) {
         return new DistritoWriter(mongoTemplate);
     }
-
-    //    @Bean
-    //    public DistritoCountWriter distritoCountWriter(MongoTemplate mongoTemplate) {
-    //        return new DistritoCountWriter(mongoTemplate);
-    //    }
-
-    //    @Bean
-    //    public ItemWriter<Calle> csvWriter() {
-    //        return new CsvWriter().csvWriter();
-    //    }
 }
