@@ -1,5 +1,7 @@
 package com.viewnext.batch01.model;
 
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -16,30 +18,39 @@ public class Tramo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_TRAMO")
+    @Field(name = "ID_TRAMO")
     Long id;
 
     @Column(name = "CODIGO_CALLE")
+    @Field(name = "CODIGO_CALLE")
     int codigoCalle;
 
     @Column(name = "TIPO_VIA")
+    @Field(name = "TIPO_VIA")
     String tipoVia;
 
     @Column(name = "NOMBRE_CALLE")
+    @Field(name = "NOMBRE_CALLE")
     String nombreCalle;
 
     @Column(name = "PRIMER_NUM_TRAMO")
+    @Field(name = "PRIMER_NUM_TRAMO")
     int primerNumeroTramo;
 
     @Column(name = "ULTIMO_NUM_TRAMO")
+    @Field(name = "ULTIMO_NUM_TRAMO")
     int ultimoNumeroTramo;
 
     @Column(name = "BARRIO")
+    @Field(name = "BARRIO")
     String barrio;
 
     @Column(name = "COD_DISTRITO")
+    @Field(name = "COD_DISTRITO")
     int codigoDistrito;
 
     @Column(name = "NOM_DISTRITO")
+    @Field(name = "NOM_DISTRITO")
     String nombreDistrito;
 
     public Tramo(Long id, int codigoCalle, String tipoVia, String nombreCalle, int primerNumeroTramo,

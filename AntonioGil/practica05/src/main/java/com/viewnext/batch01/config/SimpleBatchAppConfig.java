@@ -1,14 +1,14 @@
 package com.viewnext.batch01.config;
 
+import com.viewnext.batch01.config.mongodb.MongoDbConfig;
+import com.viewnext.batch01.job.listener.DistrictFilterJobListener;
 import com.viewnext.batch01.model.Tramo;
+import com.viewnext.batch01.model.history.DistrictFilterHistoryEntry;
 import com.viewnext.batch01.step.chunk.TramoDistrictFilterer;
 import com.viewnext.batch01.step.listener.TramoReadLogger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
@@ -38,7 +37,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableBatchProcessing
 public class SimpleBatchAppConfig {
 
-    private static final String INJECTABLE_PLACEHOLDER = null;
+    private static final String INJECTABLE_PLACEHOLDER_STRING = null;
+    private static final MongoItemWriter<DistrictFilterHistoryEntry> INJECTABLE_PLACEHOLDER_HISTORY_WRITER = null;
 
     @Value("${batch01.tramo-input-file}")
     private String tramoInputFile;
@@ -80,37 +80,37 @@ public class SimpleBatchAppConfig {
     }
 
     @Bean
-    public MongoItemWriter<Tramo> tramoSetWriter(MongoTemplate mongoTemplate) {
-        MongoItemWriter<Tramo> writer = new MongoItemWriter<>();
-        writer.setCollection("step01");
-        writer.setTemplate(mongoTemplate);
-        return writer;
+    @JobScope
+    public DistrictFilterJobListener filterJobListener(MongoItemWriter<DistrictFilterHistoryEntry> writer,
+                                                       @Value("#{jobParameters['batch01.district']}") String district) {
+        return new DistrictFilterJobListener(writer, district);
     }
 
     @Bean
-    public Step step01(JobRepository jobRepository, PlatformTransactionManager transactionManager,
-                       MongoTemplate mongoTemplate) {
-        return new StepBuilder("step01")
+    public Step districtFilterStep(JobRepository jobRepository, PlatformTransactionManager transactionManager,
+                                   MongoItemWriter<Tramo> tramoWriter) {
+        return new StepBuilder("district_filter-step01-district_filter")
                 .repository(jobRepository)
-                .<Tramo, Tramo> chunk(16)
+                .<Tramo, Tramo>chunk(16)
                 .reader(tramoCsvReader())
                 .listener(tramoReadLogger())
                 .faultTolerant()
                 .skip(FlatFileParseException.class)
                 .skipPolicy(new AlwaysSkipItemSkipPolicy())
-                .processor(tramoFilterer(INJECTABLE_PLACEHOLDER))
-                .writer(tramoSetWriter(mongoTemplate))
+                .processor(tramoFilterer(INJECTABLE_PLACEHOLDER_STRING))
+                .writer(tramoWriter)
                 .transactionManager(transactionManager)
                 .build();
     }
 
     @Bean
-    public Job processCsvJob(JobRepository repository, PlatformTransactionManager transactionManager,
-                             MongoTemplate mongoTemplate) {
-        return new JobBuilder("processCsvJob")
+    public Job districtFilterJob(JobRepository repository, PlatformTransactionManager transactionManager,
+                             MongoItemWriter<Tramo> writer) {
+        return new JobBuilder("district_filter")
                 .repository(repository)
-                .flow(step01(repository, transactionManager, mongoTemplate))
+                .flow(districtFilterStep(repository, transactionManager, writer))
                 .end()
+                .listener(filterJobListener(INJECTABLE_PLACEHOLDER_HISTORY_WRITER, INJECTABLE_PLACEHOLDER_STRING))
                 .build();
     }
 

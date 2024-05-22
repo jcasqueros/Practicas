@@ -1,4 +1,4 @@
-package com.viewnext.batch01.config;
+package com.viewnext.batch01.config.mongodb;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -7,10 +7,10 @@ import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
@@ -20,13 +20,14 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * @author Antonio Gil
  */
 @Configuration
+@Import({MongoOperationPerformerConfig.class})
 @EnableMongoRepositories(basePackages = "com.viewnext.batch01.repository")
 public class MongoDbConfig extends AbstractMongoClientConfiguration {
 
-    @Value("${spring.data.mongodb.database}")
+    @Value("${batch01.mongodb.database}")
     private String databaseName;
 
-    @Value("${spring.data.mongodb.uri}")
+    @Value("${batch01.mongodb.uri}")
     private String connectionUri;
 
     @Bean
