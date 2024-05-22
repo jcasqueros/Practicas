@@ -24,7 +24,7 @@ public class TramoReadLogger implements ItemReadListener<Tramo> {
 
     @Override
     public void onReadError(Exception ex) {
-        log.error("{} :  {}", ex.getClass(), ex.getMessage());
+        log.error("{} :  {}", ex.getClass().getCanonicalName(), ex.getMessage());
 
         if (ex instanceof FlatFileParseException flatFileParseException) {
             parseErrorLog.error(flatFileParseException.getInput());

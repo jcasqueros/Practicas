@@ -4,6 +4,11 @@ import javax.persistence.*;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * The {@code Tramo} class is a model class for the Tramo entity.
+ *
+ * @author Antonio Gil
+ */
 @Entity
 @Table(name = "TRAMOS")
 public class Tramo {

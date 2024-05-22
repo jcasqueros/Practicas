@@ -2,7 +2,6 @@ package com.viewnext.batch01.config;
 
 import com.viewnext.batch01.model.Tramo;
 import com.viewnext.batch01.step.chunk.TramoDistrictFilterer;
-import com.viewnext.batch01.step.chunk.TramoSetWriter;
 import com.viewnext.batch01.step.listener.TramoReadLogger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -14,6 +13,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy;
+import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
@@ -24,8 +24,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
+/**
+ * Global configuration for our Spring Batch application.
+ *
+ * @author Antonio Gil
+ */
 @Configuration
 @Import({MongoDbConfig.class})
 @EnableAutoConfiguration
@@ -74,12 +80,16 @@ public class SimpleBatchAppConfig {
     }
 
     @Bean
-    public TramoSetWriter tramoSetWriter() {
-        return new TramoSetWriter();
+    public MongoItemWriter<Tramo> tramoSetWriter(MongoTemplate mongoTemplate) {
+        MongoItemWriter<Tramo> writer = new MongoItemWriter<>();
+        writer.setCollection("step01");
+        writer.setTemplate(mongoTemplate);
+        return writer;
     }
 
     @Bean
-    public Step step01(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Step step01(JobRepository jobRepository, PlatformTransactionManager transactionManager,
+                       MongoTemplate mongoTemplate) {
         return new StepBuilder("step01")
                 .repository(jobRepository)
                 .<Tramo, Tramo> chunk(16)
@@ -89,18 +99,17 @@ public class SimpleBatchAppConfig {
                 .skip(FlatFileParseException.class)
                 .skipPolicy(new AlwaysSkipItemSkipPolicy())
                 .processor(tramoFilterer(INJECTABLE_PLACEHOLDER))
-                .writer(tramoSetWriter())
+                .writer(tramoSetWriter(mongoTemplate))
                 .transactionManager(transactionManager)
                 .build();
     }
 
     @Bean
-    public Job processCsvJob(JobRepository repository, PlatformTransactionManager transactionManager) {
+    public Job processCsvJob(JobRepository repository, PlatformTransactionManager transactionManager,
+                             MongoTemplate mongoTemplate) {
         return new JobBuilder("processCsvJob")
                 .repository(repository)
-                .flow(step01(repository, transactionManager))
-                // TODO: Implement step02
-                //.next(step02())
+                .flow(step01(repository, transactionManager, mongoTemplate))
                 .end()
                 .build();
     }
