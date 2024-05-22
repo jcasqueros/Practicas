@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: vn-practica05-dev
+  batch:
+    jdbc:
+      initialize-schema: always
+  data:
+    mongodb:
+      database: practica05
+      uri: mongodb://practica05:123@127.0.0.1/${spring.data.mongodb.database}
+  datasource:
+    url: jdbc:h2:mem:bsan-practica05
+    username: practica05
+    password: 123
+    driverClassName: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
