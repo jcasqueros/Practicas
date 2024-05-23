@@ -20,46 +20,50 @@ import com.viewnext.springbatch.model.Direccion;
 import com.viewnext.springbatch.step.chunk.DireccionItemProcess;
 import com.viewnext.springbatch.step.chunk.DireccionItemReader;
 import com.viewnext.springbatch.step.chunk.DireccionItemWriter;
+import com.viewnext.springbatch.step.chunk.FlatFileParseExceptionSkipListener;
 
 @Configuration
 @EnableAutoConfiguration
 public class SpringBatchConfig {
 
 	@Bean
-	public DireccionItemReader itemReader() {
+	public DireccionItemReader itemReaderDireccion() {
 		return new DireccionItemReader();
 	}
 	
 	@Bean
-	public DireccionItemWriter itemWriter() {
+	public DireccionItemWriter itemWriterDireccion() {
 		return new DireccionItemWriter();
 	}
 	
 	@Bean
-	public DireccionItemProcess itemProcessor() {
+	public DireccionItemProcess itemProcessorDireccion() {
 		return new DireccionItemProcess();
 	}
+
 	
 	@Bean
 	public TaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
 		taskExecutor.setCorePoolSize(1);
-		taskExecutor.setMaxPoolSize(5);
-		taskExecutor.setQueueCapacity(50);
+		//Riesgo registros duplicados, ojo
+		taskExecutor.setMaxPoolSize(1);
+		taskExecutor.setQueueCapacity(1);
 		return taskExecutor;
 	}
 	
 	@Bean
 	public Step readFile(JobRepository jobRepository, PlatformTransactionManager transactionManager) throws ParseException {
 		return new StepBuilder("readFile", jobRepository)
-				.<Direccion, Direccion>chunk(100, transactionManager)
-				.reader(itemReader())
-				//.processor(itemProcessor)
-				.writer(itemWriter())
-				.faultTolerant()
-				.skipLimit(100)
-				.skip(FlatFileParseException.class)
+				.<Direccion, Direccion>chunk(1000, transactionManager)
+				.reader(itemReaderDireccion())
+				.processor(itemProcessorDireccion())
+				.writer(itemWriterDireccion())
 				.taskExecutor(taskExecutor())
+				.faultTolerant()
+				.skipLimit(15)
+				.skip(FlatFileParseException.class)
+				.listener(new FlatFileParseExceptionSkipListener())
 				.build();
 	}
 	

@@ -20,7 +20,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * @author Antonio Gil
  */
 @Configuration
-@Import({MongoOperationPerformerConfig.class})
 @EnableMongoRepositories(basePackages = "com.viewnext.batch01.repository")
 public class MongoDbConfig extends AbstractMongoClientConfiguration {
 

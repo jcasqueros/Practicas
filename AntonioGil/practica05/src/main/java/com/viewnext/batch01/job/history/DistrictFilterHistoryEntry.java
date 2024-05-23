@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.StringJoiner;
 
 /**
  * The {@code DistrictFilterHistoryEntry} encapsulates an entry in the log history for district filtering operations.
@@ -45,5 +46,46 @@ public class DistrictFilterHistoryEntry {
         this.persistedEntryCount = persistedEntryCount;
     }
 
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
+    public String getJobExitStatus() {
+        return jobExitStatus;
+    }
+
+    public void setJobExitStatus(String jobExitStatus) {
+        this.jobExitStatus = jobExitStatus;
+    }
+
+    public long getPersistedEntryCount() {
+        return persistedEntryCount;
+    }
+
+    public void setPersistedEntryCount(long persistedEntryCount) {
+        this.persistedEntryCount = persistedEntryCount;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", DistrictFilterHistoryEntry.class.getSimpleName() + "[", "]")
+                .add("timestamp=" + timestamp)
+                .add("districtName='" + districtName + "'")
+                .add("jobExitStatus='" + jobExitStatus + "'")
+                .add("persistedEntryCount=" + persistedEntryCount)
+                .toString();
+    }
 
 }

@@ -5,23 +5,30 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.viewnext.springbatch.model.Direccion;
+import com.viewnext.springbatch.repository.DireccionDAO;
 import com.viewnext.springbatch.service.DireccionService;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DireccionItemWriter implements ItemWriter<Direccion>{
-	
+
 	@Autowired
 	private DireccionService direccionService;
 
 	@Override
-	public void write(Chunk<? extends Direccion> list) throws Exception {
-		List<Direccion> direccionList = new ArrayList<Direccion>();
+	public void write(Chunk<? extends Direccion> chunk) throws Exception {
+		/*List<Direccion> direccionList = new ArrayList<Direccion>();
 		for (Direccion direccion : list) {
 			direccionList.add(direccion);
 		}
-		direccionService.saveAll(direccionList);
+		direccionService.saveAll(direccionList);*/
+		
+		for (Direccion direccion : chunk) {
+			direccionService.save(direccion);
 		}
-
+	}
 }
+
+

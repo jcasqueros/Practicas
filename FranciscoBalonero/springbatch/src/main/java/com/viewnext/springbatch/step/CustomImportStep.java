@@ -11,8 +11,37 @@ import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.transaction.PlatformTransactionManager;
 
+/**
+ * This class is responsible for creating a custom step for importing {@link Calle} data.
+ *
+ * <p>It uses Spring Batch's {@link StepBuilder} to create a step that reads from a flat file, processes the data using
+ * an item processor, and writes to a MongoDB collection.</p>
+ *
+ * @author Francisco Balonero Olivera
+ */
 public class CustomImportStep {
 
+    /**
+     * Creates a custom step for importing {@link Calle} data.
+     *
+     * <p>The step is configured to read from a flat file, process the data using the provided item processor, and
+     * write
+     * to a MongoDB collection. It also uses a job skip listener to handle skips.</p>
+     *
+     * @param jobRepository
+     *         the job repository to use
+     * @param transactionManager
+     *         the transaction manager to use
+     * @param reader
+     *         the flat file item reader to use
+     * @param processor
+     *         the item processor to use
+     * @param writer
+     *         the MongoDB item writer to use
+     * @param skipListener
+     *         the job skip listener to use
+     * @return the custom step
+     */
     public Step customStep(JobRepository jobRepository, PlatformTransactionManager transactionManager,
             FlatFileItemReader<Calle> reader, ItemProcessor<Calle, Calle> processor, MongoItemWriter<Calle> writer,
             JobSkipListener skipListener) {
