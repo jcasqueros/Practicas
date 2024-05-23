@@ -10,7 +10,6 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -43,23 +42,23 @@ public class ApplicationAutoConfig {
     }
 
     @Bean
-    JobListener jobListener() {
-        return new JobListener(mongoTemplate);
-    }
-
-    @Bean
     JobSkipListener jobSkipListener() {
         return new JobSkipListener();
     }
 
     @Bean
-    public ItemProcessor<Calle, Calle> distritoProcessor1() {
+    public DistritoProcessor1 distritoProcessor1() {
         return new DistritoProcessor1();
     }
 
     @Bean
-    public ItemProcessor<Calle, Calle> distritoProcessor2() {
+    public DistritoProcessor2 distritoProcessor2() {
         return new DistritoProcessor2();
+    }
+
+    @Bean
+    JobListener jobListener() {
+        return new JobListener(mongoTemplate, distritoProcessor1().getDistritoCounts());
     }
 
     @Bean
