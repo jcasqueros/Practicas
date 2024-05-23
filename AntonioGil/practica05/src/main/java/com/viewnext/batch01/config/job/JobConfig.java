@@ -9,6 +9,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,7 @@ import static com.viewnext.batch01.util.InjectablePlaceholders.STRING_PLACEHOLDE
  */
 @EnableBatchProcessing
 @Configuration
-@Import(StepConfig.class)
+@Import({StepConfig.class})
 public class JobConfig {
 
     private final JobBuilderFactory jobs;
@@ -42,10 +43,22 @@ public class JobConfig {
     }
 
     @Bean
-    public Job districtFilterJob(Step districtFilterStep) {
-        return jobs.get("district_filter")
+    public Job districtFilterJob(@Qualifier("districtFilterStep") Step districtFilterStep) {
+        final String jobName = "district_filter";
+        return jobs.get(jobName)
                 .start(districtFilterStep)
                 .listener(filterJobListener(FILTER_HISTORY_WRITER_PLACEHOLDER, STRING_PLACEHOLDER))
+                .build();
+    }
+
+    @Bean
+    public Job dbDumpJob(@Qualifier("dumpDistrictsToCsvStep") Step dumpDistrictsToCsvStep,
+                         @Qualifier("dumpFilterHistoryEntriesToCsvStep") Step dumpFilterHistoryEntriesToCsvStep) {
+        final String jobName = "db_dump";
+
+        return jobs.get(jobName)
+                .start(dumpDistrictsToCsvStep)
+                .next(dumpFilterHistoryEntriesToCsvStep)
                 .build();
     }
 
