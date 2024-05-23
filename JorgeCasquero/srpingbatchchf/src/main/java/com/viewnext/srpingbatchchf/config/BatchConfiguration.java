@@ -63,7 +63,7 @@ public class BatchConfiguration {
 	public Job readCsv() {
 		return jobBuilderFactory.get("readCsvJob").
 				start(readFileStep())
-//				.next(processDataStep())
+				.next(processDataStep())
 				.next(writeFileStep())
 				.build();
 		

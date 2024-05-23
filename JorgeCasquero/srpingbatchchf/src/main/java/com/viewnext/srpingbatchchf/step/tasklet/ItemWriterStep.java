@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ItemWriterStep implements Tasklet, StepExecutionListener {
-	
+
 	@Autowired
 	private TramoCalleService tramoCalleService;
 
@@ -27,24 +27,25 @@ public class ItemWriterStep implements Tasklet, StepExecutionListener {
 
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
-
-		tramoCalles = (List<TramoCalle>) stepExecution.getJobExecution().getExecutionContext().get("tramoList");
+		tramoCalles = (List<TramoCalle>) stepExecution.getJobExecution().getExecutionContext().get("tramoCallesMod");
 	}
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		log.info("---> Inicio del paso de escritura <---");
 
-		System.out.println(tramoCalles.toString());
+//		System.out.println(tramoCalles.toString());
 		tramoCalles.forEach(tramo -> {
 			if (tramo != null) {
-				log.info(tramo.toString());
+//				log.info(tramo.toString());
 			}
 		});
 		tramoCalleService.saveAll(tramoCalles);
 		log.info("---> Fin del paso de escritura <---");
 		return RepeatStatus.FINISHED;
 	}
+
+	
 
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
