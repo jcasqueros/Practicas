@@ -2,12 +2,14 @@ package com.viewnext.springbatch.step.chunk;
 
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 import com.viewnext.springbatch.model.Direccion;
 

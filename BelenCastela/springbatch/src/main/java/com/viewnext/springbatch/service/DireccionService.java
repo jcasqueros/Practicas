@@ -9,4 +9,5 @@ import com.viewnext.springbatch.model.Direccion;
 public interface DireccionService {
 
 	Iterable<Direccion> saveAll(List<Direccion> direccionList);
+	public void save(Direccion direccion);
 }
