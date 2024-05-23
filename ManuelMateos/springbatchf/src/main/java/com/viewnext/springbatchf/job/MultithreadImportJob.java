@@ -12,7 +12,7 @@ import org.springframework.batch.core.repository.JobRepository;
  *
  * @author Manuel Mateos de Torres
  */
-public class ImportJob {
+public class MultithreadImportJob {
 
     /**
      * Builds and returns a job instance with the specified steps.
@@ -23,12 +23,10 @@ public class ImportJob {
      *         the job listener
      * @param step1
      *         the first step in the job flow
-     * @param step2
-     *         the second step in the job flow
      * @return a configured job instance
      */
-    public Job importJob(JobRepository jobRepository, JobListener listener, Step step1, Step step2) {
+    public Job importJob(JobRepository jobRepository, JobListener listener, Step step1) {
         return new JobBuilder("importUserJob").repository(jobRepository).incrementer(new RunIdIncrementer())
-                .listener(listener).flow(step1).next(step2).end().build();
+                .listener(listener).flow(step1).end().build();
     }
 }

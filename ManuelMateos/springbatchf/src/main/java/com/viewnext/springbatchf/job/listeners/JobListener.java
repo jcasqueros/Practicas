@@ -1,4 +1,4 @@
-package com.viewnext.springbatchf.job;
+package com.viewnext.springbatchf.job.listeners;
 
 import com.mongodb.BasicDBObject;
 import lombok.RequiredArgsConstructor;
@@ -10,13 +10,31 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.Map;
 
+/**
+ * A job execution listener that interacts with a MongoDB database.
+ *
+ * @author Manuel Mateos de Torres
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class JobListener implements JobExecutionListener {
 
+    /**
+     * MongoDB template used to interact with the database.
+     */
     private final MongoTemplate mongoTemplate;
+
+    /**
+     * A map of district names to their corresponding counts.
+     */
     private final Map<String, Long> distritoCounts;
 
+    /**
+     * Called after the job execution. Inserts the district counts into the "distrito_count" collection.
+     *
+     * @param jobExecution
+     *         the job execution
+     */
     @Override
     public void afterJob(JobExecution jobExecution) {
         for (Map.Entry<String, Long> entry : distritoCounts.entrySet()) {
@@ -27,6 +45,13 @@ public class JobListener implements JobExecutionListener {
         }
     }
 
+    /**
+     * Called before the job execution. Deletes all documents from the "distritoEspecifico", "otrosDistritos", and
+     * "distrito_count" collections.
+     *
+     * @param jobExecution
+     *         the job execution
+     */
     @Override
     public void beforeJob(JobExecution jobExecution) {
         mongoTemplate.getCollection("distritoEspecifico").deleteMany(new BasicDBObject());
