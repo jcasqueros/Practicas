@@ -1,8 +1,10 @@
-package com.santander.peliculacrud.util.mapper;
+package com.santander.peliculacrud.util.mapper.dto;
 
 import com.santander.peliculacrud.model.bo.DirectorBO;
 import com.santander.peliculacrud.model.dto.DirectorDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -10,6 +12,7 @@ import java.util.List;
  * The interface Director dto mapper.
  */
 @Mapper(componentModel = "spring")
+@Component
 public interface DirectorDTOMapper {
 
     /**
@@ -19,6 +22,7 @@ public interface DirectorDTOMapper {
      *         the director dto
      * @return the director bo
      */
+    @Mapping(target = "id", ignore = true)
     DirectorBO dtoToBo(DirectorDTO directorDTO);
 
     /**
@@ -37,6 +41,7 @@ public interface DirectorDTOMapper {
      *         the director bos
      * @return the list
      */
+    @Mapping(target = "id", ignore = true)
     List<DirectorDTO> bosToDtos(List<DirectorBO> directorBOS);
 
 }

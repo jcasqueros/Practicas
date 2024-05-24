@@ -2,17 +2,23 @@ package com.santander.peliculacrud.service.impl;
 
 import com.santander.peliculacrud.model.api.DirectorRepository;
 import com.santander.peliculacrud.model.bo.DirectorBO;
+
 import com.santander.peliculacrud.model.entity.Director;
 
 import com.santander.peliculacrud.service.DirectorServiceInterface;
-import com.santander.peliculacrud.util.mapper.DirectorBOMapper;
+import com.santander.peliculacrud.util.exception.GenericException;
+import com.santander.peliculacrud.util.mapper.bo.DirectorBOMapper;
 
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -21,17 +27,29 @@ import java.util.List;
 @Service
 public class DirectorService implements DirectorServiceInterface {
 
-    @Autowired
-    private DirectorRepository directorRepository;
-
-    @Autowired
-    private DirectorBOMapper directorBOMapper;
+    private final DirectorRepository directorRepository;
+    private final DirectorBOMapper directorBOMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(DirectorService.class);
 
+    /**
+     * Instantiates a new Director service.
+     *
+     * @param directorBOMapper
+     *         the director bo mapper
+     * @param directorRepository
+     *         the director repository
+     */
+    @Autowired
+    public DirectorService(DirectorBOMapper directorBOMapper, DirectorRepository directorRepository) {
+        this.directorRepository = directorRepository;
+        this.directorBOMapper = directorBOMapper;
+
+    }
+
     @Override
-    public DirectorBO createDirector(DirectorBO directorBO) {
-        Director director = Director.builder().build();
+    public DirectorBO createDirector(DirectorBO directorBO) throws GenericException {
+        Director director;
 
         director = directorBOMapper.boToEntity(directorBO);
 
@@ -40,8 +58,7 @@ public class DirectorService implements DirectorServiceInterface {
             directorBO = directorBOMapper.entityToBo(director);
 
         } catch (Exception e) {
-            logger.error("Failed to create director: {}", e.getMessage());
-            throw new RuntimeException("Failed to create director: ", e);
+            throw new GenericException("Failed to create director: ", e);
         }
 
         return directorBO;
@@ -49,15 +66,18 @@ public class DirectorService implements DirectorServiceInterface {
     }
 
     @Override
-    public List<DirectorBO> getAllDirectors() {
-        List<Director> directors = directorRepository.findAll();
-        return directorBOMapper.listEntitytoListBo(directors);
+    public List<DirectorBO> getAllDirectors(int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Director> directorsPage = directorRepository.findAll(pageable);
+        List<DirectorBO> directors = directorBOMapper.listEntitytoListBo(directorsPage);
+
+        return directors.stream().sorted(Comparator.comparing(DirectorBO::getName)).toList();
     }
 
     @Override
     public DirectorBO getDirectorById(long id) {
         Director director = directorRepository.findById(id).orElse(null);
-        DirectorBO directorBO = DirectorBO.builder().build();
+        DirectorBO directorBO = null;
         if (director != null) {
             directorBO = directorBOMapper.entityToBo(director);
         }
@@ -66,7 +86,7 @@ public class DirectorService implements DirectorServiceInterface {
     }
 
     @Override
-    public boolean updateDirector(long id, DirectorBO directorBO) {
+    public boolean updateDirector(long id, DirectorBO directorBO) throws GenericException {
         boolean update = false;
         if (directorRepository.existsById(id)) {
 
@@ -78,8 +98,7 @@ public class DirectorService implements DirectorServiceInterface {
 
             } catch (Exception e) {
 
-                logger.error("Failed to update director: {}", e.getMessage());
-                throw new RuntimeException("Failed to update director: ", e);
+                throw new GenericException("Failed to update director: ", e);
 
             }
 
@@ -90,7 +109,7 @@ public class DirectorService implements DirectorServiceInterface {
     }
 
     @Override
-    public boolean deleteDirector(long id) {
+    public boolean deleteDirector(long id) throws GenericException {
 
         boolean delete = false;
         if (directorRepository.existsById(id)) {
@@ -100,8 +119,7 @@ public class DirectorService implements DirectorServiceInterface {
                 delete = true;
 
             } catch (Exception e) {
-                logger.error("Failed to delete director: {}", e.getMessage());
-                throw new RuntimeException("Failed to delete director: {}", e);
+                throw new GenericException("Failed to delete director: {}", e);
             }
 
         } else {
@@ -111,9 +129,36 @@ public class DirectorService implements DirectorServiceInterface {
         return delete;
     }
 
-    private void directorNotfound() {
+    @Override
+    public List<DirectorBO> getDirectorByName(String name, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Director> directorsPage = directorRepository.findAllByName(name, pageable);
+        List<DirectorBO> directors = directorBOMapper.listEntitytoListBo(directorsPage);
+
+        return directors.stream().sorted(Comparator.comparingInt(DirectorBO::getAge)).toList();
+    }
+
+    @Override
+    public List<DirectorBO> getDirectorByAge(int age, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Director> directorsPage = directorRepository.findAllByAgeEquals(age, pageable);
+        List<DirectorBO> directors = directorBOMapper.listEntitytoListBo(directorsPage);
+
+        return directors.stream().sorted(Comparator.comparing(DirectorBO::getName)).toList();
+    }
+
+    @Override
+    public List<DirectorBO> getDirectorByNation(String nation, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Director> directorsPage = directorRepository.findAllByNationEquals(nation, pageable);
+        List<DirectorBO> directors = directorBOMapper.listEntitytoListBo(directorsPage);
+
+        return directors.stream().sorted(Comparator.comparing(DirectorBO::getName)).toList();
+    }
+
+    private void directorNotfound() throws GenericException {
         logger.error("Director not found");
-        throw new RuntimeException("Director not found");
+        throw new GenericException("Director not found");
 
     }
 

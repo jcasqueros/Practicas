@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DirectorDTO {
     @NotNull(message = "Name can´t be null")
-    @Pattern(regexp = "[^\\s]+.*", message = "Name cannot be empty or contain only spaces")
+    @Pattern(regexp = "\\S+.*", message = "Name cannot be empty or contain only spaces")
     private String name;
 
     @NotNull(message = "Age can´t be null")
@@ -25,7 +25,7 @@ public class DirectorDTO {
     private int age;
 
     @NotNull(message = "Nation can´t be null")
-    @Pattern(regexp = "[^\\s]+.*", message = "Nation cannot be empty or contain only spaces")
+    @Pattern(regexp = "\\S+.*", message = "Nation cannot be empty or contain only spaces")
     private String nation;
 }
 

@@ -5,7 +5,8 @@ import com.santander.peliculacrud.model.dto.ActorDTO;
 import com.santander.peliculacrud.service.ActorServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
 
-import com.santander.peliculacrud.util.mapper.ActorDTOMapper;
+import com.santander.peliculacrud.util.exception.GenericException;
+import com.santander.peliculacrud.util.mapper.dto.ActorDTOMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -30,15 +31,18 @@ import java.util.List;
 @RequestMapping("/actors")
 public class ActorController {
 
-    @Autowired
-    private ActorServiceInterface actorService;
-    @Autowired
-    private CommonOperation commonOperation;
-    @Autowired
-    private ActorDTOMapper actorDTOMapper;
+    private final ActorServiceInterface actorService;
+    private final CommonOperation commonOperation;
+    private final ActorDTOMapper actorDTOMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(ActorController.class);
 
+    @Autowired
+    public ActorController(ActorServiceInterface actorService, CommonOperation commonOperation, ActorDTOMapper actorDTOMapper) {
+        this.actorService = actorService;
+        this.commonOperation = commonOperation;
+        this.actorDTOMapper = actorDTOMapper;
+    }
     /**
      * Create actor response entity.
      *
@@ -52,7 +56,8 @@ public class ActorController {
     @ApiResponses({ @ApiResponse(code = 201, message = "Actor created successfulnesses"),
             @ApiResponse(code = 400, message = "Invalid request") })
     @PostMapping
-    public ResponseEntity<String> createActor(@Valid @RequestBody ActorDTO actor, BindingResult bindingResult) {
+    public ResponseEntity<String> createActor(@Valid @RequestBody ActorDTO actor, BindingResult bindingResult)
+            throws GenericException {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String message = "Actor not created";
@@ -85,9 +90,9 @@ public class ActorController {
      *         the binding result
      * @return the response entity
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateActor(@PathVariable @NotNull Long id, @Valid @RequestBody ActorDTO updatedActor,
-            BindingResult bindingResult) {
+    @PutMapping("/")
+    public ResponseEntity<String> updateActor(@RequestParam @NotNull Long id, @Valid @RequestBody ActorDTO updatedActor,
+            BindingResult bindingResult) throws GenericException {
         String message = "Actor not update";
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -114,8 +119,8 @@ public class ActorController {
      *         the id
      * @return the response entity
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteActor(@PathVariable @NotNull Long id) {
+    @DeleteMapping("/")
+    public ResponseEntity<String> deleteActor(@RequestParam @NotNull Long id) throws GenericException {
         String message = "User not delete";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         if (actorService.deleteActor(id)) {
@@ -131,10 +136,10 @@ public class ActorController {
      *
      * @return the all actors
      */
-    @GetMapping()
-    public List<ActorDTO> getAllActors() {
-        List<ActorBO> actorBOS = actorService.getAllActors();
-        return actorDTOMapper.bosToDtos(actorBOS);
+    @GetMapping("/all/")
+    public ResponseEntity<List<ActorDTO>> getAllActors(@RequestParam(defaultValue = "0") int page) {
+        List<ActorBO> actorBOS =  actorService.getAllActors(page);
+        return ResponseEntity.ok(actorDTOMapper.bosToDtos(actorBOS));
     }
 
     /**
@@ -144,16 +149,50 @@ public class ActorController {
      *         the id
      * @return the actor by id
      */
-    @GetMapping("/{id}")
-    public ActorDTO getActorById(@PathVariable @NotNull Long id) {
+    @GetMapping("/")
+    public ResponseEntity<ActorDTO> getActorById(@RequestParam @NotNull Long id) {
         ActorBO actorBO = actorService.getActorById(id);
-        ActorDTO actorDTO = actorDTOMapper.boToDto(actorBO);
-
-        if (actorDTO == null) {
+        if (actorBO == null) {
             logger.error("Actor not found");
+            return ResponseEntity.notFound().build();
         }
-        return actorDTO;
-
+        ActorDTO actorDTO = actorDTOMapper.boToDto(actorBO);
+        return ResponseEntity.ok(actorDTO);
     }
+
+    @GetMapping("/by-age/")
+    public ResponseEntity<List<ActorDTO>> getActorsByAge(@RequestParam int age, @RequestParam(defaultValue = "0") int page) {
+        List<ActorBO> actorBOs = actorService.getActorByAge(age, page);
+        if (actorBOs.isEmpty()) {
+            logger.error("No actors found with age {}", age);
+            return ResponseEntity.notFound().build();
+        }
+        List<ActorDTO> actorDTOS = actorDTOMapper.bosToDtos(actorBOs);
+        return ResponseEntity.ok(actorDTOS);
+    }
+
+    @GetMapping("/by-name/")
+    public ResponseEntity<List<ActorDTO>> getActorsByName(@RequestParam String name, @RequestParam(defaultValue = "0") int page) {
+        List<ActorBO> actorBOs = actorService.getActorByName(name, page);
+        if (actorBOs.isEmpty()) {
+            logger.error("No actors found with name {}", name);
+            return ResponseEntity.notFound().build();
+        }
+        List<ActorDTO> actorDTOS = actorDTOMapper.bosToDtos(actorBOs);
+        return ResponseEntity.ok(actorDTOS);
+    }
+
+    @GetMapping("/by-nation/")
+    public ResponseEntity<List<ActorDTO>> getActorsByNation(@RequestParam String nation, @RequestParam(defaultValue = "0") int page) {
+        List<ActorBO> actorBOs = actorService.getActorByNation(nation, page);
+        if (actorBOs.isEmpty()) {
+            logger.error("No actors found with nation {}", nation);
+            return ResponseEntity.notFound().build();
+        }
+        List<ActorDTO> actorDTOS = actorDTOMapper.bosToDtos(actorBOs);
+        return ResponseEntity.ok(actorDTOS);
+    }
+
+
 }
 

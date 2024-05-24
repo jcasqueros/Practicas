@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ public class FilmDTO {
 
     @NotNull(message = "Title can´t be null")
     @NotEmpty
-    @Pattern(regexp = "[^\\s]+.*", message = "Title cannot be empty or contain only spaces")
+    @Pattern(regexp = "\\S+.*", message = "Title cannot be empty or contain only spaces")
     private String title;
 
     @NotNull(message = "Created can´t be null")

@@ -1,6 +1,5 @@
 package com.santander.peliculacrud.model.bo;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
