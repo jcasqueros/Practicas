@@ -173,6 +173,11 @@ public class ApplicationAutoConfig {
         return new MongoProcessor();
     }
 
+    /**
+     * Create a TaskExecutor instance
+     *
+     * @return TaskExecutor instance
+     */
     @Bean
     public TaskExecutor taskExecutor() {
         return new SimpleAsyncTaskExecutor("spring_batch");
