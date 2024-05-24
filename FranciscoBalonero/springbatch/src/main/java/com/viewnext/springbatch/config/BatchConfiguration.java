@@ -4,6 +4,7 @@ import com.viewnext.springbatch.job.*;
 import com.viewnext.springbatch.model.Calle;
 import com.viewnext.springbatch.step.CustomExportStep;
 import com.viewnext.springbatch.step.CustomImportStep;
+import com.viewnext.springbatch.step.MultiThreadStep;
 import com.viewnext.springbatch.step.processor.CalleExportProcessor;
 import com.viewnext.springbatch.step.processor.CalleImportStep1ItemProcessor;
 import com.viewnext.springbatch.step.processor.CalleImportStep2ItemProcessor;
@@ -25,6 +26,8 @@ import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -195,15 +198,15 @@ public class BatchConfiguration {
     //VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 
     /**
-     * Creates an export job listener bean.
+     * Creates Default listener to jobs.
      *
-     * <p>This listener is responsible for handling events during the export job execution.</p>
+     * <p>Default listener.</p>
      *
-     * @return the export job listener bean
+     * @return the default job listener bean
      */
     @Bean
-    public ExportJobListener exportJobListener() {
-        return new ExportJobListener();
+    public DefaultJobListener defaultJobListener() {
+        return new DefaultJobListener();
     }
 
     /**
@@ -305,7 +308,54 @@ public class BatchConfiguration {
      */
     @Bean
     public Job exportCalle() {
-        return new ExportCalleJob().exportCalle(jobRepository, exportJobListener(), exportStep1(), exportStep2());
+        return new ExportCalleJob().exportCalle(jobRepository, defaultJobListener(), exportStep1(), exportStep2());
+
+    }
+
+    //-----------------------JOB MULTITHREAD IMPORTAR CSV A MONGO-----------------------
+    //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    //VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
+    /**
+     * Returns a task executor bean that allows for asynchronous task execution.
+     *
+     * @return a SimpleAsyncTaskExecutor instance
+     */
+    @Bean
+    public TaskExecutor taskExecutor() {
+        return new SimpleAsyncTaskExecutor();
+    }
+
+    /**
+     * Returns a MongoItemWriter bean that writes data to a MongoDB collection in a multithreaded manner.
+     *
+     * @return a CalleMongoItemWriter instance
+     */
+    @Bean
+    public MongoItemWriter<Calle> multiThreadMongoWriter() {
+        return new CalleMongoItemWriter("MULTITHREAD", mongoTemplate);
+    }
+
+    /**
+     * Returns a Step bean that represents a multithreaded step in a batch job.
+     *
+     * @return a MultiThreadStep instance
+     */
+    @Bean
+    public Step multiThreadStep() {
+        return new MultiThreadStep().customStep(jobRepository, transactionManager, csvReader(),
+                multiThreadMongoWriter(), skipListener(), taskExecutor());
+    }
+
+    /**
+     * Returns a Job bean that represents a batch job that imports data from a CSV file to a MongoDB collection in a
+     * multithreaded manner.
+     *
+     * @return a MultiThreadJob instance
+     */
+    @Bean
+    public Job multiThreadJob() {
+        return new MultiThreadJob().importCalleMultiThread(jobRepository, defaultJobListener(), multiThreadStep());
     }
 }
 

@@ -31,7 +31,7 @@ public class ExportCalleJob {
      *         the second step in the job
      * @return the built job
      */
-    public Job exportCalle(JobRepository jobRepository, ExportJobListener listener, Step step1, Step step2) {
+    public Job exportCalle(JobRepository jobRepository, DefaultJobListener listener, Step step1, Step step2) {
         return new JobBuilder("exportCalleJob").repository(jobRepository).incrementer(new RunIdIncrementer())
                 .listener(listener).flow(step1).next(step2).end().build();
     }

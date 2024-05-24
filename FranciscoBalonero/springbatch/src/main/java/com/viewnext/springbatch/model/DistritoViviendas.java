@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author Francisco Balonero Olivera
  */
 @Data
-@Document(collection = "distritos_viviendas")
+@Document(collection = "DISTRITOS_VIVIENDAS")
 public class DistritoViviendas {
 
     /**
