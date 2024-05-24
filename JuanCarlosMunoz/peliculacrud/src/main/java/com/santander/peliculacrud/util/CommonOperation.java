@@ -1,14 +1,15 @@
 package com.santander.peliculacrud.util;
 
-import jakarta.validation.*;
+import com.santander.peliculacrud.model.bo.ActorBO;
+import com.santander.peliculacrud.model.bo.DirectorBO;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * The type Common operation.
@@ -16,8 +17,7 @@ import java.util.Set;
 @Component
 public class CommonOperation {
 
-    @Autowired
-    private Validator validator;
+
 
     /**
      * Show error model.
@@ -32,5 +32,20 @@ public class CommonOperation {
             logger.error(objectError.getDefaultMessage());
         }
     }
+
+
+    public List<Long> getIdObject(List<Object> objs) {
+
+        List<Long> idObject = new ArrayList<>();
+        for (Object object : objs) {
+            if (object instanceof ActorBO actor) {
+                idObject.add(actor.getId());
+            } else if (object instanceof DirectorBO director) {
+                idObject.add(director.getId());
+            }
+        }
+        return idObject;
+    }
+
 
 }

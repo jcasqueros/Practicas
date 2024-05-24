@@ -1,8 +1,10 @@
-package com.santander.peliculacrud.util.mapper;
+package com.santander.peliculacrud.util.mapper.dto;
 
 import com.santander.peliculacrud.model.bo.ActorBO;
 import com.santander.peliculacrud.model.dto.ActorDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -10,6 +12,7 @@ import java.util.List;
  * The interface Actor dto mapper.
  */
 @Mapper(componentModel = "spring")
+@Component
 public interface ActorDTOMapper {
 
     /**
@@ -19,6 +22,7 @@ public interface ActorDTOMapper {
      *         the actor dto
      * @return the actor bo
      */
+    @Mapping(target = "id", ignore = true)
     ActorBO dtoToBo(ActorDTO actorDTO);
 
     /**

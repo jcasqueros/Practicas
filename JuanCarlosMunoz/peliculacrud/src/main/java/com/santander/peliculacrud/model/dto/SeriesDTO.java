@@ -22,7 +22,7 @@ public class SeriesDTO {
 
     @NotNull(message = "Title can´t be null")
     @NotEmpty
-    @Pattern(regexp = "[^\\s]+.*", message = "Title cannot be empty or contain only spaces")
+    @Pattern(regexp = "\\S+.*", message = "Title cannot be empty or contain only spaces")
     private String title;
 
     @NotNull(message = "Created can´t be null")
