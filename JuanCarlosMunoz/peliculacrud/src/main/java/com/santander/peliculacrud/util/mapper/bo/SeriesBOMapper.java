@@ -1,19 +1,20 @@
-package com.santander.peliculacrud.util.mapper;
+package com.santander.peliculacrud.util.mapper.bo;
 
-import com.santander.peliculacrud.model.bo.ActorBO;
-import com.santander.peliculacrud.model.bo.FilmBO;
-import com.santander.peliculacrud.model.entity.Actor;
-import com.santander.peliculacrud.model.entity.Film;
+import com.santander.peliculacrud.model.bo.SeriesBO;
+import com.santander.peliculacrud.model.entity.Series;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- * The interface Film bo mapper.
+ * The interface Series bo mapper.
  */
 @Mapper(componentModel = "spring")
-public interface FilmBOMapper {
+@Component
+public interface SeriesBOMapper {
 
     /**
      * Bo to entity film.
@@ -24,7 +25,7 @@ public interface FilmBOMapper {
      */
     @Mapping(source = "actors", target = "actors")
     @Mapping(source = "director", target = "director")
-    Film boToEntity(FilmBO filmBO);
+    Series boToEntity(SeriesBO filmBO);
 
     /**
      * Entity to bo film bo.
@@ -35,7 +36,7 @@ public interface FilmBOMapper {
      */
     @Mapping(source = "actors", target = "actors")
     @Mapping(source = "director", target = "director")
-    FilmBO entityToBo(Film film);
+    SeriesBO entityToBo(Series film);
 
     /**
      * List entity list bo list.
@@ -46,6 +47,6 @@ public interface FilmBOMapper {
      */
     @Mapping(source = "actors", target = "actors")
     @Mapping(source = "director", target = "director")
-    List<FilmBO> listEntityListBo(List<Film> films);
+    List<SeriesBO> listEntityListBo(Page<Series> films);
 
 }

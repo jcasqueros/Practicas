@@ -1,0 +1,16 @@
+kafka-demo:
+  kafka:
+    partition-count: 10
+    replica-count: 2
+    topic-name: messages
+
+spring:
+  kafka:
+    bootstrap-server: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.viewnext.kafkademo.model"
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

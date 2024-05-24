@@ -25,14 +25,13 @@ public class Director {
     @GeneratedValue
     private Long id;
     @NotNull
-    @Pattern(regexp = "[^\\s]+.*", message = "Name cannot be empty or contain only spaces")
+    @Pattern(regexp = "\\S+.*", message = "Name cannot be empty or contain only spaces")
     private String name;
     @NotNull
     @Min(18)
     private int age;
     @NotNull
-    @Pattern(regexp = "[^\\s]+.*", message = "Nation cannot be empty or contain only spaces")
+    @Pattern(regexp = "\\S+.*", message = "Nation cannot be empty or contain only spaces")
     private String nation;
-
 
 }

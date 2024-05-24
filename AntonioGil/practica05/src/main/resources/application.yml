@@ -1,6 +1,10 @@
 batch01:
-  tramo-input-file: tramos_calle_BarrioDismuniOneMillion.csv
-  output-folder-path: out/
+  district_filter:
+    district: ESTE
+    tramo-input-file: tramos_calle_BarrioDismuniOneMillion.csv
+  db_dump:
+    district-source-collection: district_filter-ESTE-1716539816011
+    output-folder-path: out/
 
 
 spring:

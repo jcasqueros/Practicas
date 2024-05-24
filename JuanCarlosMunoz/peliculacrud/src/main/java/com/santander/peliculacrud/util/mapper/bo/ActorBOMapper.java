@@ -1,8 +1,11 @@
-package com.santander.peliculacrud.util.mapper;
+package com.santander.peliculacrud.util.mapper.bo;
 
 import com.santander.peliculacrud.model.bo.ActorBO;
 import com.santander.peliculacrud.model.entity.Actor;
+
+import org.springframework.data.domain.Page;
 import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -10,6 +13,7 @@ import java.util.List;
  * The interface Actor bo mapper.
  */
 @Mapper(componentModel = "spring")
+@Component
 public interface ActorBOMapper {
 
     /**
@@ -33,10 +37,10 @@ public interface ActorBOMapper {
     /**
      * List entityto list bo list.
      *
-     * @param actors
-     *         the actors
+     * @param actorsPage
+     *         the actors page
      * @return the list
      */
-    List<ActorBO> listEntityListBo(List<Actor> actors);
+    List<ActorBO> listEntitytoListBo(Page<Actor> actorsPage);
 
 }

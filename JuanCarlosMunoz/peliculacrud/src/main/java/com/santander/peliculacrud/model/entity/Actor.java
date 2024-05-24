@@ -11,8 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.security.cert.CertPathBuilder;
-
 /**
  * The type Actor.
  */
@@ -35,6 +33,5 @@ public class Actor {
     @NotNull
     @Pattern(regexp = "\\S+.*", message = "Nation cannot be empty or contain only spaces")
     private String nation;
-
 
 }

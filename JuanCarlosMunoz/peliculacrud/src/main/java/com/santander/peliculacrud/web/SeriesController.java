@@ -5,7 +5,8 @@ import com.santander.peliculacrud.model.dto.SeriesDTO;
 import com.santander.peliculacrud.service.SeriesServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
 
-import com.santander.peliculacrud.util.mapper.SeriesDTOMapper;
+import com.santander.peliculacrud.util.exception.GenericException;
+import com.santander.peliculacrud.util.mapper.dto.SeriesDTOMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -30,14 +31,18 @@ import java.util.List;
 @RequestMapping("/seriess")
 public class SeriesController {
 
-    @Autowired
-    private SeriesServiceInterface seriesService;
-    @Autowired
-    private CommonOperation commonOperation;
-    @Autowired
-    private SeriesDTOMapper seriesDTOMapper;
-
     private static final Logger logger = LoggerFactory.getLogger(SeriesController.class);
+
+    private final SeriesServiceInterface seriesService;
+    private final CommonOperation commonOperation;
+    private final SeriesDTOMapper seriesDTOMapper;
+
+    @Autowired
+    public SeriesController(SeriesServiceInterface seriesService, CommonOperation commonOperation, SeriesDTOMapper seriesDTOMapper) {
+        this.seriesService = seriesService;
+        this.commonOperation = commonOperation;
+        this.seriesDTOMapper = seriesDTOMapper;
+    }
 
     /**
      * Create series response entity.
@@ -52,7 +57,8 @@ public class SeriesController {
     @ApiResponses({ @ApiResponse(code = 201, message = "Series created successfulnesses"),
             @ApiResponse(code = 400, message = "Invalid request") })
     @PostMapping
-    public ResponseEntity<String> createSeries(@Valid @RequestBody SeriesDTO series, BindingResult bindingResult) {
+    public ResponseEntity<String> createSeries(@Valid @RequestBody SeriesDTO series, BindingResult bindingResult)
+            throws GenericException {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String message = "Series not created";
@@ -85,9 +91,9 @@ public class SeriesController {
      *         the binding result
      * @return the response entity
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateSeries(@PathVariable @NotNull Long id, @Valid @RequestBody SeriesDTO updatedSeries,
-            BindingResult bindingResult) {
+    @PutMapping("/")
+    public ResponseEntity<String> updateSeries(@RequestParam @NotNull Long id, @Valid @RequestBody SeriesDTO updatedSeries,
+            BindingResult bindingResult) throws GenericException {
         String message = "Series not update";
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -114,8 +120,8 @@ public class SeriesController {
      *         the id
      * @return the response entity
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteSeries(@PathVariable @NotNull Long id) {
+    @DeleteMapping("/")
+    public ResponseEntity<String> deleteSeries(@RequestParam @NotNull Long id) throws GenericException {
         String message = "User not delete";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         if (seriesService.deleteSeries(id)) {
@@ -127,25 +133,14 @@ public class SeriesController {
     }
 
     /**
-     * Gets all seriess.
-     *
-     * @return the all seriess
-     */
-    @GetMapping()
-    public List<SeriesDTO> getAllSeriess() {
-        List<SeriesBO> seriesBOS = seriesService.getAllSeries();
-        return seriesDTOMapper.bosToDtos(seriesBOS);
-    }
-
-    /**
      * Gets series by id.
      *
      * @param id
      *         the id
      * @return the series by id
      */
-    @GetMapping("/{id}")
-    public SeriesDTO getSeriesById(@PathVariable @NotNull Long id) {
+    @GetMapping("/")
+    public SeriesDTO getSeriesById(@RequestParam @NotNull Long id) {
         SeriesBO seriesBO = seriesService.getSeriesById(id);
         SeriesDTO seriesDTO = seriesDTOMapper.boToDTO(seriesBO);
 
@@ -155,5 +150,107 @@ public class SeriesController {
         return seriesDTO;
 
     }
+
+    /**
+     * Gets all actors.
+     *
+     * @param page
+     *         the page
+     * @return the all actors
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<SeriesDTO>> getAllActors(@RequestParam(defaultValue = "0") int page) {
+        List<SeriesBO> seriesBOS = seriesService.getAllSeries(page);
+        return ResponseEntity.ok(seriesDTOMapper.bosToDtos(seriesBOS));
+    }
+
+    /**
+     * Gets series by created.
+     *
+     * @param created
+     *         the created
+     * @param page
+     *         the page
+     * @return the series by created
+     */
+    @GetMapping("/by-created")
+    public ResponseEntity<List<SeriesDTO>> getSeriesByCreated(@RequestParam int created,
+            @RequestParam(defaultValue = "0") int page) {
+        List<SeriesBO> seriesBOS = seriesService.getSeriesByCreated(created, page);
+        if (seriesBOS.isEmpty()) {
+            logger.error("No series found with created {}", created);
+            return ResponseEntity.notFound().build();
+        }
+        List<SeriesDTO> seriesDTOS = seriesDTOMapper.bosToDtos(seriesBOS);
+        return ResponseEntity.ok(seriesDTOS);
+    }
+
+    /**
+     * Gets series by title.
+     *
+     * @param title
+     *         the title
+     * @param page
+     *         the page
+     * @return the series by title
+     */
+    @GetMapping("/by-title")
+    public ResponseEntity<List<SeriesDTO>> getSeriesByTitle(@RequestParam String title,
+            @RequestParam(defaultValue = "0") int page) {
+        List<SeriesBO> seriesBOS = seriesService.getSeriesByTitle(title, page);
+
+        if (seriesBOS.isEmpty()) {
+            logger.error("No series found with name {}", title);
+            return ResponseEntity.notFound().build();
+        }
+        List<SeriesDTO> seriesDTOS = seriesDTOMapper.bosToDtos(seriesBOS);
+        return ResponseEntity.ok(seriesDTOS);
+    }
+
+    /**
+     * Gets seriess by actors.
+     *
+     * @param actorsName
+     *         the actors nameº
+     * @param page
+     *         the page
+     * @return the seriess by actors
+     */
+    @GetMapping("/by-actors")
+    public ResponseEntity<List<SeriesDTO>> getSeriessByActors(@RequestParam List<String> actorsName,
+            @RequestParam int page) {
+        List<SeriesBO> seriesBOS = seriesService.getSeriesByActors(actorsName, page);
+
+        if (seriesBOS.isEmpty()) {
+            logger.error("No series found with actorsName {}", actorsName);
+            return ResponseEntity.notFound().build();
+        }
+        List<SeriesDTO> seriesDTOS = seriesDTOMapper.bosToDtos(seriesBOS);
+
+        return ResponseEntity.ok(seriesDTOS);
+    }
+
+    /**
+     * Gets seriess by directors.
+     *
+     * @param directorsName
+     *         the directors name
+     * @param page
+     *         the page
+     * @return the seriess by directors
+     */
+    @GetMapping("/by-directors")
+    public ResponseEntity<List<SeriesDTO>> getSeriessByDirectors(@RequestParam List<String> directorsName,
+            @RequestParam int page) {
+        List<SeriesBO> seriesBOS = seriesService.getSeriesByDirectors(directorsName, page);
+        if (seriesBOS.isEmpty()) {
+            logger.error("No series found with directorsName {}", directorsName);
+            return ResponseEntity.notFound().build();
+        }
+        List<SeriesDTO> seriesDTOS = seriesDTOMapper.bosToDtos(seriesBOS);
+
+        return ResponseEntity.ok(seriesDTOS);
+    }
+
 }
 

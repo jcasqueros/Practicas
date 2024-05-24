@@ -3,21 +3,25 @@ package com.santander.peliculacrud.service.impl;
 import com.santander.peliculacrud.model.api.ActorRepository;
 import com.santander.peliculacrud.model.api.DirectorRepository;
 import com.santander.peliculacrud.model.api.SeriesRepository;
-import com.santander.peliculacrud.model.bo.ActorBO;
 import com.santander.peliculacrud.model.bo.SeriesBO;
 import com.santander.peliculacrud.model.entity.Actor;
 import com.santander.peliculacrud.model.entity.Director;
 import com.santander.peliculacrud.model.entity.Series;
 import com.santander.peliculacrud.service.SeriesServiceInterface;
-import com.santander.peliculacrud.util.mapper.SeriesBOMapper;
-import org.mapstruct.factory.Mappers;
+import com.santander.peliculacrud.util.CommonOperation;
+import com.santander.peliculacrud.util.exception.GenericException;
+import com.santander.peliculacrud.util.mapper.bo.SeriesBOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * The type Series service.
@@ -25,19 +29,37 @@ import java.util.stream.Collectors;
 @Service
 public class SeriesService implements SeriesServiceInterface {
 
-    @Autowired
-    private SeriesRepository seriesRepository;
-
-    @Autowired
-    private ActorRepository actorRepository;
-
-    @Autowired
-    private DirectorRepository directorRepository;
-
-    @Autowired
-    private final SeriesBOMapper seriesBOMapper = Mappers.getMapper(SeriesBOMapper.class);
+    private final SeriesRepository seriesRepository;
+    private final ActorRepository actorRepository;
+    private final DirectorRepository directorRepository;
+    private final SeriesBOMapper seriesBOMapper;
+    private final CommonOperation commonOperation;
 
     private static final Logger logger = LoggerFactory.getLogger(SeriesService.class);
+
+    /**
+     * Instantiates a new Series service.
+     *
+     * @param actorRepository
+     *         the actor repository
+     * @param directorRepository
+     *         the director repository
+     * @param commonOperation
+     *         the common operation
+     * @param seriesBOMapper
+     *         the series bo mapper
+     * @param seriesRepository
+     *         the series repository
+     */
+    @Autowired
+    public SeriesService(ActorRepository actorRepository, DirectorRepository directorRepository,
+            CommonOperation commonOperation, SeriesBOMapper seriesBOMapper, SeriesRepository seriesRepository) {
+        this.actorRepository = actorRepository;
+        this.commonOperation = commonOperation;
+        this.directorRepository = directorRepository;
+        this.seriesBOMapper = seriesBOMapper;
+        this.seriesRepository = seriesRepository;
+    }
 
     /**
      * Create series boolean.
@@ -47,13 +69,13 @@ public class SeriesService implements SeriesServiceInterface {
      * @return the boolean
      */
 
-    public SeriesBO createSeries(SeriesBO seriesBO) {
+    public SeriesBO createSeries(SeriesBO seriesBO) throws GenericException {
 
-        SeriesBO seriesBOReturn = SeriesBO.builder().build();
+        SeriesBO seriesBOReturn;
 
         //Se comprueba que los directores y actores se encuentran en el repositorio
         Director director = directorRepository.findById(seriesBO.getDirector().getId()).orElse(null);
-        List<Long> idActors = getIdActors(seriesBO.getActors());
+        List<Long> idActors = commonOperation.getIdObject(Collections.singletonList(seriesBO.getActors()));
         List<Actor> actors = actorRepository.findAllById(idActors);
 
         if (director != null && !actors.isEmpty()) {
@@ -65,24 +87,22 @@ public class SeriesService implements SeriesServiceInterface {
                 seriesBOReturn = seriesBOMapper.entityToBo(seriesAux);
 
             } catch (Exception e) {
-                logger.error("Failed to create actor: {}", e.getMessage());
-                throw new RuntimeException("Failed to create actor: ", e);
+                throw new GenericException("Failed to create actor: ", e);
             }
         } else {
-            logger.error("Failed to create actor invalid director or actor");
-            throw new RuntimeException("Failed to create actor invalid director or actor");
+            throw new GenericException("Failed to create actor invalid director or actor");
         }
 
         return seriesBOReturn;
     }
 
     @Override
-    public SeriesBO updateSeries(Long id, SeriesBO seriesBO) {
+    public SeriesBO updateSeries(Long id, SeriesBO seriesBO) throws GenericException {
         SeriesBO seriesBOReturn = SeriesBO.builder().build();
         if (seriesRepository.existsById(id)) {
 
             Director director = directorRepository.findById(seriesBO.getDirector().getId()).orElse(null);
-            List<Long> idActors = getIdActors(seriesBO.getActors());
+            List<Long> idActors = commonOperation.getIdObject(Collections.singletonList(seriesBO.getActors()));
             List<Actor> actors = actorRepository.findAllById(idActors);
 
             if (director != null && !actors.isEmpty()) {
@@ -94,7 +114,7 @@ public class SeriesService implements SeriesServiceInterface {
 
             } else {
                 logger.error("Failed to update actor invalid director or actor");
-                throw new RuntimeException("Failed to update actor invalid director or actor");
+                throw new GenericException("Failed to update actor invalid director or actor");
             }
         } else {
             seriesNotfound();
@@ -104,14 +124,7 @@ public class SeriesService implements SeriesServiceInterface {
     }
 
     @Override
-    public List<SeriesBO> getAllSeries() {
-        List<Series> seriess = seriesRepository.findAll();
-
-        return seriesBOMapper.listEntityListBo(seriess);
-    }
-
-    @Override
-    public boolean deleteSeries(Long id) {
+    public boolean deleteSeries(Long id) throws GenericException {
         boolean deleted = false;
         if (id != null) {
 
@@ -124,7 +137,7 @@ public class SeriesService implements SeriesServiceInterface {
                 seriesNotfound();
             }
         } else {
-            throw new RuntimeException("Invalid series id: null");
+            throw new GenericException("Invalid series id: null");
 
         }
 
@@ -138,13 +151,56 @@ public class SeriesService implements SeriesServiceInterface {
         return seriesBOMapper.entityToBo(series);
     }
 
-    private List<Long> getIdActors(List<ActorBO> actorBOS) {
-        return actorBOS.stream().map(ActorBO::getId).collect(Collectors.toList());
+    @Override
+    public List<SeriesBO> getAllSeries(int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+
+        Page<Series> seriesPage = seriesRepository.findAll(pageable);
+        List<SeriesBO> series = seriesBOMapper.listEntityListBo(seriesPage);
+        return series.stream().sorted(Comparator.comparing(SeriesBO::getTitle)).toList();
     }
 
-    private void seriesNotfound() {
+    @Override
+    public List<SeriesBO> getSeriesByTitle(String title, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Series> seriesPage = seriesRepository.findAllByTitle(title, pageable);
+        List<SeriesBO> series = seriesBOMapper.listEntityListBo(seriesPage);
+
+        return series.stream().sorted(Comparator.comparing(SeriesBO::getTitle)).toList();
+    }
+
+    @Override
+    public List<SeriesBO> getSeriesByCreated(int created, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Series> seriesPage = seriesRepository.findAllByCreated(created, pageable);
+        List<SeriesBO> series = seriesBOMapper.listEntityListBo(seriesPage);
+
+        return series.stream().sorted(Comparator.comparingInt(SeriesBO::getCreated)).toList();
+    }
+
+    @Override
+    public List<SeriesBO> getSeriesByActors(List<String> actorsName, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        List<Actor> actors = actorRepository.findByNameIn(actorsName);
+        Page<Series> seriesPage = seriesRepository.findAllByActorsIn(Collections.singleton(actors), pageable);
+        List<SeriesBO> series = seriesBOMapper.listEntityListBo(seriesPage);
+
+        return series.stream().sorted(Comparator.comparingInt(SeriesBO::getCreated)).toList();
+    }
+
+    @Override
+    public List<SeriesBO> getSeriesByDirectors(List<String> directorsName, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        List<Director> directors = directorRepository.findByNameIn(directorsName);
+        Page<Series> seriesPage = seriesRepository.findAllByDirectorIn(directors, pageable);
+        List<SeriesBO> series = seriesBOMapper.listEntityListBo(seriesPage);
+
+        return series.stream().sorted(Comparator.comparingInt(SeriesBO::getCreated)).toList();
+    }
+
+    private void seriesNotfound() throws GenericException {
         logger.error("Series not found");
-        throw new RuntimeException("Series not found");
+        throw new GenericException("Series not found");
 
     }
 

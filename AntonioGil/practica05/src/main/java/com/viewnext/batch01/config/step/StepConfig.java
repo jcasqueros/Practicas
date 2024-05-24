@@ -52,14 +52,14 @@ import static com.viewnext.batch01.util.InjectablePlaceholders.STRING_PLACEHOLDE
 public class StepConfig {
 
     private static final int DEFAULT_CHUNK_SIZE = 256;
-    private static final int DEFAULT_THROTTLE_LIMIT = 20;
+    private static final int DEFAULT_THROTTLE_LIMIT = 3;
 
     private final StepBuilderFactory steps;
 
-    @Value("${batch01.tramo-input-file}")
+    @Value("${batch01.district_filter.tramo-input-file}")
     private String tramoInputFile;
 
-    @Value("${batch01.output-folder-path}")
+    @Value("${batch01.db_dump.output-folder-path}")
     private String outputFolderPath;
 
     public StepConfig(StepBuilderFactory steps) {
@@ -118,15 +118,14 @@ public class StepConfig {
 
     @Bean
     @StepScope
-    public TramoDistrictFilterer tramoFilterer(@Value("#{jobParameters['batch01.district_filter.district']}")
-                                               String districtName) {
+    public TramoDistrictFilterer tramoFilterer(@Value("${batch01.district_filter.district}") String districtName) {
         return new TramoDistrictFilterer(districtName);
     }
 
     @Bean
     @StepScope
     public MongoItemWriter<Tramo> districtFilterWriter(MongoTemplate mongoTemplate,
-                                                       @Value("#{jobParameters['batch01.district_filter.district']}")
+                                                       @Value("${batch01.district_filter.district}")
                                                        String districtName) {
         final long timestamp = Instant.now().toEpochMilli();
         final String collectionName = MessageFormat.format("district_filter-{0}-{1,number,#}", districtName,
@@ -171,7 +170,7 @@ public class StepConfig {
     @Bean
     @StepScope
     public MongoItemReader<Tramo> districtDumpDbReader(MongoTemplate mongoTemplate,
-                                                       @Value("#{jobParameters['batch01.db_dump.source_collection']}")
+                                                       @Value("${batch01.db_dump.district-source-collection}")
                                                        String sourceCollectionName) {
         Query mongoQuery = new BasicQuery("{}");
 
@@ -199,7 +198,7 @@ public class StepConfig {
 
     @Bean
     @StepScope
-    public FlatFileItemWriter<Tramo> tramoToCsvWriter(@Value("#{jobParameters['batch01.db_dump.source_collection']}")
+    public FlatFileItemWriter<Tramo> tramoToCsvWriter(@Value("${batch01.db_dump.district-source-collection}")
                                                       String sourceName) {
 
         Path outputPath = Path.of(outputFolderPath, sourceName + ".csv");
