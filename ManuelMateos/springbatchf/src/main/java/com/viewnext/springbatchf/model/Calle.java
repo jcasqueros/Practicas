@@ -9,6 +9,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.Id;
 
+/**
+ * Represents a street entity in database
+ *
+ * @author Manuel Mateos de Torres
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
