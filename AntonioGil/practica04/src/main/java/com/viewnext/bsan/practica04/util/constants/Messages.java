@@ -16,8 +16,6 @@ public class Messages {
     public static final String PRODUCTION_COMPANY_ENTITY_NAME = "production company";
     public static final String SHOW_ENTITY_NAME = "show";
 
-    public static final String METHOD_CALLED = "Method called: {0}";
-
     public static final String RESOURCE_NOT_FOUND = "No {0} with ID={1} was found";
     public static final String RESOURCE_ALREADY_EXISTS = "{0} with ID={1} already exists";
     public static final String REQUIRED_FIELD = "{0} is a required field";
