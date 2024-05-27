@@ -20,7 +20,7 @@ import static com.viewnext.bsan.practica04.sampledata.ProductionCompanySampleDat
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit test for {@code CustomActorRepositoryImpl}.
+ * Unit test for {@code CustomProductionCompanyRepositoryImpl}.
  *
  * @author Antonio Gil
  */

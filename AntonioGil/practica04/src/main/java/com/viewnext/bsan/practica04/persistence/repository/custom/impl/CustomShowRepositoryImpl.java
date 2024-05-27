@@ -38,8 +38,9 @@ public class CustomShowRepositoryImpl implements CustomShowRepository {
         criteriaQuery.select(shows);
 
         // Step 2. Create a TypedQuery from the CriteriaQuery above (this allows us to apply pagination)
+        int pageNumber = Math.max(0, pageable.getPageNumber() - 1);
         TypedQuery<Show> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setFirstResult(pageNumber * pageable.getPageSize());
         typedQuery.setMaxResults(pageable.getPageSize());
 
         // Step 3. Return the result list
@@ -54,8 +55,9 @@ public class CustomShowRepositoryImpl implements CustomShowRepository {
         criteriaQuery.select(shows).where(spec.toPredicate(shows, criteriaQuery, criteriaBuilder));
 
         // Step 2. Create a TypedQuery from the CriteriaQuery above (this allows us to apply pagination)
+        int pageNumber = Math.max(0, pageable.getPageNumber() - 1);
         TypedQuery<Show> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setFirstResult(pageNumber * pageable.getPageSize());
         typedQuery.setMaxResults(pageable.getPageSize());
 
         // Step 3. Return the result list

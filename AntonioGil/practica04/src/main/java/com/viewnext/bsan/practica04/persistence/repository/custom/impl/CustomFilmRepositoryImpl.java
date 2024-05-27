@@ -1,9 +1,6 @@
 package com.viewnext.bsan.practica04.persistence.repository.custom.impl;
 
-import com.viewnext.bsan.practica04.persistence.entity.Actor;
-import com.viewnext.bsan.practica04.persistence.entity.Actor_;
-import com.viewnext.bsan.practica04.persistence.entity.Film;
-import com.viewnext.bsan.practica04.persistence.entity.Film_;
+import com.viewnext.bsan.practica04.persistence.entity.*;
 import com.viewnext.bsan.practica04.persistence.repository.custom.CustomFilmRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -40,8 +37,9 @@ public class CustomFilmRepositoryImpl implements CustomFilmRepository {
         criteriaQuery.select(films);
 
         // Step 2. Create a TypedQuery from the CriteriaQuery above (this allows us to apply pagination)
+        int pageNumber = Math.max(0, pageable.getPageNumber() - 1);
         TypedQuery<Film> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setFirstResult(pageNumber * pageable.getPageSize());
         typedQuery.setMaxResults(pageable.getPageSize());
 
         // Step 3. Return the result list
@@ -56,8 +54,9 @@ public class CustomFilmRepositoryImpl implements CustomFilmRepository {
         criteriaQuery.select(films).where(spec.toPredicate(films, criteriaQuery, criteriaBuilder));
 
         // Step 2. Create a TypedQuery from the CriteriaQuery above (this allows us to apply pagination)
+        int pageNumber = Math.max(0, pageable.getPageNumber() - 1);
         TypedQuery<Film> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setFirstResult(pageNumber * pageable.getPageSize());
         typedQuery.setMaxResults(pageable.getPageSize());
 
         // Step 3. Return the result list
