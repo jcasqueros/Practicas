@@ -1,5 +1,6 @@
 package com.viewnext.kafka.service;
 
+import com.viewnext.kafka.model.Message;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -32,6 +33,6 @@ public class KafkaConsumer {
      */
     @KafkaListener(topics = "my_topic", groupId = "Francisco Balonero")
     public void receiveMessage(String message) {
-        log.info("Received message: " + message);
+        log.info("Received message : {} ",message);
     }
 }
