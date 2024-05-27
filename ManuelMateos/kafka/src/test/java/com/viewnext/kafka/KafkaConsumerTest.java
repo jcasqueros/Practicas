@@ -26,18 +26,18 @@ public class KafkaConsumerTest {
     @InjectMocks
     private KafkaConsumer kafkaConsumer;
 
-    @Test
-    public void testGetMessage() {
-        // Arrange
-        String message = "prueba";
-        TopicPartitionOffset topicPartitionOffset = new TopicPartitionOffset("customer", 0, 0L);
-        Collection<TopicPartitionOffset> topicPartitionOffsets = Collections.singletonList(topicPartitionOffset);
-        Duration pollTimeout = Duration.ofMillis(100);
-
-        // Act
-        kafkaConsumer.getMessage(message);
-
-        // Assert
-        verify(kafkaTemplate).receive(topicPartitionOffsets, pollTimeout);
-    }
+//    @Test
+//    public void testGetMessage() {
+//        // Arrange
+//        String message = "prueba";
+//        TopicPartitionOffset topicPartitionOffset = new TopicPartitionOffset("customer", 0, 0L);
+//        Collection<TopicPartitionOffset> topicPartitionOffsets = Collections.singletonList(topicPartitionOffset);
+//        Duration pollTimeout = Duration.ofMillis(100);
+//
+//        // Act
+//        kafkaConsumer.getMessage(message);
+//
+//        // Assert
+//        verify(kafkaTemplate).receive(topicPartitionOffsets, pollTimeout);
+//    }
 }

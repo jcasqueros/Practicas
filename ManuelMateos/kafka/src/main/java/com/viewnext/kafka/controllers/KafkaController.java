@@ -1,5 +1,6 @@
 package com.viewnext.kafka.controllers;
 
+import com.viewnext.kafka.objects.Message;
 import com.viewnext.kafka.services.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,9 @@ public class KafkaController {
      * @return ResponseEntity<String>
      */
     @PostMapping("/send")
-    public ResponseEntity<String> send(@RequestBody String message) {
+    public ResponseEntity<String> send(@RequestBody Message message) {
         kafkaProducer.send(message);
         return ResponseEntity.ok("Menssage OK");
     }
+
 }

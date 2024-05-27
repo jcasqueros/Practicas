@@ -1,6 +1,8 @@
 package com.viewnext.kafka.services;
 
+import com.viewnext.kafka.objects.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +18,13 @@ public class KafkaProducer {
     /**
      * The Kafka template instance.
      */
-    private final KafkaTemplate<String, String> kafkaTemplate;
-
+    private final KafkaTemplate<String, Message> kafkaTemplate;
     /**
      * Sends a message to the "customer" topic.
      *
      * @param message the message to be sent
      */
-    public void send(String message) {
+    public void send(Message message) {
         kafkaTemplate.send("customer", message);
     }
 }
