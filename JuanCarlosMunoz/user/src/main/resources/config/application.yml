@@ -1,0 +1,40 @@
+spring:
+  profiles:
+    active: local
+
+server:
+  port : ${env.spring-port}
+
+---
+
+spring:
+  application:
+    name: b-java-12345678-batch
+
+
+  datasource:
+    hikari:
+      jdbc-url: ${env.spring-batch-datasource.jdbc-url}
+      username: ${env.spring-batch-datasource.username}
+      password: ${env.spring-batch-datasource.password}
+      driver-class-name: ${env.spring-batch-datasource.driver-class}
+
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+

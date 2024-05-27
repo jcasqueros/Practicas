@@ -3,9 +3,11 @@ package com.santander.peliculacrud.service.impl;
 import com.santander.peliculacrud.model.api.ActorRepository;
 import com.santander.peliculacrud.model.bo.ActorBO;
 
+import com.santander.peliculacrud.model.dto.UserDTO;
 import com.santander.peliculacrud.model.entity.Actor;
 
 import com.santander.peliculacrud.service.ActorServiceInterface;
+import com.santander.peliculacrud.service.EndpointServiceInterface;
 import com.santander.peliculacrud.util.exception.GenericException;
 import com.santander.peliculacrud.util.mapper.bo.ActorBOMapper;
 
@@ -29,6 +31,7 @@ public class ActorService implements ActorServiceInterface {
 
     private final ActorRepository actorRepository;
     private final ActorBOMapper actorBOMapper;
+    private final EndpointServiceInterface endpointService;
 
     private static final Logger logger = LoggerFactory.getLogger(ActorService.class);
 
@@ -39,50 +42,16 @@ public class ActorService implements ActorServiceInterface {
      *         the actor bo mapper
      * @param actorRepository
      *         the actor repository
+     * @param endpointService
+     *         the endpoint service
      */
     @Autowired
-    public ActorService(ActorBOMapper actorBOMapper, ActorRepository actorRepository) {
+    public ActorService(ActorBOMapper actorBOMapper, ActorRepository actorRepository,
+            EndpointServiceInterface endpointService) {
         this.actorRepository = actorRepository;
         this.actorBOMapper = actorBOMapper;
 
-    }
-
-    @Override
-    public ActorBO createActor(ActorBO actorBO) throws GenericException {
-        Actor actor;
-
-        actor = actorBOMapper.boToEntity(actorBO);
-
-        try {
-            actor = actorRepository.save(actor);
-            actorBO = actorBOMapper.entityToBo(actor);
-
-        } catch (Exception e) {
-            throw new GenericException("Failed to create actor: ", e);
-        }
-
-        return actorBO;
-
-    }
-
-    @Override
-    public List<ActorBO> getAllActors(int page) {
-        Pageable pageable = PageRequest.of(page, 5);
-        Page<Actor> actorsPage = actorRepository.findAll(pageable);
-        List<ActorBO> actors = actorBOMapper.listEntitytoListBo(actorsPage);
-
-        return actors.stream().sorted(Comparator.comparing(ActorBO::getName)).toList();
-    }
-
-    @Override
-    public ActorBO getActorById(long id) {
-        Actor actor = actorRepository.findById(id).orElse(null);
-        ActorBO actorBO = null;
-        if (actor != null) {
-            actorBO = actorBOMapper.entityToBo(actor);
-        }
-
-        return actorBO;
+        this.endpointService = endpointService;
     }
 
     @Override
@@ -109,19 +78,59 @@ public class ActorService implements ActorServiceInterface {
     }
 
     @Override
+    public ActorBO createActor(ActorBO actorBO) throws GenericException {
+        Actor actor;
+
+        actor = actorBOMapper.boToEntity(actorBO);
+        List<UserDTO> users = endpointService.getUserByNameAndAge(actorBO.getName(), actorBO.getAge());
+
+        try {
+
+            if (!users.isEmpty()) {
+                actor = actorRepository.save(actor);
+                actorBO = actorBOMapper.entityToBo(actor);
+            } else {
+                throw new GenericException("No existe en la tabla de usuarios");
+
+            }
+
+        } catch (Exception e) {
+            throw new GenericException("Failed to create actor: ", e);
+        }
+
+        return actorBO;
+
+    }
+
+    @Override
+    public List<ActorBO> getAllActors(int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Actor> actorsPage = actorRepository.findAll(pageable);
+        List<ActorBO> actors = actorBOMapper.listEntitytoListBo(actorsPage);
+
+        return actors.stream().sorted(Comparator.comparing(ActorBO::getName)).toList();
+    }
+
+    @Override
+    public ActorBO getActorById(long id) throws GenericException {
+        Actor actor = actorRepository.findById(id).orElse(null);
+        ActorBO actorBO = null;
+        if (actor != null) {
+            actorBO = actorBOMapper.entityToBo(actor);
+        } else {
+            actorNotfound();
+        }
+
+        return actorBO;
+    }
+
+    @Override
     public boolean deleteActor(long id) throws GenericException {
 
         boolean delete = false;
         if (actorRepository.existsById(id)) {
-            try {
-                actorRepository.deleteById(id);
-
-                delete = true;
-
-            } catch (Exception e) {
-                throw new GenericException("Failed to delete actor: {}", e);
-            }
-
+            actorRepository.deleteById(id);
+            delete = true;
         } else {
             actorNotfound();
         }

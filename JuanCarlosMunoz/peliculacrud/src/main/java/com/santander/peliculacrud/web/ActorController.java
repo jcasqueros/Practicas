@@ -150,7 +150,7 @@ public class ActorController {
      * @return the actor by id
      */
     @GetMapping("/")
-    public ResponseEntity<ActorDTO> getActorById(@RequestParam @NotNull Long id) {
+    public ResponseEntity<ActorDTO> getActorById(@RequestParam @NotNull Long id) throws GenericException {
         ActorBO actorBO = actorService.getActorById(id);
         if (actorBO == null) {
             logger.error("Actor not found");

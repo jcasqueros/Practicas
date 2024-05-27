@@ -75,7 +75,7 @@ public class SeriesService implements SeriesServiceInterface {
 
         //Se comprueba que los directores y actores se encuentran en el repositorio
         Director director = directorRepository.findById(seriesBO.getDirector().getId()).orElse(null);
-        List<Long> idActors = commonOperation.getIdObject(Collections.singletonList(seriesBO.getActors()));
+        List<Long> idActors = commonOperation.getIdObject(seriesBO.getActors());
         List<Actor> actors = actorRepository.findAllById(idActors);
 
         if (director != null && !actors.isEmpty()) {
@@ -102,7 +102,7 @@ public class SeriesService implements SeriesServiceInterface {
         if (seriesRepository.existsById(id)) {
 
             Director director = directorRepository.findById(seriesBO.getDirector().getId()).orElse(null);
-            List<Long> idActors = commonOperation.getIdObject(Collections.singletonList(seriesBO.getActors()));
+            List<Long> idActors = commonOperation.getIdObject(seriesBO.getActors());
             List<Actor> actors = actorRepository.findAllById(idActors);
 
             if (director != null && !actors.isEmpty()) {
