@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 
 /**
  * The {@code ControllerLevelDirectorMapper} interface is a MapStruct mapper that handles conversions between
- * {@code DirectorBo} business objects and {@code DirectorReadDto} or {@code ActorUpsertDto} data transfer objects.
+ * {@code DirectorBo} business objects and {@code DirectorReadDto} or {@code DirectorUpsertDto} data transfer objects.
  * It is used by controllers to convert between native objects from each layer (business logic and presentation).
  *
  * @author Antonio Gil

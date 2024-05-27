@@ -34,7 +34,7 @@ class ProductionCompanyServiceImplTest {
 
     @DisplayName("[ProductionCompanyServiceImpl] getAll (success)")
     @Test
-    void xxxxx() {
+    void xxxxxy() {
         // TODO: Re-do this test
         fail("Not yet implemented");
     }

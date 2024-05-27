@@ -1,7 +1,7 @@
 package com.viewnext.bsan.practica04.util.constants;
 
 /**
- * Literal constants for messages, especially in exceptions and logging.
+ * Literal constants for messages that are used in exceptions and logging.
  *
  * @author Antonio Gil
  */

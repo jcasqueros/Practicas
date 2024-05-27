@@ -1,9 +1,7 @@
-package com.viewnext.bsan.practica03.util;
+package com.viewnext.bsan.practica03.util.mapper;
 
-import com.viewnext.bsan.practica03.bo.UserBo;
-import com.viewnext.bsan.practica03.entity.User;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.viewnext.bsan.practica03.business.bo.UserBo;
+import com.viewnext.bsan.practica03.persistence.entity.User;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit tests for {@code ServiceLevelUserMapper} (implementation is provided by MapStruct).
@@ -21,10 +21,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {ServiceLevelUserMapperImpl.class})
 class ServiceLevelUserMapperTest {
 
-    @Autowired
-    ServiceLevelUserMapper mapper;
+    private final ServiceLevelUserMapper mapper;
 
-    @DisplayName("[ServiceLevelUserMapper] [UNIT] entityToBo")
+    @Autowired
+    public ServiceLevelUserMapperTest(ServiceLevelUserMapper mapper) {
+        this.mapper = mapper;
+    }
+
+    @DisplayName("[ServiceLevelUserMapper] entityToBo")
     @Test
     void givenEntity_whenEntityToBo_thenMappingIsCorrect() {
         User entity = User.builder().dni("11111111H").name("JOSE").surname("DOMINGUEZ").age(35).build();
@@ -37,7 +41,7 @@ class ServiceLevelUserMapperTest {
         assertEquals(entity.getAge(), resultBo.getAge());
     }
 
-    @DisplayName("[ServiceLevelUserMapper] [UNIT] boToEntity")
+    @DisplayName("[ServiceLevelUserMapper] boToEntity")
     @Test
     void givenBo_whenBoToEntity_thenMappingIsCorrect() {
         UserBo bo = UserBo.builder().dni("22222222J").name("MARIA").surname("GOMEZ").age(40).build();

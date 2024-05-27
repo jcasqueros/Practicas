@@ -1,4 +1,4 @@
-package com.viewnext.bsan.practica03.entity;
+package com.viewnext.bsan.practica03.persistence.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

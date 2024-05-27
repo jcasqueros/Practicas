@@ -1,4 +1,4 @@
-package com.viewnext.bsan.practica03.exception.service;
+package com.viewnext.bsan.practica03.business.exception;
 
 import lombok.Getter;
 

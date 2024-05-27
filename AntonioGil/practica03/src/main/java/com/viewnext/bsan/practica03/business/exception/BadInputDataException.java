@@ -1,4 +1,4 @@
-package com.viewnext.bsan.practica03.exception.service;
+package com.viewnext.bsan.practica03.business.exception;
 
 import java.io.Serial;
 
@@ -8,7 +8,7 @@ import java.io.Serial;
  *
  * @author Antonio Gil
  */
-public class BadInputDataException extends ServiceLevelException {
+public class BadInputDataException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = 1L;

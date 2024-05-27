@@ -1,6 +1,6 @@
-package com.viewnext.bsan.practica03.repository;
+package com.viewnext.bsan.practica03.persistence.repository;
 
-import com.viewnext.bsan.practica03.entity.User;
+import com.viewnext.bsan.practica03.persistence.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,7 +1,7 @@
-package com.viewnext.bsan.practica03.util;
+package com.viewnext.bsan.practica03.util.mapper;
 
-import com.viewnext.bsan.practica03.bo.UserBo;
-import com.viewnext.bsan.practica03.entity.User;
+import com.viewnext.bsan.practica03.business.bo.UserBo;
+import com.viewnext.bsan.practica03.persistence.entity.User;
 import org.mapstruct.Mapper;
 
 /**

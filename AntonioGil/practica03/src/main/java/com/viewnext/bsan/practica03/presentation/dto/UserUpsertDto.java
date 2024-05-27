@@ -1,20 +1,14 @@
-package com.viewnext.bsan.practica03.bo;
+package com.viewnext.bsan.practica03.presentation.dto;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 
-/**
- * The {@code UserBo} business object class represents the users registered in the system.
- *
- * @author Antonio Gil
- */
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class UserBo {
+public class UserUpsertDto {
 
     @EqualsAndHashCode.Include
     String dni;

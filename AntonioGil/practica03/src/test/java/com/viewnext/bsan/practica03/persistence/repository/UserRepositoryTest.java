@@ -1,6 +1,7 @@
-package com.viewnext.bsan.practica03.repository;
+package com.viewnext.bsan.practica03.persistence.repository;
 
-import com.viewnext.bsan.practica03.entity.User;
+import com.viewnext.bsan.practica03.persistence.entity.User;
+import com.viewnext.bsan.practica03.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
