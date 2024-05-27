@@ -1,14 +1,18 @@
 package com.viewnext.bsan.practica04.presentation.controller;
 
+import com.viewnext.bsan.practica04.business.bo.FilmBo;
 import com.viewnext.bsan.practica04.business.service.FilmService;
 import com.viewnext.bsan.practica04.presentation.dto.FilmReadDto;
 import com.viewnext.bsan.practica04.presentation.dto.FilmUpsertDto;
 import com.viewnext.bsan.practica04.presentation.request.QueryOptions;
 import com.viewnext.bsan.practica04.presentation.request.WatchableFilter;
 import com.viewnext.bsan.practica04.util.constants.RestApiPaths;
+import com.viewnext.bsan.practica04.util.mapper.ControllerLevelFilmMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +26,11 @@ import java.util.Optional;
 public class FilmController {
 
     private final FilmService service;
+    private final ControllerLevelFilmMapper mapper;
 
-    public FilmController(FilmService service) {
+    public FilmController(FilmService service, ControllerLevelFilmMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping("")
@@ -36,40 +42,47 @@ public class FilmController {
     @GetMapping("/")
     public List<FilmReadDto> getAll(@ModelAttribute WatchableFilter filter,
                                     @ModelAttribute QueryOptions queryOptions) {
-        // TODO: Implement read query
-        throw new UnsupportedOperationException("Not yet implemented");
+        return service.getAll(filter, queryOptions).stream().map(mapper::boToReadDto).toList();
     }
 
     @GetMapping("/{id}")
     public FilmReadDto getById(@PathVariable long id, @RequestParam Optional<Boolean> useCustomRepository) {
-        // TODO: Implement read query
-        throw new UnsupportedOperationException("Not yet implemented");
+        return mapper.boToReadDto(service.getById(id, useCustomRepository));
     }
 
     @PostMapping("")
     public ResponseEntity<Void> postRoot(@RequestBody FilmUpsertDto film,
-                                         @RequestParam Optional<Boolean> useCustomRepository) {
-        return create(film, useCustomRepository);
+                                         @RequestParam Optional<Boolean> useCustomRepository,
+                                         UriComponentsBuilder uriComponentsBuilder) {
+        return create(film, useCustomRepository, uriComponentsBuilder);
     }
 
     @PostMapping("/")
     public ResponseEntity<Void> create(@RequestBody FilmUpsertDto film,
-                                       @RequestParam Optional<Boolean> useCustomRepository) {
-        // TODO: Implement create query
-        throw new UnsupportedOperationException("Not yet implemented");
+                                       @RequestParam Optional<Boolean> useCustomRepository,
+                                       UriComponentsBuilder uriComponentsBuilder) {
+        FilmBo bo = mapper.dtoToBo(film);
+        FilmBo createdBo = service.create(bo, useCustomRepository);
+
+        URI location = uriComponentsBuilder.path(RestApiPaths.BASE_FILMS_PATH)
+                .path("/")
+                .path(Long.toString(createdBo.getId()))
+                .build()
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable long id, @RequestBody FilmUpsertDto film,
                                        @RequestParam Optional<Boolean> useCustomRepository) {
-        // TODO: Implement update query
-        throw new UnsupportedOperationException("Not yet implemented");
+        service.update(id, mapper.dtoToBo(film), useCustomRepository);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id, @RequestParam Optional<Boolean> useCustomRepository) {
-        // TODO: Implement delete query
-        throw new UnsupportedOperationException("Not yet implemented");
+        service.deleteById(id, useCustomRepository);
+        return ResponseEntity.noContent().build();
     }
 
 }
