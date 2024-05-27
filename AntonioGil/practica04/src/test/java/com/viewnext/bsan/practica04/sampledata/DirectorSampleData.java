@@ -1,6 +1,6 @@
 package com.viewnext.bsan.practica04.sampledata;
 
-import com.viewnext.bsan.practica04.entity.Director;
+import com.viewnext.bsan.practica04.persistence.entity.Director;
 
 import java.util.List;
 

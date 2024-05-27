@@ -1,8 +1,8 @@
 package com.viewnext.bsan.practica04.util;
 
-import java.text.MessageFormat;
+import com.viewnext.bsan.practica04.util.constants.Messages;
 
-import static com.viewnext.bsan.practica04.util.constants.Messages.*;
+import java.text.MessageFormat;
 
 /**
  * Utility class that encapsulates the implementation details for message formatting and building logic. It provides a
@@ -16,27 +16,27 @@ public class MessageBuilder {
     }
 
     public static String buildResourceNotFoundMessage(String resourceClassName, Object id) {
-        return MessageFormat.format(RESOURCE_NOT_FOUND, resourceClassName, id);
+        return MessageFormat.format(Messages.RESOURCE_NOT_FOUND, resourceClassName, id);
     }
 
     public static String buildResourceAlreadyExistsMessage(String resourceClassName, Object id) {
-        return MessageFormat.format(RESOURCE_ALREADY_EXISTS, resourceClassName, id);
+        return MessageFormat.format(Messages.RESOURCE_ALREADY_EXISTS, resourceClassName, id);
     }
 
     public static String buildMissingRequiredFieldMessage(String requiredFieldName) {
-        return MessageFormat.format(REQUIRED_FIELD, requiredFieldName);
+        return MessageFormat.format(Messages.REQUIRED_FIELD, requiredFieldName);
     }
 
     public static String buildNullNotAllowedMessage(String offendingParameterName) {
-        return MessageFormat.format(NULL_NOT_ALLOWED, offendingParameterName);
+        return MessageFormat.format(Messages.NULL_NOT_ALLOWED, offendingParameterName);
     }
 
-    public static String negativeNumberNotAllowedMessage(String offendingParameterName) {
-        return MessageFormat.format(NEGATIVE_NUMBER_NOT_ALLOWED, offendingParameterName);
+    public static String buildNegativeNumberNotAllowedMessage(String offendingParameterName) {
+        return MessageFormat.format(Messages.NEGATIVE_NUMBER_NOT_ALLOWED, offendingParameterName);
     }
 
-    public static String parameterTypeMismatchMessage(String parameterName, String expectedTypeName) {
-        return MessageFormat.format(PARAMETER_TYPE_MISMATCH, parameterName, expectedTypeName);
+    public static String buildParameterTypeMismatchMessage(String parameterName, String expectedTypeName) {
+        return MessageFormat.format(Messages.PARAMETER_TYPE_MISMATCH, parameterName, expectedTypeName);
     }
 
 }
