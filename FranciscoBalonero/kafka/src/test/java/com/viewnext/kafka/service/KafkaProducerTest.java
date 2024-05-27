@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 class KafkaProducerTest {
 
     @Mock
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @InjectMocks
     private KafkaProducer kafkaProducer;
@@ -33,6 +33,6 @@ class KafkaProducerTest {
         kafkaProducer.sendMessage(message);
 
         // Assert
-        verify(kafkaTemplate).send("my_topic", message.toString());
+        verify(kafkaTemplate).send("my_topic", message);
     }
 }

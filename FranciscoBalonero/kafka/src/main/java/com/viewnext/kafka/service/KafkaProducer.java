@@ -23,7 +23,7 @@ public class KafkaProducer {
     /**
      * The Kafka template, used for sending messages to Kafka topics.
      */
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /**
      * Sends a message to the "my_topic" topic.
@@ -32,6 +32,6 @@ public class KafkaProducer {
      */
     public void sendMessage(Message message) {
         message.setTimestamp(LocalDateTime.now());
-        kafkaTemplate.send("my_topic", message.toString());
+        kafkaTemplate.send("my_topic", message);
     }
 }
