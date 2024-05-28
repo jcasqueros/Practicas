@@ -2,7 +2,6 @@ package com.viewnext.kafka.service;
 
 import com.viewnext.kafka.model.Message;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
