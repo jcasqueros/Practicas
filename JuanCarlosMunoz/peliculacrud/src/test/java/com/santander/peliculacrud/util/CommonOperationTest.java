@@ -1,6 +1,5 @@
 package com.santander.peliculacrud.util;
 
-
 import com.santander.peliculacrud.model.bo.ActorBO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Common operation test.
+ */
 @ExtendWith(MockitoExtension.class)
 class CommonOperationTest {
 
@@ -32,8 +34,9 @@ class CommonOperationTest {
     @InjectMocks
     private CommonOperation commonOperation;
 
-
-
+    /**
+     * Test show error model.
+     */
     @Test
     @DisplayName("Test to check show error model")
     void testShowErrorModel() {
@@ -54,14 +57,15 @@ class CommonOperationTest {
         verify(logger).error("Error 2");
     }
 
+    /**
+     * Test get id object.
+     */
     @Test
+    @DisplayName("Test get id object with vaid data")
     void testGetIdObject() {
         // Configuración de datos de prueba
-        List<ActorBO> actors = Arrays.asList(
-                ActorBO.builder().id(1L).name("Actor 1").build(),
-                ActorBO.builder().id(2L).name("Actor 2").build(),
-                ActorBO.builder().id(3L).name("Actor 3").build()
-        );
+        List<ActorBO> actors = Arrays.asList(ActorBO.builder().id(1L).name("Actor 1").build(),
+                ActorBO.builder().id(2L).name("Actor 2").build(), ActorBO.builder().id(3L).name("Actor 3").build());
 
         // Ejecución del método
         List<Long> idObject = commonOperation.getIdObject(actors);
@@ -72,6 +76,5 @@ class CommonOperationTest {
         assertEquals(2L, idObject.get(1));
         assertEquals(3L, idObject.get(2));
     }
-
 
 }

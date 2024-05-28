@@ -13,9 +13,7 @@ import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,8 +37,19 @@ public class FilmController {
     private final CommonOperation commonOperation;
     private final FilmDTOMapper filmDTOMapper;
 
+    /**
+     * Instantiates a new Film controller.
+     *
+     * @param filmService
+     *         the film service
+     * @param commonOperation
+     *         the common operation
+     * @param filmDTOMapper
+     *         the film dto mapper
+     */
     @Autowired
-    public FilmController(FilmServiceInterface filmService, CommonOperation commonOperation, FilmDTOMapper filmDTOMapper) {
+    public FilmController(FilmServiceInterface filmService, CommonOperation commonOperation,
+            FilmDTOMapper filmDTOMapper) {
         this.filmService = filmService;
         this.commonOperation = commonOperation;
         this.filmDTOMapper = filmDTOMapper;
@@ -56,6 +63,8 @@ public class FilmController {
      * @param bindingResult
      *         the binding result
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @ApiOperation(value = "Create a new film", notes = "Create a new film with the provided information")
     @ApiResponses({ @ApiResponse(code = 201, message = "Film created successfulnesses"),
@@ -66,7 +75,6 @@ public class FilmController {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String message = "Film not created";
-
 
         if (bindingResult.hasErrors()) {
 
@@ -95,6 +103,8 @@ public class FilmController {
      * @param bindingResult
      *         the binding result
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @PutMapping("/")
     public ResponseEntity<String> updateFilm(@RequestParam @NotNull Long id, @Valid @RequestBody FilmDTO updatedFilm,
@@ -124,6 +134,8 @@ public class FilmController {
      * @param id
      *         the id
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @DeleteMapping("/")
     public ResponseEntity<String> deleteFilm(@RequestParam @NotNull Long id) throws GenericException {
@@ -164,7 +176,7 @@ public class FilmController {
      * @return the all actors
      */
     @GetMapping("/all")
-    public ResponseEntity<List<FilmDTO>> getAllActors(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<FilmDTO>> getAllFilm(@RequestParam(defaultValue = "0") int page) {
         List<FilmBO> filmBOS = filmService.getAllFilm(page);
         return ResponseEntity.ok(filmDTOMapper.bosToDtos(filmBOS));
     }
@@ -216,7 +228,7 @@ public class FilmController {
      * Gets films by actors.
      *
      * @param actorsName
-     *         the actors nameº
+     *         the actors name
      * @param page
      *         the page
      * @return the films by actors

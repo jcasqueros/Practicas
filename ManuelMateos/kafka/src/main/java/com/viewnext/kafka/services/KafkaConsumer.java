@@ -1,9 +1,8 @@
 package com.viewnext.kafka.services;
 
 import com.viewnext.kafka.objects.Message;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,22 +10,23 @@ import org.springframework.stereotype.Service;
  *
  * @author Manuel Mateos de Torres
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
 public class KafkaConsumer {
 
     /**
-     * The Kafka template instance.
+     * The message buffer instance.
      */
-    private final KafkaTemplate<String, Message> kafkaTemplateConsumer;
+    private final MessageBuffer messageBuffer;
 
     /**
      * A Kafka listener method that consumes messages from the "customer" topic.
      *
-     * @param message the message received from Kafka
+     * @param message
+     *         the message received from Kafka
      */
     @KafkaListener(topics = "customer", groupId = "manuel")
     public void getMessage(Message message) {
-        System.out.println("Received message: " + message);
+        messageBuffer.addMessage(message);
     }
 }

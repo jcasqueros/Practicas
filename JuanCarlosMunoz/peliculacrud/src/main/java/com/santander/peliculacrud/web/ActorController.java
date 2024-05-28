@@ -37,12 +37,24 @@ public class ActorController {
 
     private static final Logger logger = LoggerFactory.getLogger(ActorController.class);
 
+    /**
+     * Instantiates a new Actor controller.
+     *
+     * @param actorService
+     *         the actor service
+     * @param commonOperation
+     *         the common operation
+     * @param actorDTOMapper
+     *         the actor dto mapper
+     */
     @Autowired
-    public ActorController(ActorServiceInterface actorService, CommonOperation commonOperation, ActorDTOMapper actorDTOMapper) {
+    public ActorController(ActorServiceInterface actorService, CommonOperation commonOperation,
+            ActorDTOMapper actorDTOMapper) {
         this.actorService = actorService;
         this.commonOperation = commonOperation;
         this.actorDTOMapper = actorDTOMapper;
     }
+
     /**
      * Create actor response entity.
      *
@@ -51,6 +63,8 @@ public class ActorController {
      * @param bindingResult
      *         the binding result
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @ApiOperation(value = "Create a new actor", notes = "Create a new actor with the provided information")
     @ApiResponses({ @ApiResponse(code = 201, message = "Actor created successfulnesses"),
@@ -89,6 +103,8 @@ public class ActorController {
      * @param bindingResult
      *         the binding result
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @PutMapping("/")
     public ResponseEntity<String> updateActor(@RequestParam @NotNull Long id, @Valid @RequestBody ActorDTO updatedActor,
@@ -118,6 +134,8 @@ public class ActorController {
      * @param id
      *         the id
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @DeleteMapping("/")
     public ResponseEntity<String> deleteActor(@RequestParam @NotNull Long id) throws GenericException {
@@ -134,11 +152,13 @@ public class ActorController {
     /**
      * Gets all actors.
      *
+     * @param page
+     *         the page
      * @return the all actors
      */
     @GetMapping("/all/")
     public ResponseEntity<List<ActorDTO>> getAllActors(@RequestParam(defaultValue = "0") int page) {
-        List<ActorBO> actorBOS =  actorService.getAllActors(page);
+        List<ActorBO> actorBOS = actorService.getAllActors(page);
         return ResponseEntity.ok(actorDTOMapper.bosToDtos(actorBOS));
     }
 
@@ -148,6 +168,8 @@ public class ActorController {
      * @param id
      *         the id
      * @return the actor by id
+     * @throws GenericException
+     *         the generic exception
      */
     @GetMapping("/")
     public ResponseEntity<ActorDTO> getActorById(@RequestParam @NotNull Long id) throws GenericException {
@@ -160,8 +182,18 @@ public class ActorController {
         return ResponseEntity.ok(actorDTO);
     }
 
+    /**
+     * Gets actors by age.
+     *
+     * @param age
+     *         the age
+     * @param page
+     *         the page
+     * @return the actors by age
+     */
     @GetMapping("/by-age/")
-    public ResponseEntity<List<ActorDTO>> getActorsByAge(@RequestParam int age, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<ActorDTO>> getActorsByAge(@RequestParam int age,
+            @RequestParam(defaultValue = "0") int page) {
         List<ActorBO> actorBOs = actorService.getActorByAge(age, page);
         if (actorBOs.isEmpty()) {
             logger.error("No actors found with age {}", age);
@@ -171,8 +203,18 @@ public class ActorController {
         return ResponseEntity.ok(actorDTOS);
     }
 
+    /**
+     * Gets actors by name.
+     *
+     * @param name
+     *         the name
+     * @param page
+     *         the page
+     * @return the actors by name
+     */
     @GetMapping("/by-name/")
-    public ResponseEntity<List<ActorDTO>> getActorsByName(@RequestParam String name, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<ActorDTO>> getActorsByName(@RequestParam String name,
+            @RequestParam(defaultValue = "0") int page) {
         List<ActorBO> actorBOs = actorService.getActorByName(name, page);
         if (actorBOs.isEmpty()) {
             logger.error("No actors found with name {}", name);
@@ -182,8 +224,18 @@ public class ActorController {
         return ResponseEntity.ok(actorDTOS);
     }
 
+    /**
+     * Gets actors by nation.
+     *
+     * @param nation
+     *         the nation
+     * @param page
+     *         the page
+     * @return the actors by nation
+     */
     @GetMapping("/by-nation/")
-    public ResponseEntity<List<ActorDTO>> getActorsByNation(@RequestParam String nation, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<ActorDTO>> getActorsByNation(@RequestParam String nation,
+            @RequestParam(defaultValue = "0") int page) {
         List<ActorBO> actorBOs = actorService.getActorByNation(nation, page);
         if (actorBOs.isEmpty()) {
             logger.error("No actors found with nation {}", nation);
@@ -192,7 +244,6 @@ public class ActorController {
         List<ActorDTO> actorDTOS = actorDTOMapper.bosToDtos(actorBOs);
         return ResponseEntity.ok(actorDTOS);
     }
-
 
 }
 

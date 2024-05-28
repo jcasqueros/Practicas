@@ -1,5 +1,4 @@
-package com.santander.peliculacrud.util.mapper;
-
+package com.santander.peliculacrud.util.mapper.bo;
 
 import com.santander.peliculacrud.model.bo.ActorBO;
 import com.santander.peliculacrud.model.bo.DirectorBO;
@@ -7,12 +6,11 @@ import com.santander.peliculacrud.model.bo.FilmBO;
 import com.santander.peliculacrud.model.entity.Actor;
 import com.santander.peliculacrud.model.entity.Director;
 import com.santander.peliculacrud.model.entity.Film;
-import com.santander.peliculacrud.util.mapper.bo.FilmBOMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mapstruct.factory.Mappers;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 
@@ -24,8 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 @ExtendWith(MockitoExtension.class)
 class FilmBOMapperTest {
-
-    private FilmBOMapper filmBOMapper = Mappers.getMapper(FilmBOMapper.class);
+    private final FilmBOMapper filmBOMapper = Mappers.getMapper(FilmBOMapper.class);
 
     /**
      * Test bo to entity.
@@ -33,12 +30,10 @@ class FilmBOMapperTest {
     @Test
     @DisplayName("Test mapper filmBO to entity")
     void testBoToEntity() {
-        FilmBO filmBO = FilmBO.builder()
-                .title("Film 1")
-                .created(2020)
-                .actors(Arrays.asList(ActorBO.builder().name("Actor 1").build(), ActorBO.builder().name("Actor 2").build()))
-                .director(DirectorBO.builder().name("Director 1").build())
-                .build();
+        FilmBO filmBO = FilmBO.builder().title("Film 1").created(2020)
+                .actors(Arrays.asList(ActorBO.builder().name("Actor 1").build(),
+                        ActorBO.builder().name("Actor 2").build()))
+                .director(DirectorBO.builder().name("Director 1").build()).build();
 
         Film film = filmBOMapper.boToEntity(filmBO);
 
@@ -59,12 +54,9 @@ class FilmBOMapperTest {
     @Test
     @DisplayName("Test mapper entity to filmBO")
     void testEntityToBo() {
-        Film film = Film.builder()
-                .title("Film 1")
-                .created(2020)
+        Film film = Film.builder().title("Film 1").created(2020)
                 .actors(Arrays.asList(Actor.builder().name("Actor 1").build(), Actor.builder().name("Actor 2").build()))
-                .director(Director.builder().name("Director 1").build())
-                .build();
+                .director(Director.builder().name("Director 1").build()).build();
 
         FilmBO filmBO = filmBOMapper.entityToBo(film);
 

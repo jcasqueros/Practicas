@@ -3,6 +3,7 @@ package com.santander.peliculacrud.service;
 import com.santander.peliculacrud.model.bo.FilmBO;
 import com.santander.peliculacrud.util.exception.GenericException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 /**
@@ -17,6 +18,8 @@ public interface FilmServiceInterface {
      * @param filmBO
      *         the film in
      * @return the boolean
+     * @throws GenericException
+     *         the generic exception
      */
     FilmBO createFilm(FilmBO filmBO) throws GenericException;
 
@@ -28,6 +31,8 @@ public interface FilmServiceInterface {
      * @param filmBO
      *         the film in
      * @return the boolean
+     * @throws GenericException
+     *         the generic exception
      */
     FilmBO updateFilm(Long id, FilmBO filmBO) throws GenericException;
 
@@ -37,6 +42,8 @@ public interface FilmServiceInterface {
      * @param id
      *         the id
      * @return the boolean
+     * @throws GenericException
+     *         the generic exception
      */
     boolean deleteFilm(Long id) throws GenericException;
 

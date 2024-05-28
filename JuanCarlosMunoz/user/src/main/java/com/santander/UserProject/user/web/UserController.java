@@ -21,7 +21,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -182,7 +181,7 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getUsersByNameAge(@RequestParam String name, @RequestParam int age,
             @RequestParam(defaultValue = "0") int page) {
         List<UserBO> userBOs = userService.getUserByNameAge(name, age, page);
-        List<UserDTO> userDTOS = new ArrayList<>();
+        List<UserDTO> userDTOS;
         userDTOS = userDTOMapper.bosToDtos(userBOs);
         return ResponseEntity.ok(userDTOS);
     }

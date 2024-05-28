@@ -10,7 +10,7 @@ import java.util.List;
  * The interface Director service interface.
  */
 @Service
-public  interface DirectorServiceInterface {
+public interface DirectorServiceInterface {
 
     /**
      * Create director.
@@ -18,6 +18,8 @@ public  interface DirectorServiceInterface {
      * @param directorBO
      *         the director out
      * @return the director
+     * @throws GenericException
+     *         the generic exception
      */
     DirectorBO createDirector(DirectorBO directorBO) throws GenericException;
 
@@ -47,6 +49,8 @@ public  interface DirectorServiceInterface {
      * @param directorBO
      *         the director outº
      * @return the boolean
+     * @throws GenericException
+     *         the generic exception
      */
     boolean updateDirector(long id, DirectorBO directorBO) throws GenericException;
 
@@ -56,6 +60,8 @@ public  interface DirectorServiceInterface {
      * @param id
      *         the id
      * @return the boolean
+     * @throws GenericException
+     *         the generic exception
      */
     boolean deleteDirector(long id) throws GenericException;
 

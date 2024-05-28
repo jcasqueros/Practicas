@@ -1,5 +1,4 @@
-package com.santander.peliculacrud.util.mapper;
-
+package com.santander.peliculacrud.util.mapper.bo;
 
 import com.santander.peliculacrud.model.bo.ActorBO;
 import com.santander.peliculacrud.model.bo.DirectorBO;
@@ -7,12 +6,11 @@ import com.santander.peliculacrud.model.bo.SeriesBO;
 import com.santander.peliculacrud.model.entity.Actor;
 import com.santander.peliculacrud.model.entity.Director;
 import com.santander.peliculacrud.model.entity.Series;
-import com.santander.peliculacrud.util.mapper.bo.SeriesBOMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mapstruct.factory.Mappers;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 
@@ -33,12 +31,10 @@ class SeriesBOMapperTest {
     @Test
     @DisplayName("Test mapper seriesBO to entity")
     void testBoToEntity() {
-        SeriesBO seriesBO = SeriesBO.builder()
-                .title("Series 1")
-                .created(2020)
-                .actors(Arrays.asList(ActorBO.builder().name("Actor 1").build(), ActorBO.builder().name("Actor 2").build()))
-                .director(DirectorBO.builder().name("Director 1").build())
-                .build();
+        SeriesBO seriesBO = SeriesBO.builder().title("Series 1").created(2020)
+                .actors(Arrays.asList(ActorBO.builder().name("Actor 1").build(),
+                        ActorBO.builder().name("Actor 2").build()))
+                .director(DirectorBO.builder().name("Director 1").build()).build();
 
         Series series = seriesBOMapper.boToEntity(seriesBO);
 
@@ -59,12 +55,9 @@ class SeriesBOMapperTest {
     @Test
     @DisplayName("Test mapper entity to seriesBO")
     void testEntityToBo() {
-        Series series = Series.builder()
-                .title("Series 1")
-                .created(2020)
+        Series series = Series.builder().title("Series 1").created(2020)
                 .actors(Arrays.asList(Actor.builder().name("Actor 1").build(), Actor.builder().name("Actor 2").build()))
-                .director(Director.builder().name("Director 1").build())
-                .build();
+                .director(Director.builder().name("Director 1").build()).build();
 
         SeriesBO seriesBO = seriesBOMapper.entityToBo(series);
 

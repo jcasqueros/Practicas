@@ -28,7 +28,7 @@ import java.util.List;
  * The type Series controller.
  */
 @RestController
-@RequestMapping("/seriess")
+@RequestMapping("/series")
 public class SeriesController {
 
     private static final Logger logger = LoggerFactory.getLogger(SeriesController.class);
@@ -37,8 +37,19 @@ public class SeriesController {
     private final CommonOperation commonOperation;
     private final SeriesDTOMapper seriesDTOMapper;
 
+    /**
+     * Instantiates a new Series controller.
+     *
+     * @param seriesService
+     *         the series service
+     * @param commonOperation
+     *         the common operation
+     * @param seriesDTOMapper
+     *         the series dto mapper
+     */
     @Autowired
-    public SeriesController(SeriesServiceInterface seriesService, CommonOperation commonOperation, SeriesDTOMapper seriesDTOMapper) {
+    public SeriesController(SeriesServiceInterface seriesService, CommonOperation commonOperation,
+            SeriesDTOMapper seriesDTOMapper) {
         this.seriesService = seriesService;
         this.commonOperation = commonOperation;
         this.seriesDTOMapper = seriesDTOMapper;
@@ -52,6 +63,8 @@ public class SeriesController {
      * @param bindingResult
      *         the binding result
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @ApiOperation(value = "Create a new series", notes = "Create a new series with the provided information")
     @ApiResponses({ @ApiResponse(code = 201, message = "Series created successfulnesses"),
@@ -90,10 +103,12 @@ public class SeriesController {
      * @param bindingResult
      *         the binding result
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @PutMapping("/")
-    public ResponseEntity<String> updateSeries(@RequestParam @NotNull Long id, @Valid @RequestBody SeriesDTO updatedSeries,
-            BindingResult bindingResult) throws GenericException {
+    public ResponseEntity<String> updateSeries(@RequestParam @NotNull Long id,
+            @Valid @RequestBody SeriesDTO updatedSeries, BindingResult bindingResult) throws GenericException {
         String message = "Series not update";
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -119,6 +134,8 @@ public class SeriesController {
      * @param id
      *         the id
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @DeleteMapping("/")
     public ResponseEntity<String> deleteSeries(@RequestParam @NotNull Long id) throws GenericException {
@@ -159,7 +176,7 @@ public class SeriesController {
      * @return the all actors
      */
     @GetMapping("/all")
-    public ResponseEntity<List<SeriesDTO>> getAllActors(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<SeriesDTO>> getAllSeries(@RequestParam(defaultValue = "0") int page) {
         List<SeriesBO> seriesBOS = seriesService.getAllSeries(page);
         return ResponseEntity.ok(seriesDTOMapper.bosToDtos(seriesBOS));
     }
@@ -208,16 +225,16 @@ public class SeriesController {
     }
 
     /**
-     * Gets seriess by actors.
+     * Gets series by actors.
      *
      * @param actorsName
-     *         the actors nameº
+     *         the actors name
      * @param page
      *         the page
-     * @return the seriess by actors
+     * @return the series by actors
      */
     @GetMapping("/by-actors")
-    public ResponseEntity<List<SeriesDTO>> getSeriessByActors(@RequestParam List<String> actorsName,
+    public ResponseEntity<List<SeriesDTO>> getSeriesByActors(@RequestParam List<String> actorsName,
             @RequestParam int page) {
         List<SeriesBO> seriesBOS = seriesService.getSeriesByActors(actorsName, page);
 
@@ -231,16 +248,16 @@ public class SeriesController {
     }
 
     /**
-     * Gets seriess by directors.
+     * Gets series by directors.
      *
      * @param directorsName
      *         the directors name
      * @param page
      *         the page
-     * @return the seriess by directors
+     * @return the series by directors
      */
     @GetMapping("/by-directors")
-    public ResponseEntity<List<SeriesDTO>> getSeriessByDirectors(@RequestParam List<String> directorsName,
+    public ResponseEntity<List<SeriesDTO>> getSeriesByDirectors(@RequestParam List<String> directorsName,
             @RequestParam int page) {
         List<SeriesBO> seriesBOS = seriesService.getSeriesByDirectors(directorsName, page);
         if (seriesBOS.isEmpty()) {

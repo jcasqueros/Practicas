@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  */
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = { "com.santander.peliculacrud.config" })
+@ComponentScan(basePackages = { "com.santander.UserProject.user.config" })
 public class AppConfig {
 
 }
