@@ -1,7 +1,7 @@
 package com.viewnext.bsan.practica04.util.constants;
 
 /**
- * Literal constants for messages, especially in exceptions and logging.
+ * Literal constants for messages that are used in exceptions and logging.
  *
  * @author Antonio Gil
  */
@@ -15,8 +15,6 @@ public class Messages {
     public static final String FILM_ENTITY_NAME = "film";
     public static final String PRODUCTION_COMPANY_ENTITY_NAME = "production company";
     public static final String SHOW_ENTITY_NAME = "show";
-
-    public static final String METHOD_CALLED = "Method called: {0}";
 
     public static final String RESOURCE_NOT_FOUND = "No {0} with ID={1} was found";
     public static final String RESOURCE_ALREADY_EXISTS = "{0} with ID={1} already exists";

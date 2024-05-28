@@ -1,7 +1,7 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnext.bsan.practica04.bo.ShowBo;
-import com.viewnext.bsan.practica04.entity.Show;
+import com.viewnext.bsan.practica04.business.bo.ShowBo;
+import com.viewnext.bsan.practica04.persistence.entity.Show;
 import org.mapstruct.Mapper;
 
 /**

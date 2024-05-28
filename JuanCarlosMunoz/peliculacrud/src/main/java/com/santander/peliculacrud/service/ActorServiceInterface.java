@@ -37,7 +37,7 @@ public  interface ActorServiceInterface {
      *         the id
      * @return the actor by id
      */
-    ActorBO getActorById(long id);
+    ActorBO getActorById(long id) throws GenericException;
 
     /**
      * Update actor boolean.

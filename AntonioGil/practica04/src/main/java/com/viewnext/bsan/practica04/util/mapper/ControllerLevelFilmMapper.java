@@ -1,9 +1,8 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnext.bsan.practica04.bo.FilmBo;
-import com.viewnext.bsan.practica04.dto.FilmReadDto;
-import com.viewnext.bsan.practica04.dto.FilmUpsertDto;
-import com.viewnext.bsan.practica04.bo.FilmBo;
+import com.viewnext.bsan.practica04.business.bo.FilmBo;
+import com.viewnext.bsan.practica04.presentation.dto.FilmReadDto;
+import com.viewnext.bsan.practica04.presentation.dto.FilmUpsertDto;
 import org.mapstruct.Mapper;
 
 /**

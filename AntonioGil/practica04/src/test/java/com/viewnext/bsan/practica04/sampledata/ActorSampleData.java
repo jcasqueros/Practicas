@@ -1,6 +1,7 @@
 package com.viewnext.bsan.practica04.sampledata;
 
-import com.viewnext.bsan.practica04.entity.Actor;
+import com.viewnext.bsan.practica04.business.bo.ActorBo;
+import com.viewnext.bsan.practica04.persistence.entity.Actor;
 
 import java.util.List;
 
@@ -16,5 +17,13 @@ public class ActorSampleData {
             Actor.builder().id(3L).name("ACTOR3").age(45).nationality("FRA").build(),
             Actor.builder().id(4L).name("ACTOR4").age(25).nationality("USA").build(),
             Actor.builder().id(5L).name("ACTOR5").age(35).nationality("ITA").build()
+    );
+
+    public static final List<ActorBo> SAMPLE_ACTORS_AS_BO = List.of(
+            ActorBo.builder().id(1L).name("ACTOR1").age(30).nationality("USA").build(),
+            ActorBo.builder().id(2L).name("ACTOR2").age(50).nationality("ESP").build(),
+            ActorBo.builder().id(3L).name("ACTOR3").age(45).nationality("FRA").build(),
+            ActorBo.builder().id(4L).name("ACTOR4").age(25).nationality("USA").build(),
+            ActorBo.builder().id(5L).name("ACTOR5").age(35).nationality("ITA").build()
     );
 }

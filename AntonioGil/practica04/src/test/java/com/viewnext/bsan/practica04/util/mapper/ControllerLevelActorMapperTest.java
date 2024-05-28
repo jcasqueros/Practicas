@@ -1,8 +1,8 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnext.bsan.practica04.bo.ActorBo;
-import com.viewnext.bsan.practica04.dto.ActorReadDto;
-import com.viewnext.bsan.practica04.dto.ActorUpsertDto;
+import com.viewnext.bsan.practica04.business.bo.ActorBo;
+import com.viewnext.bsan.practica04.presentation.dto.ActorReadDto;
+import com.viewnext.bsan.practica04.presentation.dto.ActorUpsertDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

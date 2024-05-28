@@ -73,25 +73,21 @@ public class FilmService implements FilmServiceInterface {
     public FilmBO createFilm(FilmBO filmBO) throws GenericException {
 
         FilmBO filmBOReturn;
+        Director director = directorRepository.findById(filmBO.getDirector().getId()).orElse(null);
 
         //Se comprueba que los directores y actores se encuentran en el repositorio
-        Director director = directorRepository.findById(filmBO.getDirector().getId()).orElse(null);
-        List<Long> idActors = commonOperation.getIdObject(Collections.singletonList(filmBO.getActors()));
+        List<Long> idActors = commonOperation.getIdObject(filmBO.getActors());
         List<Actor> actors = actorRepository.findAllById(idActors);
 
         if (director != null && !actors.isEmpty()) {
-            try {
 
-                Film film = filmBOMapper.boToEntity(filmBO);
+            Film film = filmBOMapper.boToEntity(filmBO);
 
-                Film filmAux = filmRepository.save(film);
-                filmBOReturn = filmBOMapper.entityToBo(filmAux);
+            Film filmAux = filmRepository.save(film);
+            filmBOReturn = filmBOMapper.entityToBo(filmAux);
 
-            } catch (Exception e) {
-                throw new GenericException("Failed to create actor: ", e);
-            }
         } else {
-            throw new GenericException("Failed to create actor invalid director or actor");
+            throw new GenericException("Failed to create actor: Invalid director or actor");
         }
 
         return filmBOReturn;
@@ -103,7 +99,7 @@ public class FilmService implements FilmServiceInterface {
         if (filmRepository.existsById(id)) {
 
             Director director = directorRepository.findById(filmBO.getDirector().getId()).orElse(null);
-            List<Long> idActors = commonOperation.getIdObject(Collections.singletonList(filmBO.getActors()));
+            List<Long> idActors = commonOperation.getIdObject(filmBO.getActors());
             List<Actor> actors = actorRepository.findAllById(idActors);
 
             if (director != null && !actors.isEmpty()) {
@@ -158,6 +154,7 @@ public class FilmService implements FilmServiceInterface {
 
         Page<Film> filmsPage = filmRepository.findAll(pageable);
         List<FilmBO> films = filmBOMapper.listEntityListBo(filmsPage);
+
         return films.stream().sorted(Comparator.comparing(FilmBO::getTitle)).toList();
     }
 

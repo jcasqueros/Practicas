@@ -1,11 +1,11 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnext.bsan.practica04.bo.ActorBo;
-import com.viewnext.bsan.practica04.bo.DirectorBo;
-import com.viewnext.bsan.practica04.bo.ProductionCompanyBo;
-import com.viewnext.bsan.practica04.bo.ShowBo;
-import com.viewnext.bsan.practica04.entity.Actor;
-import com.viewnext.bsan.practica04.entity.Show;
+import com.viewnext.bsan.practica04.business.bo.ActorBo;
+import com.viewnext.bsan.practica04.business.bo.DirectorBo;
+import com.viewnext.bsan.practica04.business.bo.ProductionCompanyBo;
+import com.viewnext.bsan.practica04.business.bo.ShowBo;
+import com.viewnext.bsan.practica04.persistence.entity.Actor;
+import com.viewnext.bsan.practica04.persistence.entity.Show;
 import com.viewnext.bsan.practica04.sampledata.ActorSampleData;
 import com.viewnext.bsan.practica04.sampledata.DirectorSampleData;
 import com.viewnext.bsan.practica04.sampledata.ProductionCompanySampleData;

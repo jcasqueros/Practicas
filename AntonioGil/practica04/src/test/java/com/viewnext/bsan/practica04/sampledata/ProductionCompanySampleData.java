@@ -1,6 +1,6 @@
 package com.viewnext.bsan.practica04.sampledata;
 
-import com.viewnext.bsan.practica04.entity.ProductionCompany;
+import com.viewnext.bsan.practica04.persistence.entity.ProductionCompany;
 
 import java.util.List;
 

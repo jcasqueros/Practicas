@@ -10,14 +10,11 @@ import org.springframework.validation.ObjectError;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * The type Common operation.
  */
 @Component
 public class CommonOperation {
-
-
 
     /**
      * Show error model.
@@ -33,19 +30,15 @@ public class CommonOperation {
         }
     }
 
-
-    public List<Long> getIdObject(List<Object> objs) {
+    public List<Long> getIdObject(List<ActorBO> actors) {
 
         List<Long> idObject = new ArrayList<>();
-        for (Object object : objs) {
-            if (object instanceof ActorBO actor) {
-                idObject.add(actor.getId());
-            } else if (object instanceof DirectorBO director) {
-                idObject.add(director.getId());
-            }
+        for (ActorBO actor : actors) {
+            idObject.add(actor.getId());
+
         }
+
         return idObject;
     }
-
 
 }

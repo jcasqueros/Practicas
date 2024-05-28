@@ -1,3 +1,6 @@
+server:
+  port: 9000
+
 spring:
   application:
     name: vn-practica03
@@ -10,12 +13,12 @@ spring:
     console:
       enabled: true
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
     hibernate:
       ddl-auto: create
+    open-in-view: true
+    show-sql: true
+
 logging:
   level:
-    root: ERROR
-    org.hibernate.SQL: TRACE
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    root: INFO
+    sql: TRACE

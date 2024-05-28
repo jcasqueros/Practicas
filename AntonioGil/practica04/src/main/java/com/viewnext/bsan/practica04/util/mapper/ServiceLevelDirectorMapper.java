@@ -1,7 +1,7 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnext.bsan.practica04.bo.DirectorBo;
-import com.viewnext.bsan.practica04.entity.Director;
+import com.viewnext.bsan.practica04.business.bo.DirectorBo;
+import com.viewnext.bsan.practica04.persistence.entity.Director;
 import org.mapstruct.Mapper;
 
 /**

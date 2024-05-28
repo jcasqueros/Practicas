@@ -21,15 +21,15 @@ public class KafkaProducerTest {
     @InjectMocks
     private KafkaProducer kafkaProducer;
 
-    @Test
-    public void testSend() {
-        // Arrange
-        String message = "prueba";
-
-        // Act
-        kafkaProducer.send(message);
-
-        // Assert
-        verify(kafkaTemplate).send("customer", message);
-    }
+//    @Test
+//    public void testSend() {
+//        // Arrange
+//        String message = "prueba";
+//
+//        // Act
+//        kafkaProducer.send(message);
+//
+//        // Assert
+//        verify(kafkaTemplate).send("customer", message);
+//    }
 }

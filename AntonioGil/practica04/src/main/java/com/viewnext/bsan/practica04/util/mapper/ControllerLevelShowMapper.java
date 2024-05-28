@@ -1,8 +1,8 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnext.bsan.practica04.bo.ShowBo;
-import com.viewnext.bsan.practica04.dto.ShowReadDto;
-import com.viewnext.bsan.practica04.dto.ShowUpsertDto;
+import com.viewnext.bsan.practica04.business.bo.ShowBo;
+import com.viewnext.bsan.practica04.presentation.dto.ShowReadDto;
+import com.viewnext.bsan.practica04.presentation.dto.ShowUpsertDto;
 import org.mapstruct.Mapper;
 
 /**

@@ -1,10 +1,10 @@
 package com.viewnext.bsan.practica04.util.mapper;
 
-import com.viewnext.bsan.practica04.bo.ActorBo;
-import com.viewnext.bsan.practica04.bo.DirectorBo;
-import com.viewnext.bsan.practica04.bo.FilmBo;
-import com.viewnext.bsan.practica04.bo.ProductionCompanyBo;
-import com.viewnext.bsan.practica04.dto.*;
+import com.viewnext.bsan.practica04.business.bo.ActorBo;
+import com.viewnext.bsan.practica04.business.bo.DirectorBo;
+import com.viewnext.bsan.practica04.business.bo.FilmBo;
+import com.viewnext.bsan.practica04.business.bo.ProductionCompanyBo;
+import com.viewnext.bsan.practica04.presentation.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

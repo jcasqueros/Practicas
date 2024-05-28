@@ -3,9 +3,11 @@ package com.santander.peliculacrud.service.impl;
 import com.santander.peliculacrud.model.api.DirectorRepository;
 import com.santander.peliculacrud.model.bo.DirectorBO;
 
+import com.santander.peliculacrud.model.dto.UserDTO;
 import com.santander.peliculacrud.model.entity.Director;
 
 import com.santander.peliculacrud.service.DirectorServiceInterface;
+import com.santander.peliculacrud.service.EndpointServiceInterface;
 import com.santander.peliculacrud.util.exception.GenericException;
 import com.santander.peliculacrud.util.mapper.bo.DirectorBOMapper;
 
@@ -29,6 +31,7 @@ public class DirectorService implements DirectorServiceInterface {
 
     private final DirectorRepository directorRepository;
     private final DirectorBOMapper directorBOMapper;
+    private final EndpointServiceInterface endpointService;
 
     private static final Logger logger = LoggerFactory.getLogger(DirectorService.class);
 
@@ -39,12 +42,16 @@ public class DirectorService implements DirectorServiceInterface {
      *         the director bo mapper
      * @param directorRepository
      *         the director repository
+     * @param endpointService
+     *         the endpoint service
      */
     @Autowired
-    public DirectorService(DirectorBOMapper directorBOMapper, DirectorRepository directorRepository) {
+    public DirectorService(DirectorBOMapper directorBOMapper, DirectorRepository directorRepository,
+            EndpointServiceInterface endpointService) {
         this.directorRepository = directorRepository;
         this.directorBOMapper = directorBOMapper;
 
+        this.endpointService = endpointService;
     }
 
     @Override
@@ -54,8 +61,15 @@ public class DirectorService implements DirectorServiceInterface {
         director = directorBOMapper.boToEntity(directorBO);
 
         try {
-            director = directorRepository.save(director);
-            directorBO = directorBOMapper.entityToBo(director);
+            List<UserDTO> users = endpointService.getUserByNameAndAge(directorBO.getName(), directorBO.getAge());
+
+            if (!users.isEmpty()) {
+                director = directorRepository.save(director);
+                directorBO = directorBOMapper.entityToBo(director);
+            } else {
+                throw new GenericException("No existe en la tabla de usuarios");
+
+            }
 
         } catch (Exception e) {
             throw new GenericException("Failed to create director: ", e);
@@ -113,14 +127,9 @@ public class DirectorService implements DirectorServiceInterface {
 
         boolean delete = false;
         if (directorRepository.existsById(id)) {
-            try {
-                directorRepository.deleteById(id);
+            directorRepository.deleteById(id);
 
-                delete = true;
-
-            } catch (Exception e) {
-                throw new GenericException("Failed to delete director: {}", e);
-            }
+            delete = true;
 
         } else {
             directorNotfound();
