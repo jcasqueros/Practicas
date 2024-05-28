@@ -1,7 +1,6 @@
 package com.santander.peliculacrud.util;
 
 import com.santander.peliculacrud.model.bo.ActorBO;
-import com.santander.peliculacrud.model.bo.DirectorBO;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -30,6 +29,13 @@ public class CommonOperation {
         }
     }
 
+    /**
+     * Gets id object.
+     *
+     * @param actors
+     *         the actors
+     * @return the id object
+     */
     public List<Long> getIdObject(List<ActorBO> actors) {
 
         List<Long> idObject = new ArrayList<>();

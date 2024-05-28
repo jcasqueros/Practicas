@@ -271,10 +271,10 @@ class SeriesServiceTest {
     }
 
     /**
-     * Test get all seriess.
+     * Test get all series.
      */
     @Test
-    @DisplayName("Test get all seriess")
+    @DisplayName("Test get all series")
     void testGetAllSeriess() {
 
         // Configuración de mocks
@@ -282,15 +282,18 @@ class SeriesServiceTest {
         Series series2 = Series.builder().title("Series 2").director(director).actors(actors).created(2020).build();
         Series series3 = Series.builder().title("Series 3").director(director).actors(actors).created(2020).build();
 
-        Page<Series> seriessPage = new PageImpl<>(Arrays.asList(series1, series2, series3));
+        Page<Series> seriesPage = new PageImpl<>(Arrays.asList(series1, series2, series3));
 
-        when(seriesRepository.findAll(PageRequest.of(0, 5))).thenReturn(seriessPage);
+        when(seriesRepository.findAll(PageRequest.of(0, 5))).thenReturn(seriesPage);
 
-        SeriesBO seriesBO1 = SeriesBO.builder().title("Series 1").director(directorBO).actors(actorsBO).created(2020).build();
-        SeriesBO seriesBO2 = SeriesBO.builder().title("Series 2").director(directorBO).actors(actorsBO).created(2020).build();
-        SeriesBO seriesBO3 = SeriesBO.builder().title("Series 3").director(directorBO).actors(actorsBO).created(2020).build();
+        SeriesBO seriesBO1 = SeriesBO.builder().title("Series 1").director(directorBO).actors(actorsBO).created(2020)
+                .build();
+        SeriesBO seriesBO2 = SeriesBO.builder().title("Series 2").director(directorBO).actors(actorsBO).created(2020)
+                .build();
+        SeriesBO seriesBO3 = SeriesBO.builder().title("Series 3").director(directorBO).actors(actorsBO).created(2020)
+                .build();
 
-        when(seriesBOMapper.listEntityListBo(seriessPage)).thenReturn(Arrays.asList(seriesBO1, seriesBO2, seriesBO3));
+        when(seriesBOMapper.listEntityListBo(seriesPage)).thenReturn(Arrays.asList(seriesBO1, seriesBO2, seriesBO3));
 
         // Ejecución del método bajo prueba
         List<SeriesBO> result = seriesService.getAllSeries(0);
@@ -303,10 +306,10 @@ class SeriesServiceTest {
     }
 
     /**
-     * Test get all seriess empty list.
+     * Test get all series empty list.
      */
     @Test
-    @DisplayName("Test get all seriess empty list")
+    @DisplayName("Test get all series empty list")
     void testGetAllSeriessEmptyList() {
         // Arrange
         when(seriesRepository.findAll()).thenReturn(Collections.emptyList());
@@ -437,7 +440,6 @@ class SeriesServiceTest {
      */
     @Test
     @DisplayName("Test get series by created.")
-
     void testGetSeriesByCreated() {
         // Configuración de mocks
         int created = 2020;

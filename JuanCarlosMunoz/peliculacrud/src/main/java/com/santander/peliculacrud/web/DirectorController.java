@@ -37,8 +37,19 @@ public class DirectorController {
 
     private static final Logger logger = LoggerFactory.getLogger(DirectorController.class);
 
+    /**
+     * Instantiates a new Director controller.
+     *
+     * @param directorService
+     *         the director service
+     * @param commonOperation
+     *         the common operation
+     * @param directorDTOMapper
+     *         the director dto mapper
+     */
     @Autowired
-    public DirectorController(DirectorServiceInterface directorService, CommonOperation commonOperation, DirectorDTOMapper directorDTOMapper) {
+    public DirectorController(DirectorServiceInterface directorService, CommonOperation commonOperation,
+            DirectorDTOMapper directorDTOMapper) {
         this.directorService = directorService;
         this.commonOperation = commonOperation;
         this.directorDTOMapper = directorDTOMapper;
@@ -52,6 +63,8 @@ public class DirectorController {
      * @param bindingResult
      *         the binding result
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @ApiOperation(value = "Create a new director", notes = "Create a new director with the provided information")
     @ApiResponses({ @ApiResponse(code = 201, message = "Director created successfulnesses"),
@@ -90,10 +103,12 @@ public class DirectorController {
      * @param bindingResult
      *         the binding result
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @PutMapping("/")
-    public ResponseEntity<String> updateDirector(@RequestParam @NotNull Long id, @Valid @RequestBody DirectorDTO updatedDirector,
-            BindingResult bindingResult) throws GenericException {
+    public ResponseEntity<String> updateDirector(@RequestParam @NotNull Long id,
+            @Valid @RequestBody DirectorDTO updatedDirector, BindingResult bindingResult) throws GenericException {
         String message = "Director not update";
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -119,6 +134,8 @@ public class DirectorController {
      * @param id
      *         the id
      * @return the response entity
+     * @throws GenericException
+     *         the generic exception
      */
     @DeleteMapping("/")
     public ResponseEntity<String> deleteDirector(@RequestParam @NotNull Long id) throws GenericException {
@@ -135,11 +152,13 @@ public class DirectorController {
     /**
      * Gets all directors.
      *
+     * @param page
+     *         the page
      * @return the all directors
      */
     @GetMapping("/all/")
     public ResponseEntity<List<DirectorDTO>> getAllDirectors(@RequestParam(defaultValue = "0") int page) {
-        List<DirectorBO> directorBOS =  directorService.getAllDirectors(page);
+        List<DirectorBO> directorBOS = directorService.getAllDirectors(page);
         return ResponseEntity.ok(directorDTOMapper.bosToDtos(directorBOS));
     }
 
@@ -161,8 +180,18 @@ public class DirectorController {
         return ResponseEntity.ok(directorDTO);
     }
 
+    /**
+     * Gets directors by age.
+     *
+     * @param age
+     *         the age
+     * @param page
+     *         the page
+     * @return the directors by age
+     */
     @GetMapping("/by-age/")
-    public ResponseEntity<List<DirectorDTO>> getDirectorsByAge(@RequestParam int age, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<DirectorDTO>> getDirectorsByAge(@RequestParam int age,
+            @RequestParam(defaultValue = "0") int page) {
         List<DirectorBO> directorBOs = directorService.getDirectorByAge(age, page);
         if (directorBOs.isEmpty()) {
             logger.error("No directors found with age {}", age);
@@ -172,8 +201,18 @@ public class DirectorController {
         return ResponseEntity.ok(directorDTOS);
     }
 
+    /**
+     * Gets directors by name.
+     *
+     * @param name
+     *         the name
+     * @param page
+     *         the page
+     * @return the directors by name
+     */
     @GetMapping("/by-name/")
-    public ResponseEntity<List<DirectorDTO>> getDirectorsByName(@RequestParam String name, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<DirectorDTO>> getDirectorsByName(@RequestParam String name,
+            @RequestParam(defaultValue = "0") int page) {
         List<DirectorBO> directorBOs = directorService.getDirectorByName(name, page);
         if (directorBOs.isEmpty()) {
             logger.error("No directors found with name {}", name);
@@ -183,8 +222,18 @@ public class DirectorController {
         return ResponseEntity.ok(directorDTOS);
     }
 
+    /**
+     * Gets directors by nation.
+     *
+     * @param nation
+     *         the nation
+     * @param page
+     *         the page
+     * @return the directors by nation
+     */
     @GetMapping("/by-nation/")
-    public ResponseEntity<List<DirectorDTO>> getDirectorsByNation(@RequestParam String nation, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<DirectorDTO>> getDirectorsByNation(@RequestParam String nation,
+            @RequestParam(defaultValue = "0") int page) {
         List<DirectorBO> directorBOs = directorService.getDirectorByNation(nation, page);
         if (directorBOs.isEmpty()) {
             logger.error("No directors found with nation {}", nation);
@@ -193,7 +242,6 @@ public class DirectorController {
         List<DirectorDTO> directorDTOS = directorDTOMapper.bosToDtos(directorBOs);
         return ResponseEntity.ok(directorDTOS);
     }
-
 
 }
 

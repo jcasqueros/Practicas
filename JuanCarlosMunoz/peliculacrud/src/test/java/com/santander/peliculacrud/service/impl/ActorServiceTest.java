@@ -83,7 +83,7 @@ class ActorServiceTest {
         when(actorRepository.save(any(Actor.class))).thenReturn(new Actor());
         when(actorBOMapper.entityToBo(any(Actor.class))).thenReturn(actorBO);
 
-        // Ejecución del método
+        // Ejecucion del método
         ActorBO result = actorService.createActor(actorBO);
 
         // Verificaciones
@@ -104,7 +104,7 @@ class ActorServiceTest {
         when(endpointService.getUserByNameAndAge(actorBO.getName(), actorBO.getAge())).thenReturn(
                 Collections.emptyList());
 
-        // Ejecución del método y verificación de la excepción
+        // Ejecucion del método y verificación de la excepción
         GenericException exception = assertThrows(GenericException.class, () -> actorService.createActor(actorBO));
         assertEquals("Failed to create actor: ", exception.getMessage());
     }
@@ -121,7 +121,7 @@ class ActorServiceTest {
                 List.of(new UserDTO()));
         when(actorRepository.save(any(Actor.class))).thenThrow(new RuntimeException("Failed to create actor: "));
 
-        // Ejecución del método y verificación de la excepción
+        // Ejecucion del método y verificación de la excepción
         GenericException exception = assertThrows(GenericException.class, () -> actorService.createActor(actorBO));
         assertEquals("Failed to create actor: ", exception.getMessage());
     }
@@ -137,7 +137,7 @@ class ActorServiceTest {
         when(actorRepository.findAll(any(Pageable.class))).thenReturn(actorsPage);
         when(actorBOMapper.listEntitytoListBo(actorsPage)).thenReturn(ActorBOs);
 
-        // Ejecución del método
+        // Ejecucion del método
         List<ActorBO> result = actorService.getAllActors(0);
 
         // Verificaciones
@@ -171,7 +171,7 @@ class ActorServiceTest {
         when(actorRepository.findAll(any(Pageable.class))).thenReturn(actorsPage);
         when(actorBOMapper.listEntitytoListBo(actorsPage)).thenReturn(Collections.emptyList());
 
-        // Ejecución del método
+        // Ejecucion del método
         List<ActorBO> result = actorService.getAllActors(0);
 
         // Verificaciones
@@ -187,7 +187,7 @@ class ActorServiceTest {
         // Configuración de mocks
         when(actorRepository.findAll(any(Pageable.class))).thenThrow(new RuntimeException("Failed to get all actors"));
 
-        // Ejecución del método y verificación de la excepción
+        // Ejecucion del método y verificación de la excepción
         RuntimeException exception = assertThrows(RuntimeException.class, () -> actorService.getAllActors(0));
         assertEquals("Failed to get all actors", exception.getMessage());
     }
@@ -205,7 +205,7 @@ class ActorServiceTest {
         when(actorRepository.findById(ID)).thenReturn(Optional.ofNullable(actor));
         when(actorBOMapper.entityToBo(actor)).thenReturn(actorBO);
 
-        // Ejecución del método
+        // Ejecucion del método
         ActorBO result = actorService.getActorById(ID);
 
         // Verificaciones
@@ -241,7 +241,7 @@ class ActorServiceTest {
         when(actorRepository.existsById(ID)).thenReturn(true);
         when(actorBOMapper.boToEntity(actorBO)).thenReturn(actor);
 
-        // Ejecución del método
+        // Ejecucion del método
         boolean result = actorService.updateActor(ID, actorBO);
 
         // Verificaciones
@@ -263,7 +263,7 @@ class ActorServiceTest {
         when(actorBOMapper.boToEntity(actorBO)).thenReturn(new Actor());
         when(actorRepository.save(any(Actor.class))).thenReturn(new Actor());
 
-        // Ejecución del método
+        // Ejecucion del método
         boolean result = actorService.updateActor(ID, actorBO);
 
         // Verificaciones
@@ -280,7 +280,7 @@ class ActorServiceTest {
         // Configuración de mocks
         when(actorRepository.existsById(ID)).thenReturn(false);
 
-        // Ejecución del método
+        // Ejecucion del método
         try {
             actorService.updateActor(ID, actorBO);
             fail("Expected RuntimeException");
@@ -300,7 +300,7 @@ class ActorServiceTest {
         when(actorBOMapper.boToEntity(actorBO)).thenReturn(new Actor());
         when(actorRepository.save(any(Actor.class))).thenThrow(new RuntimeException("Error updating actor"));
 
-        // Ejecución del método
+        // Ejecucion del método
         try {
             actorService.updateActor(ID, actorBO);
             fail("Expected RuntimeException");
@@ -310,7 +310,7 @@ class ActorServiceTest {
     }
 
     /**
-     * Test delete actor actor not found.
+     * Test delete  actor not found.
      */
     @Test
     @DisplayName("Tets delete actor with actor not found")
@@ -318,7 +318,7 @@ class ActorServiceTest {
         // Configuración de mocks
         when(actorRepository.existsById(ID)).thenReturn(false);
 
-        // Ejecución del método
+        // Ejecucion del método
         try {
             actorService.deleteActor(ID);
             fail("Expected RuntimeException");
@@ -328,7 +328,7 @@ class ActorServiceTest {
     }
 
     /**
-     * Test delete actor actor found.
+     * Test delete  actor found.
      */
     @Test
     @DisplayName("Tets delete actor with actor found")
@@ -337,7 +337,7 @@ class ActorServiceTest {
         when(actorRepository.existsById(ID)).thenReturn(true);
         doNothing().when(actorRepository).deleteById(1L);
 
-        // Ejecución del método
+        // Ejecucion del método
         try {
             boolean deleted = actorService.deleteActor(ID);
             assertTrue(deleted);
@@ -357,9 +357,9 @@ class ActorServiceTest {
         int page = 0;
         Page<Actor> actorsPage = new PageImpl<>(Collections.emptyList());
         when(actorRepository.findAllByNationEquals(eq(nation), any(Pageable.class))).thenReturn(actorsPage);
-        when(actorBOMapper.listEntitytoListBo(any(Page.class))).thenReturn(Collections.emptyList());
+        when(actorBOMapper.listEntitytoListBo(actorsPage)).thenReturn(Collections.emptyList());
 
-        // Ejecución del método
+        // Ejecucion del método
         List<ActorBO> result = actorService.getActorByNation(nation, page);
 
         // Verificaciones
@@ -379,7 +379,7 @@ class ActorServiceTest {
         when(actorRepository.findAllByAgeEquals(eq(age), any(Pageable.class))).thenReturn(actorsPage);
         when(actorBOMapper.listEntitytoListBo(actorsPage)).thenReturn(Collections.emptyList());
 
-        // Ejecución del método
+        // Ejecucion del método
         List<ActorBO> result = actorService.getActorByAge(age, page);
 
         // Verificaciones
@@ -412,7 +412,7 @@ class ActorServiceTest {
                 .map(actor -> ActorBO.builder().name(actor.getName()).age(actor.getAge()).nation(actor.getNation())
                         .build()).collect(Collectors.toList()));
 
-        // Ejecución del método
+        // Ejecucion del método
         List<ActorBO> resultPage1 = actorService.getActorByAge(age, 0);
         List<ActorBO> resultPage2 = actorService.getActorByAge(age, 1);
 
@@ -441,7 +441,7 @@ class ActorServiceTest {
                 .map(actor -> ActorBO.builder().name(actor.getName()).age(actor.getAge()).nation(actor.getNation())
                         .build()).collect(Collectors.toList()));
 
-        // Ejecución del método
+        // Ejecucion del método
         List<ActorBO> result = actorService.getActorByAge(age, page);
 
         // Verificaciones
@@ -494,7 +494,7 @@ class ActorServiceTest {
                 .map(actor -> ActorBO.builder().name(actor.getName()).age(actor.getAge()).nation(actor.getNation())
                         .build()).collect(Collectors.toList()));
 
-        // Ejecución del método
+        // Ejecucion del método
         List<ActorBO> resultPage1 = actorService.getActorByName(name, 0);
         List<ActorBO> resultPage2 = actorService.getActorByName(name, 1);
 

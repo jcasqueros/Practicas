@@ -3,6 +3,7 @@ package com.santander.peliculacrud.service.impl;
 import com.santander.peliculacrud.model.dto.UserDTO;
 
 import com.santander.peliculacrud.service.EndpointServiceInterface;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * The type Endpoint service.
  */
+@Slf4j
 @Service
 public class EndpointService implements EndpointServiceInterface {
 
@@ -34,13 +36,9 @@ public class EndpointService implements EndpointServiceInterface {
      * @return the user byname
      */
     public List<UserDTO> getUserByNameAndAge(String name, int age) {
-        return this.webClient.get().uri("users/by-name-age/?name={name}&age={age}", name, age)
-                .retrieve()
-                .bodyToFlux(UserDTO.class)
-                .collectList()
-                .block();
+        return this.webClient.get().uri("users/by-name-age/?name={name}&age={age}", name, age).retrieve()
+                .bodyToFlux(UserDTO.class).collectList().block();
     }
-
 
 }
 

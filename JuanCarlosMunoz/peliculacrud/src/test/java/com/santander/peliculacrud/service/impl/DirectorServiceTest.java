@@ -83,7 +83,7 @@ class DirectorServiceTest {
         when(directorRepository.save(any(Director.class))).thenReturn(new Director());
         when(directorBOMapper.entityToBo(any(Director.class))).thenReturn(directorBO);
 
-        // Ejecución del método
+        // Ejecucion del método
         DirectorBO result = directorService.createDirector(directorBO);
 
         // Verificaciones
@@ -104,7 +104,7 @@ class DirectorServiceTest {
         when(endpointService.getUserByNameAndAge(directorBO.getName(), directorBO.getAge())).thenReturn(
                 Collections.emptyList());
 
-        // Ejecución del método y verificación de la excepción
+        // Ejecucion del método y verificación de la excepción
         GenericException exception = assertThrows(GenericException.class,
                 () -> directorService.createDirector(directorBO));
         assertEquals("Failed to create director: ", exception.getMessage());
@@ -123,7 +123,7 @@ class DirectorServiceTest {
         when(directorRepository.save(any(Director.class))).thenThrow(
                 new RuntimeException("Failed to create director: "));
 
-        // Ejecución del método y verificación de la excepción
+        // Ejecucion del método y verificación de la excepción
         GenericException exception = assertThrows(GenericException.class,
                 () -> directorService.createDirector(directorBO));
         assertEquals("Failed to create director: ", exception.getMessage());
@@ -140,7 +140,7 @@ class DirectorServiceTest {
         when(directorRepository.findAll(any(Pageable.class))).thenReturn(directorsPage);
         when(directorBOMapper.listEntitytoListBo(directorsPage)).thenReturn(DirectorBOs);
 
-        // Ejecución del método
+        // Ejecucion del método
         List<DirectorBO> result = directorService.getAllDirectors(0);
 
         // Verificaciones
@@ -174,7 +174,7 @@ class DirectorServiceTest {
         when(directorRepository.findAll(any(Pageable.class))).thenReturn(directorsPage);
         when(directorBOMapper.listEntitytoListBo(directorsPage)).thenReturn(Collections.emptyList());
 
-        // Ejecución del método
+        // Ejecucion del método
         List<DirectorBO> result = directorService.getAllDirectors(0);
 
         // Verificaciones
@@ -191,25 +191,22 @@ class DirectorServiceTest {
         when(directorRepository.findAll(any(Pageable.class))).thenThrow(
                 new RuntimeException("Failed to get all directors"));
 
-        // Ejecución del método y verificación de la excepción
+        // Ejecucion del método y verificación de la excepción
         RuntimeException exception = assertThrows(RuntimeException.class, () -> directorService.getAllDirectors(0));
         assertEquals("Failed to get all directors", exception.getMessage());
     }
 
     /**
      * Test get director by id valid id.
-     *
-     * @throws GenericException
-     *         the generic exception
      */
     @Test
     @DisplayName("Test get director with valid id")
-    void testGetDirectorById_validId() throws GenericException {
+    void testGetDirectorById_validId() {
         // Configuración de mocks
         when(directorRepository.findById(ID)).thenReturn(Optional.ofNullable(director));
         when(directorBOMapper.entityToBo(director)).thenReturn(directorBO);
 
-        // Ejecución del método
+        // Ejecucion del método
         DirectorBO result = directorService.getDirectorById(ID);
 
         // Verificaciones
@@ -232,7 +229,7 @@ class DirectorServiceTest {
         when(directorRepository.existsById(ID)).thenReturn(true);
         when(directorBOMapper.boToEntity(directorBO)).thenReturn(director);
 
-        // Ejecución del método
+        // Ejecucion del método
         boolean result = directorService.updateDirector(ID, directorBO);
 
         // Verificaciones
@@ -254,7 +251,7 @@ class DirectorServiceTest {
         when(directorBOMapper.boToEntity(directorBO)).thenReturn(new Director());
         when(directorRepository.save(any(Director.class))).thenReturn(new Director());
 
-        // Ejecución del método
+        // Ejecucion del método
         boolean result = directorService.updateDirector(ID, directorBO);
 
         // Verificaciones
@@ -271,7 +268,7 @@ class DirectorServiceTest {
         // Configuración de mocks
         when(directorRepository.existsById(ID)).thenReturn(false);
 
-        // Ejecución del método
+        // Ejecucion del método
         try {
             directorService.updateDirector(ID, directorBO);
             fail("Expected RuntimeException");
@@ -291,7 +288,7 @@ class DirectorServiceTest {
         when(directorBOMapper.boToEntity(directorBO)).thenReturn(new Director());
         when(directorRepository.save(any(Director.class))).thenThrow(new RuntimeException("Error updating director"));
 
-        // Ejecución del método
+        // Ejecucion del método
         try {
             directorService.updateDirector(ID, directorBO);
             fail("Expected RuntimeException");
@@ -301,7 +298,7 @@ class DirectorServiceTest {
     }
 
     /**
-     * Test delete director director not found.
+     * Test delete director not found.
      */
     @Test
     @DisplayName("Tets delete director with director not found")
@@ -309,7 +306,7 @@ class DirectorServiceTest {
         // Configuración de mocks
         when(directorRepository.existsById(ID)).thenReturn(false);
 
-        // Ejecución del método
+        // Ejecucion del método
         try {
             directorService.deleteDirector(ID);
             fail("Expected RuntimeException");
@@ -319,7 +316,7 @@ class DirectorServiceTest {
     }
 
     /**
-     * Test delete director director found.
+     * Test delete director found.
      */
     @Test
     @DisplayName("Tets delete director with director found")
@@ -328,7 +325,7 @@ class DirectorServiceTest {
         when(directorRepository.existsById(ID)).thenReturn(true);
         doNothing().when(directorRepository).deleteById(1L);
 
-        // Ejecución del método
+        // Ejecucion del método
         try {
             boolean deleted = directorService.deleteDirector(ID);
             assertTrue(deleted);
@@ -348,9 +345,9 @@ class DirectorServiceTest {
         int page = 0;
         Page<Director> directorsPage = new PageImpl<>(Collections.emptyList());
         when(directorRepository.findAllByNationEquals(eq(nation), any(Pageable.class))).thenReturn(directorsPage);
-        when(directorBOMapper.listEntitytoListBo(any(Page.class))).thenReturn(Collections.emptyList());
+        when(directorBOMapper.listEntitytoListBo(directorsPage)).thenReturn(Collections.emptyList());
 
-        // Ejecución del método
+        // Ejecucion del método
         List<DirectorBO> result = directorService.getDirectorByNation(nation, page);
 
         // Verificaciones
@@ -370,7 +367,7 @@ class DirectorServiceTest {
         when(directorRepository.findAllByAgeEquals(eq(age), any(Pageable.class))).thenReturn(directorsPage);
         when(directorBOMapper.listEntitytoListBo(directorsPage)).thenReturn(Collections.emptyList());
 
-        // Ejecución del método
+        // Ejecucion del método
         List<DirectorBO> result = directorService.getDirectorByAge(age, page);
 
         // Verificaciones
@@ -405,7 +402,7 @@ class DirectorServiceTest {
                 .map(director -> DirectorBO.builder().name(director.getName()).age(director.getAge())
                         .nation(director.getNation()).build()).collect(Collectors.toList()));
 
-        // Ejecución del método
+        // Ejecucion del método
         List<DirectorBO> resultPage1 = directorService.getDirectorByAge(age, 0);
         List<DirectorBO> resultPage2 = directorService.getDirectorByAge(age, 1);
 
@@ -435,7 +432,7 @@ class DirectorServiceTest {
                 .map(director -> DirectorBO.builder().name(director.getName()).age(director.getAge())
                         .nation(director.getNation()).build()).collect(Collectors.toList()));
 
-        // Ejecución del método
+        // Ejecucion del método
         List<DirectorBO> result = directorService.getDirectorByAge(age, page);
 
         // Verificaciones
@@ -488,7 +485,7 @@ class DirectorServiceTest {
                 .map(director -> DirectorBO.builder().name(director.getName()).age(director.getAge())
                         .nation(director.getNation()).build()).collect(Collectors.toList()));
 
-        // Ejecución del método
+        // Ejecucion del método
         List<DirectorBO> resultPage1 = directorService.getDirectorByName(name, 0);
         List<DirectorBO> resultPage2 = directorService.getDirectorByName(name, 1);
 
