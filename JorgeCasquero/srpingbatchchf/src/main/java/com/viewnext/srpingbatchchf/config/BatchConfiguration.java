@@ -5,117 +5,86 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy;
-import org.springframework.batch.item.file.FlatFileParseException;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.validator.ValidationException;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.viewnext.srpingbatchchf.listener.LoggingSkipListener;
 import com.viewnext.srpingbatchchf.model.TramoCalle;
-import com.viewnext.srpingbatchchf.step.chunk.ChunkItemReader;
-import com.viewnext.srpingbatchchf.step.chunk.ChunkItemWriter;
+import com.viewnext.srpingbatchchf.step.chunk.TramoCalleItemProcessor;
+import com.viewnext.srpingbatchchf.validator.TramoCalleValidator;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
-	
-	private final JobBuilderFactory jobBuilderFactory;
-
-	@Autowired
-	private StepBuilderFactory stepBuilderFactory;
-
-    BatchConfiguration(JobBuilderFactory jobBuilderFactory) {
-        this.jobBuilderFactory = jobBuilderFactory;
-    }
+	 @Autowired
+	 private MongoTemplate mongoTemplate;
 
 	@Bean
-	public ChunkItemReader itemReader() {
-		return new ChunkItemReader();
+	public FlatFileItemReader<TramoCalle> reader() {
+
+		return new FlatFileItemReaderBuilder<TramoCalle>().name("personItemReader")
+				.resource(new ClassPathResource("/files/tramos_calle_BarrioDismuni.csv")).delimited().delimiter(",")
+				.names("CODIGO_CALLE", "TIPO_VIA", "NOMBRE_CALLE", "PRIMER_NUM_TRAMO", "ULTIMO_NUM_TRAMO", "BARRIO",
+						"COD_DISTRITO", "NOM_DISTRITO")
+				.linesToSkip(1).fieldSetMapper(new BeanWrapperFieldSetMapper<TramoCalle>() {
+					{
+						setTargetType(TramoCalle.class);
+					}
+				}).build();
 	}
 
 	@Bean
-	public TaskExecutor taskExecutor() {
-		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-		taskExecutor.setCorePoolSize(1);
-		taskExecutor.setMaxPoolSize(5);
-		taskExecutor.setQueueCapacity(5);
-
-		return taskExecutor;
+	public TramoCalleItemProcessor processor() {
+		return new TramoCalleItemProcessor(new TramoCalleValidator());
 	}
 
 	@Bean
-	public ChunkItemWriter itemWriter() {
-		return new ChunkItemWriter();
-	}
-
-//    @Bean
-//    @StepScope
-//    public TramoDistrictFilterer tramoFilterer
-//            (@Value("#{jobParameters['batch01.district_filter.district']}") String districtName) {
-//        return new TramoDistrictFilterer(districtName);
-//        
-//    }
-	// en chunknuestros pasos estan en un solo paso
-
-	@Bean
-	public Step districtFilterStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-		return stepBuilderFactory.get("district_filter-step01-district_filter").repository(jobRepository)
-				.<TramoCalle, TramoCalle>chunk(16).faultTolerant().skip(FlatFileParseException.class)
-				.skipPolicy(new AlwaysSkipItemSkipPolicy())
-//                .processor(tramoFilterer(null)
-				.writer(itemWriter()).transactionManager(transactionManager).build();
+	public MongoItemWriter<TramoCalle> writer(MongoTemplate mongoTemplate) {
+		MongoItemWriter<TramoCalle> writer = new MongoItemWriter<>();
+		writer.setTemplate(mongoTemplate);
+		writer.setCollection("tramosCalles");
+		return writer;
 	}
 
 	@Bean
-	public Job districtFilterJob(Step districtFilterStep) {
-		return jobBuilderFactory.get("district_filter").start(districtFilterStep)
-				.build();
+	public Tasklet borrarBd() {
+		return (contribution, chunkContext) -> {
+			mongoTemplate.getDb().getCollection("tramosCalle").drop();
+			return RepeatStatus.FINISHED;
+		};
 	}
 
+	@Bean
+	public Step clearDatabaseStep(StepBuilderFactory stepBuilderFactory) {
+		return stepBuilderFactory.get("borrarBd").tasklet(borrarBd()).build();
+	}
+
+	@Bean
+	public Job importUserJob(JobBuilderFactory jobBuilderFactory, Step step1) {
+		return jobBuilderFactory.get("importUserJob").incrementer(new RunIdIncrementer()).flow(step1).end().build();
+
+	}
+
+	@Bean
+	public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<TramoCalle> reader,
+			ItemWriter<TramoCalle> writer, ItemProcessor<TramoCalle, TramoCalle> processor) {
+		return stepBuilderFactory.get("step1").<TramoCalle, TramoCalle>chunk(10).reader(reader).processor(processor)
+				.writer(writer).faultTolerant().skip(ValidationException.class)
+				.skipPolicy(new AlwaysSkipItemSkipPolicy()).listener(new LoggingSkipListener()).build();
+	}
 }
-
-/*
- * @Autowired public JobBuilderFactory jobBuilderFactory;
- * 
- * @Autowired public StepBuilderFactory stepBuilderFactory;
- * 
- * @Bean
- * 
- * @JobScope // este paso solo esta disponible en el job(solo cuando se utilize
- * springBatch) public ItemReaderStep itemReaderStep() { return new
- * ItemReaderStep(); }
- * 
- * @Bean
- * 
- * @JobScope public ItemProcessorStep itemProcessorStep() { return new
- * ItemProcessorStep(); }
- * 
- * @Bean
- * 
- * @JobScope public ItemWriterStep itemWriterStep() { return new
- * ItemWriterStep(); }
- * 
- * 
- * @Bean public Step readFileStep() { return
- * stepBuilderFactory.get("itemReaderStep") .tasklet(itemReaderStep()).build();
- * }
- * 
- * @Bean public Step processDataStep() { return
- * stepBuilderFactory.get("itemProcessorStep")
- * .tasklet(itemProcessorStep()).build(); }
- * 
- * @Bean public Step writeFileStep() { return
- * stepBuilderFactory.get("itemWriterStep") .tasklet(itemWriterStep()).build();
- * }
- * 
- * @Bean public Job readCsv() { return jobBuilderFactory.get("readCsvJob").
- * start(readFileStep()) .next(processDataStep()) .next(writeFileStep())
- * .build();
- * 
- * }
- */
-//}
