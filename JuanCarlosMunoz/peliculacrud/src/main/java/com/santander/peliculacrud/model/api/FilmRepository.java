@@ -52,7 +52,7 @@ public interface FilmRepository extends JpaRepository<Film, Long> {
      *         the pageable
      * @return the page
      */
-    Page<Film> findAllByActorsIn(Collection<List<Actor>> actors, Pageable pageable);
+    Page<Film> findAllByActorsIn(List<Actor> actors, Pageable pageable);
 
     /**
      * Find all by directors in page.

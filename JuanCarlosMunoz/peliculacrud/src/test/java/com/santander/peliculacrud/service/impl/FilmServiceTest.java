@@ -476,7 +476,7 @@ class FilmServiceTest {
 
         Page<Film> filmPage = new PageImpl<>(Arrays.asList(film1, film2));
 
-        when(filmRepository.findAllByActorsIn(Collections.singleton(actors), PageRequest.of(page, 5))).thenReturn(
+        when(filmRepository.findAllByActorsIn(actors, PageRequest.of(page, 5))).thenReturn(
                 filmPage);
 
         when(filmBOMapper.listEntityListBo(filmPage)).thenReturn(Arrays.asList(filmBO1, filmBO2));

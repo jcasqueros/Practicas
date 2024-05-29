@@ -20,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -180,7 +179,7 @@ public class FilmService implements FilmServiceInterface {
     public List<FilmBO> getFilmByActors(List<String> actorsName, int page) {
         Pageable pageable = PageRequest.of(page, 5);
         List<Actor> actors = actorRepository.findByNameIn(actorsName);
-        Page<Film> filmsPage = filmRepository.findAllByActorsIn(Collections.singleton(actors), pageable);
+        Page<Film> filmsPage = filmRepository.findAllByActorsIn(actors, pageable);
         List<FilmBO> films = filmBOMapper.listEntityListBo(filmsPage);
 
         return films.stream().sorted(Comparator.comparingInt(FilmBO::getCreated)).toList();

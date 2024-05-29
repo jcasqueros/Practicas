@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -182,7 +181,7 @@ public class SeriesService implements SeriesServiceInterface {
     public List<SeriesBO> getSeriesByActors(List<String> actorsName, int page) {
         Pageable pageable = PageRequest.of(page, 5);
         List<Actor> actors = actorRepository.findByNameIn(actorsName);
-        Page<Series> seriesPage = seriesRepository.findAllByActorsIn(Collections.singleton(actors), pageable);
+        Page<Series> seriesPage = seriesRepository.findAllByActorsIn(actors, pageable);
         List<SeriesBO> series = seriesBOMapper.listEntityListBo(seriesPage);
 
         return series.stream().sorted(Comparator.comparingInt(SeriesBO::getCreated)).toList();

@@ -52,7 +52,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
      *         the pageable
      * @return the page
      */
-    Page<Series> findAllByActorsIn(Collection<List<Actor>> actors, Pageable pageable);
+    Page<Series> findAllByActorsIn(List<Actor> actors, Pageable pageable);
 
     /**
      * Find all by directors in page.

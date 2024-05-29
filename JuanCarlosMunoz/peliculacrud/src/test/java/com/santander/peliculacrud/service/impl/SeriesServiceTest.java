@@ -479,7 +479,7 @@ class SeriesServiceTest {
 
         Page<Series> seriesPage = new PageImpl<>(Arrays.asList(series1, series2));
 
-        when(seriesRepository.findAllByActorsIn(Collections.singleton(actors), PageRequest.of(page, 5))).thenReturn(
+        when(seriesRepository.findAllByActorsIn(actors, PageRequest.of(page, 5))).thenReturn(
                 seriesPage);
 
         when(seriesBOMapper.listEntityListBo(seriesPage)).thenReturn(Arrays.asList(seriesBO1, seriesBO2));
