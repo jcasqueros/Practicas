@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public class Consumidor {
 
     @KafkaListener(topics = "Prueba", groupId = "JorgeCasquero")
-    public void listen(String message) {
-        System.out.println("Received Message: " + message);
+    public void listen(Message message) {
+        System.out.println("Received Message: " + message.toString());
     }
 }

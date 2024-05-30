@@ -1,45 +1,50 @@
 package com.viewnext.jorge;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
-import java.util.Properties;
+import java.time.LocalDateTime;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.springframework.kafka.core.KafkaTemplate;
 
-class ProductorTest {
-	private KafkaProducer<String, String> mockProducer;
-	private Productor productor;
+public class ProductorTest {
 
-	@BeforeEach
-	void setUp() throws Exception {
-		mockProducer = Mockito.mock(KafkaProducer.class);
-		productor = new Productor();
-	}
+    private KafkaTemplate<String, Message> kafkaTemplate;
+    private Productor productor;
 
-	@Test
-	void testSend() {
-		// Arrange
-		Properties props = new Properties();
-		props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-		props.put("acks", "all");
-		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    @BeforeEach
+    public void setUp() {
+        kafkaTemplate = Mockito.mock(KafkaTemplate.class);
+        productor = new Productor();
+        productor.setKafkaTemplate(kafkaTemplate); // Inyección manual para pruebas
+    }
 
-		String topic = "Prueba";
-		int partition = 0;
-		String key = "";
-		String value = "HolaMundo";
+    @Test
+    public void testSend() {
+        // Arrange
+        String topic = "Prueba";
+        int partition = 0;
+        String key = "key1";
+        Message message = new Message("user1", "HolaMundo", true, LocalDateTime.now());
 
-		// Act
-		productor.send(mockProducer, topic, partition, key, value);
+        // Act
+        productor.send(topic, partition, key, message);
 
-		// Assert
-		verify(mockProducer).send(any(ProducerRecord.class));
-	}
+        // Assert
+        ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Integer> partitionCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
+
+        verify(kafkaTemplate).send(topicCaptor.capture(), partitionCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
+
+        assertEquals(topic, topicCaptor.getValue());
+        assertEquals(partition, partitionCaptor.getValue());
+        assertEquals(key, keyCaptor.getValue());
+        assertEquals(message, messageCaptor.getValue());
+    }
 }
