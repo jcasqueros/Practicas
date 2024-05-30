@@ -9,7 +9,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 
 
 
-public class CustomerJob {
+public class StreetJob {
 
     public Job job(JobBuilderFactory jobBuilderFactory,
             Step streetChunkStep) {

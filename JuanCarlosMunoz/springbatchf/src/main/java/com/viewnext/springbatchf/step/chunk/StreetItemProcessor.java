@@ -1,20 +1,29 @@
 package com.viewnext.springbatchf.step.chunk;
 
 import com.viewnext.springbatchf.model.entity.Street;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.Getter;
 import org.springframework.batch.item.ItemProcessor;
 
+import java.util.HashMap;
+
+@Getter
 public class StreetItemProcessor implements ItemProcessor<Street, Street> {
 
-    private static final Logger logger = LoggerFactory.getLogger(StreetItemProcessor.class);
+    private static final int idDISTRICT = 3;
 
+    private HashMap<Integer, Integer> districtCont = new HashMap<>();
 
     @Override
     public Street process(final Street item) throws Exception {
-        logger.info("Hola processor");
+        int cont = 0;
+        cont = districtCont.getOrDefault(item.getCodDistrito(), 0);
+        districtCont.put(item.getCodDistrito(), cont + 1);
 
-
-        return null;
+        if (item.getCodDistrito() == idDISTRICT) {
+            return item;
+        } else {
+            return null;
+        }
     }
 }
