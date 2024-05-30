@@ -18,3 +18,4 @@ public class Productor {
 		kafkaTemplate.send(topic, partition, key, message);
 	}
 }
+//consumidor que tire de kafka streams 
