@@ -18,7 +18,7 @@ import com.example.demo.servcice.exception.NotFoundException;
 
 @DataJpaTest
 @ComponentScan(basePackages = "com.example.demo.repository.cb.impl")
-class SerieCriterialRepositoryTest {
+class SerieCriteriaRepositoryTest {
 
 	@Autowired
 	private SerieCriteriaImpl serieCriteriaImpl;

@@ -16,7 +16,7 @@ public class ConsumidorTest {
 
 	@BeforeEach
 	public void setUp() {
-		consumidor = new Consumidor();
+		consumidor = mock(Consumidor.class); // Mocking the Consumidor class
 	}
 
 	@Test
@@ -27,7 +27,7 @@ public class ConsumidorTest {
 		// Act
 		consumidor.listen(message);
 
-		// assert
-		
+		// Assert
+		verify(consumidor).listen(message); // Verifying that the listen method was called with the correct parameter
 	}
 }

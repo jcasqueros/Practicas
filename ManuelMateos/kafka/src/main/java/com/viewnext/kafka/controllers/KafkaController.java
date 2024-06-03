@@ -26,6 +26,7 @@ public class KafkaController {
      * The Kafka producer instance.
      */
     private final KafkaProducer kafkaProducer;
+    
 
     /**
      * The message buffer instance.
