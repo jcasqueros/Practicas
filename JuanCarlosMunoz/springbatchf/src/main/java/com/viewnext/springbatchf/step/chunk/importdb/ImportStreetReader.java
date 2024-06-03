@@ -11,7 +11,7 @@ import org.springframework.core.io.ResourceLoader;
 /**
  * The type Street item reader.
  */
-public class StreetItemReader {
+public class ImportStreetReader {
 
     public FlatFileItemReader<Street> reader(ResourceLoader resourceLoader) {
 

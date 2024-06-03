@@ -11,33 +11,40 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.viewnext.springbatchf.step.chunk.StreetItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StreetSkipPolicy implements SkipPolicy {
 
     private static final Logger logger = LoggerFactory.getLogger(StreetSkipPolicy.class);
-    private static final String ERROR_FILE = "error_log.txt";
-    private static final String RESOURCE_FOLDER = "src/main/resources/log/";
+
+    @Qualifier("logWriter")
+    private final FileWriter logWriter;
 
     @Autowired
-    private StreetItemProcessor streetItemProcessor;
+    public StreetSkipPolicy(FileWriter logWriter) {
+        this.logWriter = logWriter;
+    }
 
     @Override
     public boolean shouldSkip(Throwable throwable, int skipCount) throws SkipLimitExceededException {
 
         boolean skip = false;
+        try {
+            if (throwable instanceof FlatFileParseException) {
 
-        if (throwable instanceof FlatFileParseException) {
+                FlatFileParseException ffpe = (FlatFileParseException) throwable;
+                String errorMessage = getErrorMessage(ffpe, skipCount);
+                logger.error(errorMessage);
 
-            FlatFileParseException ffpe = (FlatFileParseException) throwable;
-            String errorMessage = getErrorMessage(ffpe, skipCount);
-            logger.error(errorMessage);
-            writeErrorToLogFile(errorMessage);
+                logWriter.write(errorMessage + "\n");
 
-            skip = true;
+                skip = true;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return skip;
     }
@@ -46,16 +53,6 @@ public class StreetSkipPolicy implements SkipPolicy {
         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         return String.format("[%d][%s] Failed to read CSV file at line %d due to content '%s'", skipCount, date,
                 ffpe.getLineNumber(), ffpe.getInput());
-    }
-
-    private void writeErrorToLogFile(String errorMessage) {
-        try (FileWriter writer = new FileWriter(RESOURCE_FOLDER + ERROR_FILE, true)) {
-
-            writer.write(errorMessage + "\n");
-
-        } catch (IOException e) {
-            logger.error("Error al escribir en el fichero de errores", e);
-        }
     }
 
 }

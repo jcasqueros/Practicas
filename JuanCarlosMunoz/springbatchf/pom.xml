@@ -73,6 +73,12 @@
 				<artifactId>spring-batch-infrastructure</artifactId>
 			</dependency>
 
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.5</version>
+		</dependency>
+
 
 	</dependencies>
 

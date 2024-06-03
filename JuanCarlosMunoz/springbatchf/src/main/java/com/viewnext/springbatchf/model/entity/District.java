@@ -7,22 +7,16 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * The type Street.
+ * The type District.
  */
 @Document
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Street {
+public class District {
 
-    private String codigoCalle;
-    private String tipoVia;
-    private String nombreCalle;
-    private int primerNumeroTramo;
-    private int ultimoNumeroTramo;
-    private String barrio;
-    private int codDistrito;
+    private int numCasas;
     private String nomDistrito;
-}
 
+}

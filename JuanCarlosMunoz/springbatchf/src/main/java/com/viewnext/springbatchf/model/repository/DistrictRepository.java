@@ -1,13 +1,13 @@
 package com.viewnext.springbatchf.model.repository;
 
-import com.viewnext.springbatchf.model.entity.Street;
+import com.viewnext.springbatchf.model.entity.District;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * The interface Street repository.
+ * The interface District repository.
  */
 @Repository
-public interface StreetRepository extends MongoRepository<Street, ObjectId> {
+public interface DistrictRepository extends MongoRepository<District, ObjectId> {
 }

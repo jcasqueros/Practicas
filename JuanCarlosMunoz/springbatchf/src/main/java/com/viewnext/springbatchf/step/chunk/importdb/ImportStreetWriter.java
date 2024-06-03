@@ -1,4 +1,4 @@
-package com.viewnext.springbatchf.step.chunk;
+package com.viewnext.springbatchf.step.chunk.importdb;
 
 import com.viewnext.springbatchf.model.entity.Street;
 import com.viewnext.springbatchf.model.repository.StreetRepository;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class StreetItemWriter implements ItemWriter<Street> {
+public class ImportStreetWriter implements ItemWriter<Street> {
 
     @Autowired
     private StreetRepository streetRepository;
