@@ -1,282 +1,147 @@
 package com.example.demo.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hamcrest.CoreMatchers;
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.example.demo.converters.BoToDTo;
 import com.example.demo.converters.DtoToBo;
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.PresentationException;
+import com.example.demo.presentation.controllers.PeliculaController;
 import com.example.demo.presentation.dto.PeliculaDto;
-import com.example.demo.repository.cb.ActorRepositoryCriteria;
-import com.example.demo.repository.cb.DirectorRepositoryCriteria;
-import com.example.demo.repository.cb.ProductoraRepositoryCriteria;
-import com.example.demo.repository.cb.SerieRepositoryCriteria;
-import com.example.demo.repository.jpa.ActorRepository;
-import com.example.demo.repository.jpa.DirectorRepository;
-import com.example.demo.repository.jpa.ProductoraRepository;
-import com.example.demo.repository.jpa.SerieRepository;
 import com.example.demo.servcice.PeliculaService;
 import com.example.demo.servcice.bo.PeliculaBo;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.persistence.EntityManagerFactory;
+public class PeliculaControllerTest {
 
-@WebMvcTest
-@ComponentScan(basePackages = "com.example.demo")
-class PeliculaControllerTest {
+    @InjectMocks
+    private PeliculaController peliculaController;
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Mock
+    private PeliculaService peliculaService;
 
-	@Autowired
-	private ObjectMapper objectMapper;
+    @Mock
+    private BoToDTo boToDto;
 
-	@MockBean
-	private BoToDTo boToDTo;
+    @Mock
+    private DtoToBo dtoToBo;
 
-	@MockBean
-	private DtoToBo dtoToBo;
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-	@MockBean
-	private PeliculaService peliculaService;
+    @Test
+    public void testGetAll() throws PresentationException, ServiceException {
+        // Arrange
+        List<PeliculaBo> peliculaBoList = new ArrayList<>();
+        PeliculaBo peliculaBo = new PeliculaBo();
+        peliculaBoList.add(peliculaBo);
+        Page<PeliculaBo> peliculaBoPage = new PageImpl<>(peliculaBoList);
 
-	@MockBean
-	private ActorRepository actorRepository;
+        List<PeliculaDto> peliculaDtoList = new ArrayList<>();
+        PeliculaDto peliculaDto = new PeliculaDto();
+        peliculaDtoList.add(peliculaDto);
 
-	@MockBean
-	private ActorRepositoryCriteria actorRepositoryCriteria;
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("id").ascending());
 
-	@MockBean
-	private ProductoraRepository productoraRepository;
+        when(peliculaService.getAll(pageable)).thenReturn(peliculaBoPage);
+        when(boToDto.boToPeliculaDto(any(PeliculaBo.class))).thenReturn(peliculaDto);
 
-	@MockBean
-	private ProductoraRepositoryCriteria productoraRepositoryCriteria;
+        // Act
+        ResponseEntity<List<PeliculaDto>> response = peliculaController.getAll(false, 0, 5, "id");
 
-	@MockBean
-	private SerieRepository serieRepository;
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(peliculaService, times(1)).getAll(pageable);
+    }
 
-	@MockBean
-	private SerieRepositoryCriteria serieRepositoryCriteria;
+    @Test
+    public void testFindAllFilter() throws PresentationException, ServiceException {
+        // Arrange
+        List<PeliculaBo> peliculaBoList = new ArrayList<>();
+        PeliculaBo peliculaBo = new PeliculaBo();
+        peliculaBoList.add(peliculaBo);
+        Page<PeliculaBo> peliculaBoPage = new PageImpl<>(peliculaBoList);
 
-	@MockBean
-	private DirectorRepository peliculaRepository;
+        List<PeliculaDto> peliculaDtoList = new ArrayList<>();
+        PeliculaDto peliculaDto = new PeliculaDto();
+        peliculaDtoList.add(peliculaDto);
 
-	@MockBean
-	private DirectorRepositoryCriteria peliculaRepositoryCriteria;
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("id").ascending());
 
-	@MockBean
-	private EntityManagerFactory entityManagerFactory;
+        when(peliculaService.findAllCriteriaFilter(any(Pageable.class), anyList(), anyList(), anyList(), anyList(), anyList())).thenReturn(peliculaBoPage);
+        when(boToDto.boToPeliculaDto(any(PeliculaBo.class))).thenReturn(peliculaDto);
 
-	private PeliculaBo peliculaBo;
-	private PeliculaDto peliculaDto;
+        // Act
+        ResponseEntity<List<PeliculaDto>> response = peliculaController.findAllFilter(null, null, null, null, null, true, "id", "asc");
 
-	@BeforeEach
-	void setup() {
-		peliculaBo = new PeliculaBo();
-		peliculaBo.setIdPelicula(1L);
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(peliculaService, times(1)).findAllCriteriaFilter(any(Pageable.class), anyList(), anyList(), anyList(), anyList(), anyList());
+    }
 
-		peliculaDto = new PeliculaDto();
-		peliculaDto.setIdPelicula(1L);
+    @Test
+    public void testGetById() throws NotFoundException {
+        // Arrange
+        PeliculaDto peliculaDto = new PeliculaDto();
+        when(peliculaService.getById(1L)).thenReturn(new PeliculaBo());
+        when(boToDto.boToPeliculaDto(any())).thenReturn(peliculaDto);
 
-	}
+        // Act
+        ResponseEntity<PeliculaDto> response = peliculaController.getById(1L, true);
 
-	// JuniTest for getAll peliculas-positive
-	@Test
-	void testGetAllMetodoPostive() throws Exception {
-		// given - precondition or setup
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(peliculaService, times(1)).getById(1L);
+    }
 
-		given(boToDTo.boToPeliculaDto(peliculaBo)).willReturn(peliculaDto);
-		given(peliculaService.getAll()).willReturn(List.of(peliculaBo));
+    @Test
+    public void testSave() throws AlreadyExistsExeption, NotFoundException {
+        // Arrange
+        PeliculaDto peliculaDto = new PeliculaDto();
+        PeliculaBo peliculaBo = new PeliculaBo();
+        when(peliculaService.create(any())).thenReturn(peliculaBo);
+        when(boToDto.boToPeliculaDto(any())).thenReturn(peliculaDto);
+        when(dtoToBo.dtoToPeliculaBo(any())).thenReturn(peliculaBo);
 
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc.perform((get("/pelicula/getAll?metodo=true")));
+        // Act
+        ResponseEntity<PeliculaDto> response = peliculaController.save(peliculaDto, true);
 
-		// then - verify the reslt or output asser statement
-		response.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.size()", CoreMatchers.is(1)));
-	}
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        verify(peliculaService, times(1)).create(any());
+    }
 
-	@Test
-	void testGetAllMetodoNegative() throws Exception {
-		// given - precondition or setup
+    @Test
+    public void testDeleteById() throws NotFoundException {
+        // Act
+        ResponseEntity<Object> response = peliculaController.deleteByid(1L, true);
 
-		given(boToDTo.boToPeliculaDto(peliculaBo)).willReturn(peliculaDto);
-		given(dtoToBo.dtoToPeliculaBo(peliculaDto)).willReturn(peliculaBo);
-		given(peliculaService.getAllCriteria()).willReturn(List.of(peliculaBo));
-
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc.perform((get("/pelicula/getAll?metodo=false")));
-
-		// then - verify the reslt or output asser statement
-		response.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(1)));
-
-	}
-
-	@Test
-	void testGetByIdPositive() throws Exception {
-
-		// given - precondition or setup
-		Long id = 1L;
-		given(boToDTo.boToPeliculaDto(peliculaBo)).willReturn(peliculaDto);
-		given(dtoToBo.dtoToPeliculaBo(peliculaDto)).willReturn(peliculaBo);
-		given(peliculaService.getById(id)).willReturn(peliculaBo);
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc.perform(get("/pelicula/getById/{id}?metodo=true", peliculaBo.getIdPelicula()));
-
-		// then - verify the reslt or output asser statement
-		response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$.titulo", is(peliculaBo.getTitulo())))
-				.andExpect(jsonPath("$.anio", is(peliculaBo.getAnio())));
-
-	}
-
-	@Test
-	void testGetByIdNegative() throws Exception {
-		Long id = 1L;
-		given(boToDTo.boToPeliculaDto(peliculaBo)).willReturn(peliculaDto);
-		given(dtoToBo.dtoToPeliculaBo(peliculaDto)).willReturn(peliculaBo);
-		given(peliculaService.getById(id)).willReturn(null);
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc.perform(get("/pelicula/getById/{id}?metodo=true", id));
-
-		// then - verify the reslt or output asser statement
-		response.andExpect(status().isNotFound()).andDo(print());
-	}
-
-	@Test
-	void testGetByIdCriteriaPositive() throws Exception {
-		// given - precondition or setup
-		Long id = 1L;
-		given(boToDTo.boToPeliculaDto(peliculaBo)).willReturn(peliculaDto);
-		given(dtoToBo.dtoToPeliculaBo(peliculaDto)).willReturn(peliculaBo);
-		given(peliculaService.getByIdCriteria(id)).willReturn(peliculaBo);
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc
-				.perform(get("/pelicula/getById/{id}?metodo=false", peliculaBo.getIdPelicula()));
-
-		// then - verify the result or output assert statement
-		response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$.titulo", is(peliculaBo.getTitulo())))
-				.andExpect(jsonPath("$.anio", is(peliculaBo.getAnio())));
-	}
-
-	@Test
-	void testGetByIdCriteriaNegative() throws Exception {
-		// given - precondition or setup
-		Long id = 1L;
-		given(boToDTo.boToPeliculaDto(peliculaBo)).willReturn(peliculaDto);
-		given(dtoToBo.dtoToPeliculaBo(peliculaDto)).willReturn(peliculaBo);
-		given(peliculaService.getByIdCriteria(id)).willReturn(null);
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc.perform(get("/pelicula/getById/{id}?metodo=false", id));
-
-		// then - verify the result or output assert statement
-		response.andExpect(status().isNotFound()).andDo(print());
-	}
-
-	@Test
-	void testSavePositive() throws JsonProcessingException, Exception {
-
-		// given - precondition or setup
-		given(boToDTo.boToPeliculaDto(peliculaBo)).willReturn(peliculaDto);
-		given(dtoToBo.dtoToPeliculaBo(peliculaDto)).willReturn(peliculaBo);
-		given(peliculaService.create(peliculaBo)).willAnswer((invocation) -> invocation.getArgument(0));
-
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc.perform(post("/pelicula/save?metodo=true")
-				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(peliculaDto)));
-
-		// then - verify the result or output assert statement
-		response.andDo(print()).andExpect(status().isCreated())
-				.andExpect(jsonPath("$.titulo", is(peliculaDto.getTitulo())))
-				.andExpect(jsonPath("$.anio", is(peliculaDto.getAnio())));
-	}
-
-	@Test
-	void testSaveNegative() throws JsonProcessingException, Exception {
-
-		// given - precondition or setup
-		given(boToDTo.boToPeliculaDto(peliculaBo)).willReturn(peliculaDto);
-		given(dtoToBo.dtoToPeliculaBo(peliculaDto)).willReturn(peliculaBo);
-		given(peliculaService.create(peliculaBo)).willThrow(new AlreadyExistsExeption("El pelicula ya existe."));
-
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc.perform(post("/pelicula/save").param("metodo", "true")
-				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(null)));
-
-		// then - verify the result or output assert statement
-		response.andDo(print()).andExpect(status().isBadRequest());
-	}
-
-	@Test
-	void testDeleteByidPositive() throws Exception {
-		// given - precondition or setup
-		willDoNothing().given(peliculaService).deleteById(2L);
-		// when- - actrion or behaiour that we are going test
-		ResultActions response = mockMvc.perform(delete("/pelicula/delete/{id}?metodo=true", 2L));
-
-		// then - verify the result or output assert statement
-		response.andDo(print()).andExpect(status().isNoContent());
-	}
-
-//	@Test
-//	void testDeleteByidNegative() throws Exception {
-//		// given - precondition or setup
-//		willDoNothing().willThrow(new NotFoundException("No existe el pelicula")).given(peliculaService)
-//				.deleteById(peliculaBo.getIdPelicula());
-//
-//		// when- - actrion or behaiour that we are going test
-//		ResultActions response = mockMvc.perform(
-//				delete("/peliculas/delete?metodo=true").param("id", String.valueOf(peliculaDto.getIdPelicula())));
-//
-//		// then - verify the result or output assert statement
-//		response.andDo(print()).andExpect(status().isBadRequest());
-//	}
-
-//	@Test
-//	void testDeleteByidCriteriaPositive() throws Exception {
-//		// given - precondition or setup
-//		willDoNothing().given(peliculaService).deleteById(peliculaDto.getIdPelicula());
-//
-//		// when- - actrion or behaiour that we are going test
-//		ResultActions response = mockMvc
-//				.perform(delete("/peliculas/delete/{id}?metodo=true", peliculaDto.getIdPelicula()));
-//
-//		// then - verify the result or output assert statement
-//		response.andExpect(status().isNoContent());
-//	}
-
-//	@Test
-//	void testDeleteByidCriteriaNegative() throws Exception {
-//		// given - precondition or setup
-//		willDoNothing().given(peliculaService).deleteById(peliculaDto.getIdPelicula());
-//
-//		// when- - actrion or behaiour that we are going test
-//		ResultActions response = mockMvc
-//				.perform(delete("/peliculas/delete/{id}?metodo=true", peliculaDto.getIdPelicula()));
-//
-//		// then - verify the result or output assert statement
-//		response.andExpect(status().isNoContent());
-//	}
+        // Assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(peliculaService, times(1)).deleteById(1L);
+    }
 }

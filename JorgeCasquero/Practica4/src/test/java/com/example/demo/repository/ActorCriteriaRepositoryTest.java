@@ -1,102 +1,146 @@
 package com.example.demo.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Actor;
 import com.example.demo.repository.cb.impl.ActorCriteriaImpl;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
-@DataJpaTest
-@ComponentScan(basePackages = "com.example.demo.repository.cb.impl")
-class ActorCriterialRepositoryTest {
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
-	@Autowired
-	private ActorCriteriaImpl actorCriteriaImpl;
+@ExtendWith(MockitoExtension.class)
+public class ActorCriteriaRepositoryTest {
 
-	// Junit test for getAll actor
-	@Test
-	void testGetAll() throws AlreadyExistsExeption {
+    @Mock
+    private EntityManager entityManager;
 
-		// when -action or the behaivour that we are going test
-		List<Actor> listaActor = actorCriteriaImpl.getAll();
+    @Mock
+    private CriteriaBuilder criteriaBuilder;
 
-		// then-verigy the output
-		assertThat(listaActor).isNotNull();
-		assertThat(listaActor.size()).isEqualTo(5);
-	}
+    @Mock
+    private CriteriaQuery<Actor> criteriaQuery;
 
-	// Junit test for
-	@Test
-	void testGetById() throws NotFoundException, AlreadyExistsExeption {
+    @Mock
+    private Root<Actor> root;
 
-		// given-precondition or setup
-		Actor actorToSave = new Actor(1L, "Peter Dinklage", 32, "China");
-		actorCriteriaImpl.create(actorToSave);
-		// when -action or the behaivour taht we are going test
-		Optional<Actor> actor = actorCriteriaImpl.getById(1L);
+    @Mock
+    private TypedQuery<Actor> typedQuery;
 
-		// then -verify the output
-		assertThat(actor).isNotNull();
-		assertThat(actor.get()).isEqualTo(actorToSave);
+    @InjectMocks
+    private ActorCriteriaImpl actorCriteria;
 
-	}
+    private Actor actor;
+    private Pageable pageable;
+    private List<Actor> actorList;
+    private Page<Actor> actorPage;
 
-	// Junit test for save actor operation
-	@Test
-	void testCreate() throws AlreadyExistsExeption, NotFoundException {
+    @BeforeEach
+    void setUp() {
+        actor = new Actor();
+        actor.setIdActor(1L);
+        actor.setNombre("Test Actor");
+        actor.setEdad(30);
+        actor.setNacionalidad("Test Nationality");
 
-		// given-precondition or setup
-		Actor actor = new Actor(1L, "Jorge", 27, "España");
+        pageable = PageRequest.of(0, 5);
+        actorList = Collections.singletonList(actor);
+        actorPage = new PageImpl<>(actorList, pageable, actorList.size());
+    }
 
-		// when -action or the behaivour taht we are going test
-		Actor savedActor = actorCriteriaImpl.create(actor);
+    @Test
+    void testGetAll() {
+        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+        when(criteriaBuilder.createQuery(Actor.class)).thenReturn(criteriaQuery);
+        when(criteriaQuery.from(Actor.class)).thenReturn(root);
+        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+        when(typedQuery.getResultList()).thenReturn(actorList);
 
-		// then -verify the output
-		assertThat(savedActor).isNotNull();
+        Page<Actor> result = actorCriteria.getAll(pageable);
+        assertEquals(actorPage.getContent(), result.getContent());
+        assertEquals(actorPage.getTotalElements(), result.getTotalElements());
+    }
 
-		assertThat(savedActor).isEqualTo(actor);
+    @Test
+    void testGetById() throws NotFoundException {
+        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+        when(criteriaBuilder.createQuery(Actor.class)).thenReturn(criteriaQuery);
+        when(criteriaQuery.from(Actor.class)).thenReturn(root);
+        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+        when(typedQuery.getSingleResult()).thenReturn(actor);
 
-		// when - action or the behavior that we are going to test
+        Optional<Actor> result = actorCriteria.getById(1L);
+        assertEquals(Optional.of(actor), result);
+    }
 
-		// then - verify the output
-		// Verificar que el actor se ha guardado correctamente en la base de datos
-		Optional<Actor> retrievedActor = actorCriteriaImpl.getById(actor.getIdActor());
-		assertNotNull(retrievedActor);
-		assertEquals(actor, retrievedActor.get());
+    @Test
+    void testCreate() throws AlreadyExistsExeption, NotFoundException {
+        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+        when(criteriaBuilder.createQuery(Actor.class)).thenReturn(criteriaQuery);
+        when(criteriaQuery.from(Actor.class)).thenReturn(root);
+        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+        when(typedQuery.getResultList()).thenReturn(Collections.emptyList());
 
-	}
+        Actor result = actorCriteria.create(actor);
+        assertEquals(actor, result);
+        verify(entityManager).persist(actor);
+    }
 
-	@Test
-	void testCreateActorAlreadyExists() throws AlreadyExistsExeption, NotFoundException {
-		// given-precondition or setup
-		Actor actor = new Actor(1L, "Jorge", 27, "España");
-		actorCriteriaImpl.create(actor); // crear el actor por primera vez
+    @Test
+    void testDeleteById() throws NotFoundException {
+        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+        when(criteriaBuilder.createQuery(Actor.class)).thenReturn(criteriaQuery);
+        when(criteriaQuery.from(Actor.class)).thenReturn(root);
+        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+        when(typedQuery.getSingleResult()).thenReturn(actor);
 
-		// when - action or the behavior that we are going to test
-		actorCriteriaImpl.create(actor); // intentar crear el actor de nuevo
-	}
+        actorCriteria.deleteById(1L);
+        verify(entityManager).remove(actor);
+    }
 
-	// JUnit test for delete actor operation
-	@Test
-	void testDeleteById() throws AlreadyExistsExeption, NotFoundException {
-//
-//		actorCriteriaImpl.deleteById(2L);
-//
-//		Optional<Actor> actorOptional = actorCriteriaImpl.getById(2L);
-//
-//		assertThat(actorOptional).isEmpty();
+    @Test
+    void testFindAllFilter() {
+        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+        when(criteriaBuilder.createQuery(Actor.class)).thenReturn(criteriaQuery);
+        when(criteriaQuery.from(Actor.class)).thenReturn(root);
+        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+        when(typedQuery.getResultList()).thenReturn(actorList);
 
-	}
+        Page<Actor> result = actorCriteria.findAllFilter(pageable, Collections.singletonList("Test Actor"), Collections.singletonList(30), Collections.singletonList("Test Nationality"));
+        assertEquals(actorPage.getContent(), result.getContent());
+        assertEquals(actorPage.getTotalElements(), result.getTotalElements());
+    }
 
+    @Test
+    void testFindByNameAndAgeCriteria() {
+        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+        when(criteriaBuilder.createQuery(Actor.class)).thenReturn(criteriaQuery);
+        when(criteriaQuery.from(Actor.class)).thenReturn(root);
+        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+        when(typedQuery.getResultList()).thenReturn(actorList);
+
+        List<Actor> result = actorCriteria.findByNameAndAgeCriteria("Test Actor", 30);
+        assertEquals(actorList, result);
+    }
 }

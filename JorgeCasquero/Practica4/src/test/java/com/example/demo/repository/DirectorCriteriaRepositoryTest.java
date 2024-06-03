@@ -1,101 +1,132 @@
 package com.example.demo.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import com.example.demo.exception.AlreadyExistsExeption;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Director;
 import com.example.demo.repository.cb.impl.DirectorCriteriaImpl;
-import com.example.demo.servcice.exception.AlreadyExistsExeption;
-import com.example.demo.servcice.exception.NotFoundException;
 
-@DataJpaTest
-@ComponentScan(basePackages = "com.example.demo.repository.cb.impl")
-class DirectorCriteriaRepositoryTest {
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
-	@Autowired
-	private DirectorCriteriaImpl directorCriteriaImpl;
+@ExtendWith(MockitoExtension.class)
+public class DirectorCriteriaRepositoryTest {
 
-	// Junit test for getAll director
-	@Test
-	void testGetAll() throws AlreadyExistsExeption {
+	@Mock
+	private EntityManager entityManager;
 
-		// when -action or the behaivour that we are going test
-		List<Director> listadirector = directorCriteriaImpl.getAll();
+	@Mock
+	private CriteriaBuilder criteriaBuilder;
 
-		// then-verigy the output
-		assertThat(listadirector).isNotNull();
-		assertThat(listadirector.size()).isEqualTo(5);
+	@Mock
+	private CriteriaQuery<Director> criteriaQuery;
+
+	@Mock
+	private Root<Director> root;
+
+	@Mock
+	private TypedQuery<Director> typedQuery;
+
+	@InjectMocks
+	private DirectorCriteriaImpl directorCriteria;
+
+	private Director director;
+	private Pageable pageable;
+	private List<Director> directorList;
+	private Page<Director> directorPage;
+
+	@BeforeEach
+	void setUp() {
+		director = new Director();
+		director.setIdDirector(1L);
+		director.setNombre("Test Director");
+		director.setEdad(50);
+		director.setNacionalidad("Test Nationality");
+
+		pageable = PageRequest.of(0, 5);
+		directorList = Collections.singletonList(director);
+		directorPage = new PageImpl<>(directorList, pageable, directorList.size());
 	}
 
-	// Junit test for
+	@Test
+	void testGetAll() {
+		when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+		when(criteriaBuilder.createQuery(Director.class)).thenReturn(criteriaQuery);
+		when(criteriaQuery.from(Director.class)).thenReturn(root);
+		when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+		when(typedQuery.getResultList()).thenReturn(directorList);
+
+		Page<Director> result = directorCriteria.getAll(pageable);
+		assertEquals(directorPage.getContent(), result.getContent());
+		assertEquals(directorPage.getTotalElements(), result.getTotalElements());
+	}
+
 	@Test
 	void testGetById() throws NotFoundException {
+		when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+		when(criteriaBuilder.createQuery(Director.class)).thenReturn(criteriaQuery);
+		when(criteriaQuery.from(Director.class)).thenReturn(root);
+		when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+		when(typedQuery.getSingleResult()).thenReturn(director);
 
-		// given-precondition or setup
-
-		// when -action or the behaivour taht we are going test
-		Director director = directorCriteriaImpl.getById(1L);
-
-		// then -verify the output
-		assertThat(director).isNotNull();
-		assertThat(director.getNombre()).isEqualTo("Prudence");
-
-	}
-
-	// Junit test for save director operation
-	@Test
-	void testCreate() throws AlreadyExistsExeption, NotFoundException {
-
-		// given-precondition or setup
-		Director director = new Director(1L, "Jorge", 27, "España");
-
-		// when -action or the behaivour taht we are going test
-		Director saveddirector = directorCriteriaImpl.create(director);
-
-		// then -verify the output
-		assertThat(saveddirector).isNotNull();
-
-		assertThat(saveddirector).isEqualTo(director);
-		assertThat(saveddirector.getIdDirector()).isGreaterThan(0);
-
-		// when - action or the behavior that we are going to test
-
-		// then - verify the output
-		// Verificar que el director se ha guardado correctamente en la base de datos
-		Director retrieveddirector = directorCriteriaImpl.getById(director.getIdDirector());
-		assertNotNull(retrieveddirector);
-		assertEquals(director, retrieveddirector);
-
+		Optional<Director> result = directorCriteria.getById(1L);
+		assertEquals(Optional.of(director), result);
 	}
 
 	@Test
-	void testCreatedirectorAlreadyExists() throws AlreadyExistsExeption, NotFoundException {
-		// given-precondition or setup
-		Director director = new Director(1L, "Jorge", 27, "España");
-		directorCriteriaImpl.create(director); // crear el director por primera vez
+	void testCreate() throws AlreadyExistsExeption {
+		when(entityManager.merge(any(Director.class))).thenReturn(director);
 
-		// when - action or the behavior that we are going to test
-		directorCriteriaImpl.create(director); // intentar crear el director de nuevo
+		Director result = directorCriteria.create(director);
+		assertEquals(director, result);
+		verify(entityManager).merge(director);
 	}
 
-	// JUnit test for delete director operation
 	@Test
-	void testDeleteById() throws AlreadyExistsExeption, NotFoundException {
+	void testDeleteById() throws NotFoundException {
+		when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+		when(criteriaBuilder.createQuery(Director.class)).thenReturn(criteriaQuery);
+		when(criteriaQuery.from(Director.class)).thenReturn(root);
+		when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+		when(typedQuery.getSingleResult()).thenReturn(director);
 
-//			directorCriteriaImpl.deleteById(2L);
-		//
-//			Optional<director> directorOptional = Optional.of(directorCriteriaImpl.getById(2L));
-//			
-//			assertThat(directorOptional).isEmpty();
-
+		directorCriteria.deleteById(1L);
+		verify(entityManager).remove(any(Director.class));
 	}
 
+	@Test
+	void testFindAndFilter() {
+		when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+		when(criteriaBuilder.createQuery(Director.class)).thenReturn(criteriaQuery);
+		when(criteriaQuery.from(Director.class)).thenReturn(root);
+		when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+		when(typedQuery.getResultList()).thenReturn(directorList);
+
+		Page<Director> result = directorCriteria.findAndFilter(pageable, Collections.singletonList("Test Director"),
+				Collections.singletonList(50), Collections.singletonList("Test Nationality"));
+		assertEquals(directorPage.getContent(), result.getContent());
+		assertEquals(directorPage.getTotalElements(), result.getTotalElements());
+	}
 }
