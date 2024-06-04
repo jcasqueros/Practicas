@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * The type Export tramo writer.
+ */
 @Component
 @Getter
 public class ExportTramoWriter implements ItemWriter<Street> {
@@ -18,6 +21,12 @@ public class ExportTramoWriter implements ItemWriter<Street> {
     @Qualifier("tramoCSVWriter")
     private final CSVWriter tramoCSVWriter;
 
+    /**
+     * Instantiates a new Export tramo writer.
+     *
+     * @param tramoCSVWriter
+     *         the tramo csv writer
+     */
     @Autowired
     public ExportTramoWriter(CSVWriter tramoCSVWriter) {
         this.tramoCSVWriter = tramoCSVWriter;
@@ -25,15 +34,7 @@ public class ExportTramoWriter implements ItemWriter<Street> {
     }
 
     @Override
-    public void write(List<? extends Street> list) throws Exception {
-
-        //TODO: Agregar al afterStep
-
-        //            //Escribimos las cabeceras en los archivos
-        //            String[] data = { "BARRIO", "COD_DISTRITO", "CODIGO_CALLE", "NOM_DISTRITO", "NOMBRE_CALLE",
-        //                    "PRIMER_NUM_TRAMO", "TIPO_VIA", "ULTIMO_NUM_TRAMO" };
-        //
-        //            writer.writeNext(data);
+    public void write(List<? extends Street> list) {
 
         for (Street street : list) {
 

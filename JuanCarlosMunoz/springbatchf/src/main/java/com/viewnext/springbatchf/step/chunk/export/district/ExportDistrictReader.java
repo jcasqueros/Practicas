@@ -35,12 +35,11 @@ public class ExportDistrictReader implements ItemReader<District>, ItemStream {
         iterator = streets.iterator();
     }
 
-
     @Override
     public void update(ExecutionContext executionContext) throws ItemStreamException {
 
-         // Update not implemented because is used to update the execution context with the current state of the reader.The
-         // reader doesn't need to maintain any state, so the update method can be left empty.
+        // Update not implemented because is used to update the execution context with the current state of the reader.The
+        // reader doesn't need to maintain any state, so the update method can be left empty.
 
     }
 
@@ -50,7 +49,7 @@ public class ExportDistrictReader implements ItemReader<District>, ItemStream {
     }
 
     @Override
-    public District read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    public District read() {
         if (iterator.hasNext()) {
             return iterator.next();
         } else {

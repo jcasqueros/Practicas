@@ -10,16 +10,23 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * The type District export listener.
+ */
 @Component
 public class DistrictExportListener implements StepExecutionListener {
-
-
 
     @Qualifier("districtCSVWriter")
     private final CSVWriter districtCSVWriter;
 
+    /**
+     * Instantiates a new District export listener.
+     *
+     * @param districtCSVWriter
+     *         the district csv writer
+     */
     @Autowired
-    public DistrictExportListener( CSVWriter districtCSVWriter) {
+    public DistrictExportListener(CSVWriter districtCSVWriter) {
         this.districtCSVWriter = districtCSVWriter;
     }
 
@@ -27,7 +34,7 @@ public class DistrictExportListener implements StepExecutionListener {
     public void beforeStep(StepExecution stepExecution) {
         String[] districtHeader = { "NOM_DISTRITO", "NUM_CASAS" };
 
-        districtCSVWriter.writeNext(districtHeader,false);
+        districtCSVWriter.writeNext(districtHeader, false);
 
     }
 

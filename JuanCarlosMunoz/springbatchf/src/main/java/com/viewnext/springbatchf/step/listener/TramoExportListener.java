@@ -10,12 +10,21 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * The type Tramo export listener.
+ */
 @Component
 public class TramoExportListener implements StepExecutionListener {
 
     @Qualifier("tramoCSVWriter")
     private final CSVWriter tramoCSVWriter;
 
+    /**
+     * Instantiates a new Tramo export listener.
+     *
+     * @param tramoCSVWriter
+     *         the tramo csv writer
+     */
     @Autowired
     public TramoExportListener(CSVWriter tramoCSVWriter) {
         this.tramoCSVWriter = tramoCSVWriter;
@@ -27,7 +36,7 @@ public class TramoExportListener implements StepExecutionListener {
         String[] tramoHeader = { "BARRIO", "COD_DISTRITO", "CODIGO_CALLE", "NOM_DISTRITO", "NOMBRE_CALLE",
                 "PRIMER_NUM_TRAMO", "TIPO_VIA", "ULTIMO_NUM_TRAMO" };
 
-        tramoCSVWriter.writeNext(tramoHeader,false);
+        tramoCSVWriter.writeNext(tramoHeader, false);
     }
 
     @Override

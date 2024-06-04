@@ -8,7 +8,25 @@ import com.viewnext.springbatchf.step.listener.DistrictExportListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 
+/**
+ * The type Export distrito step.
+ */
 public class ExportDistritoStep {
+    /**
+     * Export chunk step step.
+     *
+     * @param reader
+     *         the reader
+     * @param processor
+     *         the processor
+     * @param writer
+     *         the writer
+     * @param stepBuilderFactory
+     *         the step builder factory
+     * @param districtExportListener
+     *         the district export listener
+     * @return the step
+     */
     public Step exportChunkStep(
 
             ExportDistrictReader reader, ExportDistrictProcessor processor, ExportDistrictWriter writer,

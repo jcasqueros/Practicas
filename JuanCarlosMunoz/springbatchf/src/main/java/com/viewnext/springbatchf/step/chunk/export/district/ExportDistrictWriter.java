@@ -30,7 +30,7 @@ public class ExportDistrictWriter implements ItemWriter<District> {
     }
 
     @Override
-    public void write(List<? extends District> list) throws Exception {
+    public void write(List<? extends District> list)  {
 
         for (District district : list) {
 

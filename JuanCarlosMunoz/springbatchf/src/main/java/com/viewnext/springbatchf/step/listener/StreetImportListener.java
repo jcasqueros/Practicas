@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Street import listener.
+ */
 @Component
 public class StreetImportListener implements StepExecutionListener {
 
@@ -33,6 +36,18 @@ public class StreetImportListener implements StepExecutionListener {
     private final ImportStreetProcessor importStreetProcessor;
     private final DistrictRepository districtRepository;
 
+    /**
+     * Instantiates a new Street import listener.
+     *
+     * @param streetRepository
+     *         the street repository
+     * @param importStreetProcessor
+     *         the import street processor
+     * @param districtRepository
+     *         the district repository
+     * @param logWriter
+     *         the log writer
+     */
     @Autowired
     public StreetImportListener(StreetRepository streetRepository, ImportStreetProcessor importStreetProcessor,
             DistrictRepository districtRepository, FileWriter logWriter) {
@@ -48,6 +63,7 @@ public class StreetImportListener implements StepExecutionListener {
 
         logger.info("Clean MongoDB...");
         streetRepository.deleteAll();
+        districtRepository.deleteAll();
     }
 
     @Override

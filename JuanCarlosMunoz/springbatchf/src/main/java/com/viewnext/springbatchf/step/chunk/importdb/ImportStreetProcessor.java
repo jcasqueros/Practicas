@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * The type Import street processor.
+ */
 @Getter
 public class ImportStreetProcessor implements ItemProcessor<Street, Street> {
-
 
     private final HashMap<String, Integer> districtCont = new HashMap<>();
 
@@ -19,9 +21,8 @@ public class ImportStreetProcessor implements ItemProcessor<Street, Street> {
     private String filter;
 
     @Override
-    public Street process(final Street item)  {
-        int cont = 0;
-        cont = districtCont.getOrDefault(item.getNomDistrito(), 0);
+    public Street process(final Street item) {
+        int cont = districtCont.getOrDefault(item.getNomDistrito(), 0);
         districtCont.put(item.getNomDistrito(), cont + 1);
 
         if (Objects.equals(item.getNomDistrito(), filter)) {

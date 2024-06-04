@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 public class District {
 
-    private int numCasas;
     private String nomDistrito;
 
 }
