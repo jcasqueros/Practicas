@@ -6,29 +6,26 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 
 /**
- * The type Parallel job.
+ * The type Multi threaded job.
  */
-public class ParallelJob {
+public class OneStepJob {
 
     /**
-     * Job job.
+     * Job import data.
      *
      * @param jobBuilderFactory
      *         the job builder factory
-     * @param writeFileStep
-     *         the write file step
+     * @param multiThreadStep
+     *         the multi thread step
      * @return the job
      */
-    //    public Job job(JobBuilderFactory jobBuilderFactory, Step WriteFileStep, Step writeDBStep) {
-    public Job job(JobBuilderFactory jobBuilderFactory, Step writeFileStep) {
+    public Job job(JobBuilderFactory jobBuilderFactory, Step multiThreadStep, String nameJob) {
 
-        return jobBuilderFactory.get("exportJob")
+        return jobBuilderFactory.get(nameJob)
                 //For each time we launch a job, we increment the ID
                 .incrementer(new RunIdIncrementer())
                 //First step that will be executed
-                .flow(writeFileStep)
-                //                .next(writeDBStep)
-                .end().build();
+                .flow(multiThreadStep).end().build();
     }
 
 }

@@ -1,13 +1,8 @@
 package com.viewnext.springbatchf.config;
 
 import com.opencsv.CSVWriter;
-import com.viewnext.springbatchf.job.MultiThreadedJob;
-import com.viewnext.springbatchf.job.StreetExportJob;
-import com.viewnext.springbatchf.job.StreetImportJob;
-import com.viewnext.springbatchf.step.ImportStep;
-import com.viewnext.springbatchf.step.ExportDistritoStep;
-import com.viewnext.springbatchf.step.ExportTramoStep;
-import com.viewnext.springbatchf.step.MultiThreadedStep;
+import com.viewnext.springbatchf.job.*;
+import com.viewnext.springbatchf.step.*;
 import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoProcessor;
 import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoReader;
 import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoWriter;
@@ -17,6 +12,10 @@ import com.viewnext.springbatchf.step.chunk.export.district.ExportDistrictWriter
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetProcessor;
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetReader;
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetWriter;
+import com.viewnext.springbatchf.step.chunk.writedatabase.WriteDataBaseWriter;
+import com.viewnext.springbatchf.step.chunk.writefile.WriteFileProcessor;
+import com.viewnext.springbatchf.step.chunk.writefile.WriteFileReader;
+import com.viewnext.springbatchf.step.chunk.writefile.WriteFileWriter;
 import com.viewnext.springbatchf.step.listener.DistrictExportListener;
 import com.viewnext.springbatchf.step.listener.StreetImportListener;
 
@@ -26,9 +25,12 @@ import com.viewnext.springbatchf.util.exception.GenericException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemStream;
+
+import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
+import org.springframework.batch.core.partition.support.Partitioner;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.MultiResourceItemReader;
+import org.springframework.batch.item.file.ResourceAwareItemReaderItemStream;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -40,8 +42,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.core.task.TaskExecutor;
+
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.FileWriter;
@@ -81,6 +82,9 @@ public class SpringBatchConfig {
     @Value("${csv.multi.thread.csv.file}")
     private String csvPathAllDistrict;
 
+    @Value("${log.resource.fileUser}")
+    private String filPathUser;
+
     /**
      * Job.
      *
@@ -101,20 +105,58 @@ public class SpringBatchConfig {
     @Bean
     public Job job(JobBuilderFactory jobBuilderFactory, @Qualifier("importStep") Step importStep,
             @Qualifier("exportTramoStep") Step exportTramoStep,
-            @Qualifier("exportDistrictStep") Step exportDistrictStep, @Qualifier("multiThreadStep") Step multiThreadStep
+            @Qualifier("exportDistrictStep") Step exportDistrictStep,
+            @Qualifier("multiThreadStep") Step multiThreadStep,
+            @Qualifier("writerStep") Step writerStep,
+            @Qualifier("writeDbStep") Step writeDbStep)
+             throws GenericException {
 
-    ) throws GenericException {
+        Job returnJob;
+        OneStepJob oneStepJob;
+        TwoStepJob twoStepJob;
 
-        if (execution.equals("jobExportarCSV")) {
-            var job = new StreetExportJob();
-            return job.job(jobBuilderFactory, exportTramoStep, exportDistrictStep);
-        } else if (execution.equals("jobImportarDB")) {
-            var job = new StreetImportJob();
-            return job.job(jobBuilderFactory, importStep);
-        } else {
-            var job = new MultiThreadedJob();
-            return job.job(jobBuilderFactory, multiThreadStep);
+        switch (execution) {
+        case "jobExportarCSV":
+
+            twoStepJob = new TwoStepJob();
+            returnJob = twoStepJob.job(jobBuilderFactory, exportTramoStep, exportDistrictStep, "streetExportJob");
+
+            break;
+        case "jobImportarDB":
+            oneStepJob = new OneStepJob();
+            returnJob = oneStepJob.job(jobBuilderFactory, importStep, "streetImportJob");
+            break;
+        case "jobParaleloWrite":
+            var job = new ParallelStepJob();
+            returnJob = job.job(jobBuilderFactory, writerStep,writeDbStep);
+            break;
+
+        default:
+            oneStepJob = new OneStepJob();
+            returnJob = oneStepJob.job(jobBuilderFactory, multiThreadStep, "multiThreadsJob");
+            break;
+
         }
+        return returnJob;
+
+    }
+
+    @Bean
+    public Step writeDbStep(StepBuilderFactory stepBuilderFactory,  WriteDataBaseWriter writer)
+            throws IOException {
+
+        var step = new WriteToDatabaseStep();
+
+        return step.writeDbStep(writeFileReader(), writer, stepBuilderFactory);
+    }
+
+    @Bean
+    public Step writerStep(StepBuilderFactory stepBuilderFactory, WriteFileProcessor processor, WriteFileWriter writer)
+            throws IOException {
+
+        var step = new WriteFileStep();
+
+        return step.writeFile(writeFileReader(), processor, writer, stepBuilderFactory);
     }
 
     /**
@@ -166,6 +208,12 @@ public class SpringBatchConfig {
 
         return varStreetStep.exportChunkStep(reader, processor, writer, stepBuilderFactory, districtExportListener);
     }
+    @Bean
+    public WriteDataBaseWriter writeDataBaseWriter() {
+        return new WriteDataBaseWriter();
+    }
+
+
 
     /**
      * Multi thread step step.
@@ -299,12 +347,14 @@ public class SpringBatchConfig {
     @Bean
     public MultiResourceItemReader<Object> writeFileReader() throws IOException {
         MultiResourceItemReader<Object> reader = new MultiResourceItemReader<>();
-        reader.setResources(new PathMatchingResourcePatternResolver().getResources("fileUser/*.csv"));
-        reader.setDelegate(new CsvRowReader());
+        reader.setResources(new PathMatchingResourcePatternResolver().getResources(filPathUser));
+        reader.setDelegate(new WriteFileReader());
         return reader;
     }
 
 
-
-
+    @Bean
+    public Partitioner partitioner() {
+        return new MultiResourcePartitioner();
+    }
 }

@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.Id;
 
 @Document
 @Data
@@ -16,7 +15,7 @@ import javax.persistence.Id;
 public class User {
 
     @Id
-    private Long dni;
+    private String dni;
     private String name;
     private String address;
     private City city;
