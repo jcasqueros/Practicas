@@ -14,13 +14,10 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * The type Write file reader.
- */
-public class WriteFileReader implements ResourceAwareItemReaderItemStream<Object> {
+public class SimpleWriteFileReader implements ResourceAwareItemReaderItemStream<Object> {
 
     private CSVReader csvReader;
-    private static final Logger logger = LoggerFactory.getLogger(WriteFileReader.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleWriteFileReader.class);
 
     @Override
     public void setResource(Resource resource) {
@@ -35,27 +32,24 @@ public class WriteFileReader implements ResourceAwareItemReaderItemStream<Object
     public Object[] read() throws Exception {
         Object[] objects = new Object[3];
 
-        if (csvReader != null) {
-            String[] row = csvReader.readNext();
-            if (row == null) {
-                return null;
-            }
-            cleanArray(row);
-
-            if (row.length < 7) {
-                throw new ItemStreamException("CSV file must have at least 7 columns");
-            }
-
-            User user = User.builder().name(row[0]).dni(row[1]).address(row[2]).build();
-            City city = City.builder().name(row[3]).codPostal(Integer.parseInt(row[4])).build();
-            Order order = Order.builder().price(Double.parseDouble(row[5])).numOrder(Long.parseLong(row[6])).build();
-
-            objects[0] = user;
-            objects[1] = city;
-            objects[2] = order;
-        } else {
-            logger.error("Error csvReader is null");
+        String[] row = csvReader.readNext();
+        if (row == null) {
+            return null;
         }
+        cleanArray(row);
+
+        if (row.length < 7) {
+            throw new ItemStreamException("CSV file must have at least 7 columns");
+        }
+
+        User user = User.builder().name(row[0]).dni(row[1]).address(row[2]).build();
+        City city = City.builder().name(row[3]).codPostal(Integer.parseInt(row[4])).build();
+        Order order = Order.builder().price(Double.parseDouble(row[5])).numOrder(Long.parseLong(row[6])).build();
+
+        objects[0] = user;
+        objects[1] = city;
+        objects[2] = order;
+
         return objects;
     }
 

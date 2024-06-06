@@ -2,6 +2,9 @@ package com.viewnext.springbatchf.config;
 
 import com.opencsv.CSVWriter;
 import com.viewnext.springbatchf.job.*;
+import com.viewnext.springbatchf.model.repository.CityRepository;
+import com.viewnext.springbatchf.model.repository.OrderRepository;
+import com.viewnext.springbatchf.model.repository.UserRepository;
 import com.viewnext.springbatchf.step.*;
 import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoProcessor;
 import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoReader;
@@ -13,8 +16,8 @@ import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetProcessor;
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetReader;
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetWriter;
 import com.viewnext.springbatchf.step.chunk.writedatabase.WriteDataBaseWriter;
+import com.viewnext.springbatchf.step.chunk.writefile.SimpleWriteFileReader;
 import com.viewnext.springbatchf.step.chunk.writefile.WriteFileProcessor;
-import com.viewnext.springbatchf.step.chunk.writefile.WriteFileReader;
 import com.viewnext.springbatchf.step.chunk.writefile.WriteFileWriter;
 import com.viewnext.springbatchf.step.listener.DistrictExportListener;
 import com.viewnext.springbatchf.step.listener.StreetImportListener;
@@ -28,9 +31,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 
 import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
 import org.springframework.batch.core.partition.support.Partitioner;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.MultiResourceItemReader;
-import org.springframework.batch.item.file.ResourceAwareItemReaderItemStream;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -98,6 +99,10 @@ public class SpringBatchConfig {
      *         the export district step
      * @param multiThreadStep
      *         the multi thread step
+     * @param writerStep
+     *         the writer step
+     * @param writeDbStep
+     *         the write db step
      * @return the job
      * @throws GenericException
      *         the generic exception
@@ -106,10 +111,8 @@ public class SpringBatchConfig {
     public Job job(JobBuilderFactory jobBuilderFactory, @Qualifier("importStep") Step importStep,
             @Qualifier("exportTramoStep") Step exportTramoStep,
             @Qualifier("exportDistrictStep") Step exportDistrictStep,
-            @Qualifier("multiThreadStep") Step multiThreadStep,
-            @Qualifier("writerStep") Step writerStep,
-            @Qualifier("writeDbStep") Step writeDbStep)
-             throws GenericException {
+            @Qualifier("multiThreadStep") Step multiThreadStep, @Qualifier("writerStep") Step writerStep,
+            @Qualifier("writeDbStep") Step writeDbStep) throws GenericException {
 
         Job returnJob;
         OneStepJob oneStepJob;
@@ -128,7 +131,7 @@ public class SpringBatchConfig {
             break;
         case "jobParaleloWrite":
             var job = new ParallelStepJob();
-            returnJob = job.job(jobBuilderFactory, writerStep,writeDbStep);
+            returnJob = job.job(jobBuilderFactory, writerStep, writeDbStep);
             break;
 
         default:
@@ -141,22 +144,45 @@ public class SpringBatchConfig {
 
     }
 
+    /**
+     * Write db step step.
+     *
+     * @param stepBuilderFactory
+     *         the step builder factory
+     * @param writer
+     *         the writer
+     * @return the step
+     * @throws IOException
+     *         the io exception
+     */
     @Bean
-    public Step writeDbStep(StepBuilderFactory stepBuilderFactory,  WriteDataBaseWriter writer)
-            throws IOException {
+    public Step writeDbStep(StepBuilderFactory stepBuilderFactory, WriteDataBaseWriter writer) throws IOException {
 
         var step = new WriteToDatabaseStep();
 
-        return step.writeDbStep(writeFileReader(), writer, stepBuilderFactory);
+        return step.writeDbStep(writeFileReaderForWriteDbStep(), writer, stepBuilderFactory);
     }
 
+    /**
+     * Writer step step.
+     *
+     * @param stepBuilderFactory
+     *         the step builder factory
+     * @param processor
+     *         the processor
+     * @param writer
+     *         the writer
+     * @return the step
+     * @throws IOException
+     *         the io exception
+     */
     @Bean
     public Step writerStep(StepBuilderFactory stepBuilderFactory, WriteFileProcessor processor, WriteFileWriter writer)
             throws IOException {
 
         var step = new WriteFileStep();
 
-        return step.writeFile(writeFileReader(), processor, writer, stepBuilderFactory);
+        return step.writeFile(writeFileReaderForWriteFileStep(), processor, writer, stepBuilderFactory);
     }
 
     /**
@@ -208,12 +234,23 @@ public class SpringBatchConfig {
 
         return varStreetStep.exportChunkStep(reader, processor, writer, stepBuilderFactory, districtExportListener);
     }
+
+    /**
+     * Write data base writer write data base writer.
+     *
+     * @param cityRepository
+     *         the city repository
+     * @param orderRepository
+     *         the order repository
+     * @param userRepository
+     *         the user repository
+     * @return the write data base writer
+     */
     @Bean
-    public WriteDataBaseWriter writeDataBaseWriter() {
-        return new WriteDataBaseWriter();
+    public WriteDataBaseWriter writeDataBaseWriter(CityRepository cityRepository, OrderRepository orderRepository,
+            UserRepository userRepository) {
+        return new WriteDataBaseWriter(cityRepository, orderRepository, userRepository);
     }
-
-
 
     /**
      * Multi thread step step.
@@ -245,8 +282,8 @@ public class SpringBatchConfig {
      *
      * @param reader
      *         the reader
-     * @param processor+
-     *         the processor
+     * @param processor
+     *         +         the processor
      * @param writer
      *         the writer
      * @param stepBuilderFactory
@@ -344,15 +381,54 @@ public class SpringBatchConfig {
         return executor;
     }
 
+    /**
+     * Write file reader multi resource item reader.
+     *
+     * @return the multi resource item reader
+     * @throws IOException
+     *         the io exception
+     */
     @Bean
     public MultiResourceItemReader<Object> writeFileReader() throws IOException {
+        return objectMultiResourceItemReader();
+    }
+
+    /**
+     * Write file reader for write file step multi resource item reader.
+     *
+     * @return the multi resource item reader
+     * @throws IOException
+     *         the io exception
+     */
+    @Bean
+    public MultiResourceItemReader<Object> writeFileReaderForWriteFileStep() throws IOException {
+        return objectMultiResourceItemReader();
+    }
+
+    /**
+     * Write file reader for write db step multi resource item reader.
+     *
+     * @return the multi resource item reader
+     * @throws IOException
+     *         the io exception
+     */
+    @Bean
+    public MultiResourceItemReader<Object> writeFileReaderForWriteDbStep() throws IOException {
+        return objectMultiResourceItemReader();
+    }
+
+    private MultiResourceItemReader<Object> objectMultiResourceItemReader() throws IOException {
         MultiResourceItemReader<Object> reader = new MultiResourceItemReader<>();
         reader.setResources(new PathMatchingResourcePatternResolver().getResources(filPathUser));
-        reader.setDelegate(new WriteFileReader());
+        reader.setDelegate(new SimpleWriteFileReader());
         return reader;
     }
 
-
+    /**
+     * Partitioner partitioner.
+     *
+     * @return the partitioner
+     */
     @Bean
     public Partitioner partitioner() {
         return new MultiResourcePartitioner();
