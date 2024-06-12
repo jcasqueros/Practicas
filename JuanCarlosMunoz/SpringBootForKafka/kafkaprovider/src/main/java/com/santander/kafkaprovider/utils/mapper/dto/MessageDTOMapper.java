@@ -21,13 +21,5 @@ public interface MessageDTOMapper {
      */
     MessageBO dtoToBo(MessageDTO messageDTO);
 
-    /**
-     * Dto to bo message dto.
-     *
-     * @param messageBO
-     *         the message bo
-     * @return the message dto
-     */
-    MessageDTO boToDto(MessageBO messageBO);
 
 }

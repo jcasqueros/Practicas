@@ -28,11 +28,13 @@ public class KafkaConsumerListener {
      */
     //GroupId para agrupar listener
     @KafkaListener(topics = { "santander" }, groupId = "santander")
-    public void listener(String messageJson) throws JsonProcessingException {
+    public String listener(String messageJson) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(messageJson, Message.class);
 
-        log.info("[{}] User: {} send this message: {}", message.getTimestamp(), message.getUser(), message.getText());
+        String messageListener = "[" + message.getTimestamp() + "] User: " + message.getUser() + " send this message: " + message.getText();
+        log.info(messageListener);
+        return messageListener;
     }
 
 }

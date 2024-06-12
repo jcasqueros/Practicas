@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class KafkaController {
 
     private final CommonOperation commonOperation;
-    private final Logger logger = LoggerFactory.getLogger(KafkaController.class);
+    final Logger logger = LoggerFactory.getLogger(KafkaController.class);
     private final MessageDTOMapper messageDTOMapper;
     private final KafkaServiceImpl kafkaService;
 
