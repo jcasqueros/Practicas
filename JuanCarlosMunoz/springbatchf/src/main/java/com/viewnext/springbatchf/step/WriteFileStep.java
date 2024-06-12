@@ -6,15 +6,31 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 
+/**
+ * The type Write file step.
+ */
 public class WriteFileStep {
 
+    /**
+     * Write file step.
+     *
+     * @param reader
+     *         the reader
+     * @param processor
+     *         the processor
+     * @param writer
+     *         the writer
+     * @param stepBuilderFactory
+     *         the step builder factory
+     * @return the step
+     */
     public Step writeFile(MultiResourceItemReader<Object> reader, WriteFileProcessor processor, WriteFileWriter writer,
             StepBuilderFactory stepBuilderFactory
 
     ) {
 
-        return stepBuilderFactory.get("writeFileSep").<Object, Object>chunk(10).reader(reader)
-                .processor(processor).writer(writer).build();
+        return stepBuilderFactory.get("writeFileSep").chunk(10).reader(reader).processor(processor)
+                .writer(writer).build();
     }
 
 }

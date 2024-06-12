@@ -4,8 +4,6 @@ import com.opencsv.CSVReader;
 import com.viewnext.springbatchf.model.entity.City;
 import com.viewnext.springbatchf.model.entity.Order;
 import com.viewnext.springbatchf.model.entity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.ResourceAwareItemReaderItemStream;
@@ -17,7 +15,6 @@ import java.io.InputStreamReader;
 public class SimpleWriteFileReader implements ResourceAwareItemReaderItemStream<Object> {
 
     private CSVReader csvReader;
-    private static final Logger logger = LoggerFactory.getLogger(SimpleWriteFileReader.class);
 
     @Override
     public void setResource(Resource resource) {
@@ -55,13 +52,17 @@ public class SimpleWriteFileReader implements ResourceAwareItemReaderItemStream<
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
+        // The open method is used to open any resources. In this function not open anything, because open in setResource
 
     }
 
     @Override
     public void update(ExecutionContext executionContext) throws ItemStreamException {
+        // Update not implemented because is used to update the execution context with the current state of the reader.The
+        // reader doesn't need to maintain any state, so the update method can be left empty.
 
     }
+
 
     @Override
     public void close() {

@@ -9,16 +9,27 @@ import com.viewnext.springbatchf.model.repository.UserRepository;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.List;
 
+/**
+ * The type Write data base writer.
+ */
 public class WriteDataBaseWriter implements ItemWriter<Object> {
-
 
     private final CityRepository cityRepository;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Instantiates a new Write data base writer.
+     *
+     * @param cityRepository
+     *         the city repository
+     * @param orderRepository
+     *         the order repository
+     * @param userRepository
+     *         the user repository
+     */
     @Autowired
     public WriteDataBaseWriter(CityRepository cityRepository, OrderRepository orderRepository,
             UserRepository userRepository) {
@@ -28,32 +39,30 @@ public class WriteDataBaseWriter implements ItemWriter<Object> {
     }
 
     @Override
-    public void write(List<?> list) throws Exception {
+    public void write(List<?> list) {
         for (Object object : list) {
             Object[] array = (Object[]) object;
             writeFile(array);
         }
     }
 
-    private void writeFile(Object[] array) throws IOException {
+    private void writeFile(Object[] array) {
 
         User user = (User) array[0];
         City city = (City) array[1];
         Order order = (Order) array[2];
 
-        if (!userRepository.existsById(user.getDni())){
+        if (!userRepository.existsById(user.getDni())) {
             userRepository.save(user);
         }
-        if (!cityRepository.existsById(city.getCodPostal())){
+        if (!cityRepository.existsById(city.getCodPostal())) {
             cityRepository.save(city);
         }
 
-        if (!orderRepository.existsById(order.getNumOrder())){
+        if (!orderRepository.existsById(order.getNumOrder())) {
             orderRepository.save(order);
         }
 
     }
-
-
 
 }

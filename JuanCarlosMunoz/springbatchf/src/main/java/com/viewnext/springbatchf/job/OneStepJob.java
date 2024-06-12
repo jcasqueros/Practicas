@@ -17,6 +17,8 @@ public class OneStepJob {
      *         the job builder factory
      * @param multiThreadStep
      *         the multi thread step
+     * @param nameJob
+     *         the name job
      * @return the job
      */
     public Job job(JobBuilderFactory jobBuilderFactory, Step multiThreadStep, String nameJob) {

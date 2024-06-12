@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+

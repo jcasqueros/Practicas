@@ -16,7 +16,6 @@ import org.springframework.core.task.TaskExecutor;
  */
 public class MultiThreadedStep {
 
-
     /**
      * Import step.
      *
@@ -32,6 +31,8 @@ public class MultiThreadedStep {
      *         the street skip policy
      * @param resource
      *         the resource
+     * @param taskExecutor
+     *         the task executor
      * @return the step
      */
     public Step multiThreadStep(ImportStreetReader reader, ImportStreetWriter writer,
@@ -41,6 +42,7 @@ public class MultiThreadedStep {
     ) {
 
         return stepBuilderFactory.get("chunkStep").<Street, Street>chunk(10).reader(reader.reader(resource))
-                .writer(writer).faultTolerant().skipPolicy(streetSkipPolicy).listener(streetImportListener).taskExecutor(taskExecutor).build();
+                .writer(writer).faultTolerant().skipPolicy(streetSkipPolicy).listener(streetImportListener)
+                .taskExecutor(taskExecutor).build();
     }
 }

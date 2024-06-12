@@ -4,11 +4,7 @@ import com.viewnext.springbatchf.model.entity.City;
 import com.viewnext.springbatchf.model.entity.Order;
 import com.viewnext.springbatchf.model.entity.User;
 
-import com.viewnext.springbatchf.model.repository.CityRepository;
-import com.viewnext.springbatchf.model.repository.OrderRepository;
-import com.viewnext.springbatchf.model.repository.UserRepository;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +22,6 @@ public class WriteFileWriter implements ItemWriter<Object> {
 
     @Value("${log.resource.finalFileUser}")
     private String finalFilePath;
-
 
     @Override
     public void write(List<?> list) throws Exception {
@@ -48,7 +43,8 @@ public class WriteFileWriter implements ItemWriter<Object> {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
 
-            writer.write("El/La Sr/a " + user.getName() + " con DNI " + user.getDni() + ", reside en " + user.getAddress() + ",\n");
+            writer.write(
+                    "El/La Sr/a " + user.getName() + " con DNI " + user.getDni() + ", reside en " + user.getAddress() + ",\n");
             writer.write(city.getName() + " con codigo postal " + city.getCodPostal() + ",\n");
             writer.write("ha realizado una compra de " + order.getPrice() + " euros\n");
             writer.write("con número de pedido " + order.getNumOrder() + ".\n\n");

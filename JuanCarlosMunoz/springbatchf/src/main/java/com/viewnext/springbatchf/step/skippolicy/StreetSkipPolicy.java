@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+/**
+ * The type Street skip policy.
+ */
 @Component
 public class StreetSkipPolicy implements SkipPolicy {
 
@@ -23,6 +26,12 @@ public class StreetSkipPolicy implements SkipPolicy {
     @Qualifier("logWriter")
     private final FileWriter logWriter;
 
+    /**
+     * Instantiates a new Street skip policy.
+     *
+     * @param logWriter
+     *         the log writer
+     */
     @Autowired
     public StreetSkipPolicy(FileWriter logWriter) {
         this.logWriter = logWriter;

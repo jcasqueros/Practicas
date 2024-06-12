@@ -17,8 +17,6 @@ import org.springframework.core.io.Resource;
  */
 public class ImportStep {
 
-
-
     /**
      * Import step.
      *
@@ -34,17 +32,18 @@ public class ImportStep {
      *         the street import listener
      * @param streetSkipPolicy
      *         the street skip policy
+     * @param resource
+     *         the resource
      * @return the step
      */
     public Step importStep(ImportStreetReader reader, ImportStreetProcessor processor, ImportStreetWriter writer,
             StepBuilderFactory stepBuilderFactory, StreetImportListener streetImportListener,
-            @Autowired StreetSkipPolicy streetSkipPolicy,
-            Resource resource
+            @Autowired StreetSkipPolicy streetSkipPolicy, Resource resource
 
     ) {
 
-        return stepBuilderFactory.get("chunkStep").<Street, Street>chunk(10)
-                .reader(reader.reader(resource)).processor(processor).writer(writer).faultTolerant()
-                .skipPolicy(streetSkipPolicy).listener(streetImportListener).build();
+        return stepBuilderFactory.get("chunkStep").<Street, Street>chunk(10).reader(reader.reader(resource))
+                .processor(processor).writer(writer).faultTolerant().skipPolicy(streetSkipPolicy)
+                .listener(streetImportListener).build();
     }
 }

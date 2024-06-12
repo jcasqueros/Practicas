@@ -5,8 +5,6 @@ package com.viewnext.springbatchf.util.exception;
  */
 public class GenericException extends Exception {
 
-
-
     /**
      * Instantiates a new Generic exception.
      *
