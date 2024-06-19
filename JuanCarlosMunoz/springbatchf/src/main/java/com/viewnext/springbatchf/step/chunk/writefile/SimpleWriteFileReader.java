@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.viewnext.springbatchf.model.entity.City;
 import com.viewnext.springbatchf.model.entity.Order;
 import com.viewnext.springbatchf.model.entity.User;
+import lombok.Getter;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.ResourceAwareItemReaderItemStream;
@@ -12,9 +13,11 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Getter
 public class SimpleWriteFileReader implements ResourceAwareItemReaderItemStream<Object> {
 
     private CSVReader csvReader;
+
 
     @Override
     public void setResource(Resource resource) {

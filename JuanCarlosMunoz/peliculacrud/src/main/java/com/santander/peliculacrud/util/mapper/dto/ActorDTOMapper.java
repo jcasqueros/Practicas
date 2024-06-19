@@ -43,4 +43,5 @@ public interface ActorDTOMapper {
      */
     List<ActorDTO> bosToDtos(List<ActorBO> actorBOS);
 
+    List<ActorBO> dtosToBos(List<ActorDTO> actorsDTO);
 }

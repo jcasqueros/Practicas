@@ -4,10 +4,12 @@ import com.viewnext.springbatchf.step.chunk.writedatabase.WriteDataBaseWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.file.MultiResourceItemReader;
+import org.springframework.stereotype.Component;
 
 /**
  * The type Write to database step.
  */
+@Component
 public class WriteToDatabaseStep {
 
     /**

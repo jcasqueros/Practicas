@@ -1,10 +1,11 @@
 package com.santander.peliculacrud.service.impl;
 
-import com.santander.peliculacrud.model.api.DirectorRepository;
 import com.santander.peliculacrud.model.bo.DirectorBO;
+import com.santander.peliculacrud.model.entity.Director;
+import com.santander.peliculacrud.repository.criteria.DirectorCriteriaRepository;
+import com.santander.peliculacrud.repository.jpa.DirectorRepository;
 
 import com.santander.peliculacrud.model.dto.UserDTO;
-import com.santander.peliculacrud.model.entity.Director;
 
 import com.santander.peliculacrud.service.DirectorServiceInterface;
 import com.santander.peliculacrud.service.EndpointServiceInterface;
@@ -30,8 +31,10 @@ import java.util.List;
 public class DirectorService implements DirectorServiceInterface {
 
     private final DirectorRepository directorRepository;
+    private final DirectorCriteriaRepository directorCriteriaRepository;
     private final DirectorBOMapper directorBOMapper;
     private final EndpointServiceInterface endpointService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(DirectorService.class);
 
@@ -47,9 +50,11 @@ public class DirectorService implements DirectorServiceInterface {
      */
     @Autowired
     public DirectorService(DirectorBOMapper directorBOMapper, DirectorRepository directorRepository,
+            DirectorCriteriaRepository directorCriteriaRepository,
             EndpointServiceInterface endpointService) {
         this.directorRepository = directorRepository;
         this.directorBOMapper = directorBOMapper;
+        this.directorCriteriaRepository = directorCriteriaRepository;
 
         this.endpointService = endpointService;
     }
@@ -164,7 +169,15 @@ public class DirectorService implements DirectorServiceInterface {
 
         return directors.stream().sorted(Comparator.comparing(DirectorBO::getName)).toList();
     }
+    @Override
+    public List<DirectorBO> getDirectorByAllFilter(List<String> name, List<Integer> age, List<String> nation, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
 
+        Page<Director> directors = directorCriteriaRepository.findAllFilter(name, age, nation, pageable);
+        List<DirectorBO> directorsBOS = directorBOMapper.listEntitytoListBo(directors);
+        return directorsBOS.stream().sorted(Comparator.comparing(DirectorBO::getName)).toList();
+    }
+    
     private void directorNotfound() throws GenericException {
         logger.error("Director not found");
         throw new GenericException("Director not found");

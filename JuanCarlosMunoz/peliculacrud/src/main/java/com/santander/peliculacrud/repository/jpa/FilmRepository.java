@@ -1,25 +1,24 @@
-package com.santander.peliculacrud.model.api;
+package com.santander.peliculacrud.repository.jpa;
 
 import com.santander.peliculacrud.model.entity.Actor;
 import com.santander.peliculacrud.model.entity.Director;
-import com.santander.peliculacrud.model.entity.Series;
+import com.santander.peliculacrud.model.entity.Film;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
- * The interface Series repository.
+ * The interface Film repository.
  */
 @Repository
-public interface SeriesRepository extends JpaRepository<Series, Long> {
+public interface FilmRepository extends JpaRepository<Film, Long> {
 
     @NonNull
-    Page<Series> findAll(@NonNull Pageable pageable);
+    Page<Film> findAll(@NonNull Pageable pageable);
 
     /**
      * Find all by title page.
@@ -30,7 +29,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
      *         the pageable
      * @return the page
      */
-    Page<Series> findAllByTitle(String title, Pageable pageable);
+    Page<Film> findAllByTitle(String title, Pageable pageable);
 
     /**
      * Find all by age page.
@@ -41,7 +40,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
      *         the pageable
      * @return the page
      */
-    Page<Series> findAllByCreated(int created, Pageable pageable);
+    Page<Film> findAllByCreated(int created, Pageable pageable);
 
     /**
      * Find all by actors page.
@@ -52,7 +51,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
      *         the pageable
      * @return the page
      */
-    Page<Series> findAllByActorsIn(List<Actor> actors, Pageable pageable);
+    Page<Film> findAllByActorsIn(List<Actor> actors, Pageable pageable);
 
     /**
      * Find all by directors in page.
@@ -63,6 +62,6 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
      *         the pageable
      * @return the page
      */
-    Page<Series> findAllByDirectorIn(List<Director> directors, Pageable pageable);
+    Page<Film> findAllByDirectorIn(List<Director> directors, Pageable pageable);
 
 }

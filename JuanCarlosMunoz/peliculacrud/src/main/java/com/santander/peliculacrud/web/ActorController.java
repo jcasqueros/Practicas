@@ -245,5 +245,17 @@ public class ActorController {
         return ResponseEntity.ok(actorDTOS);
     }
 
-}
 
+    @GetMapping("/by-all-filter/")
+    public ResponseEntity<List<ActorDTO>> getActorsByAllFilter(@RequestParam List<String> name,@RequestParam List<Integer> age,@RequestParam List<String> nation,
+            @RequestParam(defaultValue = "0") int page) {
+        List<ActorBO> actorBOs = actorService.getActorByAllFilter(name, age, nation, page);
+        if (actorBOs.isEmpty()) {
+            logger.error("No actors found with nation {}, name {}, age {}", nation, name , age);
+            return ResponseEntity.notFound().build();
+        }
+        List<ActorDTO> actorDTOS = actorDTOMapper.bosToDtos(actorBOs);
+        return ResponseEntity.ok(actorDTOS);
+    }
+
+}

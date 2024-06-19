@@ -1,7 +1,10 @@
 package com.santander.peliculacrud.service;
 
 import com.santander.peliculacrud.model.bo.ActorBO;
+import com.santander.peliculacrud.model.entity.Actor;
 import com.santander.peliculacrud.util.exception.GenericException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -99,5 +102,7 @@ public interface ActorServiceInterface {
      * @return the actor by nation
      */
     List<ActorBO> getActorByNation(String nation, int page);
+
+    List<ActorBO> getActorByAllFilter(List<String> name, List<Integer> age, List<String> nation,  int page);
 
 }

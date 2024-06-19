@@ -242,6 +242,16 @@ public class DirectorController {
         List<DirectorDTO> directorDTOS = directorDTOMapper.bosToDtos(directorBOs);
         return ResponseEntity.ok(directorDTOS);
     }
-
+    @GetMapping("/by-all-filter/")
+    public ResponseEntity<List<DirectorDTO>> getDirectorsByAllFilter(@RequestParam List<String> name,@RequestParam List<Integer> age,@RequestParam List<String> nation,
+            @RequestParam(defaultValue = "0") int page) {
+        List<DirectorBO> directorBOs = directorService.getDirectorByAllFilter(name, age, nation, page);
+        if (directorBOs.isEmpty()) {
+            logger.error("No directors found with nation {}, name {}, age {}", nation, name , age);
+            return ResponseEntity.notFound().build();
+        }
+        List<DirectorDTO> directorDTOS = directorDTOMapper.bosToDtos(directorBOs);
+        return ResponseEntity.ok(directorDTOS);
+    }
 }
 

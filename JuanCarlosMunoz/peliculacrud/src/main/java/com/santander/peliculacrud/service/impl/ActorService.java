@@ -1,6 +1,7 @@
 package com.santander.peliculacrud.service.impl;
 
-import com.santander.peliculacrud.model.api.ActorRepository;
+import com.santander.peliculacrud.repository.criteria.ActorCriteriaRepository;
+import com.santander.peliculacrud.repository.jpa.ActorRepository;
 import com.santander.peliculacrud.model.bo.ActorBO;
 
 import com.santander.peliculacrud.model.dto.UserDTO;
@@ -32,7 +33,7 @@ public class ActorService implements ActorServiceInterface {
     private final ActorRepository actorRepository;
     private final ActorBOMapper actorBOMapper;
     private final EndpointServiceInterface endpointService;
-
+    private final ActorCriteriaRepository actorCriteriaRepository;
     private static final Logger logger = LoggerFactory.getLogger(ActorService.class);
 
     /**
@@ -47,11 +48,12 @@ public class ActorService implements ActorServiceInterface {
      */
     @Autowired
     public ActorService(ActorBOMapper actorBOMapper, ActorRepository actorRepository,
-            EndpointServiceInterface endpointService) {
+            EndpointServiceInterface endpointService, ActorCriteriaRepository actorCriteriaRepository) {
         this.actorRepository = actorRepository;
         this.actorBOMapper = actorBOMapper;
 
         this.endpointService = endpointService;
+        this.actorCriteriaRepository = actorCriteriaRepository;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class ActorService implements ActorServiceInterface {
             }
 
         } else {
-            actorNotfound();
+            actorNotFound();
         }
         return update;
     }
@@ -118,7 +120,7 @@ public class ActorService implements ActorServiceInterface {
         if (actor != null) {
             actorBO = actorBOMapper.entityToBo(actor);
         } else {
-            actorNotfound();
+            actorNotFound();
         }
 
         return actorBO;
@@ -132,7 +134,7 @@ public class ActorService implements ActorServiceInterface {
             actorRepository.deleteById(id);
             delete = true;
         } else {
-            actorNotfound();
+            actorNotFound();
         }
 
         return delete;
@@ -165,7 +167,16 @@ public class ActorService implements ActorServiceInterface {
         return actors.stream().sorted(Comparator.comparing(ActorBO::getName)).toList();
     }
 
-    private void actorNotfound() throws GenericException {
+    @Override
+    public List<ActorBO> getActorByAllFilter(List<String> name, List<Integer> age, List<String> nation, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+
+        Page<Actor> actors = actorCriteriaRepository.findAllFilter(name, age, nation, pageable);
+        List<ActorBO> actorsBOS = actorBOMapper.listEntitytoListBo(actors);
+        return actorsBOS.stream().sorted(Comparator.comparing(ActorBO::getName)).toList();
+    }
+
+    private void actorNotFound() throws GenericException {
         logger.error("Actor not found");
         throw new GenericException("Actor not found");
 

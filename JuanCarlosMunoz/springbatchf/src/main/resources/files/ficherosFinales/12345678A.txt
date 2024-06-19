@@ -13,33 +13,3 @@ Madrid con codigo postal 28001,
 ha realizado una compra de 200.0 euros
 con número de pedido 3.
 
-El/La Sr/a Juan Pérez con DNI 12345678A, reside en Calle de la Paz 12,
-Madrid con codigo postal 28001,
-ha realizado una compra de 100.5 euros
-con número de pedido 1.
-
-El/La Sr/a Juan Pérez con DNI 12345678A, reside en Calle de la Paz 12,
-Madrid con codigo postal 28001,
-ha realizado una compra de 50.25 euros
-con número de pedido 2.
-
-El/La Sr/a Juan Pérez con DNI 12345678A, reside en Calle de la Paz 12,
-Madrid con codigo postal 28001,
-ha realizado una compra de 200.0 euros
-con número de pedido 3.
-
-El/La Sr/a Juan Pérez con DNI 12345678A, reside en Calle de la Paz 12,
-Madrid con codigo postal 28001,
-ha realizado una compra de 100.5 euros
-con número de pedido 1.
-
-El/La Sr/a Juan Pérez con DNI 12345678A, reside en Calle de la Paz 12,
-Madrid con codigo postal 28001,
-ha realizado una compra de 50.25 euros
-con número de pedido 2.
-
-El/La Sr/a Juan Pérez con DNI 12345678A, reside en Calle de la Paz 12,
-Madrid con codigo postal 28001,
-ha realizado una compra de 200.0 euros
-con número de pedido 3.
-

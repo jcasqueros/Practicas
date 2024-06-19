@@ -1,7 +1,7 @@
 package com.viewnext.springbatchf.step.chunk.export.tramo;
 
 import com.viewnext.springbatchf.model.entity.Street;
-import com.viewnext.springbatchf.model.repository.StreetRepository;
+import com.viewnext.springbatchf.model.repository.jpa.StreetRepository;
 import org.springframework.batch.item.*;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -43,4 +43,5 @@ public interface DirectorBOMapper {
      */
     List<DirectorBO> listEntitytoListBo(Page<Director> directorsPage);
 
+    List<Director> listBoToEntity(List<DirectorBO> director);
 }

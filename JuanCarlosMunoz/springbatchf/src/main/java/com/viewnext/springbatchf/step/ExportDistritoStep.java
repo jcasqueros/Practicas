@@ -7,10 +7,12 @@ import com.viewnext.springbatchf.step.chunk.export.district.ExportDistrictWriter
 import com.viewnext.springbatchf.step.listener.DistrictExportListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * The type Export distrito step.
  */
+@Component
 public class ExportDistritoStep {
     /**
      * Export chunk step step.

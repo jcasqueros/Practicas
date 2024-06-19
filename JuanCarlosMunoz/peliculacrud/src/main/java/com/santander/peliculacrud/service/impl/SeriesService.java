@@ -1,12 +1,13 @@
 package com.santander.peliculacrud.service.impl;
 
-import com.santander.peliculacrud.model.api.ActorRepository;
-import com.santander.peliculacrud.model.api.DirectorRepository;
-import com.santander.peliculacrud.model.api.SeriesRepository;
 import com.santander.peliculacrud.model.bo.SeriesBO;
+import com.santander.peliculacrud.model.entity.Series;
+import com.santander.peliculacrud.repository.criteria.SeriesCriteriaRepository;
+import com.santander.peliculacrud.repository.jpa.ActorRepository;
+import com.santander.peliculacrud.repository.jpa.DirectorRepository;
+import com.santander.peliculacrud.repository.jpa.SeriesRepository;
 import com.santander.peliculacrud.model.entity.Actor;
 import com.santander.peliculacrud.model.entity.Director;
-import com.santander.peliculacrud.model.entity.Series;
 import com.santander.peliculacrud.service.SeriesServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
 import com.santander.peliculacrud.util.exception.GenericException;
@@ -33,6 +34,7 @@ public class SeriesService implements SeriesServiceInterface {
     private final DirectorRepository directorRepository;
     private final SeriesBOMapper seriesBOMapper;
     private final CommonOperation commonOperation;
+    private final SeriesCriteriaRepository seriesCriteriaRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(SeriesService.class);
 
@@ -52,12 +54,14 @@ public class SeriesService implements SeriesServiceInterface {
      */
     @Autowired
     public SeriesService(ActorRepository actorRepository, DirectorRepository directorRepository,
-            CommonOperation commonOperation, SeriesBOMapper seriesBOMapper, SeriesRepository seriesRepository) {
+            CommonOperation commonOperation, SeriesBOMapper seriesBOMapper, SeriesRepository seriesRepository,
+            SeriesCriteriaRepository seriesCriteriaRepository) {
         this.actorRepository = actorRepository;
         this.commonOperation = commonOperation;
         this.directorRepository = directorRepository;
         this.seriesBOMapper = seriesBOMapper;
         this.seriesRepository = seriesRepository;
+        this.seriesCriteriaRepository = seriesCriteriaRepository;
     }
 
     /**
@@ -195,6 +199,21 @@ public class SeriesService implements SeriesServiceInterface {
         List<SeriesBO> series = seriesBOMapper.listEntityListBo(seriesPage);
 
         return series.stream().sorted(Comparator.comparingInt(SeriesBO::getCreated)).toList();
+    }
+
+    @Override
+    public List<SeriesBO> getSeriesByAllFilter(List<String> title, List<Integer> created, List<String> actorsName,
+            List<String> directorsName, int page) {
+
+
+
+        List<Actor> actors = actorRepository.findByNameIn(actorsName);
+        List<Director> directors = directorRepository.findByNameIn(directorsName);
+        Pageable pageable = PageRequest.of(page, 5);
+
+        Page<Series> series = seriesCriteriaRepository.findAllFilter(title,created, actors, directors, pageable);
+        List<SeriesBO> actorsBOS = seriesBOMapper.listEntityListBo(series);
+        return actorsBOS.stream().sorted(Comparator.comparing(SeriesBO::getTitle)).toList();
     }
 
     private void seriesNotfound() throws GenericException {

@@ -1,5 +1,6 @@
 package com.santander.peliculacrud.service;
 
+import com.santander.peliculacrud.model.bo.FilmBO;
 import com.santander.peliculacrud.model.bo.SeriesBO;
 import com.santander.peliculacrud.util.exception.GenericException;
 import org.springframework.stereotype.Service;
@@ -109,4 +110,6 @@ public interface SeriesServiceInterface {
      */
     List<SeriesBO> getSeriesByDirectors(List<String> directorsName, int page);
 
+    List<SeriesBO> getSeriesByAllFilter(List<String> title, List<Integer> created, List<String> actorsName,
+            List<String> directorsName, int page);
 }

@@ -17,7 +17,7 @@ import java.io.IOException;
 public class DistrictExportListener implements StepExecutionListener {
 
     @Qualifier("districtCSVWriter")
-    private final CSVWriter districtCSVWriter;
+    CSVWriter districtCSVWriter;
 
     /**
      * Instantiates a new District export listener.

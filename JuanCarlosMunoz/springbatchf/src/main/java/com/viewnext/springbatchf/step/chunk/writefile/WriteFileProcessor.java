@@ -9,7 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class WriteFileProcessor implements ItemProcessor<Object, Object> {
     @Override
-    public Object process(Object o) {
-        return o;
+    public Object process(Object o) throws NullPointerException {
+        if (o != null){
+            return o;
+        }
+        else{
+            throw new NullPointerException("Object cannot be null");
+        }
     }
 }

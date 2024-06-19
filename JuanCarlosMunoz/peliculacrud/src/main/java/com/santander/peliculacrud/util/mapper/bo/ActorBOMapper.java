@@ -43,4 +43,5 @@ public interface ActorBOMapper {
      */
     List<ActorBO> listEntitytoListBo(Page<Actor> actorsPage);
 
+    List<Actor> listBoToEntity(List<ActorBO> actorsBO);
 }

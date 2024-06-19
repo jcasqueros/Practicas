@@ -1,6 +1,8 @@
 package com.santander.peliculacrud.web;
 
 import com.santander.peliculacrud.model.bo.SeriesBO;
+import com.santander.peliculacrud.model.bo.SeriesBO;
+import com.santander.peliculacrud.model.dto.SeriesDTO;
 import com.santander.peliculacrud.model.dto.SeriesDTO;
 import com.santander.peliculacrud.service.SeriesServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
@@ -267,6 +269,19 @@ public class SeriesController {
         List<SeriesDTO> seriesDTOS = seriesDTOMapper.bosToDtos(seriesBOS);
 
         return ResponseEntity.ok(seriesDTOS);
+    }
+
+    @GetMapping("/by-all-filter/")
+    public ResponseEntity<List<SeriesDTO>> getSeriessByAllFilter(@RequestParam List<String> title,@RequestParam List<Integer> created,@RequestParam List<String> actorsName,@RequestParam List<String> directorsName,
+            @RequestParam(defaultValue = "0") int page) {
+
+        List<SeriesBO> seriesBOs = seriesService.getSeriesByAllFilter(title, created, actorsName,directorsName, page);
+        if (seriesBOs.isEmpty()) {
+            logger.error("No seriess found with title {}, created {}, actors {}, directors {}", title, created , actorsName,directorsName);
+            return ResponseEntity.notFound().build();
+        }
+        List<SeriesDTO> seriessDTOS = seriesDTOMapper.bosToDtos(seriesBOs);
+        return ResponseEntity.ok(seriessDTOS);
     }
 
 }

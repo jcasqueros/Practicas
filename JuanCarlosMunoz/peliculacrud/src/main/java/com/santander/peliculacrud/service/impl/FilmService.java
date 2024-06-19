@@ -1,8 +1,9 @@
 package com.santander.peliculacrud.service.impl;
 
-import com.santander.peliculacrud.model.api.ActorRepository;
-import com.santander.peliculacrud.model.api.DirectorRepository;
-import com.santander.peliculacrud.model.api.FilmRepository;
+import com.santander.peliculacrud.repository.criteria.FilmCriteriaRepository;
+import com.santander.peliculacrud.repository.jpa.ActorRepository;
+import com.santander.peliculacrud.repository.jpa.DirectorRepository;
+import com.santander.peliculacrud.repository.jpa.FilmRepository;
 
 import com.santander.peliculacrud.model.bo.FilmBO;
 import com.santander.peliculacrud.model.entity.Actor;
@@ -11,6 +12,8 @@ import com.santander.peliculacrud.model.entity.Film;
 import com.santander.peliculacrud.service.FilmServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
 import com.santander.peliculacrud.util.exception.GenericException;
+import com.santander.peliculacrud.util.mapper.bo.ActorBOMapper;
+import com.santander.peliculacrud.util.mapper.bo.DirectorBOMapper;
 import com.santander.peliculacrud.util.mapper.bo.FilmBOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,7 @@ import java.util.List;
 public class FilmService implements FilmServiceInterface {
 
     private final FilmRepository filmRepository;
+    private final FilmCriteriaRepository filmCriteriaRepository;
     private final ActorRepository actorRepository;
     private final DirectorRepository directorRepository;
     private final FilmBOMapper filmBOMapper;
@@ -53,12 +57,15 @@ public class FilmService implements FilmServiceInterface {
      */
     @Autowired
     public FilmService(ActorRepository actorRepository, DirectorRepository directorRepository,
-            CommonOperation commonOperation, FilmBOMapper filmBOMapper, FilmRepository filmRepository) {
+            CommonOperation commonOperation, FilmBOMapper filmBOMapper, FilmRepository filmRepository,
+            FilmCriteriaRepository filmCriteriaRepository) {
         this.actorRepository = actorRepository;
         this.commonOperation = commonOperation;
         this.directorRepository = directorRepository;
         this.filmBOMapper = filmBOMapper;
         this.filmRepository = filmRepository;
+        this.filmCriteriaRepository = filmCriteriaRepository;
+
     }
 
     /**
@@ -113,7 +120,7 @@ public class FilmService implements FilmServiceInterface {
                 throw new GenericException("Failed to update actor invalid director or actor");
             }
         } else {
-            filmNotfound();
+            filmNotFound();
         }
 
         return filmBOReturn;
@@ -130,7 +137,7 @@ public class FilmService implements FilmServiceInterface {
                 deleted = true;
 
             } else {
-                filmNotfound();
+                filmNotFound();
             }
         } else {
             throw new GenericException("Invalid film id: null");
@@ -195,7 +202,22 @@ public class FilmService implements FilmServiceInterface {
         return films.stream().sorted(Comparator.comparingInt(FilmBO::getCreated)).toList();
     }
 
-    private void filmNotfound() throws GenericException {
+    @Override
+    public List<FilmBO> getFilmByAllFilter(List<String> title, List<Integer> created, List<String> actorsName,
+            List<String> directorsName, int page) {
+
+
+
+        List<Actor> actors = actorRepository.findByNameIn(actorsName);
+        List<Director> directors = directorRepository.findByNameIn(directorsName);
+        Pageable pageable = PageRequest.of(page, 5);
+
+        Page<Film> films = filmCriteriaRepository.findAllFilter(title,created, actors, directors, pageable);
+        List<FilmBO> actorsBOS = filmBOMapper.listEntityListBo(films);
+        return actorsBOS.stream().sorted(Comparator.comparing(FilmBO::getTitle)).toList();
+    }
+
+    private void filmNotFound() throws GenericException {
         logger.error("Film not found");
         throw new GenericException("Film not found");
 

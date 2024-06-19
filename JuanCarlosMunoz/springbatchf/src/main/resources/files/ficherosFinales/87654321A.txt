@@ -13,33 +13,3 @@ Zaragoza con codigo postal 50002,
 ha realizado una compra de 280.0 euros
 con número de pedido 15.
 
-El/La Sr/a Luis González con DNI 87654321A, reside en Calle de la Independencia 34,
-Zaragoza con codigo postal 50002,
-ha realizado una compra de 120.0 euros
-con número de pedido 13.
-
-El/La Sr/a Luis González con DNI 87654321A, reside en Calle de la Independencia 34,
-Zaragoza con codigo postal 50002,
-ha realizado una compra de 150.0 euros
-con número de pedido 14.
-
-El/La Sr/a Luis González con DNI 87654321A, reside en Calle de la Independencia 34,
-Zaragoza con codigo postal 50002,
-ha realizado una compra de 280.0 euros
-con número de pedido 15.
-
-El/La Sr/a Luis González con DNI 87654321A, reside en Calle de la Independencia 34,
-Zaragoza con codigo postal 50002,
-ha realizado una compra de 120.0 euros
-con número de pedido 13.
-
-El/La Sr/a Luis González con DNI 87654321A, reside en Calle de la Independencia 34,
-Zaragoza con codigo postal 50002,
-ha realizado una compra de 150.0 euros
-con número de pedido 14.
-
-El/La Sr/a Luis González con DNI 87654321A, reside en Calle de la Independencia 34,
-Zaragoza con codigo postal 50002,
-ha realizado una compra de 280.0 euros
-con número de pedido 15.
-

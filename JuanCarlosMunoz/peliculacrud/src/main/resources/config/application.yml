@@ -16,6 +16,10 @@ spring:
       username: ${env.spring-batch-datasource.username}
       password: ${env.spring-batch-datasource.password}
       driver-class-name: ${env.spring-batch-datasource.driver-class}
+#    url: ${env.spring-batch-datasource.jdbc-url}
+#    username: ${env.spring-batch-datasource.username}
+#    password: ${env.spring-batch-datasource.password}
+#    driver-class-name: ${env.spring-batch-datasource.driver-class}
 
 
   jpa:

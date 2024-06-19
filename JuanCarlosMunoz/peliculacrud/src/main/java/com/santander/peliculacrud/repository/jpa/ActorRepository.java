@@ -1,4 +1,4 @@
-package com.santander.peliculacrud.model.api;
+package com.santander.peliculacrud.repository.jpa;
 
 import com.santander.peliculacrud.model.entity.Actor;
 import lombok.NonNull;

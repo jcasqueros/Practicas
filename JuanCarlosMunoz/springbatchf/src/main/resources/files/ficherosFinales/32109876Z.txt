@@ -13,33 +13,3 @@ Sevilla con codigo postal 41001,
 ha realizado una compra de 350.0 euros
 con número de pedido 12.
 
-El/La Sr/a Ana López con DNI 32109876Z, reside en Avenida de la Constitución 12,
-Sevilla con codigo postal 41001,
-ha realizado una compra de 180.0 euros
-con número de pedido 10.
-
-El/La Sr/a Ana López con DNI 32109876Z, reside en Avenida de la Constitución 12,
-Sevilla con codigo postal 41001,
-ha realizado una compra de 220.0 euros
-con número de pedido 11.
-
-El/La Sr/a Ana López con DNI 32109876Z, reside en Avenida de la Constitución 12,
-Sevilla con codigo postal 41001,
-ha realizado una compra de 350.0 euros
-con número de pedido 12.
-
-El/La Sr/a Ana López con DNI 32109876Z, reside en Avenida de la Constitución 12,
-Sevilla con codigo postal 41001,
-ha realizado una compra de 180.0 euros
-con número de pedido 10.
-
-El/La Sr/a Ana López con DNI 32109876Z, reside en Avenida de la Constitución 12,
-Sevilla con codigo postal 41001,
-ha realizado una compra de 220.0 euros
-con número de pedido 11.
-
-El/La Sr/a Ana López con DNI 32109876Z, reside en Avenida de la Constitución 12,
-Sevilla con codigo postal 41001,
-ha realizado una compra de 350.0 euros
-con número de pedido 12.
-

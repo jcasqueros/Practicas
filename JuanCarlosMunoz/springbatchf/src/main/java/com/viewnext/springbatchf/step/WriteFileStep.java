@@ -5,10 +5,12 @@ import com.viewnext.springbatchf.step.chunk.writefile.WriteFileWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.file.MultiResourceItemReader;
+import org.springframework.stereotype.Component;
 
 /**
  * The type Write file step.
  */
+ @Component
 public class WriteFileStep {
 
     /**

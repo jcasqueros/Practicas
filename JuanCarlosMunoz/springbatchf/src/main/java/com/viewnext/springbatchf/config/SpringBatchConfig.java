@@ -1,17 +1,19 @@
 package com.viewnext.springbatchf.config;
 
 import com.opencsv.CSVWriter;
-import com.viewnext.springbatchf.job.*;
-import com.viewnext.springbatchf.model.repository.CityRepository;
-import com.viewnext.springbatchf.model.repository.OrderRepository;
-import com.viewnext.springbatchf.model.repository.UserRepository;
+import com.viewnext.springbatchf.job.OneStepJob;
+import com.viewnext.springbatchf.job.ParallelStepJob;
+import com.viewnext.springbatchf.job.TwoStepJob;
+import com.viewnext.springbatchf.model.repository.jpa.CityRepository;
+import com.viewnext.springbatchf.model.repository.jpa.OrderRepository;
+import com.viewnext.springbatchf.model.repository.jpa.UserRepository;
 import com.viewnext.springbatchf.step.*;
-import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoProcessor;
-import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoReader;
-import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoWriter;
 import com.viewnext.springbatchf.step.chunk.export.district.ExportDistrictProcessor;
 import com.viewnext.springbatchf.step.chunk.export.district.ExportDistrictReader;
 import com.viewnext.springbatchf.step.chunk.export.district.ExportDistrictWriter;
+import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoProcessor;
+import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoReader;
+import com.viewnext.springbatchf.step.chunk.export.tramo.ExportTramoWriter;
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetProcessor;
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetReader;
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetWriter;
@@ -21,29 +23,28 @@ import com.viewnext.springbatchf.step.chunk.writefile.WriteFileProcessor;
 import com.viewnext.springbatchf.step.chunk.writefile.WriteFileWriter;
 import com.viewnext.springbatchf.step.listener.DistrictExportListener;
 import com.viewnext.springbatchf.step.listener.StreetImportListener;
-
 import com.viewnext.springbatchf.step.listener.TramoExportListener;
 import com.viewnext.springbatchf.step.skippolicy.StreetSkipPolicy;
+import com.viewnext.springbatchf.util.ExtractObjectOperation;
 import com.viewnext.springbatchf.util.exception.GenericException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.task.AsyncTaskExecutor;
-
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.FileWriter;
@@ -53,7 +54,9 @@ import java.io.IOException;
  * The type Spring batch config.
  */
 @Configuration
-@EnableAutoConfiguration
+@EnableBatchProcessing
+@EnableMongoRepositories(basePackages = "com.viewnext.springbatchf.model.repository")
+@ComponentScan(basePackages = "com.viewnext.springbatchf.model.repository")
 public class SpringBatchConfig {
 
     /**
@@ -248,8 +251,8 @@ public class SpringBatchConfig {
      */
     @Bean
     public WriteDataBaseWriter writeDataBaseWriter(CityRepository cityRepository, OrderRepository orderRepository,
-            UserRepository userRepository) {
-        return new WriteDataBaseWriter(cityRepository, orderRepository, userRepository);
+            UserRepository userRepository, ExtractObjectOperation extractObjectOperation) {
+        return new WriteDataBaseWriter(cityRepository, orderRepository, userRepository, extractObjectOperation);
     }
 
     /**
@@ -433,4 +436,5 @@ public class SpringBatchConfig {
     public Partitioner partitioner() {
         return new MultiResourcePartitioner();
     }
+
 }

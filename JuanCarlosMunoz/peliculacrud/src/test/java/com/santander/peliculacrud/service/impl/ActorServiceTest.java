@@ -1,6 +1,6 @@
 package com.santander.peliculacrud.service.impl;
 
-import com.santander.peliculacrud.model.api.ActorRepository;
+import com.santander.peliculacrud.repository.jpa.ActorRepository;
 import com.santander.peliculacrud.model.bo.ActorBO;
 import com.santander.peliculacrud.model.dto.UserDTO;
 import com.santander.peliculacrud.model.entity.Actor;

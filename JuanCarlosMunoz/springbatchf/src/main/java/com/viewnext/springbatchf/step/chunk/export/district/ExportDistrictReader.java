@@ -1,7 +1,7 @@
 package com.viewnext.springbatchf.step.chunk.export.district;
 
 import com.viewnext.springbatchf.model.entity.District;
-import com.viewnext.springbatchf.model.repository.DistrictRepository;
+import com.viewnext.springbatchf.model.repository.jpa.DistrictRepository;
 import org.springframework.batch.item.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

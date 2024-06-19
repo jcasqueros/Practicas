@@ -1,4 +1,4 @@
-package com.viewnext.springbatchf.model.repository;
+package com.viewnext.springbatchf.model.repository.jpa;
 
 import com.viewnext.springbatchf.model.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;

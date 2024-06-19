@@ -98,4 +98,5 @@ public interface DirectorServiceInterface {
      */
     List<DirectorBO> getDirectorByNation(String nation, int page);
 
+    List<DirectorBO> getDirectorByAllFilter(List<String> name, List<Integer> age, List<String> nation, int page);
 }

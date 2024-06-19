@@ -1,8 +1,8 @@
 package com.viewnext.springbatchf.step.listener;
 
 import com.viewnext.springbatchf.model.entity.District;
-import com.viewnext.springbatchf.model.repository.DistrictRepository;
-import com.viewnext.springbatchf.model.repository.StreetRepository;
+import com.viewnext.springbatchf.model.repository.jpa.DistrictRepository;
+import com.viewnext.springbatchf.model.repository.jpa.StreetRepository;
 
 import com.viewnext.springbatchf.step.chunk.importdb.ImportStreetProcessor;
 import org.slf4j.Logger;
@@ -57,6 +57,8 @@ public class StreetImportListener implements StepExecutionListener {
         this.districtRepository = districtRepository;
         this.logWriter = logWriter;
     }
+
+
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {

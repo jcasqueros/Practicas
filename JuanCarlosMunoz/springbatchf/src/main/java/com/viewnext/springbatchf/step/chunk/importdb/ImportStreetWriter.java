@@ -1,7 +1,7 @@
 package com.viewnext.springbatchf.step.chunk.importdb;
 
 import com.viewnext.springbatchf.model.entity.Street;
-import com.viewnext.springbatchf.model.repository.StreetRepository;
+import com.viewnext.springbatchf.model.repository.jpa.StreetRepository;
 
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;

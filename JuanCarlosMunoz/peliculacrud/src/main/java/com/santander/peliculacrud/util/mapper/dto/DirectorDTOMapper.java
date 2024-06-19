@@ -44,4 +44,12 @@ public interface DirectorDTOMapper {
     @Mapping(target = "id", ignore = true)
     List<DirectorDTO> bosToDtos(List<DirectorBO> directorBOS);
 
+    /**
+     * Dtos to bos list.
+     *
+     * @param directorsDTO
+     *         the directors dto
+     * @return the list
+     */
+    List<DirectorBO> dtosToBos(List<DirectorDTO> directorsDTO);
 }

@@ -1,11 +1,18 @@
 package com.santander.peliculacrud.web;
 
+import com.santander.peliculacrud.model.bo.ActorBO;
+import com.santander.peliculacrud.model.bo.DirectorBO;
 import com.santander.peliculacrud.model.bo.FilmBO;
+import com.santander.peliculacrud.model.dto.ActorDTO;
+import com.santander.peliculacrud.model.dto.DirectorDTO;
 import com.santander.peliculacrud.model.dto.FilmDTO;
+import com.santander.peliculacrud.model.entity.Actor;
 import com.santander.peliculacrud.service.FilmServiceInterface;
 import com.santander.peliculacrud.util.CommonOperation;
 
 import com.santander.peliculacrud.util.exception.GenericException;
+import com.santander.peliculacrud.util.mapper.dto.ActorDTOMapper;
+import com.santander.peliculacrud.util.mapper.dto.DirectorDTOMapper;
 import com.santander.peliculacrud.util.mapper.dto.FilmDTOMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -36,6 +43,8 @@ public class FilmController {
     private final FilmServiceInterface filmService;
     private final CommonOperation commonOperation;
     private final FilmDTOMapper filmDTOMapper;
+    private final DirectorDTOMapper directorDTOMapper;
+    private final ActorDTOMapper actorDTOMapper;
 
     /**
      * Instantiates a new Film controller.
@@ -49,10 +58,12 @@ public class FilmController {
      */
     @Autowired
     public FilmController(FilmServiceInterface filmService, CommonOperation commonOperation,
-            FilmDTOMapper filmDTOMapper) {
+            FilmDTOMapper filmDTOMapper, DirectorDTOMapper directorDTOMapper, ActorDTOMapper actorDTOMapper) {
         this.filmService = filmService;
         this.commonOperation = commonOperation;
         this.filmDTOMapper = filmDTOMapper;
+        this.directorDTOMapper = directorDTOMapper;
+        this.actorDTOMapper = actorDTOMapper;
     }
 
     /**
@@ -269,5 +280,18 @@ public class FilmController {
         return ResponseEntity.ok(filmDTOS);
     }
 
+
+    @GetMapping("/by-all-filter/")
+    public ResponseEntity<List<FilmDTO>> getFilmsByAllFilter(@RequestParam List<String> title,@RequestParam List<Integer> created,@RequestParam List<String> actorsName,@RequestParam List<String> directorsName,
+            @RequestParam(defaultValue = "0") int page) {
+
+        List<FilmBO> filmBOs = filmService.getFilmByAllFilter(title, created, actorsName,directorsName, page);
+        if (filmBOs.isEmpty()) {
+            logger.error("No films found with title {}, created {}, actors {}, directors {}", title, created , actorsName,directorsName);
+            return ResponseEntity.notFound().build();
+        }
+        List<FilmDTO> filmsDTOS = filmDTOMapper.bosToDtos(filmBOs);
+        return ResponseEntity.ok(filmsDTOS);
+    }
 }
 
